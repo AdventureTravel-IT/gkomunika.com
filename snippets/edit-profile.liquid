@@ -1,0 +1,476 @@
+{% style %}
+  .profile {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  .profile__title,
+  .address__modal-title {
+    font-weight: bold;
+    color: var(--color-primary);
+    margin: 0;
+  }
+  .profile__name {
+    color: var(--color-primary);
+    font-size: var(--font-large);
+    font-weight: bold;
+    margin: 5px 0;
+  }
+  .profile__info {
+    width: 100%;
+    padding: 15px;
+    border-radius: 15px;
+    background-color: var(--color-neutral);
+  }
+  .profile__label {
+    color: #aaa;
+  }
+  .profile__details {
+    display: flex;
+    gap: 30px;
+  }
+  .profile__value {
+    color: var(--color-primary);
+    font-size: var(--font-large);
+  }
+  /* section profile-address */
+  .profile-address {
+    background-color: var(--color-neutral);
+    border-radius: 15px;
+    padding: 10px;
+  }
+  .profile-address__title {
+    color: var(--color-primary);
+    font-weight: bold;
+  }
+  .profile-address__wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .profile-address__icon {
+    display: flex;
+    align-items: center;
+  }
+  .button__modal-add,
+  .button__modal-edit {
+    border: none;
+    background: transparent;
+    align-text: center;
+    display: flex;
+    align-items: center;
+    color: var(--color-secondary);
+    font-weight: bold;
+  }
+  .address__modal-item {
+    padding: 10px;
+    border-radius: 15px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+  }
+  .address__modal-item:hover {
+    background-color: var(--color-background);
+    transition: background-color 0.1s ease;
+  }
+  .address__modal-item p {
+    color: var(--color-primary);
+  }
+  .address__modal-field {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+  .modal-field__wrapper {
+    display: flex;
+    gap: 15px;
+  }
+
+  .address__modal-field input,
+  .address__modal-field select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-primary);
+    border-radius: 6px;
+    font-size: var(--font-large);
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+  #address_form_new {
+    margin-top: 15px;
+  }
+  .address__modal-field input:focus,
+  .address__modal-field select:focus {
+    border-color: #2a6496;
+    outline: none;
+  }
+  .address__modal-field input::placeholder {
+    color: var(--color-primary);
+  }
+
+  .address__modal-field label {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-size: 16px;
+    color: var(--color-primary);
+    background-color: #fff;
+    padding: 0 4px;
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+
+  .address__modal-field input:focus + label,
+  .address__modal-field input:not(:placeholder-shown) + label {
+    top: -12px;
+    left: 8px;
+    font-size: 12px;
+    color: var(--color-primary);
+  }
+
+  .address__modal-field select:focus + label,
+  .address__modal-field select:not([value=""]) + label {
+    top: -8px;
+    left: 8px;
+    font-size: 12px;
+    color: var(--color-primary);
+  }
+  .address__modal-field select {
+    position: relative;
+    z-index: 999;
+  }
+  .address__modal-field input {
+    color: var(--color-primary);
+  }
+  .address__modal-field select:focus {
+    top: 0;
+    color: var(--color-primary);
+  }
+  .address__modal-default {
+    margin: 10px 0 15px;
+    color: var(--color-primary);
+    display: flex;
+    gap: 5px;
+  }
+  .address__modal-default label {
+    margin: 0;
+  }
+  .address__modal-button {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+  }
+  .address__modal-button .submit,
+  .address__modal-button .reset {
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    color: var(--color-neutral);
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .address__modal-button .submit {
+    background-color: var(--color-primary);
+  }
+  .address__modal-button .reset {
+    background-color: var(--color-secondary);
+  }
+  .address__modal-container {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
+  }
+
+  .address__modal-wrapper {
+    background-color: var(--color-neutral);
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease;
+  }
+
+  /* Tombol address__modal-close di pojok kanan */
+  .address__modal-close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+  }
+
+  .address__modal-close:hover {
+    color: var(--color-primary);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 768px) {
+    .profile__details {
+      display: flex;
+      flex-direction: column;
+    }
+    .profile-address__wrapper {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+{% endstyle %}
+
+{%- assign first_name = customer.default_address.first_name -%}
+{%- assign last_name = customer.default_address.last_name -%}
+{%- assign profile_name = first_name | append: ' ' | append: last_name -%}
+<script src="{{ 'customer.js' | asset_url }}" defer async></script>
+
+{%- assign first_name = customer.default_address.first_name | default: '' -%}
+{%- assign last_name = customer.default_address.last_name | default: '' -%}
+
+<div class="profile" data-customer-addresses>
+  <h2 class="profile__title">Profile</h2>
+  <section class="profile__info">
+    <span class="profile__name">{{ profile_name | default: 'Guest' }}</span>
+
+    <div class="profile__details">
+      <div class="profile__item">
+        <span class="profile__label">Email</span>
+        <p class="profile__value">{{ customer.email | escape }}</p>
+      </div>
+      <div class="profile__item">
+        <span class="profile__label">Phone</span>
+        <p class="profile__value">{{ customer.default_address.phone | default: 'Add Phone Number' }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="profile-address">
+    <div class="profile-address__icon">
+      <span class="profile-address__title">{{ 'customer.addresses.title' | t }}</span>
+      <button
+        data-target="address__modal-add"
+        class="button__modal-add"
+      >
+        <p>+ Add</p>
+      </button>
+    </div>
+    <div class="profile-address__wrapper" data-address>
+      <!-- Modal Add Address -->
+      <div id="address__modal-add" class="address__modal-container">
+        <div class="address__modal-wrapper">
+          <button class="address__modal-close" data-close>&times;</button>
+          <h2 class="address__modal-title">{{ 'customer.addresses.add' | t }}</h2>
+          {%- form 'customer_address', customer.new_address, aria-labelledBy: 'AddressNewHeading' -%}
+            <div class="modal-field__wrapper">
+              <div class="address__modal-field">
+                <input
+                  type="text"
+                  id="AddressFirstNameNew"
+                  name="address[first_name]"
+                  value="{{ form.first_name }}"
+                  placeholder="{{ 'customer.addresses.first_name' | t }}"
+                >
+                <label for="AddressFirstNameNew">{{ 'customer.addresses.first_name' | t }}</label>
+              </div>
+              <div class="address__modal-field">
+                <input
+                  type="text"
+                  id="AddressLastNameNew"
+                  name="address[last_name]"
+                  value="{{ form.last_name }}"
+                  placeholder="{{ 'customer.addresses.last_name' | t }}"
+                >
+                <label for="AddressLastNameNew">{{ 'customer.addresses.last_name' | t }}</label>
+              </div>
+            </div>
+            <div class="address__modal-field">
+              <input
+                type="text"
+                id="AddressAddress1New"
+                name="address[address1]"
+                value="{{ form.address1 }}"
+                placeholder="{{ 'customer.addresses.address1' | t }}"
+              >
+              <label for="AddressAddress1New">{{ 'customer.addresses.address1' | t }}</label>
+            </div>
+            <div class="address__modal-field">
+              <input
+                type="text"
+                id="AddressCityNew"
+                name="address[city]"
+                value="{{ form.city }}"
+                placeholder="{{ 'customer.addresses.city' | t }}"
+              >
+              <label for="AddressCityNew">{{ 'customer.addresses.city' | t }}</label>
+            </div>
+            <div class="address__modal-field">
+              <label for="AddressCountryNew">{{ 'customer.addresses.country' | t }}</label>
+              <select
+                id="AddressCountryNew"
+                name="address[country]"
+                data-default="{{ form.country }}"
+                onchange="Shopify.handleProvinceChange(event)"
+              >
+                {{ all_country_option_tags }}
+              </select>
+            </div>
+            <div class="address__modal-field" id="AddressProvinceContainerNew" style="display: none;">
+              <label for="AddressProvinceNew">{{ 'customer.addresses.province' | t }}</label>
+              <select
+                id="AddressProvinceNew"
+                name="address[province]"
+                data-default="{{ form.province }}"
+              ></select>
+            </div>
+            <div class="address__modal-field">
+              <input
+                type="text"
+                id="AddressZipNew"
+                name="address[zip]"
+                value="{{ form.zip }}"
+                placeholder="{{ 'customer.addresses.zip' | t }}"
+              >
+              <label for="AddressZipNew">{{ 'customer.addresses.zip' | t }}</label>
+            </div>
+            <div class="address__modal-field">
+              <input
+                type="tel"
+                id="AddressPhoneNew"
+                name="address[phone]"
+                value="{{ form.phone }}"
+                placeholder="{{ 'customer.addresses.phone' | t }}"
+              >
+              <label for="AddressPhoneNew">{{ 'customer.addresses.phone' | t }}</label>
+            </div>
+            <div class="address__modal-default">
+              {{ form.set_as_default_checkbox }}
+              <label for="address_default_address_new">{{ 'customer.addresses.set_default' | t }}</label>
+            </div>
+            <div class="address__modal-button">
+              <button class="submit" type="submit">{{ 'customer.addresses.add' | t }}</button>
+            </div>
+          {%- endform -%}
+        </div>
+      </div>
+
+      <!-- List Addresses -->
+      {%- for address in customer.addresses -%}
+        <div class="address__modal-item">
+          <p>{{ address | format_address }}</p>
+          <div class="address__modal-icon">
+            <button
+              class="button__modal-edit button__modal-edit-{{ address.id }}"
+              data-target="address__modal-edit-{{ address.id }}"
+            >
+              <img
+                class="icon"
+                src="{{ 'icon-edit-pencil.svg' | asset_url }}"
+                alt="Edit Address"
+                width="20"
+                height="20"
+                loading="lazy"
+                decoding="async"
+              >
+            </button>
+          </div>
+
+          <!-- Modal Edit Address -->
+          <div id="address__modal-edit-{{ address.id }}" class="address__modal-container">
+            <div class="address__modal-wrapper">
+              <h2 class="address__modal-title">{{ 'customer.addresses.edit_address' | t }}</h2>
+              <button class="address__modal-close" data-close>&times;</button>
+              {%- form 'customer_address', address -%}
+                <div class="address__modal-default">
+                  {{ form.set_as_default_checkbox }}
+                  <label for="address_default_address_new">{{ 'customer.addresses.set_default' | t }}</label>
+                </div>
+                <div class="modal-field__wrapper">
+                  <div class="address__modal-field">
+                    <input type="text" name="address[first_name]" value="{{ form.first_name }}">
+                    <label>{{ 'customer.addresses.first_name' | t }}</label>
+                  </div>
+                  <div class="address__modal-field">
+                    <input type="text" name="address[last_name]" value="{{ form.last_name }}">
+                    <label>{{ 'customer.addresses.last_name' | t }}</label>
+                  </div>
+                </div>
+                <div class="address__modal-field">
+                  <input type="text" name="address[address1]" value="{{ form.address1 }}">
+                  <label>{{ 'customer.addresses.address1' | t }}</label>
+                </div>
+                <div class="address__modal-field">
+                  <input type="text" name="address[city]" value="{{ form.city }}">
+                  <label>{{ 'customer.addresses.city' | t }}</label>
+                </div>
+                <div class="address__modal-field">
+                  <input type="text" name="address[zip]" value="{{ form.zip }}">
+                  <label>{{ 'customer.addresses.zip' | t }}</label>
+                </div>
+                <div class="address__modal-field">
+                  <input type="tel" name="address[phone]" value="{{ form.phone }}">
+                  <label>{{ 'customer.addresses.phone' | t }}</label>
+                </div>
+                <div class="address__modal-button" data-address>
+                  <button
+                    class="reset"
+                    type="button"
+                    aria-label="{{ 'customer.addresses.delete' | t }} {{ forloop.index }}"
+                    data-target="{{ address.url }}"
+                    data-confirm-message="{{ 'customer.addresses.delete_confirm' | t }}"
+                  >
+                    {{ 'customer.addresses.delete' | t }}
+                  </button>
+                  <button class="submit" type="submit">{{ 'customer.addresses.update' | t }}</button>
+                </div>
+              {%- endform -%}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </section>
+</div>
+
+<script>
+  // Open address__modal-container
+  document.querySelectorAll('[data-target]').forEach(button => {
+    button.addEventListener('click', () => {
+      const modalId = button.getAttribute('data-target');
+      document.getElementById(modalId).style.display = 'block';
+    });
+  });
+
+  // Close address__modal-container (with close button or click outside)
+  document.querySelectorAll('.address__modal-container').forEach(modal => {
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal || event.target.hasAttribute('data-close')) {
+        modal.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('load', () => {
+    typeof CustomerAddresses !== 'undefined' && new CustomerAddresses();
+  });
+</script>

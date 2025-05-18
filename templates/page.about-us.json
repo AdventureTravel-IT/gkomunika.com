@@ -1,0 +1,170 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "about-us",
+      "blocks": {
+        "about_product_m46XyF": {
+          "type": "about-product",
+          "settings": {
+            "product-heading": "Teknis Operasional dan Layanan Kami",
+            "product_paragraph": "<p>Kami menyediakan layanan pemesanan secara daring melalui japantrips.id, serta melalui platform e-commerce seperti Shopee dan Tokopedia. Produk yang tersedia meliputi:</p>",
+            "product_list_1": "Memberikan produk yang relevan dengan kebutuhan konsumen.",
+            "product_list_2": "Memberikan harga produk yang terbaik dibandingkan dengan kompetitor.",
+            "product_list_3": "Memberikan layanan customer yang terbaik.",
+            "product_list_4": "",
+            "product_list_5": "",
+            "product-image1": "shopify://shop_images/1741333489-eSIM_Japan1662111339.png",
+            "product-image2": "shopify://shop_images/0e0e8c7e-7d9d-4711-9cd1-eaa775e7b1c6.jpg",
+            "product-image3": "shopify://shop_images/1739354073-17393322941474853145.jpg",
+            "product-image4": "shopify://shop_images/1729159950-sing1277556950.jpg",
+            "product-image5": "shopify://shop_images/1724484247-eSIM_AU_NZ525542648.jpg",
+            "product-image6": "shopify://shop_images/1725009045_049cc14743ae6ba37c53.jpg"
+          }
+        },
+        "about_target_tYQNif": {
+          "type": "about-target",
+          "settings": {
+            "visi-heading": "Visi Kami",
+            "visi-paragraph": "<p>Kami memiliki visi untuk menjadi penyedia layanan eSIM dan SIM Card Internasional nomor satu di Indonesia dan Asia Tenggara.</p>",
+            "misi-heading": "Misi Kami",
+            "misi-paragraph": "<ul><li>Memberikan produk yang relevan dengan kebutuhan konsumen.</li><li>Memberikan harga produk yang terbaik dibandingkan dengan kompetitor.</li><li>Memberikan layanan customer yang terbaik.</li></ul>"
+          }
+        },
+        "about_team_PxCgyF": {
+          "type": "about-team",
+          "settings": {
+            "team-heading": "Tim Kami",
+            "team-paragraph": "<p>Tim Global Komunika terdiri dari individu-individu yang berdedikasi dalam bidang telekomunikasi global. Mereka berperan dalam berinteraksi langsung dengan pelanggan, memberikan panduan pemesanan, bantuan terkait layanan komunikasi internasional, serta menangani keluhan atau permintaan khusus.</p><p>Global Komunika memastikan layanan customer service selalu tersedia melalui berbagai kanal komunikasi, seperti WhatsApp, email, dan media sosial, untuk memberikan pengalaman pelanggan yang cepat dan responsif.</p>",
+            "team-image1": "shopify://shop_images/our-team-japantrips-1_1024x1024_1c5be3e9-86a8-4a51-8c5f-675c59cb7b0d.webp",
+            "team-image2": "shopify://shop_images/our-team-japantrips-2_1024x1024_8e446c11-0901-4ce2-873f-3a1ba2ee60c1.webp"
+          }
+        },
+        "about_owner_MgAcrt": {
+          "type": "about-owner",
+          "settings": {
+            "owner-image": "shopify://shop_images/founder-image_1024x1024_b67ad1a6-f712-4ad3-9f68-1ad79d85c7ad.webp",
+            "owner-heading": "Founder & Owner",
+            "owner-paragraph": "<p>Saya mendirikan Global Komunika pada tahun 2016 untuk membantu para traveller Indonesia mendapatkan pengalaman terbaik ketika menjelajahi Dunia. Berbekal pengalaman pribadi travelling mandiri sejak 2007, saya bisa berbagi banyak hal—mulai dari pilihan transportasi, rekomendasi destinasi menarik, hingga tips perjalanan lainnya. Kecintaan saya terhadap perjalanan mandiri, tanpa paket tur, memacu saya untuk terus mengembangkan Global Komunika agar setiap perjalanan Anda dapat selalu terhubung internet di mana pun Anda berada.</p>"
+          }
+        },
+        "about_review_L4WDwn": {
+          "type": "about-review",
+          "settings": {
+            "review-heading": "Ulasan Tamu",
+            "review-paragraph": "<p>Global Komunika selalu berkomitmen untuk menyediakan layanan komunikasi yang andal, terjangkau, dan mudah diakses bagi setiap pelanggan. Ulasan positif berikut ini adalah bukti dedikasi kami dalam memastikan setiap pelanggan tetap “Always Connected” di mana pun mereka berada.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "about_product_m46XyF",
+        "about_target_tYQNif",
+        "about_team_PxCgyF",
+        "about_owner_MgAcrt",
+        "about_review_L4WDwn"
+      ],
+      "settings": {
+        "logo": "shopify://shop_images/Logo.png",
+        "about-image": "shopify://shop_images/DSCF1972.jpg",
+        "logo-text": "<p>Global Komunika adalah platform penyedia layanan telekomunikasi  yang berfokus pada penjualan <strong>SIM Card</strong> dan <strong>eSIM Internasional </strong>untuk berbagai negara sejak tahun 2016. Dengan slogan “Always Connected,” kami berkomitmen untuk menyediakan konektivitas yang andal dan hemat bagi tamu kami di mana pun mereka berada.</p>"
+      }
+    },
+    "about_us_ratting_3hBhqJ": {
+      "type": "about-us-ratting",
+      "blocks": {
+        "rating_NxPWc3": {
+          "type": "rating",
+          "settings": {
+            "icon": "shopify://shop_images/Louchi.jpg",
+            "review_date": "2025-03-25",
+            "name": "Louchie",
+            "title-product": "eSIM China Hong Kong Macau Big Data",
+            "review-content": "<p>Pengalaman pertama x pake eSim, ternyata mudah diaktifkan. Kualitas memuaskan! Ingat buka Data Roaming ketika masuk ke China. Internetnya jg stabil, ga pernah lost connection.</p>",
+            "review-image1": "shopify://shop_images/Louchi-comment.webp",
+            "review-image2": "shopify://shop_images/Louchi-comment1.webp"
+          }
+        },
+        "rating_txMNzQ": {
+          "type": "rating",
+          "settings": {
+            "icon": "shopify://shop_images/albert.jpg",
+            "review_date": "2025-03-25",
+            "name": "Albert",
+            "title-product": "eSIM Singapore Pure Unlimited ",
+            "review-content": "<p>e-SIM dari Global Komunika sangat bermanfaat dan berguna, fast response, mudah instalasinya</p>",
+            "review-image1": "shopify://shop_images/albert3.webp",
+            "review-image2": "shopify://shop_images/albert2.webp",
+            "review-image3": "shopify://shop_images/albert1.webp"
+          }
+        },
+        "rating_a64Lzw": {
+          "type": "rating",
+          "settings": {
+            "icon": "shopify://shop_images/mosses.jpg",
+            "review_date": "2025-03-25",
+            "name": "Mosses",
+            "title-product": "eSIM Thailand",
+            "review-content": "<p>Signal berfungsi baik dan lancar. Aktivasi mudah. Seller responsive. Thx</p>"
+          }
+        },
+        "rating_pjMXAM": {
+          "type": "rating",
+          "settings": {
+            "icon": "shopify://shop_images/TIO.jpg",
+            "review_date": "2025-03-25",
+            "name": "Tio",
+            "title-product": "eSIM South Korea Big Data",
+            "review-content": "<p>Mantap langsung konek, mendarat langsung scan qr langsung muncul SKT LTE</p>",
+            "review-image1": "shopify://shop_images/tio-comment1.webp"
+          }
+        },
+        "rating_6CpPHe": {
+          "type": "rating",
+          "settings": {
+            "icon": "shopify://shop_images/RKUS.jpg",
+            "review_date": "2025-03-25",
+            "name": "RKus",
+            "title-product": "eSIM Taiwan",
+            "review-content": "<p>berfungsi baik dan kecepatan nya mantap begitu sampai lgsg aktif ga ribet selalu pakai globalkomunika tiap going overseas</p>",
+            "review-image1": "shopify://shop_images/rkus-comment3.webp",
+            "review-image2": "shopify://shop_images/rkus-comment2.webp",
+            "review-image3": "shopify://shop_images/rkus-comment1.webp"
+          }
+        },
+        "rating_Liqx36": {
+          "type": "rating",
+          "settings": {
+            "icon": "shopify://shop_images/BUDI_jpg.webp",
+            "star": "shopify://shop_images/stars-icon_100x100_4bb4b219-b1dd-4d2f-a720-9a6bcb860524.webp",
+            "review_date": "2025-01-28",
+            "name": "BUDI",
+            "title-product": "eSIM China Big Data",
+            "review-content": "<p>Berfungsi dgn baik. Service mantabh. Beli last minute dilayani dgn cepat dan lsg dikirim. Aktivasi jg lancar tanpa masalah.</p>",
+            "review-image1": "shopify://shop_images/BUDI_COMMENT.webp"
+          }
+        }
+      },
+      "block_order": [
+        "rating_NxPWc3",
+        "rating_txMNzQ",
+        "rating_a64Lzw",
+        "rating_pjMXAM",
+        "rating_6CpPHe",
+        "rating_Liqx36"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "about_us_ratting_3hBhqJ"
+  ]
+}

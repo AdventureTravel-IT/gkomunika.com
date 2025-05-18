@@ -1,0 +1,147 @@
+{% style %}
+  .variant-form {
+    height: 100%;
+  }
+  .variant-form p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .variant-custom {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    flex-grow: 1; /* Membuat dropdown tetap di atas */
+  }
+  .variant-custom .dropdown {
+    display: flex;
+    flex-direction: column;
+    width: 190px;
+  }
+  .variant-custom .dropdown label {
+    color: #005496;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .variant-custom .dropdown select {
+    color: #005496;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 10px;
+    height: 44px;
+    border: 1px solid #005496;
+    cursor: pointer;
+    appearance: none; /* Hilangkan tampilan default */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url({{ 'icon-dropdown.svg' | asset_url }});
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
+    padding-right: 35px;
+  }
+  .variant-custom .dropdown select:focus {
+    outline: none;
+    box-shadow: none;
+  }
+  .variant-picker-btn-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .variant-picker-status {
+    width: 100%;
+      padding: 20px;
+    white-space: wrap;
+      background-color: var(--color-neutral);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  }
+  .variant-picker-btn-wrapper .variant-picker-btn {
+    width: 100%;
+    display: flex;
+    gap: 15px;
+    padding: 0 20px 20px 0;
+    background-color: var(--color-neutral);
+  }
+  .variant-picker-btn-wrapper .variant-picker-btn .cart,
+  .variant-picker-btn-wrapper .variant-picker-btn .buy {
+    flex: 1;
+    padding: 10px;
+    background-color: #00ADEE;
+    color: #ffffff;
+    height: 44px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 15px;
+    border: none;
+  }
+  .variant-picker-btn-wrapper .variant-picker-btn .buy {
+    background-color: #005496;
+  }
+
+  .product-title-mobile,
+  .variant-picker-status {
+    display: none;
+  }
+
+.variant-picker-btn button {
+  background: var(--color-primary);
+  border: 2px solid #bbb;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white; /* Menyesuaikan dengan background */
+  cursor: pointer;
+  
+  transition: all 0.1s ease-in-out;
+}
+
+.variant-picker-btn button:active {
+  
+  transform: translateY(3px);
+}
+
+.variant-picker-btn cart {
+  background: var(--color-secondary);
+  color: white; /* Opsional, agar kontras */
+}
+
+  @media screen and (max-width: 768px) {
+    .variant-custom {
+      display: flex;
+      gap: 10px; /* Jarak antar dropdown */
+      justify-content: space-between;
+    }
+    .variant-custom .dropdown {
+      flex: 1; /* Memastikan setiap dropdown memiliki ukuran yang sama */
+    }
+    .variant-custom .dropdown select {
+      padding: 10px;
+    }
+    .variant-custom select {
+      width: 100%; /* Pastikan dropdown menyesuaikan lebar div */
+    }
+    .variant-picker-btn-wrapper .variant-picker-btn {
+      width: 100%;
+      padding: 20px 24px;
+    }
+    .selected-price-mobile {
+      display: block;
+    }
+    .variant-picker-btn-wrapper {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: auto;
+          z-index: 999; /* Pastikan tetap di atas elemen lain */
+        }
+  .product-title-mobile,
+  .variant-picker-status {
+    display: block;
+    padding: 20px 24px 0 24px;
+  }
+  }
+{% endstyle %}

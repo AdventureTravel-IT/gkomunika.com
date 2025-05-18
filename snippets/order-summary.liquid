@@ -1,0 +1,70 @@
+<div class="ma-order-summary-container">
+  {% comment %}
+    Hitung Subtotal, Quantity, dan Total Payment
+  {% endcomment %}
+  {% assign subtotal = 0 %}
+  {% assign total_qty = 0 %}
+
+  {% for item in order.line_items %}
+    {% assign subtotal = subtotal | plus: item.final_line_price %}
+    {% assign total_qty = total_qty | plus: item.quantity %}
+  {% endfor %}
+
+  {% assign payment_fee = order.metafields.custom.payment_fee | default: 0 %}
+  {% assign discount = order.total_discounts | default: 0 %}
+  {% assign total_payment = subtotal | plus: payment_fee | minus: discount %}
+
+  <div class="ma-order-summary-info normal">
+    <h2>Subtotal ({{ total_qty }} items)</h2>
+    <h2>{{ total_payment | money_with_currency }}</h2>
+  </div>
+
+  <div class="ma-order-summary-info normal">
+    <h2>Payment Fee</h2>
+    <h2>{{ payment_fee | money }}</h2>
+  </div>  
+
+  <div class="ma-order-summary-info normal">
+    <h2>Discount 
+      {% if order.discount_applications.size > 0 %}
+        (
+        {% for discount in order.discount_applications %}
+          {{ discount.title }}{% unless forloop.last %}, {% endunless %}
+        {% endfor %}
+        )
+      {% else %}
+        (-)
+      {% endif %}  
+    </h2>
+    <h2>{{ discount | money }}</h2>
+  </div>
+
+  <div class="ma-order-summary-info bold">
+    <h2>Total Payment</h2>
+    <h2>{{ total_payment | money_with_currency }}</h2>
+  </div>
+</div>
+
+{% style %}
+  .ma-order-summary-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .ma-order-summary-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .ma-order-summary-info.normal h2 {
+    font-size: var(--font-large);
+    font-weight: normal;
+    margin: 0;
+    color: var(--color-primary);
+  }
+  .ma-order-summary-info.bold h2 {
+    margin: 0;
+    font-weight: bold;
+    font-size: var(--font-large);
+    color: var(--color-primary);
+  }
+{% endstyle %}

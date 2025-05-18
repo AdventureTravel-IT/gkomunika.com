@@ -1,0 +1,8 @@
+{% assign product_name_only = line_item.title | split: ' - ' | first %}
+{% assign product_name = line_item.product.title %}
+{% assign variant_name = line_item.title | remove: product_name | strip %}
+{%- assign variant_parts = variant_name | split: ' / ' -%}
+{% assign formatted_variant = variant_parts | join: ', ' %}
+{% assign formatted_variant = formatted_variant | strip | remove_first: '-' | strip %}
+<h2>{{ product_name_only }}</h2>
+<h2>{{ formatted_variant }}</h2>

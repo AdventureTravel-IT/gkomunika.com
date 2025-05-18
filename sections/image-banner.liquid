@@ -1,0 +1,149 @@
+<div class="banner-container">
+  <div class="banner__wrapper">
+    <img 
+      class="banner__image"
+      src="{{ section.settings.image | img_url: 'master' }}" 
+      alt="Banner Image"
+      fetchpriority="high"
+    />
+    <div class="banner__content--wrapper">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'heading' -%}
+            <h2
+              class="banner__heading--title {{ block.settings.heading_size }}"
+              {{ block.shopify_attributes }}
+              id="default-heading"
+            >
+              {{ block.settings.heading }}
+            </h2>
+
+            <h2
+              class="banner__heading--result {{ block.settings.heading_size }}"
+              id="search-heading"
+              style="display: none;"
+            >
+              Search Result for “{{ search.terms }}”
+            </h2>
+
+          {%- when 'text' -%}
+            <div class="banner__heading--text {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+              <p>{{ block.settings.text }}</p>
+            </div>
+          {%- when 'desc' -%}
+            <div class="banner__heading--desc {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+              <p>{{ block.settings.desc }}</p>
+            </div>
+          {%- when 'search' -%}
+            <div class="banner__heading--search">
+              {% render 'search-bar' %}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Select Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image Banner",
+      "category": "Section"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading Text",
+          "default": "Default Heading"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            { "value": "h1", "label": "H1" },
+            { "value": "h2", "label": "H2" },
+            { "value": "h3", "label": "H3" }
+          ],
+          "default": "h1",
+          "label": "Heading Size"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Body Text",
+          "default": "This is sample text."
+        }
+      ]
+    },
+    {
+      "type": "desc",
+      "name": "desc",
+      "settings": [
+        {
+          "type": "text",
+          "id": "desc",
+          "label": "Body Text",
+          "default": "This is sample text."
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_label_1",
+          "label": "Button 1 Label",
+          "default": "Learn More"
+        },
+        {
+          "type": "url",
+          "id": "button_link_1",
+          "label": "Button 1 Link"
+        },
+        {
+          "type": "text",
+          "id": "button_label_2",
+          "label": "Button 2 Label",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "button_link_2",
+          "label": "Button 2 Link"
+        }
+      ]
+    },
+    {
+      "type": "search",
+      "name": "Search Block",
+      "limit": 1,
+      "settings": []
+    }
+  ],
+}
+{% endschema %}

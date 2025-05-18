@@ -1,0 +1,224 @@
+{% style %}
+  .oh-details__container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+.oh-details__card {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
+  color: var(--color-primary);
+}
+
+.oh-details__date {
+  display: flex;
+  gap: 5px;
+  color: var(--color-primary);
+}
+
+.oh-details__date-title,
+.oh-details__date-id {
+  font-size: var(--font-large);
+  color: var(--color-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.oh-details__card-title {
+  font-size: var(--font-supper-large);
+  color: var(--color-primary);
+  font-weight: bold;
+  margin: 0;
+}
+
+
+.oh-details__card-variant {
+  margin: 0;
+}
+
+.oh-details__images {
+  display: flex;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+}
+
+.oh-details__single-image {
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+}
+.oh-details__multi-image {
+  border-radius: 5px;
+  border: 1px solid var(--color-border);
+}
+
+.oh-details__multi-images {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.oh-details__count {
+  border-radius: 5px;
+  border: 1px solid var(--color-border);
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.oh-details__count span {
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.2;
+  color: var(--color-primary);
+}
+
+.oh-details__card-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  color: var(--color-primary);
+}
+
+.oh-details__card-variant {
+  font-size: var(--font-large);
+  color: var(--color-primary);
+}
+
+.oh-details__quantity {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+  color: var(--color-primary);
+}
+
+.oh-details__summary {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-primary);
+  align-items: center;
+}
+
+.oh-details__total-title {
+  font-size: var(--font-large);
+  margin: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.oh-details__button {
+  background-color: var(--color-primary);
+  color: var(--color-neutral);
+  font-size: var(--font-large);
+  padding: 0 15px;
+  height: 40px;
+  border-radius: 15px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.oh-details__button:active {
+  transform: translateY(5px);
+  box-shadow: var(--box-shadow);
+}
+{% endstyle %}
+
+
+
+<div class="oh-details__container">
+  <section class="oh-details__card">
+    <div class="oh-details__date">
+      {{- 'border-inv.svg' | inline_asset_content -}}
+      <h2 class="oh-details__date-title">{{ order.created_at | date: '%d/%m/%Y %H:%M' }}</h2>
+    </div>
+    <h2 class="oh-details__date-id">#{{ order.name }}</h2>
+  </section>
+
+  {% for line_item in order.line_items %}
+    <div class="oh-details__wrapper">
+      <section class="oh-details__card">
+        <div class="oh-details__images">
+          {% assign countries_array = line_item.product.metafields.coverage.country.value %}
+          
+          {% assign total_countries = countries_array.size %}
+          {% if total_countries == 1 %}
+            {% assign country_trimmed = countries_array.first | strip | downcase %}
+            {% assign country_filename = country_trimmed | replace: ' ', '-' | capitalize | append: '.svg' %}
+            <img
+              class="oh-details__single-image"
+              src="{{ country_filename | file_url }}"
+              alt="{{ country_trimmed }}"
+              width="50"
+              height="50"
+            >
+          {% elsif total_countries > 1 %}
+            <div class="oh-details__multi-images">
+              {% for country in countries_array limit: 3 %}
+                {% assign country_trimmed = country | strip | downcase %}
+                {% assign country_filename = country_trimmed | replace: ' ', '-' | capitalize | append: '.svg' %}
+                <img
+                  class="oh-details__multi-image"
+                  src="{{ country_filename | file_url }}"
+                  alt="{{ country_trimmed }}"
+                  width="25"
+                  height="25"
+                >
+              {% endfor %}
+              {% if total_countries > 3 %}
+                <div class="oh-details__count">
+                  <span>+{{ total_countries | minus: 3 }}</span>
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="oh-details__card-wrapper">
+          <div class="oh-details__card-content">
+            {% if line_item.title contains ' - ' %}
+              {% assign title_parts = line_item.title | split: ' - ' %}
+              {% assign product_name_only = title_parts[0] %}
+              {% assign variant_section = title_parts[1] %}
+              {% assign variant_parts = variant_section | split: ' / ' %}
+              {% assign formatted_variant = variant_parts | join: ', ' %}
+            {% else %}
+              {% assign product_name_only = line_item.title %}
+              {% assign formatted_variant = '' %}
+            {% endif %}
+        
+            <h2 class="oh-details__card-title">{{ product_name_only }}</h2>
+        
+            {% if formatted_variant != '' %}
+              <h2 class="oh-details__card-variant">{{ formatted_variant }}</h2>
+            {% endif %}
+          </div>
+        
+          <div class="oh-details__quantity">
+            <p>x {{ line_item.quantity }}</p>
+            <p>{{ line_item.price | money_with_currency }}</p>
+          </div>
+        </div>
+        
+      </section>
+    </div>
+  {% endfor %}
+
+  {% unless template.suffix == 'order-details' %}
+    <div class="oh-details__summary">
+      <section class="oh-details__total-payment">
+        <p>Total Payment</p>
+        <h2 class="oh-details__total-title">{{ order.total_price | money_with_currency }}</h2>
+      </section>
+      <button class="oh-details__button" data-order-id="{{ order.id }}">Details</button>
+    </div>
+  {% endunless %}
+</div>

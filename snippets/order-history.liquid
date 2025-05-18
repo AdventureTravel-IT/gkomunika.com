@@ -1,0 +1,46 @@
+{% comment %}
+  oh = order history
+{% endcomment %}
+
+{% style %}
+  .oh__container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  .oh__wrapper {
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: var(--color-neutral);
+    transition: transform 0.3s ease;
+  }
+  .oh__wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow);
+  }
+{% endstyle %}
+
+<div class="oh__container">
+  {% assign orders_per_page = 5 %}
+  {% paginate customer.orders by orders_per_page %}
+    {% for order in customer.orders %}
+      <section class="oh__wrapper">
+        {% render 'order-history__details', order: order %}
+      </section>
+    {% endfor %}
+    {% render 'pagination', paginate: paginate %}
+  {% endpaginate %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.oh-details__button').forEach(function (button) {
+      button.addEventListener('click', function () {
+        let orderId = this.getAttribute('data-order-id');
+        window.location.href = '/pages/order-details?order_id=' + orderId;
+      });
+    });
+  });
+</script>

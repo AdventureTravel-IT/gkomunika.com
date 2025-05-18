@@ -1,0 +1,70 @@
+{% style %}
+  .banner-search__container {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+  .banner-search__wrapper {
+    padding: 50px 10%;
+  }
+  .banner-search__content {
+    width: 50%;
+  }
+  .banner-search__form {
+    margin: 20px 30% 0 0;
+  }
+  .banner-search__content h2 {
+    font-weight: bold;
+    font-size: 34px;
+    color: var(--color-primary);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .banner-search__content span {
+    font-size: 20px;
+    color: var(--color-primary);
+  }
+  @media (max-width: 1440px) {
+    .banner-search__form {
+      margin: 20px 0 0 0;
+    }
+  }
+  @media (max-width: 425px) {
+    .banner-search__wrapper {
+      padding: 20px 24px;
+    }
+    .banner-search__content {
+      width: 100%;
+    }
+  }
+{% endstyle %}
+
+<div class="banner-search__container">
+  <div class="banner-search__wrapper">
+    <div class="banner-search__content">
+      {%- if search.terms != blank -%}
+        <h2>Search Result for “{{ search.terms }}”</h2>
+      {%- else -%}
+        <h2>All Destinations</h2>
+      {%- endif -%}
+      <span
+        >Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries</span
+      >
+      <div class="banner-search__form">
+        {% render 'search-bar' %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Banner Search",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Banner-search",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

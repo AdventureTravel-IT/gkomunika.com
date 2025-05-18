@@ -1,0 +1,529 @@
+<div class="login">
+  <div class="MainLogin-container">
+    <!-- Bagian Logo -->
+    <section class="MainLogin-logo">
+      {% if section.settings.logo != blank %}
+        <img
+          class="footer__logo"
+          src="{{ section.settings.logo | img_url: 'master' }}"
+          width="auto"
+          height="80"
+          alt="Site Logo"
+        >
+      {% endif %}
+    </section>
+
+    <!-- Tab Login/Register -->
+    <section class="MainLogin-Tabs" id="MainLogin-Tabs">
+      <a class="MainLogin-TabButton {% if request.path == '/account/login' %}active{% endif %}" href="/account/login">Login</a>
+      <a class="MainLogin-TabButton {% if request.path == '/account/register' %}active{% endif %}" href="/account/register">Register</a>
+    </section>
+
+    <!-- Form Section -->
+    <section class="MainLogin-form">
+      {% if request.path == '/account/login' %}
+        <!-- Form Login -->
+        <div class="FormLogin active" id="FormLogin">
+          {%- form 'customer_login', novalidate: 'novalidate', return_to: '/' -%}
+            {% if form.errors %}
+              <div class="form-error-message">Incorrect email or password. Please try again !!!</div>
+            {% endif %}
+
+            <div class="field-auth">
+              <input
+                type="email"
+                name="customer[email]"
+                id="Login-Email"
+                placeholder="Email"
+                value="{{ form.email }}"
+                required
+                {% if form.errors %}
+                  aria-invalid="true"
+                {% endif %}
+              >
+              <span class="field-error-message" id="LoginEmailError"></span>
+            </div>
+
+            <div class="field-auth">
+              <input
+                type="password"
+                name="customer[password]"
+                id="Login-Password"
+                placeholder="Password"
+                required
+                {% if form.errors %}
+                  aria-invalid="true"
+                {% endif %}
+              >
+              <span class="field-error-message" id="LoginPasswordError"></span>
+            </div>
+
+            <div class="WrapperButton-form">
+              <a href="javascript:void(0)" class="link-recover" onclick="showRecoveryForm()">Forgot Password?</a>
+              <button class="button-form" id="login-button" type="submit">Log In</button>
+            </div>
+          {%- endform -%}
+        </div>
+
+        <!-- Form Recovery -->
+        <div class="FormRecover" id="FormRecovery">{% render 'form-recovery' %}</div>
+      {% elsif request.path == '/account/register' %}
+        <!-- Form Register -->
+        <div class="FormRegister active" id="FormRegister">
+          {%- form 'create_customer', novalidate: 'novalidate', class: 'customer-register-form' -%}
+            {% if form.errors %}
+              <div class="form-error-message">
+                {% for field in form.errors %}
+                  {{ form.errors.messages[field] }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="wrapper-field">
+              <div class="field-auth">
+                <input
+                  type="text"
+                  name="customer[first_name]"
+                  id="Register-FirstName"
+                  placeholder="First Name"
+                  required
+                  minlength="2"
+                  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
+                >
+              </div>
+
+              <div class="field-auth">
+                <input
+                  type="text"
+                  name="customer[last_name]"
+                  id="Register-LastName"
+                  placeholder="Last Name"
+                  minlength="2"
+                  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
+                >
+              </div>
+            </div>
+
+            <div class="field-auth">
+              <input
+                type="email"
+                name="customer[email]"
+                id="RegisterForm-email"
+                placeholder="Email"
+                required
+                value="{{ form.email }}"
+                onblur="validateEmail(this)"
+                {% if form.errors contains 'email' %}
+                  aria-invalid="true"
+                {% endif %}
+              >
+              <span class="email-error-message">Invalid email format</span>
+            </div>
+
+            <div class="field-auth">
+              <input
+                type="password"
+                name="customer[password]"
+                id="RegisterForm-password"
+                placeholder="Password"
+                required
+                minlength="8"
+                oninput="validatePasswordStrength(this)"
+              >
+              <span class="password-strength-message"></span>
+            </div>
+
+            <div class="field-auth terms-checkbox">
+              <input
+                type="checkbox"
+                id="terms-checkbox"
+                name="terms"
+                required
+              >
+              <label for="terms-checkbox">
+                I agree <a href="/pages/terms-of-use" target="_blank">Terms & Conditions</a>
+              </label>
+            </div>
+
+            <div class="WrapperButton-form">
+              <button class="button-form" id="register-button" type="submit" disabled>Register</button>
+            </div>
+
+            <div class="custom-auth-divider">
+              <span>OR LOGIN WITH</span>
+            </div>
+            
+            <div class="oxi-social-login" style="margin-top: 15px">
+            </div>
+          {%- endform -%}
+        </div>
+      {% endif %}
+    </section>
+  </div>
+</div>
+
+<script>
+  function showRecoveryForm() {
+    document.querySelectorAll('.MainLogin-form > div').forEach(form => {
+      form.classList.remove('active');
+    });
+    document.getElementById('FormRecovery').classList.add('active');
+    document.querySelector('.MainLogin-Tabs').style.display = 'none';
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Validasi sebelum submit untuk login form
+    const loginForm = document.querySelector('#FormLogin form');
+    if (loginForm) {
+      loginForm.addEventListener('submit', function(e) {
+        const email = document.getElementById('Login-Email');
+        const password = document.getElementById('Login-Password');
+
+        if (!email.value || !password.value) {
+          e.preventDefault();
+          if (!email.value) {
+            document.getElementById('LoginEmailError').textContent = 'Email is required.';
+          }
+          if (!password.value) {
+            document.getElementById('LoginPasswordError').textContent = 'Password is required.';
+          }
+        }
+      });
+    }
+
+    // Validasi sebelum submit untuk register form
+    const registerForm = document.querySelector('.customer-register-form');
+    if (registerForm) {
+      registerForm.addEventListener('submit', function(e) {
+        const emailValid = validateEmail(document.getElementById('RegisterForm-email'));
+        const termsChecked = document.getElementById('terms-checkbox').checked;
+        const firstName = document.getElementById('Register-FirstName');
+        const lastName = document.getElementById('Register-LastName');
+        const password = document.getElementById('RegisterForm-password');
+
+        if (!emailValid || !termsChecked || !firstName.value || !lastName.value || !password.value) {
+          e.preventDefault();
+          if (!emailValid) {
+            document.querySelector('.email-error-message').style.display = 'block';
+          }
+          if (!termsChecked) {
+            alert('Please accept the terms and conditions.');
+          }
+        }
+      });
+
+      // Atur tombol Register berdasarkan checkbox terms
+      const termsCheckbox = document.getElementById('terms-checkbox');
+      const registerButton = document.getElementById('register-button');
+      registerButton.disabled = !termsCheckbox.checked;
+      termsCheckbox.addEventListener('change', function () {
+        registerButton.disabled = !this.checked;
+      });
+    }
+  });
+
+  function validateEmail(input) {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return pattern.test(input.value);
+  }
+
+  function validatePasswordStrength(input) {
+    const message = input.nextElementSibling;
+    if (input.value.length >= 8) {
+      message.textContent = "Password strength: good";
+    } else {
+      message.textContent = "Password too short";
+    }
+  }
+</script>
+
+<style>
+  .field-error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+  }
+
+  .email-error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+  }
+
+  .password-strength-message {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  .custom-auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 15px 0;
+  }
+  .custom-auth-divider::before,
+  .custom-auth-divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #005496; /* Warna biru seperti teks */
+    margin: 0 10px;
+  }
+  .custom-auth-divider span {
+    font-size: 14px;
+    color: #005496; /* Sesuaikan warna teks */
+  }
+</style>
+
+
+
+<style>
+    .login {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      max-width: 1920px;
+      height: 100vh;
+    }
+
+    .MainLogin-container {
+      width: 350px;
+      height: auto;
+      padding: 10px;
+    }
+
+    .MainLogin-logo {
+      display: flex;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .MainLogin-Tabs {
+      display: flex;
+      width: 100%;
+      height: auto;
+    }
+
+    .MainLogin-TabButton {
+      flex: 1;
+      padding: 15px;
+      background: transparent;
+      color: var(--color-primary);
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-size: var(--font-large);
+      font-weight: bold;
+      transition: background-color 0.2s ease;
+      border-radius: 15px 15px 0 0;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .MainLogin-TabButton.active {
+      background-color: var(--color-neutral);
+    }
+
+    .MainLogin-form {
+      display: flex;
+      padding: 20px;
+      background-color: var(--color-neutral);
+      border-radius: 15px 0 15px 15px;
+      transition: border-radius 0.3s ease;
+    }
+
+    .MainLogin-TabButton[onclick="showForm('register')"].active ~ .MainLogin-form,
+    .MainLogin-form.register-active {
+      border-radius: 15px 0 15px 15px !important;
+    }
+
+    .FormLogin,
+    .FormRegister,
+    .FormRecover {
+      display: none;
+      width: 100%;
+    }
+
+    .FormLogin.active,
+    .FormRegister.active,
+    .FormRecover.active {
+      display: block;
+    }
+
+    .wrapper-field {
+      display: flex;
+      gap: 10px;
+    }
+
+    .field-auth {
+      margin-bottom: 15px;
+      color: var(--color-primary);
+    }
+
+    .field-auth input {
+      display: flex;
+      width: 100%;
+      padding: 15px;
+      color: var(--color-primary);
+      background-color: var(--color-background-secondary);
+      border: none;
+      outline: none;
+      border-radius: 10px;
+      font-size: var(--font-large);
+    }
+
+    .field-auth input.invalid,
+    .field-auth input[aria-invalid="true"] {
+      border: 1px solid red !important;
+    }
+
+    .field-auth input::placeholder {
+      color: var(--color-primary);
+    }
+
+    .WrapperButton-form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      justify-content: left;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .WrapperButton-form a {
+      min-width: 0;
+      color: var(--color-primary);
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .button-form {
+      padding: 15px;
+      border-radius: 10px;
+      background-color: var(--color-primary);
+      border: none;
+      cursor: pointer;
+      color: var(--color-neutral);
+      font-size: var(--font-large);
+      font-weight: bold;
+    }
+
+    .form-error-message {
+      background: #ffebee;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: red;
+      text-align: center;
+    }
+
+    .email-error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .password-strength-message {
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .terms-checkbox {
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+      font-size: 12px;
+    }
+
+    .terms-checkbox input {
+      width: auto !important;
+      margin-right: 10px;
+    }
+
+    .terms-checkbox a {
+      color: var(--color-primary);
+    }
+    .button-form:disabled {
+      background-color: #ccc;
+      color: #666;
+      cursor: not-allowed;
+    }
+    .field-error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+  }
+
+  /* Autofill tweaks */
+  .field-auth input:-webkit-autofill {
+    -webkit-text-fill-color: var(--color-primary);
+    transition: background-color 9999s ease-in-out 0s;
+    caret-color: var(--color-primary);
+  }
+  
+  .field-auth input:autofill {
+    color: var(--color-neutral);
+  }
+
+  .button-form:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  .button-form-icon {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .button-form-icon svg {
+    transform: rotate(180deg);
+  }
+
+    @media (max-width: 768px) {
+      .MainLogin-container {
+        padding: 0 24px;
+      }
+    }
+</style>
+
+{% schema %}
+{
+  "name": "t:sections.main-register.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Insert Logo"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

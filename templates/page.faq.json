@@ -1,0 +1,127 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "collapsible_content_tGNFat": {
+      "type": "collapsible-content",
+      "blocks": {
+        "collapsible_row_ptKLgt": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Apa itu Global Komunika?",
+            "icon": "none",
+            "row_content": "<p>Global Komunika adalah penyedia layanan SIM card, eSIM, dan asuransi perjalanan yang memudahkan pelanggan untuk tetap terhubung dan merasa aman selama bepergian ke luar negeri.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_XpE99X": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Apa saja produk yang ditawarkan oleh Global Komunika?",
+            "icon": "none",
+            "row_content": "<p>Kami menyediakan:</p><ul><li>eSIM: Koneksi digital tanpa kartu fisik untuk berbagai negara.</li><li>SIM Card Fisik: Kartu SIM perjalanan dengan jaringan stabil dan harga kompetitif.</li><li>Asuransi Perjalanan: Perlindungan selama perjalanan untuk ketenangan dan keamanan pelanggan.</li></ul>",
+            "page": ""
+          }
+        },
+        "collapsible_row_NXBXnP": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Bagaimana cara membeli eSIM dan SIM Card Global Komunika?",
+            "icon": "none",
+            "row_content": "<p>Cukup kunjungi <a href=\"https://gkomunika.id/\" target=\"_blank\" title=\"https://gkomunika.id/\">gkomunika.id</a> dan pilih produk yang dibutuhkan, sesuaikan dengan kebutuhan kuota, masa aktif, dan negara cakupannya. Kemudian, selesaikan pembayaran melalui metode yang tersedia. Jangan lupa untuk membaca deskripsi produk terlebih dahulu, ya!</p><p>Khusus untuk eSIM, informasi instalasi dan aktivasi, serta QR Code akan langsung dikirimkan melalui email segera setelah transaksi selesai. Selain itu, layanan kami juga tersedia di platform e-commerce <a href=\"https://shopee.co.id/buyer/1258001143/rating?shop_id=1257539631\"><span style=\"text-decoration:underline\">Shopee</span></a> dan <a href=\"https://www.tokopedia.com/japantrips?source=universe&st=product\"><span style=\"text-decoration:underline\">Tokopedia</span></a> untuk kemudahan berbelanja.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_7ezPKg": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Berapa lama waktu pemrosesan setelah pembelian?",
+            "icon": "none",
+            "row_content": "<p>Pemrosesan umumnya berlangsung cukup cepat. Untuk eSIM, tamu akan menerima QR code dalam beberapa menit setelah pembayaran berhasil. Sedangkan untuk SIM Card dan Asuransi akan dikirimkan mengikuti jam kerja tim Global Komunika (09.00-16.00).</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_DFEH7d": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": " Apakah Global Komunika menyediakan layanan refund?",
+            "icon": "none",
+            "row_content": "<p>Kebijakan refund bergantung pada case yang terjadi. Informasi lengkap mengenai kebijakan refund Global Komunika dapat dibaca <a href=\"https://gkomunika.id/refund_policy\"><span style=\"text-decoration:underline\">di sini</span></a>. Selain itu, pastikan untuk selalu membaca deskripsi produk lebih dulu sebelum membeli.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_EfniEa": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": " Apakah Global Komunika menyediakan layanan refund?",
+            "icon": "none",
+            "row_content": "<p>Tentu! Tim customer service kami siap membantu tamu yang mengalami masalah. Tamu dapat menghubungi kami melalui kontak yang tertera di bawah ini:</p><ul><li>Email: globalkomunika.cs@gmail.com</li><li>WhatsApp: +628986454071</li><li>Media sosial: Instagram @global.komunika</li></ul>",
+            "page": ""
+          }
+        },
+        "collapsible_row_b3fcw7": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Apa keunggulan membeli melalui Global Komunika?",
+            "icon": "none",
+            "row_content": "<p>Berikut adalah beberapa alasan Global Komunika merupakan pilihan terbaik:</p><ul><li>Lokasi gudang ada di 8 kota indonesia; Jakarta Pusat, Jakarta Barat, Jakarta Utara, Tangerang, Bandung, Surabaya, Bali, Medan (untuk konteks SIMCARD, kalau eSIM sudah tidak relevan).</li><li>Produk dapat dikirim lebih cepat/secara Instant.</li><li>Sudah terjual lebih dari 100.000 kartu.</li><li>Sudah mendapat lebih dari 18.000 ulasan positif di berbagai platform e-commerce (Shopee, Tokopedia, dan TikTokShop).</li><li>Pelopor SIM Card di Indonesia sejak tahun 2016.</li><li>Pelopor jualan JUJUR di Tokopedia.</li><li>Real Customer Service yang bisa memberikan solusi untuk customer.</li></ul>",
+            "page": ""
+          }
+        },
+        "collapsible_row_GAgAX8": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Apakah Global Komunika menyediakan promo?",
+            "icon": "none",
+            "row_content": "<p>Kami terkadang mengadakan promo untuk produk eSIM dan SIM Card. Pantau dan ikuti terus media sosial kami (Instagram @global.komunika) untuk mendapatkan informasi terbaru mengenai promo yang ditawarkan.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_pxTLKd": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Apakah Global Komunika aman dan terpercaya?",
+            "icon": "none",
+            "row_content": "<p>Tentu saja! Sejak tahun 2016, ribuan pelanggan telah menggunakan layanan kami dengan puas untuk akses internet mereka selama berada di luar negeri.</p><p>Jika kamu masih memiliki pertanyaan lain, jangan ragu untuk menghubungi kami melalui kontak yang tertera. Global Komunika siap membantu perjalananmu dengan memberikan akses internet terbaik!</p>",
+            "page": ""
+          }
+        }
+      },
+      "block_order": [
+        "collapsible_row_ptKLgt",
+        "collapsible_row_XpE99X",
+        "collapsible_row_NXBXnP",
+        "collapsible_row_7ezPKg",
+        "collapsible_row_DFEH7d",
+        "collapsible_row_EfniEa",
+        "collapsible_row_b3fcw7",
+        "collapsible_row_GAgAX8",
+        "collapsible_row_pxTLKd"
+      ],
+      "settings": {
+        "caption": "",
+        "heading": "<strong>FAQ GLOBAL KOMUNIKA</strong>",
+        "heading_size": "h1",
+        "heading_alignment": "center",
+        "layout": "section",
+        "container_color_scheme": "scheme-5",
+        "color_scheme": "scheme-5",
+        "open_first_collapsible_row": false,
+        "image_ratio": "adapt",
+        "desktop_layout": "image_second",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "collapsible_content_tGNFat"
+  ]
+}

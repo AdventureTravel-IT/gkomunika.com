@@ -1,0 +1,63 @@
+{%- form 'customer_login', novalidate: 'novalidate', return_to: '/' -%}
+  <div class="field-auth">
+    <input
+      type="email"
+      name="customer[email]"
+      id="Login-Email"
+      placeholder="email"
+      oninput="validateForm()"
+      required
+    >
+  </div>
+  <div class="field-auth">
+    <input
+      type="password"
+      name="customer[password]"
+      id="Login-Password"
+      placeholder="password"
+      oninput="validateForm()"
+      required
+    >
+  </div>
+  <div class="WrapperButton-form">
+    <a href="javascript:void(0)" class="link-recover" onclick="showRecoveryForm()">Forgot Password?</a>
+    <button class="button-form" id="form-button" type="submit">Log In</button>
+  </div>
+{%- endform -%}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Ambil nilai email dari sessionStorage jika ada
+    const savedEmail = sessionStorage.getItem('loginEmail');
+    if (savedEmail) {
+      document.getElementById('Login-Email').value = savedEmail;
+    }
+
+    // Simpan email ke sessionStorage saat input berubah
+    document.getElementById('Login-Email').addEventListener('input', (event) => {
+      sessionStorage.setItem('loginEmail', event.target.value);
+    });
+
+    // Hapus email dari sessionStorage jika login berhasil
+    document.querySelector('form').addEventListener('submit', (event) => {
+      // Simulasi pengecekan login (bisa diatur logika sukses/gagal di backend)
+      const email = document.getElementById('Login-Email').value;
+      const password = document.getElementById('Login-Password').value;
+
+      if (email && password) {
+        // Jika login berhasil, hapus sessionStorage
+        sessionStorage.removeItem('loginEmail');
+      } 
+    });
+  });
+</script>
+
+{% comment %}
+  <div class="MainLogin-divider">
+    <span>OR LOGIN WITH</span>
+  </div>
+  <div class="MainLogin-google">
+    <img src="{{ 'google.png' | asset_url }}" alt="Icon Google">
+    <span>Login With Google</span>
+  </div>
+{% endcomment %}

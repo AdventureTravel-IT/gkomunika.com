@@ -1,0 +1,324 @@
+{% style %}
+  .pages-container {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+  .pages-wrapper {
+    display: flex;
+    padding: 50px 10% 10%;
+    gap: 50px;
+  }
+
+  /* Style Summary */
+  .pages-summary {
+    width: 600px;
+  }
+  .page-summary__wrapper {
+    margin: 0;
+    padding: 0;
+  }
+  #summary {
+    list-style-type: none;
+  }
+  #summary li {
+    margin-top: 10px;
+  }
+  #summary li a {
+    color: var(--color-primary);
+    font-size: var(--font-large);
+  }
+
+  /* Style Content */
+  .pages-content {
+    background-color: var(--color-neutral);
+    padding: 15px 30px;
+    border-radius: 15px;
+  }
+  .page-content__title {
+    color: var(--color-primary);
+    font-weight: bold;
+    margin-top: 0;
+  }
+  .page-content__wrapper {
+    color: var(--color-primary);
+  }
+  .page-content__wrapper h2 {
+    color: var(--color-primary);
+    font-weight: bold;
+  }
+  .page-content__wrapper img {
+    aspect-ratio: 3 / 2;
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+  }
+
+  /* Style Product */
+  .pages-product {
+    width: 1200px;
+    display: flex;
+    gap: 50px;
+    flex-direction: column;
+  }
+  .pages-related__product {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .pages-product__image {
+    display: flex;
+    align-items: center;
+  }
+  .pages-product__image img {
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+  }
+  .pages-product__link {
+    text-decoration: none;
+  }
+  .pages-product__wrapper {
+    background-color: var(--color-neutral);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    transition: transform 0.3s ease;
+  }
+  .pages-product__wrapper:hover {
+    box-shadow: var(--box-shadow);
+    transform: translateY(-5px);
+  }
+  .pages-product__info p {
+    margin: 0;
+    line-height: 1.2;
+  }
+  .pages-product__title {
+    color: var(--color-primary);
+  }
+  .pages-product__price {
+    color: var(--color-secondary);
+  }
+  .pages-title {
+    color: var(--color-primary);
+    font-size: var(--font-supper-large);
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .pages-summary,
+  .pages-product,
+  .pages-article {
+    position: sticky;
+    top: 20px; /* Atur sesuai jarak dari atas yang diinginkan */
+    align-self: flex-start; /* Agar sticky bekerja saat dalam flex container */
+    height: fit-content; /* Hindari tinggi penuh agar tidak overflow */
+  }
+
+  /* Style Pages */
+  .pages-article {
+    width: 1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .pages-article__title {
+    margin: 0;
+    font-size: var(--font-supper-large);
+    color: var(--color-primary);
+  }
+  .pages-article__wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .pages-article__title {
+    display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--font-extra-large);
+  font-weight: bold;
+  }
+  .related-article {
+    background-color: var(--color-neutral);
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+  }
+  .related-article:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow);
+  }
+  .related-article a {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .related-article img {
+  width: auto;
+  height: 70px;
+  aspect-ratio: 3 / 2;
+  border-radius: 15px;
+}
+.pages-article__date {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--color-secondary);
+}
+{% endstyle %}
+
+<div class="pages-container">
+  <div class="pages-wrapper">
+    <section class="pages-summary">
+      <h2 class="pages-title">Summary</h2>
+      <ul class="page-summary__wrapper">
+        <li id="summary"></li>
+      </ul>
+    </section>
+
+    <section class="pages-content">
+      <h1 class="page-content__title">{{ page.title | escape }}</h1>
+      <div class="page-content__wrapper">{{ page.content }}</div>
+      <div class="pages-latest__article">
+
+
+
+
+      </div>
+    </section>
+
+
+    <section class="pages-article">
+      {% if page.metafields.latest.article %}
+        <h2 class="pages-title">Related Articles</h2>
+        <div class="pages-article__wrapper">
+          {% for related_page in page.metafields.latest.article.value %}
+            <div class="related-article">
+              <a href="{{ related_page.url }}">
+                {% assign content = related_page.content | strip_html %}
+                {% assign first_image = related_page.content | split: '<img' | last | split: 'src="' | last | split: '"' | first %}
+                {% if first_image contains 'http' %}
+                  <img src="{{ first_image }}" alt="{{ related_page.title }}">
+                {% endif %}
+                <div>
+                <h3 class="pages-article__title" title="{{ page.title }}">{{ related_page.title }}</h3>
+                <h3 class="pages-article__date">{{ page.published_at | date: '%d %B %Y' }}</h3>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %} 
+    </section>
+    
+    
+
+    {% comment %} <section class="pages-product">
+      {% assign related_product = page.metafields.related.product %}
+      {% assign country = product.metafields.coverage.country.value %}
+      {% assign recomendation_product = page.metafields.recomendation.product %}
+
+      <div class="pages-related__product">
+        <h2>Related Products</h2>
+        {% if related_product %}
+          {% for related_product in related_product.value %}
+            {% assign country = related_product.metafields.coverage.country.value.first %}
+            <a class="pages-product__link" href="{{ related_product.url }}">
+              <div class="pages-product__wrapper">
+                <div class="pages-product__image">
+                  {% if country %}
+                    <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
+                  {% endif %}
+                </div>
+                <div class="pages-product__info">
+                  <p class="pages-product__title">{{ related_product.title }}</p>
+                  <p class="pages-product__price">Start From {{ related_product.price | money_with_currency }}</p>
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <div class="pages-related__product">
+        <h2>Recommendation Products</h2>
+        {% if page.metafields.recomendation.product %}
+          {% assign collection = page.metafields.recomendation.product.value %}
+          {% assign products = collection.products %}
+          {% for product in products limit: 5 %}
+            {% assign country = product.metafields.coverage.country.value.first %}
+            <a class="pages-product__link" href="{{ product.url }}">
+              <div class="pages-product__wrapper">
+                <div class="pages-product__image">
+                  {% if country %}
+                    <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
+                  {% endif %}
+                </div>
+                <div class="pages-product__info">
+                  <p class="pages-product__title">{{ product.title }}</p>
+                  <p class="pages-product__price">Start From {{ product.price | money_with_currency }}</p>
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </section> {% endcomment %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const headings = document.querySelectorAll('.page-content__wrapper h2');
+    const summary = document.getElementById('summary');
+
+    headings.forEach((heading, i) => {
+      const id = `section-${i}`;
+      heading.id = id;
+      summary.innerHTML += `<li><a href="#${id}">${heading.textContent}</a></li>`;
+    });
+
+    summary.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelector(link.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

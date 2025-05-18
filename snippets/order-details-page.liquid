@@ -1,0 +1,320 @@
+<div class="ma-order-details">
+  <div class="ma-order-details-wrapper">
+    <h2 class="bold">eSIM Details</h2>
+    <h3>QR SENT TO: <span>{{ order.email }}</span></h3>
+    {% for line_item in order.line_items %}
+      {% for data in order.metafields.sim_card.details.value.activation_code %}
+        <section class="ma-order-redeem">
+          <div class="ma-order-details-card card">
+            <div class="ma-redeem-wrapper" onclick="toggleDetails(this)">
+              <div class="ma-redeem-index">
+                <span>QR #{{ forloop.index }}</span>
+                <div class="ma-redeem-product-name">
+                  {% render 'product-info', line_item: line_item %}
+                </div>
+              </div>
+              <img class="ma-redeem-icon" src="{{ 'icon-arrow-back.svg' | asset_url }}" alt="Icon">
+            </div>
+            <section class="ma-redeem-info">
+              <div class="ma-redeem-info-wrapper">
+                <img
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ data.qrcode | url_encode }}"
+                  width="75px"
+                  height="75px"
+                  id="qrImage"
+                  style="cursor:pointer;"
+                >
+                <div class="ma-redeem-data-wrapper">
+                  <div class="ma-redeem-data">
+                    <div>
+                      <p>ICCID:</p>
+                      <h2 id="iccid-{{ forloop.parentloop.index }}-{{ forloop.index }}">{{ data.iccid }}</h2>
+                    </div>
+                    <button
+                      class="copy-button"
+                      onclick="copyText('iccid-{{ forloop.parentloop.index }}-{{ forloop.index }}')"
+                    >
+                      <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Icon">
+                      <p>Copy</p>
+                    </button>
+                  </div>
+                  <div class="ma-redeem-data">
+                    <div>
+                      <p>SM-DP+Address:</p>
+                      <h2 id="SM-DP+Address-{{ forloop.parentloop.index }}-{{ forloop.index }}">{{ data.smdp }}</h2>
+                    </div>
+                    <button
+                      class="copy-button"
+                      onclick="copyText('SM-DP+Address-{{ forloop.parentloop.index }}-{{ forloop.index }}')"
+                    >
+                      <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Icon">
+                      <p>Copy</p>
+                    </button>
+                  </div>
+                  <div class="ma-redeem-data">
+                    <div>
+                      <p>Activation Code:</p>
+                      <h2 id="activation-{{ forloop.parentloop.index }}-{{ forloop.index }}">
+                        {{ data.activationcode }}
+                      </h2>
+                    </div>
+                    <button
+                      class="copy-button"
+                      onclick="copyText('activation-{{ forloop.parentloop.index }}-{{ forloop.index }}')"
+                    >
+                      <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Icon">
+                      <p>Copy</p>
+                    </button>
+                  </div>
+                  <div class="ma-redeem-data">
+                    <div>
+                      <p>SM-DP+Address:</p>
+                      <h2 id="SM+DP+Address+Android-{{ forloop.parentloop.index }}-{{ forloop.index }}">
+                        {{ data.qrcode }}
+                      </h2>
+                    </div>
+                    <button
+                      class="copy-button"
+                      onclick="copyText('SM+DP+Address+Android-{{ forloop.parentloop.index }}-{{ forloop.index }}')"
+                    >
+                      <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Icon">
+                      <p>Copy</p>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+      {% endfor %}
+    {% endfor %}
+  </div>
+
+  <div class="ma-order-details-wrapper">
+    <h2 class="bold">Order Summary</h2>
+    <section class="ma-order-summary">
+      {% render 'order-summary', order: order %}
+    </section>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  // Pilih elemen pertama dari daftar elemen .ma-redeem-wrapper
+  const firstElement = document.querySelector('.ma-redeem-wrapper');
+  if (firstElement) {
+    const details = firstElement.nextElementSibling;
+    const icon = firstElement.querySelector('.ma-redeem-icon');
+
+    // Tampilkan detail pertama dan rotasi ikon
+    details.style.display = "block";
+    if (icon) {
+      icon.style.transform = "rotate(90deg)";
+    }
+  }
+});
+
+function toggleDetails(element) {
+  // Dapatkan semua elemen detail
+  var allDetails = document.querySelectorAll('.ma-redeem-info');
+  var details = element.nextElementSibling;
+  var icon = element.querySelector('.ma-redeem-icon'); // Ambil ikon di dalam elemen yang diklik
+
+  // Tutup semua detail kecuali yang sedang diklik
+  allDetails.forEach(function(detail) {
+    if (detail !== details) {
+      detail.style.display = "none";
+      var detailIcon = detail.previousElementSibling.querySelector('.ma-redeem-icon');
+      if (detailIcon) {
+        detailIcon.style.transform = "rotate(0deg)";
+      }
+    }
+  });
+
+  // Toggle tampilan elemen yang diklik
+  var isVisible = details.style.display === "block";
+  details.style.display = isVisible ? "none" : "block";
+  
+  // Rotasi ikon saat elemen tampil
+  if (icon) {
+    icon.style.transform = isVisible ? "rotate(0deg)" : "rotate(90deg)";
+  }
+}
+
+  function copyText(elementId) {
+  var text = document.getElementById(elementId).innerText;
+
+  navigator.clipboard.writeText(text).then(() => {
+    // Reset semua tombol ke kondisi awal
+    document.querySelectorAll(".copy-button").forEach(button => {
+      button.classList.remove("copied");
+      button.querySelector("img").src = "{{ 'icon-copy.svg' | asset_url }}";
+      button.querySelector("p").innerText = "Copy";
+      button.querySelector("p").style.color = ""; // Kembalikan warna default
+    });
+
+    // Cari tombol spesifik yang dipanggil berdasarkan ID unik
+    var button = document.querySelector(`[onclick="copyText('${elementId}')"]`);
+    if (button) {
+      var img = button.querySelector("img");
+      var textElement = button.querySelector("p");
+
+      // Ubah ikon dan teks setelah ditekan
+      img.src = "{{ 'icon-copy.svg' | asset_url }}"; // Ganti ikon
+      textElement.innerText = "Copied"; // Ubah teks
+      textElement.style.color = "var(--color-secondary)"; // Ubah warna teks
+
+      // Tambahkan class copied agar hanya satu yang berubah
+      button.classList.add("copied");
+    }
+  });
+}
+</script>
+
+{% style %}
+  .copy-button:hover img {
+    content: url("{{ 'icon-copy.svg' | asset_url }}");
+  }
+
+  .copy-button:hover span {
+    color: var(--color-secondary);
+    content: url("{{ 'icon-copy.svg' | asset_url }}");
+  }
+
+  /* Jika tombol dalam keadaan "Copied" */
+  .copy-button.copied img {
+    content: url("{{ 'icon-copy.svg' | asset_url }}");
+  }
+
+  .copy-button.copied span {
+    color: var(--color-primary);
+  }
+
+  .ma-order-details-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #D9D9D9;
+    border-radius: 10px;
+    padding: 10px;
+    gap: 10px;
+    align-items: center;
+  }
+  .ma-order-details {
+    width: 100%;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .ma-order-details h2 {
+    font-size: var(--font-supper-large);
+    color: var(--color-primary);
+  }
+  .ma-order-details .bold {
+    font-weight: bold;
+    margin: 0;
+    font-size: var(--font-extra-large);
+  }
+  .ma-order-details h3 {
+    margin: 0;
+    line-height: 1;
+    font-size: var(--font-large);
+    color: var(--color-primary);
+    font-weight: bold;
+  }
+  .ma-order-details h3 > span {
+    color: var(--color-secondary);
+    font-size: var(--font-large);
+    font-weight: bold;
+  }
+  .ma-redeem-info-wrapper {
+    display: flex;
+    gap: 10px;
+  }
+  .ma-redeem-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .ma-order-redeem {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ma-redeem-index {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ma-redeem-index span {
+    background-color: var(--color-secondary);
+    border-radius: 15px;
+    width: 60px;
+    text-align: center;
+    color: var(--color-neutral);
+  }
+  .ma-redeem-product-name h2 {
+    margin: 0;
+    font-size: var(--font-large);
+    font-weight: bold;
+  }
+  .ma-redeem-info {
+    display: none;
+    width: 100%;
+    gap: 10px;
+    overflow: hidden;
+    /* transition: max-height 0.8s ease-out; */
+    transition: max-height 0.8s ease-out, opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+  .ma-redeem-data p {
+    margin: 0;
+    font-size: var(--font-small);
+    color: var(--color-primary);
+  }
+  .ma-redeem-data h2{
+    margin: 0;
+    font-size: var(--font-extra-large);
+    color: var(--color-primary);
+    font-weight: bold;
+    display: -webkit-box;
+  	-webkit-box-orient: vertical;
+  	overflow: hidden;
+  	text-overflow: ellipsis;
+  	-webkit-line-clamp: 2;
+  }
+  .copy-button {
+    gap: 5px;
+    background-color: transparent;
+    display: flex;
+    border: none;
+    align-items: center;
+    align-text: center;
+    color: var(--color-primary);
+  }
+  .ma-redeem-data-wrapper {
+    width: 100%;
+  }
+  .copy-button-icon {
+    color: var(--color-primary);
+  }
+
+  .ma-redeem-data {
+    display: flex;
+    justify-content: space-between;
+  }
+  .ma-order-details-wrapper {
+    background-color: var(--color-neutral);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 15px;
+  }
+  .ma-order-details-wrapper .bold {
+    font-size: var(--font-supper-large);
+  }
+{% endstyle %}

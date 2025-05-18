@@ -1,0 +1,40 @@
+<div class="language-popup__container" id="languagePopup">
+  <div class="language-popup__content">
+    <h2 class="language-popup__content-title">Welcome to Global Komunika!</h2>
+    <p class="language-popup__content-paragraph">Please select your language and currency from the options below</p>
+
+    <div class="language-popup__option-wrapper">
+      <span>Currency</span>
+      <section id="bucks-floating-desktop" class="bucks-floating-desktop"></section>
+
+      <span>Language</span>
+      <section>
+        <form class="language-selector-form" onsubmit="event.preventDefault();">
+          <select id="language-select" style="padding: 15px;">
+            <option
+              value="https://gkomunika.com"
+              {% if request.locale.iso_code == 'en' %}
+                selected
+              {% endif %}
+            >
+              English
+            </option>
+
+            <option
+              value="https://gkomunika.com/id"
+              {% if request.locale.iso_code == 'id' %}
+                selected
+              {% endif %}
+            >
+              Indonesia
+            </option>
+          </select>
+        </form>
+      </section>
+    </div>
+
+    <div class="language-popup__footer">
+      <button class="language-popup__button" onclick="saveLanguageSelection()">Save</button>
+    </div>
+  </div>
+</div>

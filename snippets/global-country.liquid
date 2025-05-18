@@ -1,0 +1,304 @@
+{% style %}
+  .product-card-container {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 15px;
+  }
+  .product-card-country {
+    display: flex;
+    align-items: top;
+    justify-content: left;
+    gap: 10px;
+  }
+  .product-card-country h1 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin: 0;
+    line-height: 1.2;
+    color: var(--color-primary);
+    font-size: 20px;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+  .product-card-icon-single-flag,
+  .product-card-icon-multi-flag {
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+  }
+  .product-card-multi-flag {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3px;
+    width: 50px;
+    height: 50px;
+  }
+  .product-card-flag-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    color: var(--color-primary);
+    background-color: white;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .product-card-field-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .product-card-field-icons h1 {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--color-primary);
+  }
+  .product-card-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px ridge;
+    padding: 10px 0;
+  }
+  img.field-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .product-card-field h2 {
+    color: var(--color-secondary);
+    font-size: 16px;
+    font-weight: bold;
+    text-align: right;
+    max-width: 200px;
+  }
+  .product-card-btn {
+    width: 100%;
+    height: 55px;
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+  }
+  .product-card-btn a p {
+    color: var(--color-neutral);
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  .product-card-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease-in-out;
+  }
+  .country-total-atribut span {
+    color: var(--color-secondary);
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .country-total-atribut button {
+    cursor: pointer;
+    border: 1px solid var(--color-secondary);
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+    background: none;
+  }
+  .country-total-including-atribut {
+    background-color: var(--color-secondary);
+    width: 100%;
+    text-align: center;
+    border-radius: 5px;
+  }
+  .country-total-including-atribut p {
+    margin: 5px;
+    color: var(--color-neutral);
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .product-card-content-flip-front,
+  .product-card-content-flip-back {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transition: transform 0.6s ease-in-out;
+  }
+  .product-card-content.flipped {
+    transform: rotateY(180deg);
+  }
+  .product-card-content-flip-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 100%;
+    gap: 10px;
+    background: var(--color-neutral);
+    text-align: center;
+    cursor: pointer;
+    transform: rotateY(180deg);
+  }
+  @media (max-width: 1440px) {
+    .product-card-wrapper {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (max-width: 768px) {
+    .product-card-wrapper {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+  }
+{% endstyle %}
+
+{% for product in collection.products %}
+  <div class="product-card-container">
+    <div class="product-card-country">
+      {% assign countries_array = product.metafields.coverage.country.value %}
+      {% assign total_countries = countries_array.size %}
+
+      {% if total_countries == 1 %}
+        {% assign country_trimmed = countries_array.first | strip | downcase %}
+        {% assign country_filename = country_trimmed | replace: ' ', '-' | capitalize | append: '.svg' %}
+        <img
+          class="product-card-icon-single-flag"
+          src="{{ country_filename | file_url }}"
+          alt="{{ country_trimmed }}"
+          width="50"
+          height="50"
+        >
+      {% elsif total_countries > 1 %}
+        <div class="product-card-multi-flag">
+          {% if total_countries <= 4 %}
+            {% for country in countries_array %}
+              {% assign country_trimmed = country | strip | downcase %}
+              {% assign country_filename = country_trimmed | replace: ' ', '-' | capitalize | append: '.svg' %}
+              <img
+                class="product-card-icon-multi-flag"
+                src="{{ country_filename | file_url }}"
+                alt="{{ country_trimmed }}"
+                width="25"
+                height="25"
+              >
+            {% endfor %}
+          {% else %}
+            {% for country in countries_array limit: 3 %}
+              {% assign country_trimmed = country | strip | downcase %}
+              {% assign country_filename = country_trimmed | replace: ' ', '-' | capitalize | append: '.svg' %}
+              <img
+                class="product-card-icon-multi-flag"
+                src="{{ country_filename | file_url }}"
+                alt="{{ country_trimmed }}"
+                width="25"
+                height="25"
+              >
+            {% endfor %}
+            {% assign hidden_count = total_countries | minus: 3 %}
+            <div class="product-card-flag-count">
+              <span>+{{ hidden_count }}</span>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+      <h1>{{ product.title }}</h1>
+    </div>
+    <div class="product-card-content">
+      <div class="product-card-content-flip-front">
+        {% if countries_array.size > 1 %}
+          <div class="product-card-field" style="border-top: 1px ridge;">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-park-outline_world.svg' | asset_url }}" alt="Icon">
+              <h1>Coverage</h1>
+            </div>
+            <div>
+              <div class="country-total-atribut">
+                <button id="flip-button-{{ product.id }}-{{ forloop.index }}" class="flip-button">
+                  <span>{{ countries_array.size }} Countries</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        {% if product.variants.size > 0 %}
+          {% assign first_option1 = product.variants.first.option1 | replace: ' Days', '' %}
+          {% assign last_option1 = product.variants.last.option1 | strip %}
+          {% assign first_option2 = product.variants.first.option2 | replace: 'GB', '' | replace: 'MB', '' %}
+          {% assign last_option2 = product.variants.last.option2 | strip %}
+
+          <div class="product-card-field">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" alt="Icon">
+              <h1>Variant Days</h1>
+            </div>
+            <h2>{{ first_option1 }} - {{ last_option1 }}</h2>
+          </div>
+
+          <div class="product-card-field">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" alt="Icon">
+              <h1>Variant Quota</h1>
+            </div>
+            <h2>{{ first_option2 }} - {{ last_option2 }}</h2>
+          </div>
+
+          <div class="product-card-field">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-dollar.svg' | asset_url }}" alt="Icon">
+              <h1>Price</h1>
+            </div>
+            <h2>Start From {{ product.price | money }}</h2>
+          </div>
+        {% endif %}
+      </div>
+      <div class="product-card-content-flip-back">
+        {% render 'coverage', product: product %}
+      </div>
+    </div>
+    <div class="product-card-button">
+      <button class="product-card-btn">
+        <a href="{{ product.url }}">
+          <p>Buy Now</p>
+        </a>
+      </button>
+    </div>
+  </div>
+{% endfor %}
+
+<script>
+const flipButtons = document.querySelectorAll('[id^="flip-button-"]');
+
+flipButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    // Cari elemen terdekat dengan class `.product-card-content`
+    const card = button.closest('.product-card-container').querySelector('.product-card-content');
+    card.classList.add('flipped');
+  });
+});
+
+// Tambahkan event untuk kembali ke posisi semula saat klik bagian belakang
+const flipBacks = document.querySelectorAll('.product-card-content-flip-back');
+
+flipBacks.forEach(back => {
+  back.addEventListener('click', () => {
+    const card = back.closest('.product-card-container').querySelector('.product-card-content');
+    card.classList.remove('flipped');
+  });
+});
+</script>

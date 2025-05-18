@@ -1,0 +1,141 @@
+<div class="search-container">
+  <form action="{{ routes.search_url }}" method="get" class="search-form" onsubmit="return false;">
+    <div class="search-box">
+      <input
+        class="search-fields"
+        id="search-input"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        oninput="filterCountries()"
+        placeholder="{{ 'general.search.search' | t }}"
+        aria-label="Search"
+      >
+    </div>
+  </form>
+  <div id="search-recommendation" class="search-recommendation" style="display: none;">
+    <button
+      id="recommend-button"
+      class="recommend-button"
+      onclick="submitSearch()"
+    >
+      <span id="recommend-text" class="recommend-text"></span>
+      <span class="svg-wrapper">
+        {{- 'icon-search.svg' | inline_asset_content -}}
+      </span>
+    </button>
+  </div>
+</div>
+
+<script>
+const searchInput = document.getElementById('search-input');
+const recommendation = document.getElementById('search-recommendation');
+
+function filterCountries() {
+  const input = searchInput.value.toLowerCase();
+  const items = document.getElementsByClassName('coverage');
+  let found = false;
+
+  for (let item of items) {
+    const country = item.getAttribute('data-country') || '';
+    if (country.includes(input)) {
+      item.style.display = 'block';
+      found = true;
+    } else {
+      item.style.display = 'none';
+    }
+  }
+
+  const recommendText = document.getElementById('recommend-text');
+
+  if (!found && input.trim() !== '') {
+    recommendText.innerHTML = `Search "<strong>${input}</strong>"`;
+    recommendation.style.display = 'block';
+
+    // Ubah border-radius dan hapus border-bottom saat aktif
+    searchInput.style.borderRadius = '15px 15px 0 0';
+    searchInput.style.borderBottom = 'none';
+  } else {
+    recommendation.style.display = 'none';
+
+    // Kembalikan border-radius dan border-bottom ke semula
+    searchInput.style.borderRadius = '15px';
+    searchInput.style.borderBottom = '1px solid var(--color-primary)';
+  }
+}
+
+function submitSearch() {
+  const searchTerm = searchInput.value.trim();
+  if (searchTerm) {
+    const searchUrl = `{{ routes.search_url }}?q=${encodeURIComponent(searchTerm)}`;
+    window.location.href = searchUrl;
+  }
+}
+</script>
+
+{% style %}
+  input[type="search"]::-webkit-search-cancel-button {
+      display: none;
+  }
+  .search-container,
+  .search-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .search-box {
+    position: relative;
+    width: 100%;
+    height: 60px;
+  }
+
+  .search-fields {
+    width: 100%;
+    height: 100%;
+    padding: 0 10px;
+    font-size: 16px;
+    border: 1px solid var(--color-primary);
+    border-radius: 15px;
+    outline: none;
+    color: var(--color-primary);
+  }
+
+  .search-fields:focus {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-size: var(--font-large);
+  }
+
+  .search-fields::placeholder {
+    color: var(--color-primary);
+  }
+
+  .search-recommendation {
+    width: 100%;
+  }
+
+  .recommend-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 0 0 15px 15px;
+    border: 1px solid var(--color-primary);
+    background: transparent;
+    background-color: var(--color-background);
+    cursor: pointer;
+  }
+
+  .recommend-text {
+    padding: 10px;
+    color: var(--color-primary);
+    letter-spacing: 1px;
+  }
+
+  .svg-wrapper {
+    display: flex;
+    align-items: center;
+  }
+{% endstyle %}

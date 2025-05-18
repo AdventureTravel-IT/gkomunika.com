@@ -1,0 +1,37 @@
+{% if collection and collection.products.size > 0 %}
+  {% assign displayed_regions = '' %}
+
+  {% for product in collection.products %}
+    {% assign region_value = product.metafields.coverage.region.value %}
+    {% assign country_name = region_value | first %}
+
+    {% if region_value and country_name != blank and country_name != null %}
+      {% unless displayed_regions contains country_name %}
+        {% assign displayed_regions = displayed_regions | append: ',' | append: country_name %}
+
+        <a href="/search?q={{ country_name | url_encode }}">
+          <div class="country">
+            <div class="text-content">
+              <img
+                src="{{ country_name | append: '.svg' | replace: ' ','_' | file_url }}"
+                alt="{{ country_name }}"
+                width="30"
+                height="30"
+                loading="lazy"
+                style="border: none;"
+              >
+              <div class="collection-pick">
+                <p>{{ country_name | replace: '_',' ' }}</p>
+                <span>Start From {{ product.price_min | money }}</span>
+              </div>
+            </div>
+
+            <div class="country-icon">
+              {{- 'icon-arrow-back.svg' | inline_asset_content -}}
+            </div>
+          </div>
+        </a>
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+{% endif %}

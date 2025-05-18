@@ -1,0 +1,252 @@
+<div class="htu__container">
+    <div class="htu__wrapper">
+      <section class="htu__htu">
+        <h2 class="htu__title">{{ section.settings.htu_title }}</h2>
+        <div class="htu__htu-wrapper htu__grid">
+          {% for block in section.blocks %}
+            {% if block.type == 'htu_card' %}
+              <section class="htu__htu-card">
+                {% if block.settings.icon != blank %}
+                  {% assign icon_name = block.settings.icon | append: '.svg' %}
+                    <div class="htu__card-icon">{{ icon_name | inline_asset_content }}</div>
+                {% endif %}
+                <div class="htu__card-title">{{ block.settings.title }}</div>
+                <div class="htu__card-paragraph">{{ block.settings.paragraph }}</div>
+              </section>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+  
+      <section class="htu__wgk">
+        <h2 class="htu__title">{{ section.settings.wgk_title }}</h2>
+        <div class="htu__wgk-wrapper htu__grid">
+          {% for block in section.blocks %}
+            {% if block.type == 'wgk_card' %}
+              <section class="htu__wgk-card">
+                {% if block.settings.icon != blank %}
+                  {% assign icon_name = block.settings.icon | append: '.svg' %}
+                    <div class="htu__card-icon">{{ icon_name | inline_asset_content }}</div>
+                {% endif %}
+                
+                <div class="htu__card-title">{{ block.settings.title }}</div>
+                <div class="htu__card-paragraph">{{ block.settings.paragraph }}</div>
+              </section>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+  
+      <section class="htu__customer-review">
+        <h2 class="htu__title">{{ section.settings.review_title }}</h2>
+        <div class="htu__customer-wrapper">
+          {% for block in section.blocks %}
+            {% if block.type == 'review_top' %}
+              <div class="htu__customer-content top">
+                <section class="htu__cutomer-content wrapper">
+                  <div class="htu__customer-profile">{{ block.settings.profile-top }} <div>{{- 'ratting.svg' | inline_asset_content -}}</div></div>
+                  <div class="htu__customer-comment">{{ block.settings.comment-top }}</div>
+                </section>
+                <section class="htu__cutomer-content wrapper">
+                    {{- 'icon-arrow-back.svg' | inline_asset_content -}}
+                  <div class="htu__customer-profile">{{ block.settings.profile-top1 }} <div>{{- 'ratting.svg' | inline_asset_content -}}</div></div>
+                  <div class="htu__customer-comment">{{ block.settings.comment-top1 }}</div>
+                </section>
+              </div>
+            {% elsif block.type == 'review_bottom' %}
+              <div class="htu__customer-content bottom">
+                <section class="htu__cutomer-content wrapper">
+                  <div class="htu__customer-profile">{{ block.settings.profile-bottom }} <div>{{- 'ratting.svg' | inline_asset_content -}}</div></div>
+                  <div class="htu__customer-comment">{{ block.settings.comment-bottom }}</div>
+                </section>
+                <section class="htu__cutomer-content wrapper">
+                  <div class="htu__customer-profile">{{ block.settings.profile-bottom1 }} <div>{{- 'ratting.svg' | inline_asset_content -}}</div></div>
+                  <div class="htu__customer-comment">{{ block.settings.comment-bottom1 }}</div>
+                </section>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+  
+      <section class="htu__benefits">
+        <h2 class="htu__title">{{ section.settings.benefits_title }}</h2>
+        <div class="htu__benefits-wrapper htu__grid">
+          {% for block in section.blocks %}
+            {% if block.type == 'benefits_card' %}
+              <section class="htu__benefits-card">
+                {% if block.settings.icon != blank %}
+                  {% assign icon_name = block.settings.icon | append: '.svg' %}
+                    <div class="htu__card-icon">{{ icon_name | inline_asset_content }}</div>
+                {% endif %}
+                <div class="htu__card-title">{{ block.settings.title }}</div>
+                <div class="htu__card-paragraph">{{ block.settings.paragraph }}</div>
+              </section>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </div>
+  
+  {% schema %}
+  {
+    "name": "How To Use Section",
+    "settings": [
+      {
+        "type": "text",
+        "id": "htu_title",
+        "label": "HTU Section Title",
+        "default": "How To Use?"
+      },
+      {
+        "type": "text",
+        "id": "wgk_title",
+        "label": "WGK Section Title",
+        "default": "Why Global Komunika?"
+      },
+      {
+        "type": "text",
+        "id": "review_title",
+        "label": "Customer Review Title",
+        "default": "What Our Customers Say"
+      },
+      {
+        "type": "textarea",
+        "id": "review_paragraph",
+        "label": "Customer Review Paragraph"
+      },
+      {
+        "type": "text",
+        "id": "benefits_title",
+        "label": "Benefits Section Title",
+        "default": "Benefits"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "review_top",
+        "name": "Customer Review (Top)",
+        "settings": [
+          {
+            "type": "text",
+            "id": "profile-top",
+            "label": "Customer Profile (HTML/SVG/text)"
+          },
+          {
+            "type": "textarea",
+            "id": "comment-top",
+            "label": "Customer Comment"
+          },
+          {
+            "type": "text",
+            "id": "profile-top1",
+            "label": "Customer Profile (HTML/SVG/text)"
+          },
+          {
+            "type": "textarea",
+            "id": "comment-top1",
+            "label": "Customer Comment"
+          }
+        ]
+      },
+      {
+        "type": "review_bottom",
+        "name": "Customer Review (Bottom)",
+        "settings": [
+          {
+            "type": "text",
+            "id": "profile-bottom",
+            "label": "Customer Profile (HTML/SVG/text)"
+          },
+          {
+            "type": "textarea",
+            "id": "comment-bottom",
+            "label": "Customer Comment"
+          },
+          {
+            "type": "text",
+            "id": "profile-bottom1",
+            "label": "Customer Profile (HTML/SVG/text)"
+          },
+          {
+            "type": "textarea",
+            "id": "comment-bottom1",
+            "label": "Customer Comment"
+          }
+        ]
+      },
+      {
+        "type": "htu_card",
+        "name": "HTU Card",
+        "settings": [
+          {
+            "type": "text",
+            "id": "icon",
+            "label": "Icon (optional HTML/SVG or text)"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Card Title"
+          },
+          {
+            "type": "textarea",
+            "id": "paragraph",
+            "label": "Card Description"
+          }
+        ]
+      },
+      {
+        "type": "wgk_card",
+        "name": "WGK Card",
+        "settings": [
+          {
+            "type": "text",
+            "id": "icon",
+            "label": "Icon (optional HTML/SVG or text)"
+          },          
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Card Title"
+          },
+          {
+            "type": "textarea",
+            "id": "paragraph",
+            "label": "Card Description"
+          }
+        ]
+      },
+      {
+        "type": "benefits_card",
+        "name": "Benefits Card",
+        "settings": [
+          {
+            "type": "text",
+            "id": "icon",
+            "label": "Icon (optional HTML/SVG or text)"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Card Title"
+          },
+          {
+            "type": "textarea",
+            "id": "paragraph",
+            "label": "Card Description"
+          }
+        ]
+      }
+    ],
+    "max_blocks": 20,
+    "presets": [
+      {
+        "name": "How To Use Section",
+        "category": "Custom"
+      }
+    ]
+  }
+  {% endschema %}
+  

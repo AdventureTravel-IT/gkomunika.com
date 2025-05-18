@@ -1,0 +1,256 @@
+.icon {
+  display: block;
+}
+
+.container-popular-countries {
+  max-width: 1920px;
+  margin: 0 auto;
+  background: transparent;
+}
+
+.popular-countries {
+  padding: 20px 10%;
+  border: none;
+  min-height: 480px;
+  max-height: 100%;
+  position: relative;
+}
+
+.popular-countries h2 {
+  color: var(--color-primary);
+  font-size: 30px;
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.tabs {
+  margin-bottom: 15px;
+}
+
+.tab-button {
+  font-weight: bold;
+  color: var(--color-primary);
+  background: transparent;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.tab-button:hover,
+.tab-button.active {
+  background-color: var(--color-primary);
+  color: var(--color-neutral);
+}
+
+.tab-content {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.tab-content a {
+  text-decoration: none;
+  margin: 0;
+}
+
+.tab-content:empty {
+  display: none;
+}
+
+.country {
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-neutral);
+  padding: 10px;
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.all-destination-wrapper:hover,
+.country:hover {
+  background-color: var(--color-border);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.country-icon{
+  display: flex;
+  align-items: center;
+}
+
+.text-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.text-content img {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #d9d9d9;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+.text-content h3 {
+  margin: 0;
+  font-size: var(--font-supper-large);
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.text-content p {
+  margin: 0;
+  font-size: var(--font-small);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.show-all-wrapper {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.show-all {
+  display: flex;
+  justify-content: center;
+}
+
+.show-all-destination {
+  padding: 14px 0;
+  background-color: var(--color-primary);
+  color: var(--color-neutral);
+  font-size: var(--font-large);
+  font-weight: bold;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  text-align: center;
+  width: 343px;
+  text-decoration: none;
+  margin: 20px 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.show-all-destination:active {
+  transform: scale(0.96);
+}
+
+.placeholder {
+  text-align: center;
+  color: #888;
+  font-size: var(--font-large);
+  padding: 20px 0;
+}
+
+.collection-pick {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+.collection-pick p {
+  margin: 0;
+  padding: 0;
+  font-size: var(--font-supper-large);
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.collection-pick span {
+  color: var(--color-primary);
+  font-size: var(--font-small);
+  margin: 0;
+  padding: 0;
+}
+
+.all-destination-wrapper {
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-neutral);
+  padding: 10px;
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Responsive */
+@media screen and (max-width: 1440px) {
+  .popular-countries {
+    padding: 0 10%;
+  }
+
+  .collection-pick p {
+    line-height: 1.2;
+  }
+
+  .text-content {
+    display: flex;
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+  }
+
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  .tab-content {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .popular-countries {
+    padding: 0 24px 20px;
+  }
+
+  .show-all button {
+    width: 100%;
+  }
+
+  .tab-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .popular-countries h2 {
+    font-size: 28px;
+  }
+
+  /* .tab-content a:nth-child(n + 5) {
+    display: none;
+  } */
+  .country {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-neutral);
+    border-radius: var(--font-small);
+  }
+
+  .tabs {
+    justify-content: space-around;
+  }
+
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  .all-destination-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--color-neutral);
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 425px) {
+  .tab-content {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+

@@ -1,0 +1,124 @@
+{%- form 'create_customer', novalidate: 'novalidate', class: 'customer-register-form' -%}
+  {%- if form.errors -%}
+    <div class="form-error-message">
+      <ul>
+        {%- for field in form.errors -%}
+          <li>
+            {%- if field == 'form' -%}
+              {{ form.errors.messages[field] }}
+            {%- else -%}
+              <a href="#RegisterForm-{{ field }}">
+                {{ form.errors.translated_fields[field] | capitalize }}
+                {{ form.errors.messages[field] }}
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+
+  <div class="wrapper-field">
+    <div class="field-auth">
+      <input
+        type="text"
+        name="customer[first_name]"
+        id="Register-FirstName"
+        value="{{ form.first_name }}"
+        autocomplete="given-name"
+        placeholder="{{ 'customer.register.first_name' | t }}"
+        required
+        minlength="2"
+        oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
+      >
+    </div>
+
+    <div class="field-auth">
+      <input
+        type="text"
+        name="customer[last_name]"
+        id="Register-LastName"
+        value="{{ form.last_name }}"
+        autocomplete="family-name"
+        placeholder="{{ 'customer.register.last_name' | t }}"
+        minlength="2"
+        oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
+      >
+    </div>
+  </div>
+
+  <div class="field-auth">
+    <input
+      type="email"
+      name="customer[email]"
+      id="RegisterForm-email"
+      value="{{ form.email }}"
+      autocomplete="email"
+      placeholder="{{ 'customer.register.email' | t }}"
+      pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+      required
+      onblur="validateEmail(this)"
+    >
+    <span class="email-error-message" style="color: red; display: none;">Format email tidak valid</span>
+  </div>
+
+  <div class="field-auth">
+    <input
+      type="password"
+      name="customer[password]"
+      id="RegisterForm-password"
+      placeholder="{{ 'customer.register.password' | t }}"
+      required
+      minlength="8"
+      oninput="validatePasswordStrength(this)"
+    >
+    <span class="password-strength-message"></span>
+  </div>
+
+  <div class="WrapperButton-form">
+    <button class="button-form" id="form-button" type="submit">
+      {{ 'customer.register.submit' | t }}
+    </button>
+  </div>
+{%- endform -%}
+
+  <script>
+    // Email validation
+    function validateEmail(input) {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const errorElement = input.nextElementSibling;
+      
+      if (!emailRegex.test(input.value)) {
+        errorElement.style.display = 'block';
+        input.setCustomValidity('Format email tidak valid');
+      } else {
+        errorElement.style.display = 'none';
+        input.setCustomValidity('');
+      }
+    }
+
+    // Password strength indicator
+    function validatePasswordStrength(input) {
+      const strengthMessages = {
+        weak: 'weak (minimal 8 karakter)',
+        medium: 'Medium (gunakan angka dan huruf)',
+        strong: 'Strong (gunakan karakter khusus)'
+      };
+      
+      const messageElement = input.nextElementSibling;
+      const password = input.value;
+      
+      if (password.length === 0) {
+        messageElement.textContent = '';
+      } else if (password.length < 8) {
+        messageElement.textContent = strengthMessages.weak;
+        messageElement.style.color = 'red';
+      } else if (!/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
+        messageElement.textContent = strengthMessages.medium;
+        messageElement.style.color = 'orange';
+      } else {
+        messageElement.textContent = strengthMessages.strong;
+        messageElement.style.color = 'green';
+      }
+    }
+  </script>

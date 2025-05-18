@@ -1,0 +1,71 @@
+<div class="WrapperButton-form" id="BackButtonWrapper">
+  <a href="/account/login" style="margin: 0; text-decoration: none;">
+    <div class="button-form-icon">
+      {{- 'icon-arrow-back.svg' | inline_asset_content -}}
+      cancel
+    </div>
+  </a>
+</div>
+
+<form id="CustomRecoverForm" class="custom-recover-form">
+  <div class="field-auth">
+    <input
+      type="email"
+      value=""
+      name="email"
+      id="RecoverEmail"
+      autocorrect="off"
+      autocapitalize="off"
+      autocomplete="email"
+      placeholder="{{ 'customer.login_page.email' | t }}"
+      required
+    >
+  </div>
+  <div id="RecoverFormError" class="form__message" style="display:none; color: red;"></div>
+  <div class="WrapperButton-form">
+    <button type="submit" class="button-form">
+      {{ 'customer.login_page.submit' | t }}
+    </button>
+  </div>
+</form>
+
+<div class="recovery-popup" style="display: none;">
+  <p style="color: var(--color-primary); margin: 0 0 10px 0;">The link to reset your email has been sent to <span id="recovery-email"></span></p>
+  <div class="WrapperButton-form">
+    <button type="submit" class="button-form">
+    <a href="/account/login" style="color: var(--color-neutral);">go to login page</a>
+    </button>
+  </div>
+</div>
+
+<script>
+  document.getElementById("CustomRecoverForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const emailInput = document.getElementById("RecoverEmail");
+    const email = emailInput.value.trim();
+    const popup = document.querySelector(".recovery-popup");
+    const recoveryText = document.getElementById("recovery-email");
+    const errorBox = document.getElementById("RecoverFormError");
+    const backButtonWrapper = document.getElementById("BackButtonWrapper");
+
+    // Simple email validation
+    if (!email || !email.includes("@")) {
+      errorBox.textContent = "Please enter a valid email address.";
+      errorBox.style.display = "block";
+      return;
+    }
+
+    errorBox.style.display = "none";
+
+    // Show recovery popup
+    recoveryText.textContent = email;
+    popup.style.display = "block";
+
+    // Hide form & cancel/back button
+    document.getElementById("CustomRecoverForm").style.display = "none";
+    if (backButtonWrapper) {
+      backButtonWrapper.style.display = "none";
+    }
+  });
+</script>

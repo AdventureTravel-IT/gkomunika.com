@@ -1,0 +1,162 @@
+{{ 'popular-countries.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'popular-countries__tabs.js' | asset_url }}" defer="defer"></script>
+<div class="container-popular-countries">
+  <div class="popular-countries">
+    <h2>{{ section.settings.title }}</h2>
+    <div class="tabs">
+      <button class="tab-button active" data-tab="land"><span>Land</span></button>
+      <button class="tab-button" data-tab="region"><span>Region</span></button>
+      <!-- <button class="tab-button" data-tab="global"><span>Global</span></button> -->
+    </div>
+
+    <!-- LAND TAB -->
+    <div
+      class="tab-content"
+      id="land"
+      style="display: none; visibility: hidden;"
+      data-columns="{{ section.settings.land_columns }}"
+    >
+      {% case section.settings.display_mode %}
+        {% when 'option_1' %}
+          {% assign collection = collections['all_country'] %}
+          {% render 'land-country', collection: collection %}
+        {% when 'option_2' %}
+          {% assign collection = collections['all-country'] %}
+          {% if collection != blank %}
+            {% assign countries = collection.metafields.coverage.country_list.value %}
+            {% render 'all-country', countries: countries %}
+          {% endif %}
+      {% endcase %}
+    </div>
+
+    <!-- REGION TAB -->
+    <div
+      class="tab-content"
+      id="region"
+      style="display: none; visibility: hidden;"
+      data-columns="{{ section.settings.region_columns }}"
+    >
+      {% assign collection = collections[section.settings.region_collection] %}
+      {% render 'region-country', collection: collection %}
+    </div>
+
+    <!-- GLOBAL TAB -->
+    <div
+      class="tab-content"
+      id="global"
+      style="display: none; visibility: hidden;"
+    >
+      {% assign collection = collections[section.settings.global_collection] %}
+      {% render 'global-country', collection: collection, product: product %}
+      {% comment %}
+        {% for product in collection.products %}
+          {% render 'global-country', collection: collection, product: product %}
+        {% endfor %}
+      {% endcomment %}
+    </div>
+
+    <div class="show-all-wrapper">
+      {% if section.settings.show_button %}
+        <div class="show-all">
+          <a
+            href="{{ routes.collections_url }}/all?tab={{ active_tab }}"
+            class="show-all-destination"
+            data-active-tab="{{ active_tab }}"
+          >
+            <span>{{ section.settings.show_all_text }}</span>
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script type="application/ld+json">
+  {{ page | structured_data }}
+</script>
+
+{% schema %}
+{
+  "name": "Popular Countries",
+  "settings": [
+    {
+      "type": "select",
+      "id": "display_mode",
+      "label": "Display Mode",
+      "options": [
+        {
+          "value": "option_1",
+          "label": "Homepage"
+        },
+        {
+          "value": "option_2",
+          "label": "All Destination"
+        }
+      ],
+      "default": "option_1"
+    },
+    {
+      "type": "collection",
+      "id": "land_collection",
+      "label": "Display Land Top"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Display Land All Destination"
+    },
+    {
+      "type": "collection",
+      "id": "region_collection",
+      "label": "Pilih Koleksi untuk Region"
+    },
+    {
+      "type": "collection",
+      "id": "global_collection",
+      "label": "Pilih Koleksi untuk Global"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Popular Countries"
+    },
+    {
+      "type": "text",
+      "id": "tab_land",
+      "label": "Tab 1 (Land)",
+      "default": "Land"
+    },
+    {
+      "type": "text",
+      "id": "tab_region",
+      "label": "Tab 2 (Region)",
+      "default": "Region"
+    },
+    {
+      "type": "text",
+      "id": "tab_global",
+      "label": "Tab 3 (Global)",
+      "default": "Global"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "label": "Show 'Show All' Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "show_all_text",
+      "label": "Show All Button Text",
+      "default": "Show all destinations"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Popular Countries",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}

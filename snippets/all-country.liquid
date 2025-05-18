@@ -1,0 +1,52 @@
+ {% if countries != blank and countries.size > 0 %}
+  {% for country in countries %}
+    {% assign normalized_country = country | replace: '_', ' ' %}
+    {% assign min_price = blank %}
+
+    <!-- Variabel khusus untuk file gambar -->
+    {% assign image_country = country %}
+    {% if country == 'Europe' %}
+      {% assign image_country = 'Europe_Top' %}
+    {% endif %}
+
+    <!-- Loop semua produk untuk mencari harga termurah -->
+    {% for product in section.settings.collection.products %}
+      {% assign product_countries = product.metafields.coverage.country.value %}
+
+      {% if product_countries != blank %}
+        {% for product_country in product_countries %}
+          {% assign normalized_product_country = product_country | replace: '_', ' ' %}
+
+          {% if normalized_product_country == normalized_country %}
+            {% if min_price == blank or product.price < min_price %}
+              {% assign min_price = product.price %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+
+    <!-- Tampilkan hanya jika ada harga -->
+    {% if min_price != blank %}
+      <a href="{{ routes.search_url }}?q={{ normalized_country }}" class="country-link">
+        <div class="all-destination-wrapper {% if forloop.index > 4 %}all-destination-mobile-hidden{% endif %}">
+          <div class="text-content">
+            <img
+              src="{{ image_country | append: '.svg' | file_url }}"
+              alt="{{ country | upcase }} Flag"
+              width="50"
+              height="50"
+            >
+            <div class="collection-pick">
+              <p>{{ normalized_country }}</p>
+              <span class="money">Start From {{ min_price | money }}</span>
+            </div>
+          </div>
+          <div class="country-icon">
+            {{- 'icon-arrow-back.svg' | inline_asset_content -}}
+          </div>
+        </div>
+      </a>
+    {% endif %}
+  {% endfor %}
+{% endif %}

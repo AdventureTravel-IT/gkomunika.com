@@ -211,7 +211,7 @@
   align-items: center;
   width: 100%;
   height: 900px;
-  /* overflow: hidden; */
+  overflow: visible;
 }
 
 .banner__image {
@@ -260,7 +260,8 @@
 
 @media (max-width: 768px) {
   .banner__wrapper {
-    height: 600px;
+    height: 800px;
+    overflow: hidden;
   }
 
   .banner__image {

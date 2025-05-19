@@ -23,7 +23,7 @@
   }
 
   .main-search-collection.title {
-    margin: 0 0 10px 0;
+    margin: 0 0 10px;
     font-weight: bold;
     color: var(--color-primary);
     font-size: 26px;
@@ -238,7 +238,16 @@
     margin: 0;
     font-weight: bold;
   }
-
+  .main-search__error {
+    display: flex;
+    justify-content: center;
+    border-radius: 15px;
+    padding: 15px;
+  }
+  .main-search__error p {
+    font-size: var(--font-supper-large);
+    color: var(--color-primary);
+  }
   @media (max-width: 1440px) {
     .product-card-wrapper {
       grid-template-columns: repeat(3, 1fr);
@@ -280,9 +289,7 @@
 <div class="main-search">
   <div class="main-search-container">
     {% assign search_term = search.terms | downcase | strip %}
-    {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection'
-      | split: ','
-    %}
+    {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection' | split: ',' %}
     {% assign found_any_product = false %}
     {% assign single_product_url = '' %}
     {% assign product_count = 0 %}
@@ -292,11 +299,22 @@
       {% assign found_product = false %}
       {% assign product_output = '' %}
 
-      {% for product in collection.products %}
+        {% for product in collection.products %}
         {% assign product_alias = product.metafields.coverage.alias | downcase | strip %}
         {% assign product_countries = product.metafields.coverage.country.value %}
-        {% assign product_region = product.metafields.coverage.region | downcase | strip %}
-        {% assign matched_countries = '' %}
+      {% assign matched_countries = '' %}
+
+        {%- comment -%} Perbaikan pencocokan region (strict match, case-insensitive) {%- endcomment -%}
+        {% assign match_region = false %}
+        {% assign product_regions = product.metafields.coverage.region.value %}
+        {% if product_regions %}
+          {% for region in product_regions %}
+            {% assign region_clean = region | downcase | strip %}
+            {% if region_clean == search_term %}
+              {% assign match_region = true %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
 
         {% if collection_key == 'global_country_collection' or collection_key == 'multi_country_collection' %}
           {% for country in product_countries %}
@@ -307,7 +325,7 @@
           {% endfor %}
         {% endif %}
 
-        {% if product_alias contains search_term or matched_countries != '' or product_region contains search_term %}
+        {% if product_alias contains search_term or matched_countries != '' or match_region %}
           {% assign found_product = true %}
           {% assign found_any_product = true %}
           {% assign product_count = product_count | plus: 1 %}
@@ -338,21 +356,18 @@
                 {% endif %}
                 <div class="main-search__product">
                   {% assign handles = "esim,simcard" | split: "," %}
-{% for handle in handles %}
-  {% assign sim_card = shop.metaobjects['shopify--sim-card-type'][handle] %}
-  {% if sim_card %}
-    
-      {% if sim_card.label %}
-        <span>SIM Type: {{ sim_card.label }}</span>
-      {% endif %}
-  {% endif %}
-{% endfor %}
-
-                  
-                <h1>{{ product.title }}</h1>
+                  {% for handle in handles %}
+                    {% assign sim_card = shop.metaobjects['shopify--sim-card-type'][handle] %}
+                    {% if sim_card %}
+                      {% if sim_card.label %}
+                        <span>SIM Type: {{ sim_card.label }}</span>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                  <h1>{{ product.title }}</h1>
                 </div>
               </div>
-            </a>
+              </a>
 
               <div class="product-card-content">
                 <div class="product-card-content-flip-front">
@@ -368,7 +383,7 @@
                         </div>
                         <div class="country-total-including-atribut">
                           {% if matched_countries != blank %}
-                            <p>Including {{ matched_countries | strip | replace: ',',' ' }}</p>
+                            <p>Including {{ matched_countries | strip | replace: ',', ' ' }}</p>
                           {% endif %}
                         </div>
                       </div>
@@ -433,7 +448,9 @@
     {% endfor %}
 
     {% unless found_any_product %}
-      <p>No products found for "{{ search.terms }}"</p>
+      <div class="main-search__error">
+        <p>No products found for "{{ search.terms }}"</p>
+      </div>
     {% endunless %}
 
     {% if product_count == 1 %}
@@ -444,44 +461,43 @@
   </div>
 </div>
 
+
 {% comment %} # SCHEMA SECTION {% endcomment %}
 {% schema %}
-{
-  "name": "Main Search",
-  "settings": [
-    {
-      "type": "text",
-      "label": "Single Country Title",
-      "id": "title_single",
-      "default": "Single Country"
-    },
-    {
-      "type": "collection",
-      "label": "Single Country Collection",
-      "id": "single_country_collection"
-    },
-    {
-      "type": "text",
-      "label": "Multi Country Title",
-      "id": "title_multi",
-      "default": "Multi Country"
-    },
-    {
-      "type": "collection",
-      "label": "Multi Country Collection",
-      "id": "multi_country_collection"
-    },
-    {
-      "type": "text",
-      "label": "Global Country Title",
-      "id": "title_global",
-      "default": "Global Country"
-    },
-    {
-      "type": "collection",
-      "label": "Global Country Collection",
-      "id": "global_country_collection"
-    }
-  ]
-}
+  {
+    "name": "Main Search",
+    "settings": [
+      {
+        "type": "text",
+        "label": "Single Country Title",
+        "id": "title_single",
+        "default": "Single Country"
+      },
+      {
+        "type": "collection",
+        "label": "Single Country Collection",
+        "id": "single_country_collection"
+      },
+      {
+        "type": "text",
+        "label": "Multi Country Title",
+        "id": "title_multi",
+        "default": "Multi Country"
+      },
+      {
+        "type": "collection",
+        "label": "Multi Country Collection",
+        "id": "multi_country_collection"
+      }, {
+        "type": "text",
+        "label": "Global Country Title",
+        "id": "title_global",
+        "default": "Global Country"
+      }, {
+        "type": "collection",
+        "label": "Global Country Collection",
+        "id": "global_country_collection"
+      }
+    ]
+  }
 {% endschema %}

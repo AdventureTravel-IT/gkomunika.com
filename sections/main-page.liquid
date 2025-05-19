@@ -13,7 +13,7 @@
 
   /* Style Summary */
   .pages-summary {
-    width: 130px;
+    width: 100%;
     flex-shrink: 0;
     position: sticky;
     top: 20px;
@@ -37,7 +37,15 @@
   #summary li a {
     color: var(--color-primary);
     font-size: var(--font-large);
+    transition: transform 0.3s;
   }
+  #summary li a.active {
+    color: var(--color-secondary);
+  }
+  #summary li a:hover {
+    color: var(--color-secondary);
+  }
+
 
   /* Style Content */
   .pages-content {
@@ -133,7 +141,7 @@
 
   .pages-title {
     color: var(--color-primary);
-    font-size: var(--font-supper-large);
+    font-size: 22px;
     font-weight: bold;
     margin: 0;
   }
@@ -210,17 +218,17 @@
       position: static;
     }
   }
+  @media (max-width: 425px) {
+    .pages-wrapper {
+      flex-direction: column;
+      padding: 20px 24px 24 pxx;
+    }
+  }
 {% endstyle %}
 
 
 <div class="pages-container">
   <div class="pages-wrapper">
-    <section class="pages-summary">
-      <h2 class="pages-title">Summary</h2>
-      <ul class="page-summary__wrapper">
-        <li id="summary"></li>
-      </ul>
-    </section>
 
     <section class="pages-content">
       <h1 class="page-content__title">{{ page.title | escape }}</h1>
@@ -250,60 +258,68 @@
           {% endfor %}
         </div>
       {% endif %}
+
+      <section class="pages-summary">
+        <h2 class="pages-title">Summary Article</h2>
+        <ul class="page-summary__wrapper">
+          <li id="summary"></li>
+        </ul>
+      </section>
+
     </section>
 
 
   {% comment %} <section class="pages-product">
-                          {% assign related_product = page.metafields.related.product %}
-                          {% assign country = product.metafields.coverage.country.value %}
-                          {% assign recomendation_product = page.metafields.recomendation.product %}
+                                                                                      {% assign related_product = page.metafields.related.product %}
+                                                                                      {% assign country = product.metafields.coverage.country.value %}
+                                                                                      {% assign recomendation_product = page.metafields.recomendation.product %}
 
-                          <div class="pages-related__product">
-                            <h2>Related Products</h2>
-                            {% if related_product %}
-                              {% for related_product in related_product.value %}
-                                {% assign country = related_product.metafields.coverage.country.value.first %}
-                                <a class="pages-product__link" href="{{ related_product.url }}">
-                                  <div class="pages-product__wrapper">
-                                    <div class="pages-product__image">
-                                      {% if country %}
-                                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
-                                      {% endif %}
-                                    </div>
-                                    <div class="pages-product__info">
-                                      <p class="pages-product__title">{{ related_product.title }}</p>
-                                      <p class="pages-product__price">Start From {{ related_product.price | money_with_currency }}</p>
-                                    </div>
-                                  </div>
-                                </a>
-                              {% endfor %}
-                            {% endif %}
-                          </div>
+                                                                                      <div class="pages-related__product">
+                                                                                        <h2>Related Products</h2>
+                                                                                        {% if related_product %}
+                                                                                          {% for related_product in related_product.value %}
+                                                                                            {% assign country = related_product.metafields.coverage.country.value.first %}
+                                                                                            <a class="pages-product__link" href="{{ related_product.url }}">
+                                                                                              <div class="pages-product__wrapper">
+                                                                                                <div class="pages-product__image">
+                                                                                                  {% if country %}
+                                                                                                    <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
+                                                                                                  {% endif %}
+                                                                                                </div>
+                                                                                                <div class="pages-product__info">
+                                                                                                  <p class="pages-product__title">{{ related_product.title }}</p>
+                                                                                                  <p class="pages-product__price">Start From {{ related_product.price | money_with_currency }}</p>
+                                                                                                </div>
+                                                                                              </div>
+                                                                                            </a>
+                                                                                          {% endfor %}
+                                                                                        {% endif %}
+                                                                                      </div>
 
-                          <div class="pages-related__product">
-                            <h2>Recommendation Products</h2>
-                            {% if page.metafields.recomendation.product %}
-                              {% assign collection = page.metafields.recomendation.product.value %}
-                              {% assign products = collection.products %}
-                              {% for product in products limit: 5 %}
-                                {% assign country = product.metafields.coverage.country.value.first %}
-                                <a class="pages-product__link" href="{{ product.url }}">
-                                  <div class="pages-product__wrapper">
-                                    <div class="pages-product__image">
-                                      {% if country %}
-                                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
-                                      {% endif %}
-                                    </div>
-                                    <div class="pages-product__info">
-                                      <p class="pages-product__title">{{ product.title }}</p>
-                                      <p class="pages-product__price">Start From {{ product.price | money_with_currency }}</p>
-                                    </div>
-                                  </div>
-                                </a>
-                              {% endfor %}
-                            {% endif %}
-                          </div>
-              </section> {% endcomment %}
+                                                                                      <div class="pages-related__product">
+                                                                                        <h2>Recommendation Products</h2>
+                                                                                        {% if page.metafields.recomendation.product %}
+                                                                                          {% assign collection = page.metafields.recomendation.product.value %}
+                                                                                          {% assign products = collection.products %}
+                                                                                          {% for product in products limit: 5 %}
+                                                                                            {% assign country = product.metafields.coverage.country.value.first %}
+                                                                                            <a class="pages-product__link" href="{{ product.url }}">
+                                                                                              <div class="pages-product__wrapper">
+                                                                                                <div class="pages-product__image">
+                                                                                                  {% if country %}
+                                                                                                    <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
+                                                                                                  {% endif %}
+                                                                                                </div>
+                                                                                                <div class="pages-product__info">
+                                                                                                  <p class="pages-product__title">{{ product.title }}</p>
+                                                                                                  <p class="pages-product__price">Start From {{ product.price | money_with_currency }}</p>
+                                                                                                </div>
+                                                                                              </div>
+                                                                                            </a>
+                                                                                          {% endfor %}
+                                                                                        {% endif %}
+                                                                                      </div>
+                                            </section> {% endcomment %}
   </div>
 </div>
 
@@ -318,14 +334,27 @@
       summary.innerHTML += `<li><a href="#${id}">${heading.textContent}</a></li>`;
     });
 
-    summary.querySelectorAll('a').forEach((link) => {
+    const links = summary.querySelectorAll('a');
+
+    links.forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        document.querySelector(link.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+
+        // Hapus class 'active' dari semua link
+        links.forEach(l => l.classList.remove('active'));
+
+        // Tambahkan class 'active' ke link yang diklik
+        link.classList.add('active');
+
+        // Scroll ke bagian terkait
+        document.querySelector(link.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
       });
     });
   });
 </script>
+
 
 {% schema %}
   {

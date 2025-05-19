@@ -13,7 +13,7 @@
 
   /* Style Summary */
   .pages-summary {
-    width: 200px;
+    width: 130px;
     flex-shrink: 0;
     position: sticky;
     top: 20px;
@@ -225,12 +225,7 @@
     <section class="pages-content">
       <h1 class="page-content__title">{{ page.title | escape }}</h1>
       <div class="page-content__wrapper">{{ page.content }}</div>
-      <div class="pages-latest__article">
-
-
-
-
-      </div>
+      <div class="pages-latest__article"></div>
     </section>
 
 
@@ -247,69 +242,68 @@
                   <img src="{{ first_image }}" alt="{{ related_page.title }}">
                 {% endif %}
                 <div>
-                <h3 class="pages-article__title" title="{{ page.title }}">{{ related_page.title }}</h3>
-                <h3 class="pages-article__date">{{ page.published_at | date: '%d %B %Y' }}</h3>
+                  <h3 class="pages-article__title" title="{{ page.title }}">{{ related_page.title }}</h3>
+                  <h3 class="pages-article__date">{{ page.published_at | date: '%d %B %Y' }}</h3>
                 </div>
               </a>
             </div>
           {% endfor %}
         </div>
-      {% endif %} 
+      {% endif %}
     </section>
-    
-    
 
-    {% comment %} <section class="pages-product">
-      {% assign related_product = page.metafields.related.product %}
-      {% assign country = product.metafields.coverage.country.value %}
-      {% assign recomendation_product = page.metafields.recomendation.product %}
 
-      <div class="pages-related__product">
-        <h2>Related Products</h2>
-        {% if related_product %}
-          {% for related_product in related_product.value %}
-            {% assign country = related_product.metafields.coverage.country.value.first %}
-            <a class="pages-product__link" href="{{ related_product.url }}">
-              <div class="pages-product__wrapper">
-                <div class="pages-product__image">
-                  {% if country %}
-                    <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
-                  {% endif %}
-                </div>
-                <div class="pages-product__info">
-                  <p class="pages-product__title">{{ related_product.title }}</p>
-                  <p class="pages-product__price">Start From {{ related_product.price | money_with_currency }}</p>
-                </div>
-              </div>
-            </a>
-          {% endfor %}
-        {% endif %}
-      </div>
+  {% comment %} <section class="pages-product">
+                          {% assign related_product = page.metafields.related.product %}
+                          {% assign country = product.metafields.coverage.country.value %}
+                          {% assign recomendation_product = page.metafields.recomendation.product %}
 
-      <div class="pages-related__product">
-        <h2>Recommendation Products</h2>
-        {% if page.metafields.recomendation.product %}
-          {% assign collection = page.metafields.recomendation.product.value %}
-          {% assign products = collection.products %}
-          {% for product in products limit: 5 %}
-            {% assign country = product.metafields.coverage.country.value.first %}
-            <a class="pages-product__link" href="{{ product.url }}">
-              <div class="pages-product__wrapper">
-                <div class="pages-product__image">
-                  {% if country %}
-                    <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
-                  {% endif %}
-                </div>
-                <div class="pages-product__info">
-                  <p class="pages-product__title">{{ product.title }}</p>
-                  <p class="pages-product__price">Start From {{ product.price | money_with_currency }}</p>
-                </div>
-              </div>
-            </a>
-          {% endfor %}
-        {% endif %}
-      </div>
-    </section> {% endcomment %}
+                          <div class="pages-related__product">
+                            <h2>Related Products</h2>
+                            {% if related_product %}
+                              {% for related_product in related_product.value %}
+                                {% assign country = related_product.metafields.coverage.country.value.first %}
+                                <a class="pages-product__link" href="{{ related_product.url }}">
+                                  <div class="pages-product__wrapper">
+                                    <div class="pages-product__image">
+                                      {% if country %}
+                                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
+                                      {% endif %}
+                                    </div>
+                                    <div class="pages-product__info">
+                                      <p class="pages-product__title">{{ related_product.title }}</p>
+                                      <p class="pages-product__price">Start From {{ related_product.price | money_with_currency }}</p>
+                                    </div>
+                                  </div>
+                                </a>
+                              {% endfor %}
+                            {% endif %}
+                          </div>
+
+                          <div class="pages-related__product">
+                            <h2>Recommendation Products</h2>
+                            {% if page.metafields.recomendation.product %}
+                              {% assign collection = page.metafields.recomendation.product.value %}
+                              {% assign products = collection.products %}
+                              {% for product in products limit: 5 %}
+                                {% assign country = product.metafields.coverage.country.value.first %}
+                                <a class="pages-product__link" href="{{ product.url }}">
+                                  <div class="pages-product__wrapper">
+                                    <div class="pages-product__image">
+                                      {% if country %}
+                                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
+                                      {% endif %}
+                                    </div>
+                                    <div class="pages-product__info">
+                                      <p class="pages-product__title">{{ product.title }}</p>
+                                      <p class="pages-product__price">Start From {{ product.price | money_with_currency }}</p>
+                                    </div>
+                                  </div>
+                                </a>
+                              {% endfor %}
+                            {% endif %}
+                          </div>
+              </section> {% endcomment %}
   </div>
 </div>
 
@@ -334,35 +328,33 @@
 </script>
 
 {% schema %}
-{
-  "name": "t:sections.main-page.name",
-  "tag": "section",
-  "class": "section",
-  "settings": [
-    {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 36
-    }
-  ]
-}
+  {
+    "name": "t:sections.main-page.name",
+    "tag": "section",
+    "class": "section",
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:sections.all.padding.section_padding_heading"
+      }, {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      }, {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      }
+    ]
+  }
 {% endschema %}

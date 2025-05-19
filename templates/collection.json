@@ -1,1 +1,38 @@
-{"sections":{"main":{"type":"popular-countries","settings":{"display_mode":"option_2","land_collection":"all-country","collection":"all-country","region_collection":"all-country","global_collection":"all-country","title":"All Destination","tab_land":"Land","tab_region":"Region","tab_global":"Global","show_button":true,"show_all_text":"Show all destinations"}},"custom_image_banner_j6Uy6w":{"type":"custom-image-banner","name":"Banner-search","settings":{}}},"order":["custom_image_banner_j6Uy6w","main"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "popular-countries",
+      "settings": {
+        "display_mode": "option_2",
+        "land_collection": "all-country",
+        "collection": "all-country",
+        "region_collection": "all-country",
+        "global_collection": "all-country",
+        "title": "All Destination",
+        "tab_land": "Land",
+        "tab_region": "Region",
+        "tab_global": "Global",
+        "show_button": true,
+        "show_all_text": "Show all destinations"
+      }
+    },
+    "custom_image_banner_j6Uy6w": {
+      "type": "custom-image-banner",
+      "name": "Banner-search",
+      "settings": {}
+    }
+  },
+  "order": [
+    "custom_image_banner_j6Uy6w",
+    "main"
+  ]
+}

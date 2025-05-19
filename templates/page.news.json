@@ -1,1 +1,90 @@
-{"sections":{"main":{"type":"news","blocks":{"news_block_R4Mzgt":{"type":"news_block","settings":{"category":"news","hero-title":"News","hero-description":"Latest updates on travel, airlines, airport rules, and tourism trends.","first-page":"new-flight-routes-by-scoot-airlines-in-indonesia-from-padang-to-balikpapan","second-page":"several-local-airlines-launch-new-flight-routes-here-are-the-destinations","thrid-page":"airport-regulations-for-flights-to-dubai-have-changed-here-s-what-you-need-to-know","show-button":true,"hero-background":"shopify:\/\/shop_images\/news.webp"}},"news_block_EGEeC3":{"type":"news_block","settings":{"category":"event","hero-title":"Event","hero-description":"Find festivals, local events, and seasonal highlights worth visiting.","first-page":"don-t-miss-the-cathay-pacific-travel-fair-2025-the-best-travel-deals-of-the-year","second-page":"enjoy-various-exciting-deals-at-singapore-airlines-travel-fair-2025","thrid-page":"get-exclusive-flight-deals-and-tour-packages-at-astindo-travel-fair-2025","show-button":true,"hero-background":"shopify:\/\/shop_images\/event.webp"}},"news_block_dbChQJ":{"type":"news_block","settings":{"category":"travel-tips","hero-title":"Travel Tips","hero-description":"Smart tips for easier, cheaper, and more enjoyable travel.","first-page":"blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how","second-page":"bca-poket-valas-a-convenient-solution-for-foreign-currency-transactions-abroad","thrid-page":"how-to-choose-comfortable-and-stylish-spring-outfits","show-button":true,"hero-background":"shopify:\/\/shop_images\/travel_tips.webp"}},"news_block_AyHEdg":{"type":"news_block","settings":{"category":"travel-guide","hero-title":"Travel Guide","hero-description":"Explore top sights, local eats, and things to do at every destination.","first-page":"eurail-pass-guide-price-how-to-use-this-train-ticket-across-europe","second-page":"best-seasons-and-months-to-witness-the-aurora-borealis-phenomenon","thrid-page":"the-beauty-of-garden-rhapsody-gardens-by-the-bay-s-night-light-show-in-singapore","show-button":true,"hero-background":"shopify:\/\/shop_images\/travel_guide.webp"}}},"block_order":["news_block_R4Mzgt","news_block_EGEeC3","news_block_dbChQJ","news_block_AyHEdg"],"settings":{"main-heading":"Stay Connected, Travel Smarter","main-description":"Global Komunika shares essential travel tips, destination insights, and the latest updates on eSIM and SIM card solutions, helping travelers stay connected with ease wherever they go.","main-first-page":"blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how","main-second-page":"bca-poket-valas-a-convenient-solution-for-foreign-currency-transactions-abroad","main-third-page":"how-to-choose-comfortable-and-stylish-spring-outfits","news-heading":"","event-heading":"","travel-guide-heading":"","travel-tips-heading":""}}},"order":["main"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "news",
+      "blocks": {
+        "news_block_R4Mzgt": {
+          "type": "news_block",
+          "settings": {
+            "category": "news",
+            "hero-title": "News",
+            "hero-description": "<p>Stay up to date with the latest developments in travel, including <strong>airline updates</strong>, airport regulations, <strong>visa policies</strong>, and <strong>tourism trends</strong>. Perfect for keeping informed before and during your journey.</p>",
+            "first-page": "new-flight-routes-by-scoot-airlines-in-indonesia-from-padang-to-balikpapan",
+            "second-page": "several-local-airlines-launch-new-flight-routes-here-are-the-destinations",
+            "thrid-page": "airport-regulations-for-flights-to-dubai-have-changed-here-s-what-you-need-to-know",
+            "show-button": true,
+            "hero-background": "shopify://shop_images/news.webp"
+          }
+        },
+        "news_block_EGEeC3": {
+          "type": "news_block",
+          "settings": {
+            "category": "event",
+            "hero-title": "Event",
+            "hero-description": "<p>Find out what’s happening around the world—from <strong>traditional festivals</strong> and <strong>cultural parades</strong> to seasonal highlights. These events can add a unique and memorable touch to your trip.<br/></p>",
+            "first-page": "don-t-miss-the-cathay-pacific-travel-fair-2025-the-best-travel-deals-of-the-year",
+            "second-page": "enjoy-various-exciting-deals-at-singapore-airlines-travel-fair-2025",
+            "thrid-page": "get-exclusive-flight-deals-and-tour-packages-at-astindo-travel-fair-2025",
+            "show-button": true,
+            "hero-background": "shopify://shop_images/event.webp"
+          }
+        },
+        "news_block_dbChQJ": {
+          "type": "news_block",
+          "settings": {
+            "category": "travel-tips",
+            "hero-title": "Travel Tips",
+            "hero-description": "<p>Explore <strong>helpful tips and tricks</strong> to make your travel smoother, more affordable, and more enjoyable. From packing efficiently to saving money on transport and accommodations, we've got you covered.</p>",
+            "first-page": "blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how",
+            "second-page": "bca-poket-valas-a-convenient-solution-for-foreign-currency-transactions-abroad",
+            "thrid-page": "how-to-choose-comfortable-and-stylish-spring-outfits",
+            "show-button": true,
+            "hero-background": "shopify://shop_images/travel-tips.webp"
+          }
+        },
+        "news_block_AyHEdg": {
+          "type": "news_block",
+          "settings": {
+            "category": "travel-guide",
+            "hero-title": "Travel Guide",
+            "hero-description": "<p>Plan your trip with in-depth guides featuring top <strong>attractions</strong>, local food spots, and <strong>fun activities</strong>. Whether you’re visiting a city for the first time or returning for more, our guides help you get the most out of every destination.</p>",
+            "first-page": "eurail-pass-guide-price-how-to-use-this-train-ticket-across-europe",
+            "second-page": "best-seasons-and-months-to-witness-the-aurora-borealis-phenomenon",
+            "thrid-page": "the-beauty-of-garden-rhapsody-gardens-by-the-bay-s-night-light-show-in-singapore",
+            "show-button": true,
+            "hero-background": "shopify://shop_images/travel_guide.webp"
+          }
+        }
+      },
+      "block_order": [
+        "news_block_R4Mzgt",
+        "news_block_EGEeC3",
+        "news_block_dbChQJ",
+        "news_block_AyHEdg"
+      ],
+      "settings": {
+        "main-heading": "Stay Connected, Travel Smarter",
+        "main-description": "Global Komunika shares essential travel tips, destination insights, and the latest updates on eSIM and SIM card solutions, helping travelers stay connected with ease wherever they go.",
+        "main-first-page": "blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how",
+        "main-second-page": "bca-poket-valas-a-convenient-solution-for-foreign-currency-transactions-abroad",
+        "main-third-page": "how-to-choose-comfortable-and-stylish-spring-outfits",
+        "news-heading": "",
+        "event-heading": "",
+        "travel-guide-heading": "",
+        "travel-tips-heading": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

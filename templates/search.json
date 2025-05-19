@@ -1,1 +1,33 @@
-{"sections":{"custom_image_banner_xpdGBQ":{"type":"custom-image-banner","custom_css":[],"settings":{}},"main":{"type":"main-search","settings":{"title_single":"Single Country","single_country_collection":"single-country","title_multi":"Multi Country","multi_country_collection":"multi-country","title_global":"Global Country","global_country_collection":"global-country"}}},"order":["custom_image_banner_xpdGBQ","main"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "custom_image_banner_xpdGBQ": {
+      "type": "custom-image-banner",
+      "custom_css": [],
+      "settings": {}
+    },
+    "main": {
+      "type": "main-search",
+      "settings": {
+        "title_single": "Single Country",
+        "single_country_collection": "single-country",
+        "title_multi": "Multi Country",
+        "multi_country_collection": "multi-country",
+        "title_global": "Global Country",
+        "global_country_collection": "global-country"
+      }
+    }
+  },
+  "order": [
+    "custom_image_banner_xpdGBQ",
+    "main"
+  ]
+}

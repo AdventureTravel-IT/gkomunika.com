@@ -125,45 +125,40 @@
     font-size: 30px;
     text-align: center;
   }
-@media (max-width: 1440px) {
-  .news__content-top {
-    padding: 0 10% 100px;
+  @media (max-width: 1440px) {
+    .news__content-top {
+      padding: 0 10% 100px;
+    }
   }
-}
-@media (max-width: 768px) {
-  .news-content__wrapper {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .news__content-top {
-    padding: 20px 10%;
-  }
-  @media (max-width: 375px) {
+  @media (max-width: 768px) {
     .news-content__wrapper {
-    grid-template-columns: repeat(1, 1fr);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .news__content-top {
+      padding: 20px 10%;
+    }
+    @media (max-width: 375px) {
+      .news-content__wrapper {
+        grid-template-columns: repeat(1, 1fr);
+      }
+      .news__content-top {
+        padding: 20px 24px;
+      }
+      .news-content__wrapper {
+        padding: 0;
+      }
+      .news__hero-wrapper {
+        padding: 0;
+      }
+    }
   }
-  .news__content-top {
-    padding: 20px 24px;
-  }
-  .news-content__wrapper {
-    padding: 0;
-  }
-  .news__hero-wrapper {
-    padding: 0;
-  }
-  }
-}
 {% endstyle %}
 
 <div class="news-container">
   <section class="news-main">
     {% comment %} Top 3 content pages from main section settings {% endcomment %}
-    {% assign main_pages = section.settings['main-first-page']
-      | append: ','
-      | append: section.settings['main-second-page']
-      | append: ','
-      | append: section.settings['main-third-page']
-      | split: ','
+    {% assign main_pages = section.settings['main-first-page'] | append: ',' | append: section.settings['main-second-page'] | append: ',' | append: section.settings['main-third-page'] | split: ','
     %}
     {% if template.suffix == 'news' %}
       <div class="news__content-top">
@@ -178,19 +173,19 @@
             {% if page %}
               <section class="news-content__card">
                 <a class="new-content__link" href="{{ page.url }}">
-                {% assign img_parts = page.content | split: '<img' %}
-                {% if img_parts.size > 1 %}
-                  {% assign first_img_tag = img_parts[1] | split: '>' | first | prepend: '<img' | append: '>' %}
-                  {{ first_img_tag }}
-                {% endif %}
-                <h2 class="news-content__card-title">{{ page.title }}</h2>
-                <h2 class="news-content__card-description">
-                  {{ page.content | strip_html }}
-                </h2>
-                <div class="news-content__date">
-                  {{ page.published_at | date: '%d %B %Y' }}
-                </div>
-              </a>
+                  {% assign img_parts = page.content | split: '<img' %}
+                  {% if img_parts.size > 1 %}
+                    {% assign first_img_tag = img_parts[1] | split: '>' | first | prepend: '<img' | append: '>' %}
+                    {{ first_img_tag }}
+                  {% endif %}
+                  <h2 class="news-content__card-title">{{ page.title }}</h2>
+                  <h2 class="news-content__card-description">
+                    {{ page.content | strip_html }}
+                  </h2>
+                  <div class="news-content__date">
+                    {{ page.published_at | date: '%d %B %Y' }}
+                  </div>
+                </a>
               </section>
             {% endif %}
           {% endfor %}
@@ -200,12 +195,7 @@
   </section>
 
   {% for block in section.blocks %}
-    {% assign page_ids = block.settings['first-page']
-      | append: ','
-      | append: block.settings['second-page']
-      | append: ','
-      | append: block.settings['thrid-page']
-      | split: ','
+    {% assign page_ids = block.settings['first-page'] | append: ',' | append: block.settings['second-page'] | append: ',' | append: block.settings['thrid-page'] | split: ','
     %}
 
     <section class="news-content">
@@ -247,10 +237,9 @@
         </div>
       </div>
     </section>
-  {% endfor %}
+{% endfor %}
 
 
-  
   {% comment %} Section untuk category (news-category) {% endcomment %}
   {% assign path_parts = request.path | split: '/' %}
   {% assign category_slug = path_parts.last %}
@@ -316,137 +305,125 @@
 </div>
 
 {% schema %}
-{
-  "name": "News Section",
-  "settings": [
-    {
-      "type": "text",
-      "id": "main-heading",
-      "label": "Main Heading",
-      "default": "Latest News"
-    },
-    {
-      "type": "textarea",
-      "id": "main-description",
-      "label": "Main Description",
-      "default": "Check out the latest updates from our blog or news section."
-    },
-    {
-      "type": "page",
-      "id": "main-first-page",
-      "label": "Main First Page"
-    },
-    {
-      "type": "page",
-      "id": "main-second-page",
-      "label": "Main Second Page"
-    },
-    {
-      "type": "page",
-      "id": "main-third-page",
-      "label": "Main Third Page"
-    },
-    {
-      "type": "richtext",
-      "id": "news-heading",
-      "label": "Description for news"
-    },
-    {
-      "type": "richtext",
-      "id": "event-heading",
-      "label": "Description for event"
-    },
-    {
-      "type": "richtext",
-      "id": "travel-guide-heading",
-      "label": "Description for travel guide"
-    },
-    {
-      "type": "richtext",
-      "id": "travel-tips-heading",
-      "label": "Description for travel tips"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "news_block",
-      "name": "News Block",
-      "settings": [
-        {
-          "type": "select",
-          "id": "category",
-          "label": "Kategori tombol Readmore",
-          "options": [
-            {
-              "value": "news",
-              "label": "News"
-            },
-            {
-              "value": "event",
-              "label": "Event"
-            },
-            {
-              "value": "travel-tips",
-              "label": "Travel Tips"
-            },
-            {
-              "value": "travel-guide",
-              "label": "Travel Guide"
-            }
-          ],
-          "default": "news"
-        },
-        {
-          "type": "text",
-          "id": "hero-title",
-          "label": "Hero Title",
-          "default": "Featured News"
-        },
-        {
-          "type": "textarea",
-          "id": "hero-description",
-          "label": "Hero Description",
-          "default": "Read our most highlighted content here."
-        },
-        {
-          "type": "page",
-          "id": "first-page",
-          "label": "First Page"
-        },
-        {
-          "type": "page",
-          "id": "second-page",
-          "label": "Second Page"
-        },
-        {
-          "type": "page",
-          "id": "thrid-page",
-          "label": "Third Page"
-        },
-        {
-          "type": "checkbox",
-          "id": "show-button",
-          "label": "Tampilkan tombol Readmore",
-          "default": true
-        },
-        {
-          "type": "image_picker",
-          "id": "hero-background",
-          "label": "Hero Background Image"
-        }        
-      ]
-    }
-  ],
-  "presets": [
-    {
-      "name": "News Section",
-      "category": "Custom",
-      "blocks": [
-        {
-          "type": "news_block"
-        }
-      ]
-    }
-  ]
-}
+  {
+    "name": "News Section",
+    "settings": [
+      {
+        "type": "text",
+        "id": "main-heading",
+        "label": "Main Heading",
+        "default": "Latest News"
+      },
+      {
+        "type": "textarea",
+        "id": "main-description",
+        "label": "Main Description",
+        "default": "Check out the latest updates from our blog or news section."
+      },
+      {
+        "type": "page",
+        "id": "main-first-page",
+        "label": "Main First Page"
+      },
+      {
+        "type": "page",
+        "id": "main-second-page",
+        "label": "Main Second Page"
+      }, {
+        "type": "page",
+        "id": "main-third-page",
+        "label": "Main Third Page"
+      }, {
+        "type": "richtext",
+        "id": "news-heading",
+        "label": "Description for news"
+      }, {
+        "type": "richtext",
+        "id": "event-heading",
+        "label": "Description for event"
+      }, {
+        "type": "richtext",
+        "id": "travel-guide-heading",
+        "label": "Description for travel guide"
+      }, {
+        "type": "richtext",
+        "id": "travel-tips-heading",
+        "label": "Description for travel tips"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "news_block",
+        "name": "News Block",
+        "settings": [
+          {
+            "type": "select",
+            "id": "category",
+            "label": "Kategori tombol Readmore",
+            "options": [
+              {
+                "value": "news",
+                "label": "News"
+              }, {
+                "value": "event",
+                "label": "Event"
+              }, {
+                "value": "travel-tips",
+                "label": "Travel Tips"
+              }, {
+                "value": "travel-guide",
+                "label": "Travel Guide"
+              }
+            ],
+            "default": "news"
+          },
+          {
+            "type": "text",
+            "id": "hero-title",
+            "label": "Hero Title",
+            "default": "Featured News"
+          },
+          {
+            "type": "richtext",
+            "id": "hero-description",
+            "label": "Hero Description",
+            "default": "<p>Read our most highlighted content here.</p>"
+          },
+          {
+            "type": "page",
+            "id": "first-page",
+            "label": "First Page"
+          }, {
+            "type": "page",
+            "id": "second-page",
+            "label": "Second Page"
+          }, {
+            "type": "page",
+            "id": "thrid-page",
+            "label": "Third Page"
+          }, {
+            "type": "checkbox",
+            "id": "show-button",
+            "label": "Tampilkan tombol Readmore",
+            "default": true
+          }, {
+            "type": "image_picker",
+            "id": "hero-background",
+            "label": "Hero Background Image"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "News Section",
+        "category": "Custom",
+        "blocks": [
+          {
+            "type": "news_block"
+          }
+        ]
+      }
+    ]
+  }
 {% endschema %}

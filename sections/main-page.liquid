@@ -3,26 +3,37 @@
     max-width: 1920px;
     margin: 0 auto;
   }
+
   .pages-wrapper {
     display: flex;
+    flex-wrap: nowrap;
     padding: 50px 10% 10%;
     gap: 50px;
   }
 
   /* Style Summary */
   .pages-summary {
-    width: 600px;
+    width: 200px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    height: fit-content;
   }
+
   .page-summary__wrapper {
     margin: 0;
     padding: 0;
   }
+
   #summary {
     list-style-type: none;
   }
+
   #summary li {
     margin-top: 10px;
   }
+
   #summary li a {
     color: var(--color-primary);
     font-size: var(--font-large);
@@ -33,19 +44,25 @@
     background-color: var(--color-neutral);
     padding: 15px 30px;
     border-radius: 15px;
+    flex: 2;
+    min-width: 0;
   }
+
   .page-content__title {
     color: var(--color-primary);
     font-weight: bold;
     margin-top: 0;
   }
+
   .page-content__wrapper {
     color: var(--color-primary);
   }
+
   .page-content__wrapper h2 {
     color: var(--color-primary);
     font-weight: bold;
   }
+
   .page-content__wrapper img {
     aspect-ratio: 3 / 2;
     width: 100%;
@@ -59,23 +76,33 @@
     display: flex;
     gap: 50px;
     flex-direction: column;
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    height: fit-content;
+    flex-shrink: 0;
   }
+
   .pages-related__product {
     display: flex;
     flex-direction: column;
     gap: 15px;
   }
+
   .pages-product__image {
     display: flex;
     align-items: center;
   }
+
   .pages-product__image img {
     border-radius: 10px;
     border: 1px solid var(--color-border);
   }
+
   .pages-product__link {
     text-decoration: none;
   }
+
   .pages-product__wrapper {
     background-color: var(--color-neutral);
     border-radius: 10px;
@@ -85,20 +112,25 @@
     align-items: center;
     transition: transform 0.3s ease;
   }
+
   .pages-product__wrapper:hover {
     box-shadow: var(--box-shadow);
     transform: translateY(-5px);
   }
+
   .pages-product__info p {
     margin: 0;
     line-height: 1.2;
   }
+
   .pages-product__title {
     color: var(--color-primary);
   }
+
   .pages-product__price {
     color: var(--color-secondary);
   }
+
   .pages-title {
     color: var(--color-primary);
     font-size: var(--font-supper-large);
@@ -106,68 +138,80 @@
     margin: 0;
   }
 
-  .pages-summary,
-  .pages-product,
+  /* Style Pages Article */
   .pages-article {
-    position: sticky;
-    top: 20px; /* Atur sesuai jarak dari atas yang diinginkan */
-    align-self: flex-start; /* Agar sticky bekerja saat dalam flex container */
-    height: fit-content; /* Hindari tinggi penuh agar tidak overflow */
-  }
-
-  /* Style Pages */
-  .pages-article {
-    width: 1000px;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    flex: 1;
+    min-width: 0;
   }
+
   .pages-article__title {
     margin: 0;
     font-size: var(--font-supper-large);
     color: var(--color-primary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--font-extra-large);
+    font-weight: bold;
   }
+
   .pages-article__wrapper {
     display: flex;
     flex-direction: column;
     gap: 15px;
   }
-  .pages-article__title {
-    display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: var(--font-extra-large);
-  font-weight: bold;
-  }
+
   .related-article {
     background-color: var(--color-neutral);
     border-radius: 15px;
     transition: transform 0.3s ease;
   }
+
   .related-article:hover {
     transform: translateY(-5px);
     box-shadow: var(--box-shadow);
   }
+
   .related-article a {
     padding: 10px;
     display: flex;
     gap: 10px;
     text-decoration: none;
   }
+
   .related-article img {
-  width: auto;
-  height: 70px;
-  aspect-ratio: 3 / 2;
-  border-radius: 15px;
-}
-.pages-article__date {
-  margin: 0;
-  line-height: 1.5;
-  color: var(--color-secondary);
-}
+    width: auto;
+    height: 70px;
+    aspect-ratio: 3 / 2;
+    border-radius: 15px;
+  }
+
+  .pages-article__date {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--color-secondary);
+  }
+
+  /* Responsive Layout */
+  @media (max-width: 1024px) {
+    .pages-wrapper {
+      flex-direction: column;
+    }
+
+    .pages-summary,
+    .pages-content,
+    .pages-article {
+      width: 100%;
+      position: static;
+    }
+  }
 {% endstyle %}
+
 
 <div class="pages-container">
   <div class="pages-wrapper">

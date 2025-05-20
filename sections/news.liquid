@@ -4,11 +4,11 @@
     margin: 0 auto;
   }
   .news__content-top {
-    padding: 0 20% 100px;
+    padding: 0 10% 100px;
   }
   .news-content__wrapper {
     display: flex;
-    padding: 30px;
+    padding-top: 60px;
     border-radius: 15px;
     gap: 20px;
   }
@@ -88,7 +88,7 @@
   .news__hero-wrapper {
     /* background-color: var(--color-neutral); */
     padding: 20px 20%;
-    height: 300px;
+    /* height: 300px; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,6 +96,7 @@
   }
   .news__hero-wrapper h2 {
     font-weight: bold;
+    font-size: 30px;
   }
   .news__hero-wrapper h2,
   span {
@@ -104,7 +105,7 @@
     color: var(--color-primary);
   }
   .news__hero-button {
-    margin-top: 50px;
+    margin-top: 20px;
     background-color: var(--color-primary);
     border: none;
     outline: none;
@@ -122,9 +123,41 @@
   }
   .news__latest-article {
     color: var(--color-primary);
-    font-size: 30px;
+    font-size: 28px;
     text-align: center;
   }
+  .news-hero {
+    width: 100%;
+    height: 450px;
+    border-radius: 0 0 20px 20px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    /* Vertically center content */
+    padding: 0 10%;
+  }
+
+  .news-hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+  }
+
+  .news-hero__content h2 {
+    font-weight: bold;
+    font-size: 32px;
+    color: var(--color-neutral);
+    margin: 0;
+  }
+
+  .news-hero__content p {
+    color: var(--color-neutral);
+    margin: 0;
+  }
+
   @media (max-width: 1440px) {
     .news__content-top {
       padding: 0 10% 100px;
@@ -138,8 +171,16 @@
     .news__content-top {
       padding: 20px 10%;
     }
+    .news-hero {
+      height: 300px;
+      padding: 0 10%;
+    }
+
+    .news-hero__content h2 {
+      font-size: 24px;
+    }
   }
-  @media (max-width: 425px) {
+  @media (max-width: 426px) {
     .news-content__wrapper {
       grid-template-columns: repeat(1, 1fr);
     }
@@ -150,12 +191,25 @@
       padding: 0;
     }
     .news__hero-wrapper {
-      padding: 0;
+      padding: 20px 24px;
+    }
+    .news-hero {
+      padding: 0 24px;
     }
   }
 {% endstyle %}
 
+
 <div class="news-container">
+
+  <section class="news-hero" style="background-image: url({{ section.settings.news_hero_background | image_url }});">
+    <div class="news-hero__content">
+      <h2>Global Komunika Blog & News</h2>
+      <p>Find your travel inspiration wherever you’re going.</p>
+    </div>
+  </section>
+
+
   <section class="news-main">
     {% comment %} Top 3 content pages from main section settings {% endcomment %}
     {% assign main_pages = section.settings['main-first-page'] | append: ',' | append: section.settings['main-second-page'] | append: ',' | append: section.settings['main-third-page'] | split: ','
@@ -309,6 +363,11 @@
     "name": "News Section",
     "settings": [
       {
+        "type": "image_picker",
+        "id": "news_hero_background",
+        "label": "News Hero Background Image"
+      },
+      {
         "type": "text",
         "id": "main-heading",
         "label": "Main Heading",
@@ -324,8 +383,7 @@
         "type": "page",
         "id": "main-first-page",
         "label": "Main First Page"
-      },
-      {
+      }, {
         "type": "page",
         "id": "main-second-page",
         "label": "Main Second Page"

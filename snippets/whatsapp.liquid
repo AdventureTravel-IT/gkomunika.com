@@ -1,7 +1,7 @@
 <a href="https://wa.me/+628986454071">
-<button class="whatsapp-container">
+  <button class="whatsapp-container">
     {{- 'whatsapp.svg' | inline_asset_content -}}
-</button>
+  </button>
 </a>
 
 {% style %}
@@ -17,15 +17,14 @@
     box-shadow: var(--box-shadow);
   }
   @media (max-width: 768px) {
-    .whatsapp-container {
-    }
+    .whatsapp-container {}
+}
+@media (max-width: 425px) {
+  .whatsapp-container {
+    width: 60px;
+    height: 60px;
+    right: 20px;
+
   }
-  @media (max-width: 425px) {
-    .whatsapp-container {
-      width: 50px;
-      height: 50px;
-      right: 24px;
-      
-    }
-  }
+}
 {% endstyle %}

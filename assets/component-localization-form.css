@@ -150,7 +150,7 @@
   position: absolute;
   content: "";
   height: 0.9rem;
-  right: calc(var(--inputs-border-width) + 1.5rem);
+  right: 1.5rem;
   transition: transform 0.3s ease;
 }
 
@@ -197,9 +197,7 @@
   z-index: 2;
   background-color: rgb(var(--color-background));
   border-radius: var(--popup-corner-radius);
-  box-shadow: var(--popup-shadow-horizontal-offset)
-    var(--popup-shadow-vertical-offset) var(--popup-shadow-blur-radius)
-    rgba(var(--color-shadow), var(--popup-shadow-opacity));
+  box-shadow: var(--box-shadow);
   max-height: 27.5rem;
 }
 
@@ -296,6 +294,14 @@
 }
 
 @media screen and (max-width: 749px) {
+
+  /* Membuat dropdown bahasa tampil ke bawah dan vertikal */
+.disclosure__list-wrapper.language-selector {
+  bottom: 100%;
+  left: 0;
+  top: auto;
+}
+
   .disclosure__list-wrapper.country-selector:not([hidden])
     + .country-selector__overlay:empty {
     display: block;

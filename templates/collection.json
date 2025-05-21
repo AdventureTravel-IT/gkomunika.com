@@ -9,6 +9,11 @@
  */
 {
   "sections": {
+    "custom_image_banner_j6Uy6w": {
+      "type": "custom-image-banner",
+      "name": "Banner-search",
+      "settings": {}
+    },
     "main": {
       "type": "popular-countries",
       "settings": {
@@ -21,14 +26,9 @@
         "tab_land": "Land",
         "tab_region": "Region",
         "tab_global": "Global",
-        "show_button": true,
+        "show_button": false,
         "show_all_text": "Show all destinations"
       }
-    },
-    "custom_image_banner_j6Uy6w": {
-      "type": "custom-image-banner",
-      "name": "Banner-search",
-      "settings": {}
     }
   },
   "order": [

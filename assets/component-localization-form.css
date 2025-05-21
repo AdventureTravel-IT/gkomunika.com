@@ -18,6 +18,77 @@
   margin: 1rem 1rem 0.5rem;
   flex-grow: 1;
 }
+/* Membuat dropdown bahasa tampil ke bawah dan vertikal */
+.disclosure__list-wrapper.language-selector {
+  top: 100%;
+  left: 0;
+  bottom: auto;
+  transform: translateY(0);
+  position: absolute;
+  z-index: 10;
+  background-color: var(--color-neutral);
+  border: 1px solid var(--color-background);
+  border-radius: 5px;
+  padding: 0;
+  margin: 0;
+}
+
+.disclosure__list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  min-width: 160px;
+}
+
+.disclosure__item {
+  position: relative;
+  padding: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.disclosure__link {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  text-decoration: none;
+}
+
+.disclosure__link span {
+  color: var(--color-primary) !important;
+  font-size: var(--font-large);
+}
+
+.disclosure__link:hover {
+  background-color: #f5f5f5;
+  color: #000;
+}
+
+.disclosure__button.localization-form__select {
+  border: none !important;
+  box-shadow: none !important;
+}
+.disclosure__button.localization-form__select {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: transparent;
+  /* Opsional: untuk hilangkan latar */
+}
+
+.disclosure__button.localization-form__select:focus,
+.disclosure__button.localization-form__select:active,
+.disclosure__button.localization-form__select:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.disclosure__button.localization-form__select::before,
+.disclosure__button.localization-form__select::after {
+  display: none !important;
+}
 
 @media screen and (min-width: 750px) {
   .localization-form {
@@ -72,16 +143,15 @@
 }
 
 .disclosure__button.localization-form__select {
-  padding: calc(2rem + var(--inputs-border-width));
   background: rgb(var(--color-background));
 }
 
 .localization-form__select .icon-caret {
   position: absolute;
-  content: '';
-  height: 0.6rem;
-  right: calc(var(--inputs-border-width) + 1.5rem);
-  top: calc(50% - 0.2rem);
+  content: "";
+  height: 0.9rem;
+  right: 1.5rem;
+  transition: transform 0.3s ease;
 }
 
 .localization-selector.link {
@@ -89,14 +159,9 @@
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  color: rgb(var(--color-foreground));
+  color: var(--color-primary);
   width: 100%;
   padding-right: 4rem;
-  padding-bottom: 1.5rem;
-}
-
-.disclosure .localization-form__select {
-  padding-top: 1.5rem;
 }
 
 .localization-selector option {
@@ -117,8 +182,7 @@
   cursor: pointer;
   display: flex;
   height: 4rem;
-  padding: 0 1.5rem 0 1.5rem;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   background-color: transparent;
 }
 
@@ -133,8 +197,7 @@
   z-index: 2;
   background-color: rgb(var(--color-background));
   border-radius: var(--popup-corner-radius);
-  box-shadow: var(--popup-shadow-horizontal-offset) var(--popup-shadow-vertical-offset) var(--popup-shadow-blur-radius)
-    rgba(var(--color-shadow), var(--popup-shadow-opacity));
+  box-shadow: var(--box-shadow);
   max-height: 27.5rem;
 }
 
@@ -142,8 +205,7 @@
   position: relative;
   overflow-y: auto;
   font-size: 1.4rem;
-  padding-bottom: 0.5rem;
-  padding-top: 0.5rem;
+  padding: 0 20px;
   scroll-padding: 0.5rem 0;
   max-height: 20.5rem;
   max-width: 25.5rem;
@@ -190,7 +252,7 @@
 .country-filter__reset-button:not(:focus)::after {
   display: block;
   height: calc(100% - 1.8rem);
-  content: '';
+  content: "";
   position: absolute;
   right: 0;
 }
@@ -218,7 +280,8 @@
 }
 
 .country-filter__search-icon {
-  transition: opacity var(--duration-short) ease, visibility var(--duration-short) ease;
+  transition: opacity var(--duration-short) ease,
+    visibility var(--duration-short) ease;
   opacity: 1;
   visibility: visible;
   pointer-events: none;
@@ -231,7 +294,16 @@
 }
 
 @media screen and (max-width: 749px) {
-  .disclosure__list-wrapper.country-selector:not([hidden]) + .country-selector__overlay:empty {
+
+  /* Membuat dropdown bahasa tampil ke bawah dan vertikal */
+.disclosure__list-wrapper.language-selector {
+  bottom: 100%;
+  left: 0;
+  top: auto;
+}
+
+  .disclosure__list-wrapper.country-selector:not([hidden])
+    + .country-selector__overlay:empty {
     display: block;
   }
 
@@ -270,7 +342,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0rem;
+    padding: 0;
     background-color: transparent;
     height: 4.4rem;
     width: 4.4rem;
@@ -302,15 +374,10 @@
   padding-top: 0.6rem;
 }
 
-.disclosure__item {
-  position: relative;
-}
-
 .disclosure__link {
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 0.5rem;
-  padding: 0.9rem 1.5rem;
   text-decoration: none;
   line-height: calc(1 + 0.8 / var(--font-body-scale));
   color: rgba(var(--color-foreground), 0.75);
@@ -333,8 +400,8 @@
   opacity: 1;
 }
 
-.disclosure__button[aria-expanded='true'] .icon-caret {
-  transform: rotate(180deg);
+.disclosure__button[aria-expanded="true"] .icon-caret {
+  transform: rotate(-180deg);
 }
 
 /* Header localization */
@@ -373,7 +440,9 @@
   justify-content: flex-end;
 }
 
-.desktop-localization-wrapper .localization-selector + .disclosure__list-wrapper {
+.desktop-localization-wrapper
+  .localization-selector
+  + .disclosure__list-wrapper {
   animation: animateMenuOpen var(--duration-default) ease;
 }
 
@@ -385,28 +454,38 @@
   align-items: center;
 }
 
-.js .header-localization:not(.menu-drawer__localization) .localization-form__select {
+.js
+  .header-localization:not(.menu-drawer__localization)
+  .localization-form__select {
   padding: 0 2.7rem 0 1.2rem;
   width: max-content;
   height: 3.8rem;
 }
 
-.header-localization:not(.menu-drawer__localization) .localization-form:only-child .localization-form__select {
+.header-localization:not(.menu-drawer__localization)
+  .localization-form:only-child
+  .localization-form__select {
   margin: 0;
 }
 
-.header-localization:not(.menu-drawer__localization).localization-form__select > span {
+.header-localization:not(.menu-drawer__localization).localization-form__select
+  > span {
   max-width: 20ch;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
-.header-localization:not(.menu-drawer__localization) localization-form:only-child .localization-form__select > span {
+.header-localization:not(.menu-drawer__localization)
+  localization-form:only-child
+  .localization-form__select
+  > span {
   max-width: 26ch;
 }
 
-.header-localization:not(.menu-drawer__localization) .localization-form__select .icon-caret {
+.header-localization:not(.menu-drawer__localization)
+  .localization-form__select
+  .icon-caret {
   right: 0.8rem;
 }
 
@@ -431,14 +510,16 @@
 .menu-drawer__localization .localization-form__select {
   background-color: initial;
   margin-top: 0;
-  padding: 1rem 3.6rem 1rem 0rem;
+  padding: 1rem 3.6rem 1rem 0;
 }
 
 .menu-drawer__localization .localization-form {
   padding: 0;
 }
 
-.menu-drawer__localization .localization-form:only-child .localization-form__select {
+.menu-drawer__localization
+  .localization-form:only-child
+  .localization-form__select {
   margin: 0;
 }
 

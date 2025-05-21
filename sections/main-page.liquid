@@ -255,7 +255,7 @@
                 {% assign content = related_page.content | strip_html %}
                 {% assign first_image = related_page.content | split: '<img' | last | split: 'src="' | last | split: '"' | first %}
                 {% if first_image contains 'http' %}
-                  <img src="{{ first_image }}" alt="{{ related_page.title }}">
+                  <img src="{{ first_image |  asset_url }}" alt="{{ related_page.title }}">
                 {% endif %}
                 <div>
                   <h3 class="pages-article__title" title="{{ page.title }}">{{ related_page.title }}</h3>

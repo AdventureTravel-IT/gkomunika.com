@@ -4,9 +4,13 @@
   <div class="popular-countries">
     <h2>{{ section.settings.title }}</h2>
     <div class="tabs">
-      <button class="tab-button active" data-tab="land"><span>Land</span></button>
-      <button class="tab-button" data-tab="region"><span>Region</span></button>
-      <!-- <button class="tab-button" data-tab="global"><span>Global</span></button> -->
+      <button class="tab-button active" data-tab="land">
+        <span>Land</span>
+      </button>
+      <button class="tab-button" data-tab="region">
+        <span>Region</span>
+      </button>
+    <!-- <button class="tab-button" data-tab="global"><span>Global</span></button> -->
     </div>
 
     <!-- LAND TAB -->
@@ -14,17 +18,18 @@
       class="tab-content"
       id="land"
       style="display: none; visibility: hidden;"
-      data-columns="{{ section.settings.land_columns }}"
-    >
+      data-columns="{{ section.settings.land_columns }}">
       {% case section.settings.display_mode %}
         {% when 'option_1' %}
           {% assign collection = collections['all_country'] %}
-          {% render 'land-country', collection: collection %}
+          {% render 'land-country'
+            , collection: collection %}
         {% when 'option_2' %}
           {% assign collection = collections['all-country'] %}
           {% if collection != blank %}
             {% assign countries = collection.metafields.coverage.country_list.value %}
-            {% render 'all-country', countries: countries %}
+            {% render 'all-country'
+              , countries: countries %}
           {% endif %}
       {% endcase %}
     </div>
@@ -34,46 +39,44 @@
       class="tab-content"
       id="region"
       style="display: none; visibility: hidden;"
-      data-columns="{{ section.settings.region_columns }}"
-    >
+      data-columns="{{ section.settings.region_columns }}">
       {% assign collection = collections[section.settings.region_collection] %}
       {% if collection and collection.products.size > 0 %}
-  {% assign displayed_regions = '' %}
+        {% assign displayed_regions = '' %}
 
-  {% for product in collection.products %}
-    {% assign region_value = product.metafields.coverage.region.value %}
-    {% assign country_name = region_value | first %}
+        {% for product in collection.products %}
+          {% assign region_value = product.metafields.coverage.region.value %}
+          {% assign country_name = region_value | first %}
 
-    {% if region_value and country_name != blank and country_name != null %}
-      {% unless displayed_regions contains country_name %}
-        {% assign displayed_regions = displayed_regions | append: ',' | append: country_name %}
+          {% if region_value and country_name != blank and country_name != null %}
+            {% unless displayed_regions contains country_name %}
+              {% assign displayed_regions = displayed_regions | append: ',' | append: country_name %}
 
-        <a href="/search?q={{ country_name | url_encode }}">
-          <div class="country">
-            <div class="text-content">
-              <img
-                src="{{ country_name | append: '.svg' | replace: ' ','_' | file_url }}"
-                alt="{{ country_name }}"
-                width="30"
-                height="30"
-                loading="lazy"
-                style="border: none;"
-              >
-              <div class="collection-pick">
-                <p>{{ country_name | replace: '_',' ' }}</p>
-                <span>Start From {{ product.price_min | money }}</span>
-              </div>
-            </div>
+              <a href="/search?q={{ country_name | url_encode }}">
+                <div class="country">
+                  <div class="text-content">
+                    <img
+                      src="{{ country_name | append: '.svg' | replace: ' ','_' | file_url }}"
+                      alt="{{ country_name }}"
+                      width="30"
+                      height="30"
+                      loading="lazy"
+                      style="border: none;">
+                    <div class="collection-pick">
+                      <p>{{ country_name | replace: '_', ' ' }}</p>
+                      <span>Start From {{ product.price_min | money }}</span>
+                    </div>
+                  </div>
 
-            <div class="country-icon">
-              {{- 'icon-arrow-back.svg' | inline_asset_content -}}
-            </div>
-          </div>
-        </a>
-      {% endunless %}
-    {% endif %}
-  {% endfor %}
-{% endif %}
+                  <div class="country-icon">
+                    {{- 'icon-arrow-back.svg' | inline_asset_content -}}
+                  </div>
+                </div>
+              </a>
+            {% endunless %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
 
     </div>
 
@@ -81,15 +84,16 @@
     <div
       class="tab-content"
       id="global"
-      style="display: none; visibility: hidden;"
-    >
+      style="display: none; visibility: hidden;">
       {% assign collection = collections[section.settings.global_collection] %}
+      {% render 'global-country'
+        , collection: collection
+        , product: product %}
+    {% comment %}
+      {% for product in collection.products %}
       {% render 'global-country', collection: collection, product: product %}
-      {% comment %}
-        {% for product in collection.products %}
-          {% render 'global-country', collection: collection, product: product %}
-        {% endfor %}
-      {% endcomment %}
+      {% endfor %}
+    {% endcomment %}
     </div>
 
     <div class="show-all-wrapper">
@@ -98,8 +102,7 @@
           <a
             href="{{ routes.collections_url }}/all?tab={{ active_tab }}"
             class="show-all-destination"
-            data-active-tab="{{ active_tab }}"
-          >
+            data-active-tab="{{ active_tab }}">
             <span>{{ section.settings.show_all_text }}</span>
           </a>
         </div>
@@ -113,87 +116,79 @@
 </script>
 
 {% schema %}
-{
-  "name": "Popular Countries",
-  "settings": [
-    {
-      "type": "select",
-      "id": "display_mode",
-      "label": "Display Mode",
-      "options": [
-        {
-          "value": "option_1",
-          "label": "Homepage"
-        },
-        {
-          "value": "option_2",
-          "label": "All Destination"
-        }
-      ],
-      "default": "option_1"
-    },
-    {
-      "type": "collection",
-      "id": "land_collection",
-      "label": "Display Land Top"
-    },
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "Display Land All Destination"
-    },
-    {
-      "type": "collection",
-      "id": "region_collection",
-      "label": "Pilih Koleksi untuk Region"
-    },
-    {
-      "type": "collection",
-      "id": "global_collection",
-      "label": "Pilih Koleksi untuk Global"
-    },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title",
-      "default": "Popular Countries"
-    },
-    {
-      "type": "text",
-      "id": "tab_land",
-      "label": "Tab 1 (Land)",
-      "default": "Land"
-    },
-    {
-      "type": "text",
-      "id": "tab_region",
-      "label": "Tab 2 (Region)",
-      "default": "Region"
-    },
-    {
-      "type": "text",
-      "id": "tab_global",
-      "label": "Tab 3 (Global)",
-      "default": "Global"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_button",
-      "label": "Show 'Show All' Button",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "show_all_text",
-      "label": "Show All Button Text",
-      "default": "Show all destinations"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Popular Countries",
-      "category": "Custom Sections"
-    }
-  ]
-}
+  {
+    "name": "Popular Countries",
+    "settings": [
+      {
+        "type": "select",
+        "id": "display_mode",
+        "label": "Display Mode",
+        "options": [
+          {
+            "value": "option_1",
+            "label": "Homepage"
+          }, {
+            "value": "option_2",
+            "label": "All Destination"
+          }
+        ],
+        "default": "option_1"
+      },
+      {
+        "type": "collection",
+        "id": "land_collection",
+        "label": "Display Land Top"
+      },
+      {
+        "type": "collection",
+        "id": "collection",
+        "label": "Display Land All Destination"
+      },
+      {
+        "type": "collection",
+        "id": "region_collection",
+        "label": "Pilih Koleksi untuk Region"
+      }, {
+        "type": "collection",
+        "id": "global_collection",
+        "label": "Pilih Koleksi untuk Global"
+      }, {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Popular Countries"
+      }, {
+        "type": "text",
+        "id": "tab_land",
+        "label": "Tab 1 (Land)",
+        "default": "Land"
+      }, {
+        "type": "text",
+        "id": "tab_region",
+        "label": "Tab 2 (Region)",
+        "default": "Region"
+      }, {
+        "type": "text",
+        "id": "tab_global",
+        "label": "Tab 3 (Global)",
+        "default": "Global"
+      }, {
+        "type": "checkbox",
+        "id": "show_button",
+        "label": "Show 'Show All' Button",
+        "default": true
+      }, {
+        "type": "text",
+        "id": "show_all_text",
+        "label": "Show All Button Text",
+        "default": "Show all destinations"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Popular Countries",
+        "category": "Custom Sections"
+      }
+    ]
+  }
 {% endschema %}

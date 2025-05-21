@@ -1,110 +1,120 @@
 {% unless template == 'customers/login' or template == 'customers/register' %}
-<div class="header-container">
-  <div class="header-content">
-    <div class="header-content-left">
-      <div class="header-conten-menu">
-        <button class="menu-toggle" onclick="toggleMenu()" aria-label="Open Menu">
-          <div class="animated-icon" id="menu-icon">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </button>
+  <div class="header__container">
+    <div class="header__wrapper">
+      <div class="header-content-left">
+        <div class="header-conten-menu">
+          <button
+            class="menu-toggle"
+            onclick="toggleMenu()"
+            aria-label="Open Menu">
+            <div class="animated-icon" id="menu-icon">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </button>
+        </div>
+        {% if section.settings.logo != blank %}
+          <a href="/">
+            <img
+              class="header-content-logo"
+              src="{{ section.settings.logo | img_url: 'master' }}"
+              width="120px"
+              height="40px"
+              alt="Site Logo"
+              loading="eager">
+          </a>
+        {% endif %}
       </div>
-      {% if section.settings.logo != blank %}
-        <a href="/">
-          <img class="header-content-logo" src="{{ section.settings.logo | img_url: 'master' }}" width="120px" height="40px" alt="Site Logo" loading="eager">
-        </a>
-      {% endif %}
+
+      <div class="header__content-right">
+        <section class="header__content-menu">
+          {% assign menu_handle = settings.selected_menu | default: 'main-menu' %}
+          {% if linklists[menu_handle] %}
+            {% for link in linklists[menu_handle].links %}
+              {% assign is_active = false %}
+              {% if link.url == request.path or request.path == '/' and link.url == '/' %}
+                {% assign is_active = true %}
+              {% endif %}
+              <div class="header-content-menu">
+                <a class="header-content__menu-link {% if is_active %}active{% endif %}" href="{{ link.url }}">
+                  {{ link.title }}
+                </a>
+              </div>
+            {% endfor %}
+
+          {% endif %}
+        </section>
+
+        <section class="header__content-addOn">
+          <div id="bucks-floating-desktop"></div>
+          <localization-form>
+            {%- form 'localization'
+              , id: 'FooterLanguageForm'
+              , class: 'localization-form' -%}
+              <div>
+                {%- render 'language-localization'
+                  , localPosition: 'FooterLanguage' -%}
+              </div>
+            {%- endform -%}
+          </localization-form>
+        </section>
+        <section class="header__content-profile">
+          <a
+            href="/cart"
+            class="cart-link"
+            aria-label="Shopping Cart">
+            <img
+              class="header-content-icon"
+              src="{{ 'cart.svg' | asset_url }}"
+              width="27px"
+              height="27px"
+              alt="Cart Icon"
+              loading="eager">
+            <span id="cart-count" class="cart-count"></span>
+          </a>
+
+          <a href="/account" aria-label="Account">
+            <img
+              class="header-content-icon"
+              src="{{ 'profile.svg' | asset_url }}"
+              width="27px"
+              height="27px"
+              alt="Profile Icon"
+              loading="eager">
+          </a>
+        </section>
+      </div>
     </div>
-    
-    <div class="header-content-right">
-      <ul>
-        {% assign menu_handle = settings.selected_menu | default: 'main-menu' %}
-        {% if linklists[menu_handle] %}
+
+    <div id="sidebar-menu" class="sidebar-menu">
+      {% assign menu_handle = settings.selected_menu | default: 'main-menu' %}
+      {% if linklists[menu_handle] %}
+        <ul>
           {% for link in linklists[menu_handle].links %}
-            <li class="header-content-menu">
+            <li>
               <a href="{{ link.url }}">{{ link.title }}</a>
             </li>
           {% endfor %}
-        {% endif %}
-        <li>
-          <div id="bucks-floating-desktop"></div>
-          <div id="bucks-floating-mobile" class="hidden"></div>
-        </li>
-        <li>
-          <form class="language-selector-form" onsubmit="event.preventDefault();">
-            <select id="language-select" onchange="redirectToLanguage()" style="padding: 0 5px;">
-              <option value="https://gkomunika.com">EN</option>
-              <option value="https://gkomunika.com/id">ID</option>
-            </select>
-          </form>
-          
-          <script>
-            function redirectToLanguage() {
-              const select = document.getElementById('language-select');
-              const selectedUrl = select.value;
-              window.location.href = selectedUrl;
-            }
-          
-            document.addEventListener('DOMContentLoaded', function () {
-              const currentPath = window.location.pathname;
-          
-              const select = document.getElementById('language-select');
-          
-              if (currentPath.startsWith('/id')) {
-                select.value = 'https://gkomunika.com/id';
-              } else {
-                select.value = 'https://gkomunika.com';
-              }
-            });
-          </script>
-          
-        </li>
-        <li>
-          <a href="/cart" class="cart-link" aria-label="Shopping Cart">
-            <img class="header-content-icon" src="{{ 'cart.svg' | asset_url }}" width="27px" height="27px" alt="Cart Icon" loading="eager">
-            <span id="cart-count" class="cart-count"></span>
-          </a>
-        </li>
-        <li>
-          <a href="/account" aria-label="Account">
-            <img class="header-content-icon" src="{{ 'profile.svg' | asset_url }}" width="27px" height="27px" alt="Profile Icon" loading="eager">
-          </a>
-        </li>
-      </ul>
+        </ul>
+      {% endif %}
     </div>
   </div>
-
-  <div id="sidebar-menu" class="sidebar-menu">
-    {% assign menu_handle = settings.selected_menu | default: 'main-menu' %}
-    {% if linklists[menu_handle] %}
-      <ul>
-        {% for link in linklists[menu_handle].links %}
-          <li>
-            <a href="{{ link.url }}">{{ link.title }}</a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  </div>
-</div>
 {% endunless %}
 
 {% schema %}
-{
-  "name": "Header Settings",
-  "settings": [
-    {
-      "type": "link_list",
-      "id": "selected_menu",
-      "label": "Menu"
-    },
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo"
-    }
-  ]
-}
+  {
+    "name": "Header Settings",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "selected_menu",
+        "label": "Menu"
+      }, {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      }
+    ]
+  }
 {% endschema %}

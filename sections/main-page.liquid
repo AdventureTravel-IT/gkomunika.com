@@ -255,7 +255,7 @@
                 {% assign content = related_page.content | strip_html %}
                 {% assign first_image = related_page.content | split: '<img' | last | split: 'src="' | last | split: '"' | first %}
                 {% if first_image contains 'http' %}
-                  <img src="{{ first_image |  asset_url }}" alt="{{ related_page.title }}">
+                  <img src="{{ first_image }}" alt="{{ related_page.title }}">
                 {% endif %}
                 <div>
                   <h3 class="pages-article__title" title="{{ page.title }}">{{ related_page.title }}</h3>
@@ -268,7 +268,7 @@
       {% endif %}
 
       <section class="pages-summary">
-        <h2 class="pages-title">Summary Article</h2>
+        <h2 class="pages-title">Article Summary</h2>
         <ul class="page-summary__wrapper">
           <li id="summary"></li>
         </ul>
@@ -278,104 +278,110 @@
 
 
   {% comment %} <section class="pages-product">
-                                                                                                                                          {% assign related_product = page.metafields.related.product %}
-                                                                                                                                          {% assign country = product.metafields.coverage.country.value %}
-                                                                                                                                          {% assign recomendation_product = page.metafields.recomendation.product %}
-
-                                                                                                                                          <div class="pages-related__product">
-                                                                                                                                            <h2>Related Products</h2>
-                                                                                                                                            {% if related_product %}
-                                                                                                                                              {% for related_product in related_product.value %}
-                                                                                                                                                {% assign country = related_product.metafields.coverage.country.value.first %}
-                                                                                                                                                <a class="pages-product__link" href="{{ related_product.url }}">
-                                                                                                                                                  <div class="pages-product__wrapper">
-                                                                                                                                                    <div class="pages-product__image">
-                                                                                                                                                      {% if country %}
-                                                                                                                                                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
-                                                                                                                                                      {% endif %}
-                                                                                                                                                    </div>
-                                                                                                                                                    <div class="pages-product__info">
-                                                                                                                                                      <p class="pages-product__title">{{ related_product.title }}</p>
-                                                                                                                                                      <p class="pages-product__price">Start From {{ related_product.price | money_with_currency }}</p>
-                                                                                                                                                    </div>
-                                                                                                                                                  </div>
-                                                                                                                                                </a>
-                                                                                                                                              {% endfor %}
-                                                                                                                                            {% endif %}
-                                                                                                                                          </div>
-
-                                                                                                                                          <div class="pages-related__product">
-                                                                                                                                            <h2>Recommendation Products</h2>
-                                                                                                                                            {% if page.metafields.recomendation.product %}
-                                                                                                                                              {% assign collection = page.metafields.recomendation.product.value %}
-                                                                                                                                              {% assign products = collection.products %}
-                                                                                                                                              {% for product in products limit: 5 %}
-                                                                                                                                                {% assign country = product.metafields.coverage.country.value.first %}
-                                                                                                                                                <a class="pages-product__link" href="{{ product.url }}">
-                                                                                                                                                  <div class="pages-product__wrapper">
-                                                                                                                                                    <div class="pages-product__image">
-                                                                                                                                                      {% if country %}
-                                                                                                                                                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
-                                                                                                                                                      {% endif %}
-                                                                                                                                                    </div>
-                                                                                                                                                    <div class="pages-product__info">
-                                                                                                                                                      <p class="pages-product__title">{{ product.title }}</p>
-                                                                                                                                                      <p class="pages-product__price">Start From {{ product.price | money_with_currency }}</p>
-                                                                                                                                                    </div>
-                                                                                                                                                  </div>
-                                                                                                                                                </a>
-                                                                                                                                              {% endfor %}
-                                                                                                                                            {% endif %}
-                                                                                                                                          </div>
-                                                                      </section> {% endcomment %}
+                                                                                                                                                          {% assign related_product = page.metafields.related.product %}
+                                                                                                                                                          {% assign country = product.metafields.coverage.country.value %}
+                                                                                                                                                          {% assign recomendation_product = page.metafields.recomendation.product %}
+        
+                                                                                                                                                          <div class="pages-related__product">
+                                                                                                                                                            <h2>Related Products</h2>
+                                                                                                                                                            {% if related_product %}
+                                                                                                                                                              {% for related_product in related_product.value %}
+                                                                                                                                                                {% assign country = related_product.metafields.coverage.country.value.first %}
+                                                                                                                                                                <a class="pages-product__link" href="{{ related_product.url }}">
+                                                                                                                                                                  <div class="pages-product__wrapper">
+                                                                                                                                                                    <div class="pages-product__image">
+                                                                                                                                                                      {% if country %}
+                                                                                                                                                                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
+                                                                                                                                                                      {% endif %}
+                                                                                                                                                                    </div>
+                                                                                                                                                                    <div class="pages-product__info">
+                                                                                                                                                                      <p class="pages-product__title">{{ related_product.title }}</p>
+                                                                                                                                                                      <p class="pages-product__price">Start From {{ related_product.price | money_with_currency }}</p>
+                                                                                                                                                                    </div>
+                                                                                                                                                                  </div>
+                                                                                                                                                                </a>
+                                                                                                                                                              {% endfor %}
+                                                                                                                                                            {% endif %}
+                                                                                                                                                          </div>
+        
+                                                                                                                                                          <div class="pages-related__product">
+                                                                                                                                                            <h2>Recommendation Products</h2>
+                                                                                                                                                            {% if page.metafields.recomendation.product %}
+                                                                                                                                                              {% assign collection = page.metafields.recomendation.product.value %}
+                                                                                                                                                              {% assign products = collection.products %}
+                                                                                                                                                              {% for product in products limit: 5 %}
+                                                                                                                                                                {% assign country = product.metafields.coverage.country.value.first %}
+                                                                                                                                                                <a class="pages-product__link" href="{{ product.url }}">
+                                                                                                                                                                  <div class="pages-product__wrapper">
+                                                                                                                                                                    <div class="pages-product__image">
+                                                                                                                                                                      {% if country %}
+                                                                                                                                                                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
+                                                                                                                                                                      {% endif %}
+                                                                                                                                                                    </div>
+                                                                                                                                                                    <div class="pages-product__info">
+                                                                                                                                                                      <p class="pages-product__title">{{ product.title }}</p>
+                                                                                                                                                                      <p class="pages-product__price">Start From {{ product.price | money_with_currency }}</p>
+                                                                                                                                                                    </div>
+                                                                                                                                                                  </div>
+                                                                                                                                                                </a>
+                                                                                                                                                              {% endfor %}
+                                                                                                                                                            {% endif %}
+                                                                                                                                                          </div>
+                                                                              </section> {% endcomment %}
   </div>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const headings = document.querySelectorAll('.page-content__wrapper h2');
-    const summary = document.getElementById('summary');
-
-    // Buat TOC
-    headings.forEach((heading, i) => {
-      const id = `section-${i}`;
-      heading.id = id;
-      summary.innerHTML += `<li><a href="#${id}">${heading.textContent}</a></li>`;
+   document.addEventListener('DOMContentLoaded', () => {
+  const headings = document.querySelectorAll('.page-content__wrapper h2');
+  const summary = document.getElementById('summary');
+  const summarySection = document.querySelector('.pages-summary');
+  
+  // Buat TOC
+  headings.forEach((heading, i) => {
+    const id = `section-${i}`;
+    heading.id = id;
+    summary.innerHTML += `<li><a href="#${id}">${heading.textContent}</a></li>`;
+  });
+  
+  // Jika tidak ada list item (summary kosong), sembunyikan section summary
+  if (summary.children.length === 0) {
+    summarySection.style.display = 'none';
+  }
+  
+  const links = summary.querySelectorAll('a');
+  
+  links.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      links.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      document.querySelector(link.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      });
     });
-
-    const links = summary.querySelectorAll('a');
-
-    links.forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
+  });
+  
+  // Scroll observer untuk update TOC aktif
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px 0px -60% 0px',
+    threshold: 0
+  };
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const id = entry.target.id;
+      const tocLink = summary.querySelector(`a[href="#${id}"]`);
+  
+      if (entry.isIntersecting) {
         links.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-        document.querySelector(link.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
+        if (tocLink) tocLink.classList.add('active');
+      }
     });
-
-    // Tambahan: Scroll listener untuk update TOC aktif
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px 0px -60% 0px', // Aktif saat heading berada 40% dari atas
-      threshold: 0
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const id = entry.target.id;
-        const tocLink = summary.querySelector(`a[href="#${id}"]`);
-
-        if (entry.isIntersecting) {
-          links.forEach(l => l.classList.remove('active'));
-          if (tocLink) tocLink.classList.add('active');
-        }
-      });
-    }, observerOptions);
-
-    headings.forEach((heading) => observer.observe(heading));
+  }, observerOptions);
+  
+  headings.forEach((heading) => observer.observe(heading));
   });
 </script>
 

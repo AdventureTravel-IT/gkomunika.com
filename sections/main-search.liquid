@@ -1,6 +1,6 @@
 {% comment %} 
-                                            Improved and validated Shopify section with SIM Type filter buttons
-                                            Fix: Heading collection hanya muncul kalau produk ada
+                                                                                    Improved and validated Shopify section with SIM Type filter buttons
+                                                                                    Fix: Heading collection hanya muncul kalau produk ada
 {% endcomment %}
 
 {% comment %} # STYLES SECTION {% endcomment %}
@@ -23,21 +23,26 @@
   }
 
   .sim-filter-buttons button {
-    padding: 8px 15px;
-    background-color: var(--color-primary);
-    color: var(--color-neutral);
+    padding: 8px 20px;
+    background: transparent;
+    color: var(--color-primary);
     border: none;
     border-radius: 15px;
     font-weight: bold;
+    font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: transform 0.3s ease;
   }
   .sim-filter-buttons button.active,
   .sim-filter-buttons button:hover {
-    background-color: var(--color-secondary);
+    color: var(--color-neutral);
+    background-color: var(--color-primary);
   }
 
   /* Keep your original styles unchanged below */
+  .main-search-collection-wrapper {
+    margin-bottom: 30px;
+  }
   .main-search-collection {
     margin-top: 20px;
   }
@@ -258,48 +263,60 @@
 {% comment %} # JAVASCRIPT SECTION {% endcomment %}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // Flip card functionality (existing)
-    document.querySelectorAll('.flipped-trigger').forEach(function (button) {
-      button.addEventListener('click', function (event) {
-        event.stopPropagation();
-        let card = this.closest('.product-card-container');
-        card.classList.toggle('flipped');
-      });
+  // Flip card functionality (existing)
+  document.querySelectorAll('.flipped-trigger').forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      event.stopPropagation();
+      let card = this.closest('.product-card-container');
+      card.classList.toggle('flipped');
     });
-    document.addEventListener('click', function (event) {
-      document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
-        if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
-          card.classList.remove('flipped');
-        }
-      });
+  });
+  document.addEventListener('click', function (event) {
+    document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
+      if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
+        card.classList.remove('flipped');
+      }
     });
+  });
   
-    // SIM Type Filter buttons
-    const filterButtonsContainer = document.querySelector('.sim-filter-buttons');
-    if (!filterButtonsContainer) return;
+  // SIM Type Filter buttons
+  const filterButtonsContainer = document.querySelector('.sim-filter-buttons');
+  if (!filterButtonsContainer) return;
   
-    const buttons = filterButtonsContainer.querySelectorAll('button');
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        buttons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
+  const buttons = filterButtonsContainer.querySelectorAll('button');
+  const collectionWrappers = document.querySelectorAll('.main-search-collection-wrapper');
   
-        const filter = button.getAttribute('data-filter');
-        document.querySelectorAll('.product-card-container').forEach(productCard => {
-          if(filter === 'all') {
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+  
+      const filter = button.getAttribute('data-filter');
+  
+      // Show/hide products
+      document.querySelectorAll('.product-card-container').forEach(productCard => {
+        if (filter === 'all') {
+          productCard.style.display = 'flex';
+        } else {
+          if (productCard.classList.contains('sim-type-' + filter)) {
             productCard.style.display = 'flex';
           } else {
-            if(productCard.classList.contains('sim-type-' + filter)) {
-              productCard.style.display = 'flex';
-            } else {
-              productCard.style.display = 'none';
-            }
+            productCard.style.display = 'none';
           }
-        });
+        }
+      });
+  
+      // Show/hide collection wrappers based on visible products inside them
+      collectionWrappers.forEach(wrapper => {
+        const products = wrapper.querySelectorAll('.product-card-container');
+        const anyVisible = Array.from(products).some(p => p.style.display !== 'none');
+        wrapper.style.display = anyVisible ? 'block' : 'none';
       });
     });
   });
+  });
 </script>
+
 
 {% comment %} # TEMPLATE SECTION {% endcomment %}
 <div class="main-search">
@@ -502,13 +519,17 @@
       {% endif %}
 
       {% if found_product %}
-        <div class="main-search-collection">
+        <div class="main-search-collection-wrapper" id="collection-{{ collection_key }}">
           <h1 class="main-search-collection title">{{ collection.title }}</h1>
-          <div class="product-card-wrapper" id="{{ collection_key }}">
-            {{ product_output }}
+          <div class="main-search-collection">
+            <div class="product-card-wrapper" id="{{ collection_key }}">
+              {{ product_output }}
+            </div>
           </div>
         </div>
       {% endif %}
+
+
     {% endfor %}
 
     {% unless found_any_product %}

@@ -259,7 +259,7 @@
           <span>{{ block.settings['hero-description'] }}</span>
           {% if block.settings['show-button'] %}
             <a href="/pages/news-category/{{ block.settings.category }}">
-              <button class="news__hero-button">Readmore</button>
+              <button class="news__hero-button">Read More</button>
             </a>
           {% endif %}
         </div>
@@ -270,22 +270,26 @@
           {% for page_id in page_ids %}
             {% assign page = pages[page_id] %}
             {% if page %}
+
               <section class="news-content__card">
-                {% assign img_parts = page.content | split: '<img' %}
-                {% if img_parts.size > 1 %}
-                  {% assign first_img_tag = img_parts[1] | split: '>' | first | prepend: '<img' | append: '>' %}
-                  {{ first_img_tag }}
-                {% endif %}
                 <a class="new-content__link" href="{{ page.url }}">
+                  {% assign img_parts = page.content | split: '<img' %}
+                  {% if img_parts.size > 1 %}
+                    {% assign first_img_tag = img_parts[1] | split: '>' | first | prepend: '<img' | append: '>' %}
+                    {{ first_img_tag }}
+                  {% endif %}
+
                   <h2 class="news-content__card-title" title="{{ page.title }}">{{ page.title }}</h2>
                   <h2 class="news-content__card-description">
                     {{ page.content | strip_html }}
                   </h2>
+
+                  <div class="news-content__date">
+                    {{ page.published_at | date: '%d %B %Y' }}
+                  </div>
                 </a>
-                <div class="news-content__date">
-                  {{ page.published_at | date: '%d %B %Y' }}
-                </div>
               </section>
+
             {% endif %}
           {% endfor %}
         </div>

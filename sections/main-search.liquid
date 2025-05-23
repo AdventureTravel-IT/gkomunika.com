@@ -1,14 +1,11 @@
-{% comment %}
-  Improved and validated Shopify section:
-  - Cleaned up HTML structure
-  - Removed invalid attributes
-  - Replaced duplicate ID with class
-  - Fixed anchor/button nesting
-  - Ensured semantic and accessible HTML
+{% comment %} 
+                                                                                                          Improved and validated Shopify section with SIM Type filter buttons
+                                                                                                          Fix: Heading collection hanya muncul kalau produk ada
 {% endcomment %}
 
 {% comment %} # STYLES SECTION {% endcomment %}
 {% style %}
+  /* (Styles as you provided, plus filter buttons styles) */
   .main-search {
     max-width: 1920px;
     margin: 0 auto;
@@ -18,17 +15,43 @@
     padding: 20px 10% 90px;
   }
 
+  .sim-filter-buttons {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .sim-filter-buttons button {
+    padding: 8px 20px;
+    background: transparent;
+    color: var(--color-primary);
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .sim-filter-buttons button.active,
+  .sim-filter-buttons button:hover {
+    color: var(--color-neutral);
+    background-color: var(--color-primary);
+  }
+
+  /* Keep your original styles unchanged below */
+  .main-search-collection-wrapper {
+    margin-bottom: 30px;
+  }
   .main-search-collection {
     margin-top: 20px;
   }
-
   .main-search-collection.title {
     margin: 0 0 10px;
     font-weight: bold;
     color: var(--color-primary);
     font-size: 26px;
   }
-
   .product-card-wrapper {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -36,7 +59,6 @@
     width: 100%;
     height: 100%;
   }
-
   .product-card-container {
     display: flex;
     flex-direction: column;
@@ -45,7 +67,6 @@
     border-radius: 25px;
     box-shadow: var(--box-shadow);
   }
-
   .product-card-country {
     display: flex;
     gap: 10px;
@@ -55,7 +76,6 @@
     margin-bottom: 20px;
     min-height: 53px;
   }
-
   .product-card-country h1 {
     margin: 0;
     color: var(--color-primary);
@@ -64,12 +84,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
   .product-card-icon-single-flag {
     border-radius: 15px;
     border: 1px solid var(--color-border);
   }
-
   .product-card-multi-flag,
   .product-card-icon-multi-flag {
     display: grid;
@@ -77,11 +95,9 @@
     gap: 3px;
     border-radius: 5px;
   }
-
   .product-card-icon-multi-flag {
     border: 1px solid var(--color-border);
   }
-
   .product-card-flag-count {
     display: flex;
     align-items: center;
@@ -93,36 +109,30 @@
     color: var(--color-primary);
     background-color: white;
   }
-
   .product-card-flag-count span {
     font-size: 10px;
     font-weight: bold;
     color: var(--color-primary);
   }
-
   .product-url-link {
     text-decoration: none;
     color: var(--color-primary);
   }
-
   .product-card-field-icons {
     display: flex;
     gap: 10px;
     align-items: center;
     justify-content: center;
   }
-
   .product-card-field-icons h1 {
     font-size: 18px;
     font-weight: bold;
     color: var(--color-primary);
   }
-
   .product-card-field-icons h2 {
     word-break: break-word;
     -webkit-line-clamp: 2;
   }
-
   .product-card-field {
     display: flex;
     justify-content: space-between;
@@ -130,18 +140,15 @@
     border-top: 1px ridge;
     padding: 10px 0;
   }
-
   img.field-icon {
     width: 30px;
     height: 30px;
   }
-
   .product-card-field h2 {
     font-size: 16px;
     font-weight: bold;
     color: var(--color-secondary);
   }
-
   .product-card-btn {
     width: 100%;
     height: 55px;
@@ -149,30 +156,26 @@
     border: none;
     border-radius: 15px;
   }
-
   .product-card-btn p {
     font-size: var(--font-large);
     font-weight: bold;
     color: var(--color-neutral);
     margin: 0;
   }
-
   .product-card-content {
     position: relative;
     width: 100%;
     height: 100%;
+    margin-bottom: 10px;
     transform-style: preserve-3d;
     transition: transform 0.6s ease-in-out;
   }
-
   .product-card-container .product-card-content {
     transform: rotateY(0deg);
   }
-
   .product-card-container.flipped .product-card-content {
     transform: rotateY(180deg);
   }
-
   .product-card-content-flip-front,
   .product-card-content-flip-back {
     backface-visibility: hidden;
@@ -183,7 +186,6 @@
     flex-direction: column;
     gap: 7px;
   }
-
   .product-card-content-flip-back {
     position: absolute;
     top: 0;
@@ -194,20 +196,18 @@
     cursor: pointer;
     transform: rotateY(180deg);
   }
-
   .country-total-atribut-wrapper {
     max-width: 125px;
+    padding: 2px 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-
   .country-total-atribut span {
     font-size: 12px;
     font-weight: bold;
     color: var(--color-secondary);
   }
-
   .country-total-atribut button {
     width: 100%;
     padding: 10px;
@@ -216,13 +216,11 @@
     border: 1px solid var(--color-primary);
     background: none;
   }
-
   .country-total-including-atribut {
     background-color: var(--color-primary);
     text-align: center;
     border-radius: 5px;
   }
-
   .country-total-including-atribut p {
     margin: 5px;
     font-size: 12px;
@@ -253,11 +251,18 @@
       grid-template-columns: repeat(3, 1fr);
     }
   }
-
   @media (max-width: 768px) {
     .main-search-container {
-      padding: 20px 24px;
+      padding: 20px 10%;
     }
+    .product-card-wrapper {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .banner-search__content {
+      width: 100%;
+    }
+  }
+  @media (max-width: 426px) {
     .product-card-wrapper {
       grid-template-columns: repeat(1, 1fr);
     }
@@ -267,23 +272,60 @@
 {% comment %} # JAVASCRIPT SECTION {% endcomment %}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.flipped-trigger').forEach(function (button) {
-      button.addEventListener('click', function (event) {
-        event.stopPropagation();
-        let card = this.closest('.product-card-container');
-        card.classList.toggle('flipped');
-      });
+  // Flip card functionality (existing)
+  document.querySelectorAll('.flipped-trigger').forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      event.stopPropagation();
+      let card = this.closest('.product-card-container');
+      card.classList.toggle('flipped');
     });
-
-    document.addEventListener('click', function (event) {
-      document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
-        if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
-          card.classList.remove('flipped');
+  });
+  document.addEventListener('click', function (event) {
+    document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
+      if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
+        card.classList.remove('flipped');
+      }
+    });
+  });
+  
+  // SIM Type Filter buttons
+  const filterButtonsContainer = document.querySelector('.sim-filter-buttons');
+  if (!filterButtonsContainer) return;
+  
+  const buttons = filterButtonsContainer.querySelectorAll('button');
+  const collectionWrappers = document.querySelectorAll('.main-search-collection-wrapper');
+  
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+  
+      const filter = button.getAttribute('data-filter');
+  
+      // Show/hide products
+      document.querySelectorAll('.product-card-container').forEach(productCard => {
+        if (filter === 'all') {
+          productCard.style.display = 'flex';
+        } else {
+          if (productCard.classList.contains('sim-type-' + filter)) {
+            productCard.style.display = 'flex';
+          } else {
+            productCard.style.display = 'none';
+          }
         }
+      });
+  
+      // Show/hide collection wrappers based on visible products inside them
+      collectionWrappers.forEach(wrapper => {
+        const products = wrapper.querySelectorAll('.product-card-container');
+        const anyVisible = Array.from(products).some(p => p.style.display !== 'none');
+        wrapper.style.display = anyVisible ? 'block' : 'none';
       });
     });
   });
+  });
 </script>
+
 
 {% comment %} # TEMPLATE SECTION {% endcomment %}
 <div class="main-search">
@@ -292,159 +334,211 @@
     {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection' | split: ',' %}
     {% assign found_any_product = false %}
     {% assign single_product_url = '' %}
-    {% assign product_count = 0 %}
+  {% assign product_count = 0 %}
 
+    {%- comment -%} Loop pertama: kumpulkan semua tipe SIM unik dari produk hasil pencarian {% endcomment -%}
+    {% assign sim_types = '' %}
+    {% for collection_key in collections_to_check %}
+      {% assign collection = collections[section.settings[collection_key]] %}
+      {% if collection %}
+        {% for product in collection.products %}
+          {% assign product_alias = product.metafields.coverage.alias | downcase | strip %}
+          {% assign product_countries = product.metafields.coverage.country.value %}
+          {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
+          {% assign matched_countries = '' %}
+
+          {% assign match_region = false %}
+          {% assign product_regions = product.metafields.coverage.region.value %}
+          {% if product_regions %}
+            {% for region in product_regions %}
+              {% assign region_clean = region | downcase | strip %}
+              {% if region_clean == search_term %}
+                {% assign match_region = true %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
+          {% if collection_key == 'global_country_collection' or collection_key == 'multi_country_collection' %}
+            {% for country in product_countries %}
+              {% assign country_downcase = country | downcase | strip %}
+              {% if country_downcase contains search_term %}
+                {% assign matched_countries = matched_countries | append: country | append: ', ' %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
+          {% if product_alias contains search_term or matched_countries != '' or match_region %}
+            {% assign found_any_product = true %}
+            {% unless sim_types contains product_category %}
+              {% assign sim_types = sim_types | append: product_category | append: ',' %}
+            {% endunless %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+
+    {% assign sim_types_array = sim_types | split: ',' %}
+
+    {%- comment -%} Render filter buttons {% endcomment -%}
+    <div class="sim-filter-buttons">
+      <button class="filter-btn active" data-filter="all">All</button>
+      {% for sim_type in sim_types_array %}
+        {% assign sim_type_trim = sim_type | strip %}
+        {% if sim_type_trim != '' and sim_type_trim != 'Undefined' %}
+          <button class="filter-btn" data-filter="{{ sim_type_trim | replace: '_', ' ' | downcase | replace: ' ', '-' }}">{{ sim_type_trim | replace: '_', ' ' }}</button>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {%- comment -%} Loop kedua: render produk dan heading collection hanya jika ada produk {% endcomment -%}
     {% for collection_key in collections_to_check %}
       {% assign collection = collections[section.settings[collection_key]] %}
       {% assign found_product = false %}
       {% assign product_output = '' %}
 
+      {% if collection %}
         {% for product in collection.products %}
-        {% assign product_alias = product.metafields.coverage.alias | downcase | strip %}
-        {% assign product_countries = product.metafields.coverage.country.value %}
-      {% assign matched_countries = '' %}
+          {% assign product_alias = product.metafields.coverage.alias | downcase | strip %}
+          {% assign product_countries = product.metafields.coverage.country.value %}
+          {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
+          {% assign matched_countries = '' %}
 
-        {%- comment -%} Perbaikan pencocokan region (strict match, case-insensitive) {%- endcomment -%}
-        {% assign match_region = false %}
-        {% assign product_regions = product.metafields.coverage.region.value %}
-        {% if product_regions %}
-          {% for region in product_regions %}
-            {% assign region_clean = region | downcase | strip %}
-            {% if region_clean == search_term %}
-              {% assign match_region = true %}
-            {% endif %}
-          {% endfor %}
-        {% endif %}
+          {% assign match_region = false %}
+          {% assign product_regions = product.metafields.coverage.region.value %}
+          {% if product_regions %}
+            {% for region in product_regions %}
+              {% assign region_clean = region | downcase | strip %}
+              {% if region_clean == search_term %}
+                {% assign match_region = true %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
 
-        {% if collection_key == 'global_country_collection' or collection_key == 'multi_country_collection' %}
-          {% for country in product_countries %}
-            {% assign country_downcase = country | downcase | strip %}
-            {% if country_downcase contains search_term %}
-              {% assign matched_countries = matched_countries | append: country | append: ', ' %}
-            {% endif %}
-          {% endfor %}
-        {% endif %}
+          {% if collection_key == 'global_country_collection' or collection_key == 'multi_country_collection' %}
+            {% for country in product_countries %}
+              {% assign country_downcase = country | downcase | strip %}
+              {% if country_downcase contains search_term %}
+                {% assign matched_countries = matched_countries | append: country | append: ', ' %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
 
-        {% if product_alias contains search_term or matched_countries != '' or match_region %}
-          {% assign found_product = true %}
-          {% assign found_any_product = true %}
-          {% assign product_count = product_count | plus: 1 %}
-          {% assign single_product_url = product.url %}
+          {% if product_alias contains search_term or matched_countries != '' or match_region %}
+            {% assign found_product = true %}
+            {% assign found_any_product = true %}
+            {% assign product_count = product_count | plus: 1 %}
+            {% assign single_product_url = product.url %}
 
-          {% capture product_card %}
-            <div class="product-card-container">
-              <a class="product-url-link" href="{{ product.url }}">
-              <div class="product-card-country">
-                {% assign total_countries = product_countries.size %}
+            {% capture product_card %}
+              <div class="product-card-container sim-type-{{ product_category | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
+                <a class="product-url-link" href="{{ product.url }}">
+                  <div class="product-card-country">
+                    {% assign total_countries = product_countries.size %}
+                    {% if total_countries == 1 %}
+                      {% assign country_trimmed = product_countries.first | strip %}
+                      {% assign country_filename = country_trimmed | replace: ' ', '-' | append: '.svg' %}
+                      <img class="product-card-icon-single-flag" src="{{ country_filename | file_url }}" alt="{{ country_trimmed }}" width="50" height="50">
+                    {% else %}
+                      <div class="product-card-multi-flag">
+                        {% for country in product_countries limit: 3 %}
+                          {% assign country_parts = country | split: '_' %}
+                          {% assign country_processed = country_parts | join: '_' | replace: ' ', '-' %}
+                          {% assign country_filename = country_processed | append: '.svg' %}
+                          <img class="product-card-icon-multi-flag" src="{{ country_filename | file_url }}" alt="{{ country_processed }}" width="25" height="25">
+                        {% endfor %}
+                        {% if total_countries > 3 %}
+                          <div class="product-card-flag-count"><span>+{{ total_countries | minus: 3 }}</span></div>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                    <div class="main-search__product">
+                      <span>SIM Type: {{ product_category | replace: '_', ' ' }}</span>
+                      <h1>{{ product.title }}</h1>
+                    </div>
+                  </div>
+                </a>
 
-                {% if total_countries == 1 %}
-                  {% assign country_trimmed = product_countries.first | strip %}
-                  {% assign country_filename = country_trimmed | replace: ' ', '-' | append: '.svg' %}
-                  <img class="product-card-icon-single-flag" src="{{ country_filename | file_url }}" alt="{{ country_trimmed }}" width="50" height="50">
-                {% else %}
-                  <div class="product-card-multi-flag">
-                    {% for country in product_countries limit: 3 %}
-                      {% assign country_parts = country | split: '_' %}
-                      {% assign country_processed = country_parts | join: '_' | replace: ' ', '-' %}
-                      {% assign country_filename = country_processed | append: '.svg' %}
-                      <img class="product-card-icon-multi-flag" src="{{ country_filename | file_url }}" alt="{{ country_processed }}" width="25" height="25">
-                    {% endfor %}
-                    {% if total_countries > 3 %}
-                      <div class="product-card-flag-count"><span>+{{ total_countries | minus: 3 }}</span></div>
+                <div class="product-card-content">
+                  <div class="product-card-content-flip-front">
+                    {% if product_countries.size > 1 %}
+                      <div class="product-card-field" style="border-top: 1px ridge;">
+                        <div class="product-card-field-icons">
+                          <img class="field-icon" src="{{ 'icon-park-outline_world.svg' | asset_url }}" alt="Icon">
+                          <h1>Coverage</h1>
+                        </div>
+                        <div class="country-total-atribut-wrapper">
+                          <div class="country-total-atribut">
+                            <button class="flipped-trigger"><span>{{ product_countries.size }} Countries</span></button>
+                          </div>
+                          <div class="country-total-including-atribut">
+                            {% if matched_countries != blank %}
+                              <p>Including {{ matched_countries | strip | replace: ',', ' ' }}</p>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    {% if product.variants.size > 0 %}
+                      {% assign first_optiondays = product.variants.first.option1 | replace: ' Days', '' %}
+                      {% assign last_optiondays = product.variants.last.option1 | strip %}
+                      {% assign last_optionquota = product.variants.last.option2 | strip %}
+
+                      <div class="product-card-field">
+                        <div class="product-card-field-icons">
+                          <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" alt="Icon">
+                          <h1>Data</h1>
+                        </div>
+                        <h2>{{ last_optionquota }}</h2>
+                      </div>
+
+                      <div class="product-card-field">
+                        <div class="product-card-field-icons">
+                          <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" alt="Icon">
+                          <h1>Days</h1>
+                        </div>
+                        <h2>{{ first_optiondays }} - {{ last_optiondays }}</h2>
+                      </div>
+
+                      <div class="product-card-field">
+                        <div class="product-card-field-icons">
+                          <img class="field-icon" src="{{ 'icon-dollar.svg' | asset_url }}" alt="Icon">
+                          <h1>Price</h1>
+                        </div>
+                        <h2>From {{ product.price | money_with_currency }}</h2>
+                      </div>
                     {% endif %}
                   </div>
-                {% endif %}
-                <div class="main-search__product">
-                  {% assign handles = "esim,simcard" | split: "," %}
-                  {% for handle in handles %}
-                    {% assign sim_card = shop.metaobjects['shopify--sim-card-type'][handle] %}
-                    {% if sim_card %}
-                      {% if sim_card.label %}
-                        <span>SIM Type: {{ sim_card.label }}</span>
-                      {% endif %}
-                    {% endif %}
-                  {% endfor %}
-                  <h1>{{ product.title }}</h1>
-                </div>
-              </div>
-              </a>
 
-              <div class="product-card-content">
-                <div class="product-card-content-flip-front">
-                  {% if product_countries.size > 1 %}
-                    <div class="product-card-field" style="border-top: 1px ridge;">
-                      <div class="product-card-field-icons">
-                        <img class="field-icon" src="{{ 'icon-park-outline_world.svg' | asset_url }}" alt="Icon">
-                        <h1>Coverage</h1>
-                      </div>
-                      <div class="country-total-atribut-wrapper">
-                        <div class="country-total-atribut">
-                          <button class="flipped-trigger"><span>{{ product_countries.size }} Countries</span></button>
-                        </div>
-                        <div class="country-total-including-atribut">
-                          {% if matched_countries != blank %}
-                            <p>Including {{ matched_countries | strip | replace: ',', ' ' }}</p>
-                          {% endif %}
-                        </div>
-                      </div>
-                    </div>
-                  {% endif %}
-
-                  {% if product.variants.size > 0 %}
-                    {% assign first_optiondays = product.variants.first.option1 | replace: ' Days', '' %}
-                    {% assign last_optiondays = product.variants.last.option1 | strip %}
-                    {% assign last_optionquota = product.variants.last.option2 | strip %}
-
-                    <div class="product-card-field">
-                      <div class="product-card-field-icons">
-                        <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" alt="Icon">
-                        <h1>Data</h1>
-                      </div>
-                      <h2>{{ last_optionquota }}</h2>
-                    </div>
-
-                    <div class="product-card-field">
-                      <div class="product-card-field-icons">
-                        <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" alt="Icon">
-                        <h1>Days</h1>
-                      </div>
-                      <h2>{{ first_optiondays }} - {{ last_optiondays }}</h2>
-                    </div>
-
-                    <div class="product-card-field">
-                      <div class="product-card-field-icons">
-                        <img class="field-icon" src="{{ 'icon-dollar.svg' | asset_url }}" alt="Icon">
-                        <h1>Price</h1>
-                      </div>
-                      <h2>From {{ product.price | money_with_currency }}</h2>
-                    </div>
-                  {% endif %}
+                  <div class="product-card-content-flip-back">
+                    {% render 'coverage', product: product %}
+                  </div>
                 </div>
 
-                <div class="product-card-content-flip-back">
-                  {% render 'coverage', product: product %}
+                <div class="product-card-button">
+                  <a class="product-url-link" href="{{ product.url }}">
+                    <button class="product-card-btn"><p>Buy Now</p></button>
+                  </a>
                 </div>
               </div>
-
-              <div class="product-card-button">
-                <a class="product-url-link" href="{{ product.url }}">
-                  <button class="product-card-btn"><p>Buy Now</p></button>
-                </a>
-              </div>
-            </div>
-          {% endcapture %}
-          {% assign product_output = product_output | append: product_card %}
-        {% endif %}
-      {% endfor %}
+            {% endcapture %}
+            {% assign product_output = product_output | append: product_card %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
 
       {% if found_product %}
-        <div class="main-search-collection">
+        <div class="main-search-collection-wrapper" id="collection-{{ collection_key }}">
           <h1 class="main-search-collection title">{{ collection.title }}</h1>
-          <div class="product-card-wrapper" id="{{ collection_key }}">
-            {{ product_output }}
+          <div class="main-search-collection">
+            <div class="product-card-wrapper" id="{{ collection_key }}">
+              {{ product_output }}
+            </div>
           </div>
         </div>
       {% endif %}
+
+
     {% endfor %}
 
     {% unless found_any_product %}
@@ -460,7 +554,6 @@
     {% endif %}
   </div>
 </div>
-
 
 {% comment %} # SCHEMA SECTION {% endcomment %}
 {% schema %}

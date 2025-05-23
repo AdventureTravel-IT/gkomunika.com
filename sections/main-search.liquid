@@ -1,6 +1,6 @@
 {% comment %} 
-                                                                                                          Improved and validated Shopify section with SIM Type filter buttons
-                                                                                                          Fix: Heading collection hanya muncul kalau produk ada
+                                                                                                                    Improved and validated Shopify section with SIM Type filter buttons
+                                                                                                                    Fix: Heading collection hanya muncul kalau produk ada
 {% endcomment %}
 
 {% comment %} # STYLES SECTION {% endcomment %}
@@ -227,7 +227,7 @@
     font-weight: bold;
     color: var(--color-neutral);
   }
-  .main-search__product span {
+  .main-search__product-type {
     background-color: var(--color-primary);
     border-radius: 5px;
     padding: 5px;
@@ -452,7 +452,7 @@
                       </div>
                     {% endif %}
                     <div class="main-search__product">
-                      <span>SIM Type: {{ product_category | replace: '_', ' ' }}</span>
+                      <span class="main-search__product-type" {% if product_category == "SIM_Card" %}style="background-color: var(--color-secondary);"{% endif %}>SIM Type: {{ product_category | replace: '_', ' ' }}</span>
                       <h1>{{ product.title }}</h1>
                     </div>
                   </div>

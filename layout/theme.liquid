@@ -44,7 +44,7 @@
           var searchTerms = "{{ search.terms | escape }}";
           var defaultHeading = document.getElementById("default-heading");
           var searchHeading = document.getElementById("search-heading");
-
+        
           if (searchTerms.trim() !== "") {
             defaultHeading.style.display = "none";
             searchHeading.style.display = "block";
@@ -409,11 +409,11 @@ body {
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
 
-    {% comment %}
-      {% unless template == 'product' %}
-      <div id="bucks-mobile"></div>
-      {% endunless %}
-    {% endcomment %}
+    {% comment %} 
+            {% unless template == 'product' %}
+            <div id="bucks-mobile"></div>
+            {% endunless %} 
+        {% endcomment %}
 
     {% sections 'header-group' %}
 
@@ -477,8 +477,6 @@ body {
           <div class="language-popup__option-wrapper">
             <span></span>
             <!-- Ini hanya untuk dalam popup, akan dihapus saat klik Save -->
-            <section id="bucks-floating-desktop" class="bucks-floating-desktop"></section>
-            <section id="bucks-floating-mobile"></section>
 
             <span>Language</span>
             <form class="language-selector-form" onsubmit="event.preventDefault();">
@@ -538,19 +536,19 @@ body {
         cart_url: '{{ routes.cart_url }}',
         predictive_search_url: '{{ routes.predictive_search_url }}',
       };
-
+      
       window.cartStrings = {
         error: `{{ 'sections.cart.cart_error' | t }}`,
         quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`,
       };
-
+      
       window.variantStrings = {
         addToCart: `{{ 'products.product.add_to_cart' | t }}`,
         soldOut: `{{ 'products.product.sold_out' | t }}`,
         unavailable: `{{ 'products.product.unavailable' | t }}`,
         unavailable_with_option: `{{ 'products.product.value_unavailable' | t: option_value: '[value]' }}`,
       };
-
+      
       window.quickOrderListStrings = {
         itemsAdded: `{{ 'sections.quick_order_list.items_added.other' | t: quantity: '[quantity]' }}`,
         itemAdded: `{{ 'sections.quick_order_list.items_added.one' | t: quantity: '[quantity]' }}`,
@@ -562,7 +560,7 @@ body {
         max_error: `{{- 'sections.quick_order_list.max_error' | t: max: '[max]' }}`,
         step_error: `{{- 'sections.quick_order_list.step_error' | t: step: '[step]' }}`,
       };
-
+      
       window.accessibilityStrings = {
         imageAvailable: `{{ 'products.product.media.image_available' | t: index: '[index]' }}`,
         shareSuccess: `{{ 'general.share.success_message' | t }}`,

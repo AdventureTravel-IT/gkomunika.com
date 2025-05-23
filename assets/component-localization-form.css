@@ -149,7 +149,8 @@
 .localization-form__select .icon-caret {
   position: absolute;
   content: "";
-  height: 0.9rem;
+  bottom: 15px;
+  height: 10px;
   right: 1.5rem;
   transition: transform 0.3s ease;
 }
@@ -182,7 +183,7 @@
   cursor: pointer;
   display: flex;
   height: 4rem;
-  font-size: 1.5rem;
+  font-size: 16px;
   background-color: transparent;
 }
 

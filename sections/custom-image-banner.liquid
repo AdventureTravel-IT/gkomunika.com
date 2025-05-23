@@ -4,7 +4,7 @@
     margin: 0 auto;
   }
   .banner-search__wrapper {
-    padding: 50px 10%;
+    padding: 20px 10%;
   }
   .banner-search__content {
     width: 50%;
@@ -25,7 +25,7 @@
   }
   @media (max-width: 1440px) {
     .banner-search__form {
-      margin: 20px 0 0 0;
+      margin: 20px 0 0;
     }
   }
   @media (max-width: 425px) {
@@ -46,9 +46,7 @@
       {%- else -%}
         <h2>All Destinations</h2>
       {%- endif -%}
-      <span
-        >Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries</span
-      >
+      <span>Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries</span>
       <div class="banner-search__form">
         {% render 'search-bar' %}
       </div>
@@ -57,14 +55,14 @@
 </div>
 
 {% schema %}
-{
-  "name": "Banner Search",
-  "settings": [],
-  "presets": [
-    {
-      "name": "Banner-search",
-      "category": "Custom"
-    }
-  ]
-}
+  {
+    "name": "Banner Search",
+    "settings": [],
+    "presets": [
+      {
+        "name": "Banner-search",
+        "category": "Custom"
+      }
+    ]
+  }
 {% endschema %}

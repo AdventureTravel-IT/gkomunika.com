@@ -1,6 +1,6 @@
 {% comment %} 
-                                                                                    Improved and validated Shopify section with SIM Type filter buttons
-                                                                                    Fix: Heading collection hanya muncul kalau produk ada
+                                                                                                          Improved and validated Shopify section with SIM Type filter buttons
+                                                                                                          Fix: Heading collection hanya muncul kalau produk ada
 {% endcomment %}
 
 {% comment %} # STYLES SECTION {% endcomment %}
@@ -18,7 +18,7 @@
   .sim-filter-buttons {
     margin-bottom: 20px;
     display: flex;
-    gap: 10px;
+    gap: 5px;
     flex-wrap: wrap;
   }
 
@@ -166,6 +166,7 @@
     position: relative;
     width: 100%;
     height: 100%;
+    margin-bottom: 10px;
     transform-style: preserve-3d;
     transition: transform 0.6s ease-in-out;
   }
@@ -252,8 +253,16 @@
   }
   @media (max-width: 768px) {
     .main-search-container {
-      padding: 20px 24px;
+      padding: 20px 10%;
     }
+    .product-card-wrapper {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .banner-search__content {
+      width: 100%;
+    }
+  }
+  @media (max-width: 426px) {
     .product-card-wrapper {
       grid-template-columns: repeat(1, 1fr);
     }

@@ -99,9 +99,6 @@
   .header-content__menu-link:hover {
     color: var(--color-secondary);
   }
-  .header-content__menu-link.active {
-    color: var(--color-secondary);
-  }
 
   @media (max-width: 768px) {
     .header__wrapper {
@@ -243,7 +240,7 @@
               {% if link.url == request.path or request.path == '/' and link.url == '/' %}
                 {% assign is_active = true %}
               {% endif %}
-              <a class="header-content__menu-link {% if is_active %}active{% endif %}" href="{{ link.url }}">
+              <a class="header-content__menu-link" href="{{ link.url }}">
                 {{ link.title }}
               </a>
 

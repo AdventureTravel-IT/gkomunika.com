@@ -16,9 +16,22 @@
         "padding_top": 28,
         "padding_bottom": 28
       }
+    },
+    "test_product_gkfdb7": {
+      "type": "test-product",
+      "name": "test-product",
+      "settings": {
+        "title_single": "Single Country",
+        "single_country_collection": "single-country",
+        "title_multi": "Multi Country",
+        "multi_country_collection": "multi-country",
+        "title_global": "Global Country",
+        "global_country_collection": "global-country"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "test_product_gkfdb7"
   ]
 }

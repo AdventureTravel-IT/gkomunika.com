@@ -14,6 +14,7 @@
       "blocks": {
         "news_block_R4Mzgt": {
           "type": "news_block",
+          "name": "News",
           "settings": {
             "category": "news",
             "hero-title": "News",
@@ -27,6 +28,7 @@
         },
         "news_block_EGEeC3": {
           "type": "news_block",
+          "name": "Event",
           "settings": {
             "category": "event",
             "hero-title": "Event",
@@ -40,6 +42,7 @@
         },
         "news_block_dbChQJ": {
           "type": "news_block",
+          "name": "Travel Tips",
           "settings": {
             "category": "travel-tips",
             "hero-title": "Travel Tips",
@@ -53,6 +56,7 @@
         },
         "news_block_AyHEdg": {
           "type": "news_block",
+          "name": "Travel Guide",
           "settings": {
             "category": "travel-guide",
             "hero-title": "Travel Guide",

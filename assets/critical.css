@@ -307,6 +307,7 @@
   .banner__heading--text p,
   .banner__heading--desc p {
     color: var(--color-primary);
+    font-size: var(--font-large);
   }
 
   #default-heading {

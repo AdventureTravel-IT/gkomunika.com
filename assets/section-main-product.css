@@ -117,8 +117,13 @@
   .main-product-content {
     gap: 20px;
     display: flex;
+    flex-direction: column;
     padding: 20px 15%;
     background-color: var(--color-background);
+  }
+  .main-product__content-container {
+    display: flex;
+    gap: 20px;
   }
   .main-product-content-wrapper {
     width: 100%;

@@ -1,0 +1,113 @@
+<div class="insurance-container">
+  <div class="insurance-wrapper">
+    <h2>Benefits Title</h2>
+    <div class="insurance-card">
+      <div class="insurance-card__sub">Sub Benefits</div>
+      <section class="insurance__plan">
+        <div class="insurance__plan-type">Basic</div>
+        <div class="insurance__plan-type">Executive</div>
+        <div class="insurance__plan-type">Premiere</div>
+      </section>
+      <section class="insurance__plan-content">
+        <div class="insurance__plan-content">Basic Content</div>
+        <div class="insurance__plan-content">Executive Content</div>
+        <div class="insurance__plan-content">Premiere Content</div>
+      </section>
+    </div>
+
+    <div class="insurance-card">
+      <div class="insurance-card__sub">Sub Benefits</div>
+      <section class="insurance__plan-content">
+        <div class="insurance__plan-content">Basic Content</div>
+        <div class="insurance__plan-content">Executive Content</div>
+        <div class="insurance__plan-content">Premiere Content</div>
+      </section>
+    </div>
+
+    <div class="insurance-card">
+      <div class="insurance-card__sub">Sub Benefits</div>
+      <section class="insurance__plan-content">
+        <div class="insurance__plan-content">Basic Content</div>
+        <div class="insurance__plan-content">Executive Content</div>
+        <div class="insurance__plan-content">Premiere Content</div>
+      </section>
+    </div>
+
+    <div class="insurance-card">
+      <div class="insurance-card__sub">Sub Benefits</div>
+      <section class="insurance__plan-content">
+        <div class="insurance__plan-content">Basic Content</div>
+        <div class="insurance__plan-content">Executive Content</div>
+        <div class="insurance__plan-content">Premiere Content</div>
+      </section>
+    </div>
+
+    <div class="insurance-card">
+      <div class="insurance-card__sub">Sub Benefits</div>
+      <section class="insurance__plan-content">
+        <div class="insurance__plan-content">Basic Content</div>
+        <div class="insurance__plan-content">Executive Content</div>
+        <div class="insurance__plan-content">Premiere Content</div>
+      </section>
+    </div>
+
+    <div class="insurance-card">
+      <div class="insurance-card__sub">Sub Benefits</div>
+      <section class="insurance__plan-content">
+        <div class="insurance__plan-content">Basic Content</div>
+        <div class="insurance__plan-content">Executive Content</div>
+        <div class="insurance__plan-content">Premiere Content</div>
+      </section>
+    </div>
+
+    <div class="insurance-card">
+      <div class="insurance-card__sub">Sub Benefits</div>
+      <section class="insurance__plan-content">
+        <div class="insurance__plan-content">Basic Content</div>
+        <div class="insurance__plan-content">Executive Content</div>
+        <div class="insurance__plan-content">Premiere Content</div>
+      </section>
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .insurance-container {
+    padding: 15px;
+    border: 1px solid var(--color-border);
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .insurance-wrapper {
+    background-color: var(--color-background);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .insurance-card__sub {
+    text-align: center;
+    background-color: var(--color-neutral);
+    padding: 15px;
+  }
+  .insurance-card {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .insurance__plan {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-neutral);
+  }
+  .insurance__plan-type {
+    background-color: var(--color-primary);
+    border-radius: 15px;
+    padding: 10px 15px;
+  }
+  .insurance__plan-content {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--color-neutral);
+  }
+{% endstyle %}

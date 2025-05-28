@@ -14,6 +14,7 @@
       "blocks": {
         "news_block_R4Mzgt": {
           "type": "news_block",
+          "name": "News",
           "settings": {
             "category": "news",
             "hero-title": "News",
@@ -27,6 +28,7 @@
         },
         "news_block_EGEeC3": {
           "type": "news_block",
+          "name": "Event",
           "settings": {
             "category": "event",
             "hero-title": "Event",
@@ -35,11 +37,12 @@
             "second-page": "enjoy-various-exciting-deals-at-singapore-airlines-travel-fair-2025",
             "thrid-page": "get-exclusive-flight-deals-and-tour-packages-at-astindo-travel-fair-2025",
             "show-button": true,
-            "hero-background": "shopify://shop_images/Event_1.jpg"
+            "hero-background": "shopify://shop_images/miguel-bernardo-lAT-Z6uLYew-unsplash.jpg"
           }
         },
         "news_block_dbChQJ": {
           "type": "news_block",
+          "name": "Travel Tips",
           "settings": {
             "category": "travel-tips",
             "hero-title": "Travel Tips",
@@ -48,11 +51,12 @@
             "second-page": "bca-poket-valas-a-convenient-solution-for-foreign-currency-transactions-abroad",
             "thrid-page": "how-to-choose-comfortable-and-stylish-spring-outfits",
             "show-button": true,
-            "hero-background": "shopify://shop_images/travel-tips.webp"
+            "hero-background": "shopify://shop_images/kristina-zykova-5n-Os-7qitE-unsplash.jpg"
           }
         },
         "news_block_AyHEdg": {
           "type": "news_block",
+          "name": "Travel Guide",
           "settings": {
             "category": "travel-guide",
             "hero-title": "Travel Guide",
@@ -61,7 +65,7 @@
             "second-page": "best-seasons-and-months-to-witness-the-aurora-borealis-phenomenon",
             "thrid-page": "the-beauty-of-garden-rhapsody-gardens-by-the-bay-s-night-light-show-in-singapore",
             "show-button": true,
-            "hero-background": "shopify://shop_images/s-b-vonlanthen-A8iLzX6OddM-unsplash.jpg"
+            "hero-background": "shopify://shop_images/annika-k2dh4qZ2o_I-unsplash.jpg"
           }
         }
       },
@@ -72,7 +76,7 @@
         "news_block_AyHEdg"
       ],
       "settings": {
-        "news_hero_background": "shopify://shop_images/hero-shot.jpg",
+        "news_hero_background": "shopify://shop_images/andrei-mike-N1ufEF8ukmI-unsplash.jpg",
         "main-heading": "Stay Connected, Travel Smarter",
         "main-description": "Global Komunika shares essential travel tips, destination insights, and the latest updates on eSIM and SIM card solutions, helping travelers stay connected with ease wherever they go.",
         "main-first-page": "blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how",

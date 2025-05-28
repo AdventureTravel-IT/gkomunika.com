@@ -48,7 +48,9 @@
     },
     "popular_countries_AmdMjK": {
       "type": "popular-countries",
-      "custom_css": [],
+      "custom_css": [
+        ".tab-content a:nth-child(n + 5) {display: none; }"
+      ],
       "settings": {
         "display_mode": "option_1",
         "land_collection": "single-country",

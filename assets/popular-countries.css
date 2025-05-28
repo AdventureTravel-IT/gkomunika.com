@@ -248,7 +248,7 @@
   }
 }
 
-@media (max-width: 425px) {
+@media (max-width: 426px) {
   .tab-content {
     grid-template-columns: repeat(1, 1fr);
   }

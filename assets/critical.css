@@ -111,7 +111,7 @@
   color: var(--color-secondary);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 769px) {
   .header__wrapper {
     padding: 0 24px;
   }
@@ -276,7 +276,7 @@
   margin-top: 10px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 769px) {
   .banner__wrapper {
     height: 800px;
     overflow: hidden;
@@ -388,7 +388,7 @@
   outline: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 769px) {
   .language-popup__content {
     width: 100%;
     margin: 0 24px;
@@ -501,7 +501,7 @@
   margin-bottom: 100px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 769px) {
   .htu__grid {
     grid-template-columns: repeat(1, 1fr);
     gap: 15px;

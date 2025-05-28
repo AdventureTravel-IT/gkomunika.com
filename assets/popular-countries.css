@@ -9,7 +9,7 @@
 }
 
 .popular-countries {
-  padding: 20px 10%;
+  padding: 50px 10%;
   border: none;
   min-height: 480px;
   max-height: 100%;
@@ -182,9 +182,6 @@
 
 /* Responsive */
 @media screen and (max-width: 1440px) {
-  .popular-countries {
-    padding: 0 10%;
-  }
 
   .collection-pick p {
     line-height: 1.2;
@@ -205,9 +202,9 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 769px) {
   .popular-countries {
-    padding: 0 24px 20px;
+    padding: 0 24px 50px;
   }
 
   .show-all button {

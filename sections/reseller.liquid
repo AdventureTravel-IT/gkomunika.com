@@ -1,7 +1,16 @@
-<div
-  style="margin:100px auto 0;"
-  class="pxFormGenerator"
-  id="lWxmC0m0rSQ1-doeX1yQoA"></div>
+<div class="pxFormGenerator" id="lWxmC0m0rSQ1-doeX1yQoA"></div>
+
+{% style %}
+  .pxFormGenerator {
+    margin: 100px auto 0;
+  }
+  @media (max-width: 768px) {
+    .pxFormGenerator {
+      margin: 60px auto -20px;
+      padding: 0 24px;
+    }
+  }
+{% endstyle %}
 
 {% schema %}
   {

@@ -29,13 +29,15 @@
   data-section="{{ section.id }}"
   data-product-id="{{ product.id }}"
   data-update-url="true"
-  data-url="{{ product.url }}"
->
-  <div id="cart-popup" class="cart-popup" style="display: none;">
-  <div class="cart-popup-content">
-    <p id="popup-product-title">Success add to cart</p>
+  data-url="{{ product.url }}">
+  <div
+    id="cart-popup"
+    class="cart-popup"
+    style="display: none;">
+    <div class="cart-popup-content">
+      <p id="popup-product-title">Success add to cart</p>
+    </div>
   </div>
-</div>
   <div class="main-product-container">
     <div class="main-product-header">
       {% if product.title %}
@@ -47,15 +49,13 @@
           id="mainImage"
           src="{{ product.featured_image | img_url: 'master' }}"
           alt="{{ product.title | escape }}"
-          loading="lazy"
-        >
+          loading="lazy">
         <div class="main-product-sub-images-wrapper">
           <button
             class="scroll-btn left"
             style="transform: rotate(180deg);"
             onclick="scrollSubImages(-1)"
-            aria-label="Scroll left"
-          >
+            aria-label="Scroll left">
             {{- 'icon-arrow-back.svg' | inline_asset_content -}}
           </button>
           <div class="main-product-sub-images">
@@ -65,11 +65,13 @@
                 src="{{ image | img_url: 'master' }}"
                 alt="Sub Image {{ forloop.index }}"
                 data-src="{{ image | img_url: 'large' }}"
-                loading="lazy"
-              >
+                loading="lazy">
             {% endfor %}
           </div>
-          <button class="scroll-btn right" onclick="scrollSubImages(1)" aria-label="Scroll right">
+          <button
+            class="scroll-btn right"
+            onclick="scrollSubImages(1)"
+            aria-label="Scroll right">
             {{- 'icon-arrow-back.svg' | inline_asset_content -}}
           </button>
         </div>
@@ -96,402 +98,74 @@
             {% assign max_price = variant.price %}
           {% endif %}
         {% endfor %}
-      
+
         {% assign min_price_formatted = min_price | money_with_currency %}
         {% assign max_price_formatted = max_price | money_with_currency %}
         <!-- Harga untuk desktop -->
-  <div id="variant-price-desktop" class="money">
-    {{ min_price_formatted }}{% unless min_price == max_price %} - {{ max_price_formatted }}{% endunless %}
-  </div>
+        <div id="variant-price-desktop" class="money">
+          {{ min_price_formatted }}{% unless min_price == max_price %}
+            - {{ max_price_formatted }}{% endunless %}
+        </div>
 
         {{ product.description }}
         <div class="main-product-variant-picker">
-          {% render 'custom-variant-picker', product: product %}
+          {% render 'custom-variant-picker'
+            , product: product %}
         </div>
       </div>
     </div>
     <div class="main-product-main-content">
       <div class="main-product-content">
         {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-        <p>product category {{ product_category }}</p>
+        {% if product_category == "Insurance" %}
+          {% render 'insurance' %}
+      {% endif %}
 
-      {% if product_category == "Insurance" %}
-  <div class="main-product__insurance">
-    <p>Insurance Details</p>
-
-    <div class="main-product__insurance-wrapper">
-      <div>
-        Trips Cancelation
-      </div>
-      <div style="display: flex; gap: 10px;">
-        <div>Basic</div>
-        <div>Executive</div>
-        <div>Premiere</div>
-      </div>
-    </div>
-  </div>
-{% endif %}
-
-
-{% comment %} {% assign packages = product.metafields.insurance.package.value.insurance_package %}
-<div>
-  <p>Insurance Package</p>
-
-  <div>
-    {% for package in packages %}
-    <table border="1" cellspacing="0" cellpadding="8" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
-      <thead style="background-color: #cce6f6;">
-        <tr>
-          <th colspan="2">Benefits</th>
-          <th>Basic</th>
-          <th>Executive</th>
-          <th>Premiere</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Trip Cancellation and Alteration -->
-        <tr>
-          {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
-          <td colspan="2">Trip Cancellation and Alteration</td>
-          <td>{{ cancelation.basic }}</td>
-          <td>{{ cancelation.executive }}</td>
-          <td>{{ cancelation.premiere }}</td>
-        </tr>
-
-        <!-- Medical & Other Emergency Expenses -->
-        {% assign medical = package.medical_and_other_emergency_expenses %}
-        <tr>
-          <th rowspan="7">Medical & Other Emergency Expenses</th>
-          <td>Medical Expenses</td>
-          {% for item in medical.medical_expenses %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Emergency Medical Evacuation & Repatriation</td>
-          {% for item in medical.emergency_medical_evacuation_and_repatriation %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Compassionate Visit Expenses</td>
-          {% for item in medical.compassionate_visit_expenses %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Return of Children</td>
-          {% for item in medical.return_of_children %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Hospital Daily Benefit</td>
-          {% for item in medical.hospital_daily_benefit %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Emergency Telephone Charges</td>
-          {% for item in medical.emergency_telephone_charges %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Follow up Medical Treatment</td>
-          {% for item in medical.follow_up_medical_treatment %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-
-        <!-- Travel & Associated Expenses -->
-        {% assign travel = package.travel_and_associated_expenses %}
-        <tr>
-          <th rowspan="5">Travel & Associated Expenses</th>
-          <td>Trip Curtailment</td>
-          {% for item in travel.trip_curtailment %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Travel Delay</td>
-          {% for item in travel.travel_delay %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Missed Flight Connection</td>
-          {% for item in travel.missed_flight_connection %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Overbooked Flight</td>
-          {% for item in travel.overbooked_flight %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Flight Diversion</td>
-          {% for item in travel.flight_diversion %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-
-        <!-- Baggage and Personal Belongings Cover -->
-        {% assign baggage = package.baggage_and_personal_belongings_cover %}
-        <tr>
-          <th rowspan="3">Baggage & Personal Belongings Cover</th>
-          <td>Baggage Delay</td>
-          {% for item in baggage.baggage_delay %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Baggage and Personal Belongings</td>
-          {% for item in baggage.baggage_and_personal_belongings %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Personal Money and Travel Documents</td>
-          {% for item in baggage.personal_money_and_travel_documents %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-
-        <!-- Personal Accident -->
-        {% assign accident = package.personal_accident %}
-        <tr>
-          <th rowspan="4">Personal Accident</th>
-          <td>Aged 18 and Below</td>
-          {% for item in accident.aged_18_and_below %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Aged 19 to 65</td>
-          {% for item in accident.aged_19_to_65 %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Aged 66 to 75</td>
-          {% for item in accident.aged_66_to_75 %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Aged 76 and Over</td>
-          {% for item in accident.aged_76_and_over %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-
-        <!-- Repatriation of Mortal Remains and Other Related Benefit -->
-        {% assign repatriation = package.repatriation_of_mortal_remains_and_other_related_benefit %}
-        <tr>
-          <th rowspan="3">Repatriation & Related Benefit</th>
-          <td>Repatriation of Mortal Remains to Home Country</td>
-          {% for item in repatriation.repatriation_of_mortal_remains_to_home_country %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Compassionate Death Visit</td>
-          {% for item in repatriation.compassionate_death_visit %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Compassionate Funeral Expenses</td>
-          {% for item in repatriation.compassionate_funeral_expenses %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-
-        <!-- Other Benefits -->
-        {% assign other = package.other_benefits %}
-        <tr>
-          <th rowspan="10">Other Benefits</th>
-          <td>Automatic Extension of Cover</td>
-          {% for item in other.automatic_extension_of_cover %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Personal Liability</td>
-          {% for item in other.personal_liability %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Legal Expenses</td>
-          {% for item in other.legal_expenses %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Loss of Home Contents</td>
-          {% for item in other.loss_of_home_contents %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Hijack</td>
-          {% for item in other.hijack %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Rental Vehicle</td>
-          {% for item in other.rental_vehicle %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Terrorism Cover</td>
-          {% for item in other.terrorism_cover %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Recreational Sports and Activities</td>
-          {% for item in other.recreational_sports_and_activities %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Fraudulent Use of Credit Card</td>
-          {% for item in other.fraudulent_use_of_credit_card %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-        <tr>
-          <td>Golf Equipment</td>
-          {% for item in other.golf_equipment %}
-          <td>{{ item.basic }}</td>
-          <td>{{ item.executive }}</td>
-          <td>{{ item.premiere }}</td>
-          {% endfor %}
-        </tr>
-      </tbody>
-    </table>
-    {% endfor %}
-  </div>
-</div> {% endcomment %}
-
-
-
-{%  render 'insurance'  %}
-        
 
         <div class="main-product__content-container">
-        <div class="main-product-content-wrapper">
-          <label>Product Details</label>
-          <div class="main-product-content-left">
-            <ul>
-              {% for item in product.metafields.details %}
-                {% assign key = item.first %}
-                {% assign value = item.last %}
-                {% if value != blank %}
-                  <div class="mp-content-wrapper">
-                    <div class="mp-content-icon-img">
-                      {{- key | append: '.svg' | inline_asset_content -}}
+          <div class="main-product-content-wrapper">
+            <label>Product Details</label>
+            <div class="main-product-content-left">
+              <ul>
+                {% for item in product.metafields.details %}
+                  {% assign key = item.first %}
+                  {% assign value = item.last %}
+                  {% if value != blank %}
+                    <div class="mp-content-wrapper">
+                      <div class="mp-content-icon-img">
+                        {{- key | append: '.svg' | inline_asset_content -}}
+                      </div>
+                      <div class="mp-content-text">
+                        <p class="title">{{ key | replace: '_', ' ' | capitalize }}</p>
+                        {% if value.value %}
+                          {% for v in value.value %}
+                            <p>{{ v }}</p>
+                          {% endfor %}
+                        {% else %}
+                          <p>{{ value }}</p>
+                        {% endif %}
+                      </div>
                     </div>
-                    <div class="mp-content-text">
-                      <p class="title">{{ key | replace: '_', ' ' | capitalize }}</p>
-                      {% if value.value %}
-                        {% for v in value.value %}
-                          <p>{{ v }}</p>
-                        {% endfor %}
-                      {% else %}
-                        <p>{{ value }}</p>
-                      {% endif %}
-                    </div>
-                  </div>
-                  <hr class="mp-content-divider">
-                {% endif %}
-              {% endfor %}
-            </ul>
+                    <hr class="mp-content-divider">
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
           </div>
-        </div>
-        
 
-        <div class="main-product-content-wrapper">
-          <label>Coverage</label>
-          <div class="main-product-content-right">
-            <div class="main-product-content-right-wrapper">
-              {% if product.metafields.coverage.country.value.size > 10 %}
-                {% render 'coverage-search' %}
-              {% endif %}
-              {% render 'coverage' %}
+
+          <div class="main-product-content-wrapper">
+            <label>Coverage</label>
+            <div class="main-product-content-right">
+              <div class="main-product-content-right-wrapper">
+                {% if product.metafields.coverage.country.value.size > 10 %}
+                  {% render 'coverage-search' %}
+                {% endif %}
+                {% render 'coverage' %}
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
       <div class="main-product-ratting"></div>
     </div>
@@ -502,18 +176,18 @@
 </product-info>
 
 {% schema %}
-{
-  "name": "Main Product",
-  "settings": [],
-  "blocks": [
-    {
-      "type": "@app"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Main Product"
-    }
-  ]
-}
+  {
+    "name": "Main Product",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "@app"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Main Product"
+      }
+    ]
+  }
 {% endschema %}

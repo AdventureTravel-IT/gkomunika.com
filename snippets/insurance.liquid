@@ -1,113 +1,832 @@
-<div class="insurance-container">
-  <div class="insurance-wrapper">
-    <h2>Benefits Title</h2>
-    <div class="insurance-card">
-      <div class="insurance-card__sub">Sub Benefits</div>
-      <section class="insurance__plan">
-        <div class="insurance__plan-type">Basic</div>
-        <div class="insurance__plan-type">Executive</div>
-        <div class="insurance__plan-type">Premiere</div>
-      </section>
-      <section class="insurance__plan-content">
-        <div class="insurance__plan-content">Basic Content</div>
-        <div class="insurance__plan-content">Executive Content</div>
-        <div class="insurance__plan-content">Premiere Content</div>
-      </section>
-    </div>
+<style>
+  .insurance-table__scroll {
+    overflow-x: auto;
+    margin-bottom: 20px;
+    height: 400px;
+    overflow-y: auto;
+    display: none;
+    border-radius: 0 0 15px 15px;
+  }
+  .insurance-table__main {
+    display: block;
+    background-color: var(--color-background-third);
+  }
+  .insurance-table__scroll table {
+    border-collapse: collapse;
+    min-width: 900px;
+    width: 100%;
+    table-layout: fixed;
+    background: var(--color-neutral);
+  }
+  .insurance-table__scroll th,
+  .insurance-table__scroll td {
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    text-align: left;
+    color: var(--color-primary);
+    background: var(--color-neutral);
+  }
 
-    <div class="insurance-card">
-      <div class="insurance-card__sub">Sub Benefits</div>
-      <section class="insurance__plan-content">
-        <div class="insurance__plan-content">Basic Content</div>
-        <div class="insurance__plan-content">Executive Content</div>
-        <div class="insurance__plan-content">Premiere Content</div>
-      </section>
-    </div>
+  /* Kolom pertama sticky */
+  .insurance-table__scroll th:first-child,
+  .insurance-table__scroll td:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--color-neutral);
+    color: var(--color-primary);
+    z-index: 1;
+    width: 40%;
+    min-width: 150px;
+    max-width: 250px;
+    border-right: 1px solid var(--color-border);
+  }
 
-    <div class="insurance-card">
-      <div class="insurance-card__sub">Sub Benefits</div>
-      <section class="insurance__plan-content">
-        <div class="insurance__plan-content">Basic Content</div>
-        <div class="insurance__plan-content">Executive Content</div>
-        <div class="insurance__plan-content">Premiere Content</div>
-      </section>
-    </div>
+  /* Kolom lain */
+  .insurance-table__scroll th:not(:first-child),
+  .insurance-table__scroll td:not(:first-child) {
+    width: 40%;
+    min-width: 180px;
+  }
 
-    <div class="insurance-card">
-      <div class="insurance-card__sub">Sub Benefits</div>
-      <section class="insurance__plan-content">
-        <div class="insurance__plan-content">Basic Content</div>
-        <div class="insurance__plan-content">Executive Content</div>
-        <div class="insurance__plan-content">Premiere Content</div>
-      </section>
-    </div>
+  /* Header tetap sticky di atas */
+  .insurance-table__scroll th {
+    position: sticky;
+    top: 0;
+    background: var(--color-neutral);
+    z-index: 2;
+    border-bottom: 1px solid var(--color-border);
+  }
 
-    <div class="insurance-card">
-      <div class="insurance-card__sub">Sub Benefits</div>
-      <section class="insurance__plan-content">
-        <div class="insurance__plan-content">Basic Content</div>
-        <div class="insurance__plan-content">Executive Content</div>
-        <div class="insurance__plan-content">Premiere Content</div>
-      </section>
-    </div>
+  /* Perkuat sudut kiri atas (th pertama) */
+  .insurance-table__scroll th:first-child {
+    z-index: 3;
+    border: 1px solid var(--color-border);
+  }
+  .insurance-table__title.destop {
+    display: block;
+  }
+  .insurance-table__title.mobile {
+    display: none;
+  }
 
-    <div class="insurance-card">
-      <div class="insurance-card__sub">Sub Benefits</div>
-      <section class="insurance__plan-content">
-        <div class="insurance__plan-content">Basic Content</div>
-        <div class="insurance__plan-content">Executive Content</div>
-        <div class="insurance__plan-content">Premiere Content</div>
-      </section>
-    </div>
+  @media (max-width: 768px) {
+    .insurance-table__container {
+      display: none;
+    }
+    .insurance-table__scroll {
+      display: block;
+    }
+    .insurance-table__main {
+      display: none;
+    }
+    .insurance-table__title.destop {
+      display: none;
+    }
+    .insurance-table__title.mobile {
+      display: block;
+    }
+  }
 
-    <div class="insurance-card">
-      <div class="insurance-card__sub">Sub Benefits</div>
-      <section class="insurance__plan-content">
-        <div class="insurance__plan-content">Basic Content</div>
-        <div class="insurance__plan-content">Executive Content</div>
-        <div class="insurance__plan-content">Premiere Content</div>
-      </section>
+  @media (max-width: 426px) {
+    .insurance-table__scroll th:first-child,
+    .insurance-table__scroll td:first-child {
+      width: 20%;
+    }
+  }
+</style>
+
+<style>
+  .insurance__heading {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .insurance-table__container {
+    border-radius: 15px;
+    height: 550px;
+    overflow-y: hidden;
+    position: relative;
+    background-color: var(--color-background-third);
+    color: var(--color-primary);
+  }
+
+  .insurance-table__expand-button {
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(to bottom, rgba(243, 251, 254, 0) 0%, rgba(184, 236, 255, 1) 78%);
+    color: var(--color-primary);
+    font-size: var(--font-large);
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 24px;
+  }
+
+  .insurance-table__title {
+    background-color: var(--color-neutral);
+    height: 60px;
+    margin-bottom: 1px;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-primary);
+    border-radius: 15px 15px 0 0;
+  }
+
+  .insurance-table__main table th,
+  .insurance-table__main table td {
+    border: none !important;
+    background-color: var(--color-neutral);
+    text-align: left;
+    font-size: var(--font-large);
+  }
+
+  .insurance-table__container--expanded {
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .insurance-table__main th,
+  .insurance-table__main td {
+    background-color: var(--color-neutral);
+    border-radius: 10px;
+    padding: 8px;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.insurance-table__container');
+    const button = container.querySelector('.insurance-table__expand-button');
+  
+    button.addEventListener('click', function() {
+      container.classList.add('insurance-table__container--expanded');
+      button.style.display = 'none';
+    });
+  });
+</script>
+
+
+{% comment %} Section For Desktop {% endcomment %}
+<h2 class="insurance__heading">Insurance Details</h2>
+<div class="insurance-table__container">
+  <button class="insurance-table__expand-button">
+    <span>Click to see more ▼</span>
+  </button>
+
+  <div class="insurance-table__title desktop">
+    <span>Insurance Package</span>
+  </div>
+
+  {% assign packages = product.metafields.insurance.package.value.insurance_package %}
+  <div class="insurance-table__main">
+    <div>
+      {% for package in packages %}
+        <table
+          cellspacing="0"
+          cellpadding="8"
+          style="border-collapse: separate; border-spacing: 10px; width: 100%;">
+
+          <thead style="background-color: var(--color-neutral);">
+            <tr>
+              <th colspan="2">Benefits</th>
+              <th>Basic</th>
+              <th>Executive</th>
+              <th>Premiere</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Trip Cancellation and Alteration -->
+            <tr>
+              {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
+              <td colspan="2">Trip Cancellation and Alteration</td>
+              <td>{{ cancelation.basic }}</td>
+              <td>{{ cancelation.executive }}</td>
+              <td>{{ cancelation.premiere }}</td>
+          </tr>
+
+            <!-- Medical & Other Emergency Expenses -->
+            {% assign medical = package.medical_and_other_emergency_expenses %}
+            <tr>
+              <th rowspan="7">Medical & Other Emergency Expenses</th>
+              <td>Medical Expenses</td>
+              {% for item in medical.medical_expenses %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Emergency Medical Evacuation & Repatriation</td>
+              {% for item in medical.emergency_medical_evacuation_and_repatriation %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Compassionate Visit Expenses</td>
+              {% for item in medical.compassionate_visit_expenses %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Return of Children</td>
+              {% for item in medical.return_of_children %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Hospital Daily Benefit</td>
+              {% for item in medical.hospital_daily_benefit %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Emergency Telephone Charges</td>
+              {% for item in medical.emergency_telephone_charges %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Follow up Medical Treatment</td>
+              {% for item in medical.follow_up_medical_treatment %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+          </tr>
+
+            <!-- Travel & Associated Expenses -->
+            {% assign travel = package.travel_and_associated_expenses %}
+            <tr>
+              <th rowspan="5">Travel & Associated Expenses</th>
+              <td>Trip Curtailment</td>
+              {% for item in travel.trip_curtailment %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Travel Delay</td>
+              {% for item in travel.travel_delay %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Missed Flight Connection</td>
+              {% for item in travel.missed_flight_connection %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Overbooked Flight</td>
+              {% for item in travel.overbooked_flight %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Flight Diversion</td>
+              {% for item in travel.flight_diversion %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+          </tr>
+
+            <!-- Baggage and Personal Belongings Cover -->
+            {% assign baggage = package.baggage_and_personal_belongings_cover %}
+            <tr>
+              <th rowspan="3">Baggage & Personal Belongings Cover</th>
+              <td>Baggage Delay</td>
+              {% for item in baggage.baggage_delay %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Baggage and Personal Belongings</td>
+              {% for item in baggage.baggage_and_personal_belongings %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Personal Money and Travel Documents</td>
+              {% for item in baggage.personal_money_and_travel_documents %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+          </tr>
+
+            <!-- Personal Accident -->
+            {% assign accident = package.personal_accident %}
+            <tr>
+              <th rowspan="4">Personal Accident</th>
+              <td>Aged 18 and Below</td>
+              {% for item in accident.aged_18_and_below %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Aged 19 to 65</td>
+              {% for item in accident.aged_19_to_65 %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Aged 66 to 75</td>
+              {% for item in accident.aged_66_to_75 %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Aged 76 and Over</td>
+              {% for item in accident.aged_76_and_over %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+          </tr>
+
+            <!-- Repatriation of Mortal Remains and Other Related Benefit -->
+            {% assign repatriation = package.repatriation_of_mortal_remains_and_other_related_benefit %}
+            <tr>
+              <th rowspan="3">Repatriation & Related Benefit</th>
+              <td>Repatriation of Mortal Remains to Home Country</td>
+              {% for item in repatriation.repatriation_of_mortal_remains_to_home_country %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Compassionate Death Visit</td>
+              {% for item in repatriation.compassionate_death_visit %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Compassionate Funeral Expenses</td>
+              {% for item in repatriation.compassionate_funeral_expenses %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+          </tr>
+
+            <!-- Other Benefits -->
+            {% assign other = package.other_benefits %}
+            <tr>
+              <th rowspan="10">Other Benefits</th>
+              <td>Automatic Extension of Cover</td>
+              {% for item in other.automatic_extension_of_cover %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Personal Liability</td>
+              {% for item in other.personal_liability %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Legal Expenses</td>
+              {% for item in other.legal_expenses %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Loss of Home Contents</td>
+              {% for item in other.loss_of_home_contents %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Hijack</td>
+              {% for item in other.hijack %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Rental Vehicle</td>
+              {% for item in other.rental_vehicle %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Terrorism Cover</td>
+              {% for item in other.terrorism_cover %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Recreational Sports and Activities</td>
+              {% for item in other.recreational_sports_and_activities %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Fraudulent Use of Credit Card</td>
+              {% for item in other.fraudulent_use_of_credit_card %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td>Golf Equipment</td>
+              {% for item in other.golf_equipment %}
+                <td>{{ item.basic }}</td>
+                <td>{{ item.executive }}</td>
+                <td>{{ item.premiere }}</td>
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      {% endfor %}
     </div>
   </div>
 </div>
 
-{% style %}
-  .insurance-container {
-    padding: 15px;
-    border: 1px solid var(--color-border);
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  .insurance-wrapper {
-    background-color: var(--color-background);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  .insurance-card__sub {
-    text-align: center;
-    background-color: var(--color-neutral);
-    padding: 15px;
-  }
-  .insurance-card {
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  .insurance__plan {
-    display: flex;
-    justify-content: space-between;
-    color: var(--color-neutral);
-  }
-  .insurance__plan-type {
-    background-color: var(--color-primary);
-    border-radius: 15px;
-    padding: 10px 15px;
-  }
-  .insurance__plan-content {
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--color-neutral);
-  }
-{% endstyle %}
+
+{% comment %} section for mobile {% endcomment %}
+<section>
+  <div class="insurance-table__title mobile">
+    <span>Insurance Package</span>
+  </div>
+  {% assign packages = product.metafields.insurance.package.value.insurance_package %}
+  <div class="insurance-table__scroll">
+    {% for package in packages %}
+      <table style="z-index: 1">
+        <thead>
+          <tr>
+            <th>Benefits</th>
+            <th>Basic</th>
+            <th>Executive</th>
+            <th>Premiere</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Trip Cancellation and Alteration -->
+          <tr>
+            {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
+            <td>Trip Cancellation and Alteration</td>
+            <td>{{ cancelation.basic }}</td>
+            <td>{{ cancelation.executive }}</td>
+            <td>{{ cancelation.premiere }}</td>
+          </tr>
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Medical & Other Emergency Expenses</b>
+            </td>
+          </tr>
+          {% assign medical = package.medical_and_other_emergency_expenses %}
+          <tr>
+            <td>Medical Expenses</td>
+            {% for item in medical.medical_expenses %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Emergency Medical Evacuation & Repatriation</td>
+            {% for item in medical.emergency_medical_evacuation_and_repatriation %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Compassionate Visit Expenses</td>
+            {% for item in medical.compassionate_visit_expenses %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Return of Children</td>
+            {% for item in medical.return_of_children %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Hospital Daily Benefit</td>
+            {% for item in medical.hospital_daily_benefit %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Emergency Telephone Charges</td>
+            {% for item in medical.emergency_telephone_charges %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Follow up Medical Treatment</td>
+            {% for item in medical.follow_up_medical_treatment %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+        </tr>
+          <!-- Travel & Associated Expenses -->
+          {% assign travel = package.travel_and_associated_expenses %}
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Travel & Associated Expenses</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Trip Curtailment</td>
+            {% for item in travel.trip_curtailment %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Travel Delay</td>
+            {% for item in travel.travel_delay %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Missed Flight Connection</td>
+            {% for item in travel.missed_flight_connection %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Overbooked Flight</td>
+            {% for item in travel.overbooked_flight %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Flight Diversion</td>
+            {% for item in travel.flight_diversion %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+        </tr>
+          <!-- Baggage and Personal Belongings Cover -->
+          {% assign baggage = package.baggage_and_personal_belongings_cover %}
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Baggage & Personal Belongings Cover</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Baggage Delay</td>
+            {% for item in baggage.baggage_delay %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Baggage and Personal Belongings</td>
+            {% for item in baggage.baggage_and_personal_belongings %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Personal Money and Travel Documents</td>
+            {% for item in baggage.personal_money_and_travel_documents %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+        </tr>
+          <!-- Personal Accident -->
+          {% assign accident = package.personal_accident %}
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Personal Accident</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Aged 18 and Below</td>
+            {% for item in accident.aged_18_and_below %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Aged 19 to 65</td>
+            {% for item in accident.aged_19_to_65 %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Aged 66 to 75</td>
+            {% for item in accident.aged_66_to_75 %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Aged 76 and Over</td>
+            {% for item in accident.aged_76_and_over %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+        </tr>
+          <!-- Repatriation of Mortal Remains and Other Related Benefit -->
+          {% assign repatriation = package.repatriation_of_mortal_remains_and_other_related_benefit %}
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Repatriation & Related Benefit</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Repatriation of Mortal Remains to Home Country</td>
+            {% for item in repatriation.repatriation_of_mortal_remains_to_home_country %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Compassionate Death Visit</td>
+            {% for item in repatriation.compassionate_death_visit %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Compassionate Funeral Expenses</td>
+            {% for item in repatriation.compassionate_funeral_expenses %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+        </tr>
+          <!-- Other Benefits -->
+          {% assign other = package.other_benefits %}
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Other Benefits</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Automatic Extension of Cover</td>
+            {% for item in other.automatic_extension_of_cover %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Personal Liability</td>
+            {% for item in other.personal_liability %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Legal Expenses</td>
+            {% for item in other.legal_expenses %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Loss of Home Contents</td>
+            {% for item in other.loss_of_home_contents %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Hijack</td>
+            {% for item in other.hijack %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Rental Vehicle</td>
+            {% for item in other.rental_vehicle %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Terrorism Cover</td>
+            {% for item in other.terrorism_cover %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Recreational Sports and Activities</td>
+            {% for item in other.recreational_sports_and_activities %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Fraudulent Use of Credit Card</td>
+            {% for item in other.fraudulent_use_of_credit_card %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Golf Equipment</td>
+            {% for item in other.golf_equipment %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    {% endfor %}
+  </div>
+</section>

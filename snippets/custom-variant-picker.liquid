@@ -510,15 +510,9 @@
     }
   
     if (action === "buy") {
-      fetch("/cart/clear.js", { method: "POST" }).then(() => {
-        fetch("/cart/add.js", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }).then(() => {
-          window.location.href = "/checkout";
-        });
-      });
+      const shopDomain = window.location.origin;
+      const checkoutUrl = `${shopDomain}/cart/${variant.id}:${quantity}?channel=buy_button`;
+      window.location.href = checkoutUrl;
     } else {
       fetch("/cart/add.js", {
         method: "POST",

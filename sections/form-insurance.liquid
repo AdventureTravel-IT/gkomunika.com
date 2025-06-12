@@ -1,0 +1,348 @@
+{% style %}
+  .form-insurance {
+    background-color: var(--color-neutral);
+    border-radius: 15px;
+    padding: 10px;
+    margin: 20px;
+  }
+{% endstyle %}
+
+{% capture FormInsurance %}
+  <form class="form-insurance">
+    <div class="form-insurance__wrapper">
+      <label for="salutation">Title</label>
+      <select
+        id="salutation"
+        name="Salutation"
+        required>
+        <option value="Mr">Mr</option>
+        <option value="Mrs">Mrs</option>
+        <option value="Miss">Miss</option>
+      </select>
+
+      <label for="first-name">First Name</label>
+      <input
+        type="text"
+        id="first-name"
+        aria-label="First Name"
+        name="First Name"
+        placeholder="First Name"
+        required>
+
+      <label for="last-name">Last Name</label>
+      <input
+        type="text"
+        id="last-name"
+        aria-label="Last Name"
+        name="Last Name"
+        placeholder="Last Name"
+        required>
+    </div>
+
+    <div class="form-insurance__wrapper">
+      <label for="place-of-birth">Place Of Birth</label>
+      <input
+        type="text"
+        id="place-of-birth"
+        aria-label="Place Of Birth"
+        name="Place Of Birth"
+        placeholder="Place Of Birth"
+        required>
+
+      <div class="form-insurance__wrapper-item">
+        <label for="day">Day</label>
+        <input
+          type="number"
+          id="day"
+          name="Day"
+          placeholder="DD"
+          min="1"
+          max="31"
+          required>
+
+        <label for="month">Month</label>
+        <input
+          type="number"
+          id="month"
+          name="Month"
+          placeholder="MM"
+          min="1"
+          max="12"
+          required>
+
+        <label for="year">Year</label>
+        <input
+          type="number"
+          id="year"
+          name="Year"
+          placeholder="YYYY"
+          min="1900"
+          max="9999"
+          required>
+      </div>
+    </div>
+
+    <div class="form-insurance__wrapper">
+      <label for="mobile-phone">Mobile Phone</label>
+      <input
+        type="number"
+        id="mobile-phone"
+        aria-label="Mobile Phone"
+        name="Mobile Phone"
+        placeholder="Mobile Phone"
+        required>
+    </div>
+
+    <div class="form-insurance__wrapper">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="Email"
+        aria-label="Email"
+        placeholder="Email"
+        required>
+
+      <label for="additional-email">Additional Email</label>
+      <input
+        type="email"
+        id="additional-email"
+        name="Additional Email"
+        aria-label="Additional Email"
+        placeholder="Additional Email"
+        required>
+    </div>
+
+    <div class="form-insurance__wrapper">
+      <label for="city">City</label>
+      <input
+        type="text"
+        id="city"
+        name="City"
+        aria-label="City"
+        placeholder="City"
+        required>
+
+      <label for="postal-code">Postal Code</label>
+      <input
+        type="text"
+        id="postal-code"
+        name="Postal Code"
+        aria-label="Postal Code"
+        placeholder="Postal Code"
+        required>
+    </div>
+
+    <div class="form-insurance__wrapper">
+      <label for="address">Address</label>
+      <input
+        type="text"
+        id="address"
+        name="Address"
+        aria-label="Address"
+        placeholder="Address"
+        required>
+    </div>
+
+    <div class="form-insurance__wrapper">
+      <label for="check-data">Data is correct</label>
+      <input type="checkbox" id="check-data" required>
+
+      <label for="check-itinerary">Flight itinerary is the same</label>
+      <input type="checkbox" id="check-itinerary" required>
+    </div>
+
+    <button type="button" id="checkout-button" onclick="handleCheckout()">Checkout</button>
+
+  </form>
+{% endcapture %}
+
+<!-- Section Individual -->
+<section class="form-insurance__individual" id="individual-section">
+  <p>Form Individual</p>
+  <div class="form-index">1st</div>
+  {{ FormInsurance }}
+</section>
+
+<!-- Section DuoPlus -->
+<section class="form-insurance__duoplus" id="duoplus-section">
+  <p>Form DuoPlus</p>
+  <div class="form-index">1st</div>
+  {{ FormInsurance }}
+  <div class="form-index">2nd</div>
+  {{ FormInsurance }}
+</section>
+
+<!-- Section Family -->
+<section class="form-insurance__family" id="family-section">
+  <p>Form Family</p>
+  <div id="family-forms">
+    <div class="form-index">1st</div>
+    {{ FormInsurance }}
+    <div class="form-index">2nd</div>
+    {{ FormInsurance }}
+  </div>
+  <button
+    id="add-form-button"
+    type="button"
+    onclick="addForm()">Add Form</button>
+</section>
+
+<script>
+  const maxForms = 4;
+  let formCount = 2;  // Mulai dengan 2 form yang sudah ada
+  
+  const formTemplate = `
+    <div class="dynamic-form">
+      <div class="form-index"></div> <!-- Tempat untuk indeks -->
+      ${document.querySelector('.form-insurance__family .form-insurance').outerHTML}
+      <button type="button" onclick="removeForm(this)">Remove Form</button>
+    </div>
+  `;
+  
+  function addForm() {
+    if (formCount < maxForms) {
+      const wrapper = document.getElementById('family-forms');
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = formTemplate;
+      wrapper.appendChild(tempDiv.firstElementChild);
+      formCount++;
+  
+      // Update the indexes after adding new form
+      updateIndexes();
+  
+      // Jika jumlah form sudah mencapai max, sembunyikan tombol "Add Form"
+      if (formCount >= maxForms) {
+        document.getElementById('add-form-button').style.display = 'none';
+      }
+    } else {
+      alert("Maximum of 4 forms allowed.");
+    }
+  }
+  
+  function removeForm(button) {
+    const formDiv = button.closest('.dynamic-form');
+    if (formDiv) {
+      formDiv.remove();
+      formCount--;
+  
+      // Update the indexes after removing a form
+      updateIndexes();
+  
+      // Jika jumlah form kurang dari max, tampilkan kembali tombol "Add Form"
+      if (formCount < maxForms) {
+        document.getElementById('add-form-button').style.display = 'block';
+      }
+    }
+  }
+  
+  function updateIndexes() {
+    const formIndexes = document.querySelectorAll('.form-insurance__family .form-index');
+    formIndexes.forEach((index, i) => {
+      if (i === 0) {
+        index.textContent = '1st';
+      } else if (i === 1) {
+        index.textContent = '2nd';
+      } else if (i === 2) {
+        index.textContent = '3rd';
+      } else if (i === 3) {
+        index.textContent = '4th';
+      }
+    });
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get variant data from sessionStorage
+    const variantType = sessionStorage.getItem('variantType');
+    const variantId = sessionStorage.getItem('variantId');
+    const quantity = sessionStorage.getItem('quantity');
+  
+    // Debugging: Log the retrieved values
+    console.log('Retrieved Variant ID:', variantId);
+    console.log('Retrieved Quantity:', quantity);
+    console.log('Retrieved Variant Type:', variantType);
+  
+    // If variantType exists, display the corresponding section
+    if (variantType) {
+      // Hide all sections first
+      document.getElementById('individual-section').style.display = 'none';
+      document.getElementById('duoplus-section').style.display = 'none';
+      document.getElementById('family-section').style.display = 'none';
+  
+      // Show the appropriate section based on variantType
+      if (variantType === 'Individual') {
+        document.getElementById('individual-section').style.display = 'block';
+      } else if (variantType === 'DuoPlus') {
+        document.getElementById('duoplus-section').style.display = 'block';
+      } else if (variantType === 'Family') {
+        document.getElementById('family-section').style.display = 'block';
+      }
+  
+      // Display product information in the section
+      const productInfo = document.createElement('p');
+      productInfo.innerHTML = `Variant ID: ${variantId}, Quantity: ${quantity}`;
+      document.getElementById('individual-section').appendChild(productInfo);
+      document.getElementById('duoplus-section').appendChild(productInfo.cloneNode(true));
+      document.getElementById('family-section').appendChild(productInfo.cloneNode(true));
+    } else {
+      console.log('Variant Type not found in sessionStorage');
+    }
+  });
+  
+  // Checkout handler
+  function handleCheckout() {
+  const variantId = sessionStorage.getItem('variantId');
+  const quantity = sessionStorage.getItem('quantity');
+  
+  if (!variantId || !quantity) {
+    alert("Please select a product first.");
+    return;
+  }
+  
+  // 1. Kumpulkan data dari form
+  const formData = new FormData(document.querySelector('.form-insurance'));
+  const formProps = {};
+  
+  formData.forEach((value, key) => {
+    formProps[key] = value; // Simpan semua field form
+  });
+  
+  // 2. Tambahkan produk ke cart + attributes
+  fetch('/cart/add.js', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      id: variantId,
+      quantity: quantity,
+      attributes: formProps // Kirim sebagai cart attributes
+    })
+  })
+  .then(response => response.json())
+  .then(() => {
+    // 3. Redirect ke checkout
+    window.location.href = '/checkout';
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert("Failed to proceed to checkout.");
+  });
+  }
+</script>
+
+
+{% schema %}
+  {
+    "name": "form insurance",
+    "settings": [],
+    "presets": [
+      {
+        "name": "form insurance",
+        "category": "Custom"
+      }
+    ]
+  }
+{% endschema %}

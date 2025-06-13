@@ -152,8 +152,6 @@
       <input type="checkbox" id="check-itinerary" required>
     </div>
 
-    <button type="button" id="checkout-button" onclick="handleCheckout()">Checkout</button>
-
   </form>
 {% endcapture %}
 
@@ -187,6 +185,11 @@
     type="button"
     onclick="addForm()">Add Form</button>
 </section>
+
+<button
+  id="checkout-button"
+  type="button"
+  onclick="handleCheckout()">Checkout</button>
 
 <script>
   const maxForms = 4;
@@ -301,15 +304,109 @@
     return;
   }
   
-  // 1. Kumpulkan data dari form
-  const formData = new FormData(document.querySelector('.form-insurance'));
-  const formProps = {};
+  // Collecting data from the visible section only
+  const allFormsData = {};
   
-  formData.forEach((value, key) => {
-    formProps[key] = value; // Simpan semua field form
-  });
+  // Collect data based on the active section
+  const variantType = sessionStorage.getItem('variantType');
   
-  // 2. Tambahkan produk ke cart + attributes
+  if (variantType === 'Individual') {
+    const individualForms = document.querySelectorAll('.form-insurance__individual .form-insurance');
+    allFormsData.individual = [];
+    individualForms.forEach((form, index) => {
+      const formData = new FormData(form);
+      allFormsData.individual.push({
+        title: index === 0 ? 'Insured (Policy Holder)' : '',  // Title for form index 1
+        salutation: formData.get('Salutation'),
+        firstName: formData.get('First Name'),
+        lastName: formData.get('Last Name'),
+        placeOfBirth: formData.get('Place Of Birth'),
+        day: formData.get('Day'),
+        month: formData.get('Month'),
+        year: formData.get('Year'),
+        mobilePhone: formData.get('Mobile Phone'),
+        email: formData.get('Email'),
+        city: formData.get('City'),
+        postalCode: formData.get('Postal Code'),
+        address: formData.get('Address')
+      });
+    });
+  } else if (variantType === 'DuoPlus') {
+    const duoplusForms = document.querySelectorAll('.form-insurance__duoplus .form-insurance');
+    allFormsData.duoplus = [];
+    duoplusForms.forEach((form, index) => {
+      const formData = new FormData(form);
+      let title = '';
+      if (index === 0) title = 'Insured (Policy Holder)';
+      if (index === 1) title = 'Traveler (Spouse)';
+      
+      allFormsData.duoplus.push({
+        title: title,
+        salutation: formData.get('Salutation'),
+        firstName: formData.get('First Name'),
+        lastName: formData.get('Last Name'),
+        placeOfBirth: formData.get('Place Of Birth'),
+        day: formData.get('Day'),
+        month: formData.get('Month'),
+        year: formData.get('Year'),
+        mobilePhone: formData.get('Mobile Phone'),
+        email: formData.get('Email'),
+        city: formData.get('City'),
+        postalCode: formData.get('Postal Code'),
+        address: formData.get('Address')
+      });
+    });
+  } else if (variantType === 'Family') {
+    const familyForms = document.querySelectorAll('.form-insurance__family .form-insurance');
+    allFormsData.family = [];
+    familyForms.forEach((form, index) => {
+      const formData = new FormData(form);
+      let title = '';
+      if (index === 0) title = 'Insured (Policy Holder)';
+      if (index === 1) title = 'Traveler';
+      if (index === 2 || index === 3) title = 'Traveler (Child)';
+      
+      allFormsData.family.push({
+        title: title,
+        salutation: formData.get('Salutation'),
+        firstName: formData.get('First Name'),
+        lastName: formData.get('Last Name'),
+        placeOfBirth: formData.get('Place Of Birth'),
+        day: formData.get('Day'),
+        month: formData.get('Month'),
+        year: formData.get('Year'),
+        mobilePhone: formData.get('Mobile Phone'),
+        email: formData.get('Email'),
+        city: formData.get('City'),
+        postalCode: formData.get('Postal Code'),
+        address: formData.get('Address')
+      });
+    });
+  }
+  
+  // Convert data into strings for each section
+  const convertToString = (data) => {
+    return data.map((formData, index) => {
+      return `${formData.title}
+        Full Name: ${formData.salutation} ${formData.firstName} ${formData.lastName}
+        Place Of Birth: ${formData.placeOfBirth}: ${formData.day}-${formData.month}-${formData.year}
+        Mobile Phone: ${formData.mobilePhone}
+        Email: ${formData.email}
+        City: ${formData.city} ${formData.postalCode}
+        Address: ${formData.address}`;
+    }).join("\n\n");
+  };
+  
+  const individualData = allFormsData.individual ? convertToString(allFormsData.individual) : '';
+  const duoplusData = allFormsData.duoplus ? convertToString(allFormsData.duoplus) : '';
+  const familyData = allFormsData.family ? convertToString(allFormsData.family) : '';
+  
+  // 2. Add product to the cart with the custom attributes
+  const attributes = {};
+  if (individualData) attributes['Custom Attribute - Individual'] = individualData;
+  if (duoplusData) attributes['Custom Attribute - DuoPlus'] = duoplusData;
+  if (familyData) attributes['Custom Attribute - Family'] = familyData;
+  
   fetch('/cart/add.js', {
     method: 'POST',
     headers: {
@@ -318,12 +415,12 @@
     body: JSON.stringify({
       id: variantId,
       quantity: quantity,
-      attributes: formProps // Kirim sebagai cart attributes
+      attributes: attributes
     })
   })
   .then(response => response.json())
   .then(() => {
-    // 3. Redirect ke checkout
+    // 3. Redirect to checkout
     window.location.href = '/checkout';
   })
   .catch(error => {

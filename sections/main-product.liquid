@@ -104,7 +104,7 @@
     {{ min_price_formatted }}{% unless min_price == max_price %} - {{ max_price_formatted }}{% endunless %}
   </div>
 
-        {{ product.description }}
+        <div style="max-height: 200px; overflow-y: auto;">{{ product.description }}</div>
         <div class="main-product-variant-picker">
           {% render 'custom-variant-picker', product: product %}
         </div>

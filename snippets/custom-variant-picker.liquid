@@ -57,17 +57,17 @@
   }
   .variant-option {
     display: flex;
-    
+
     flex-direction: column;
     min-width: 0;
   }
-  
+
   .variant-picker__label {
     font-weight: bold;
   }
-  
+
   .variant-dropdown {
-    padding: 15px;
+    padding: 15px 35px 15px 15px;
     border-radius: 15px;
     border: 1px solid var(--color-primary);
     font-size: var(--font-large);
@@ -77,14 +77,13 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url({{ 'icon-dropdown.svg' | asset_url }});
+    background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 15px;
     background-color: var(--color-neutral);
-    padding-right: 35px;
   }
-      
+
   #reset-plan {
     border: none;
     width: 150px;
@@ -110,15 +109,16 @@
     font-size: var(--font-large);
     font-weight: bold;
     color: var(--color-neutral);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease
+    , box-shadow 0.3s ease;
     cursor: pointer;
   }
 
-  
+
   .variant-picker-btn__mobile button:active,
   .variant-picker-btn button:active {
     transform: scale(0.96);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .variant-picker-btn__mobile .cart,
@@ -126,7 +126,7 @@
     border: 1px groove var(--secondary);
     background-color: var(--color-secondary);
   }
-  
+
   .variant-picker-btn__mobile .buy,
   .variant-picker-btn .buy {
     border: 1px groove var(--color-primary);
@@ -145,7 +145,7 @@
     color: var(--color-secondary) !important;
     font-size: var(--font-supper-large);
     font-weight: bold;
-  } 
+  }
 
 
   .variant-dropdown.variant-warning {
@@ -153,7 +153,7 @@
     box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
     position: relative;
   }
-  
+
   .variant-dropdown.variant-warning::after {
     content: "Please select this option";
     position: absolute;
@@ -175,42 +175,47 @@
   .variant-picker-btn__mobile {
     display: none;
   }
-@media (max-width: 1440px) {
-  .variant-picker-btn__mobile,
-  .variant-picker-btn {
-    width: 100%;
+  @media (max-width: 1440px) {
+    .variant-picker-btn__mobile,
+    .variant-picker-btn {
+      width: 100%;
+    }
   }
-}
-@media (max-width: 768px) {
-  .variant-picker-btn__mobile {
-    display: block;
-  }
-  .variant-picker-btn {
-    display: none;
-  }
-  .variant-picker-btn__mobile {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
+  @media (max-width: 768px) {
+    .variant-picker-btn__mobile {
+      display: block;
+    }
+    .variant-picker-btn {
+      display: none;
+    }
+    .variant-picker-btn__mobile {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
 
-    
-    z-index: 999;
+
+      z-index: 999;
+    }
+    .variant-picker-btn__mobile-wrapper {
+      display: flex;
+      gap: 10px;
+    }
+    #variant-price-desktop {
+      display: none;
+    };
+
+
+    /*
+
+   #selected-variant-display { 
+   font-size: var(--font-large); 
+   font-weight: 500; 
+   color: var(--color-secondary); 
+   border: 1px solid var(--color-border); 
+   } 
+*/
   }
-  .variant-picker-btn__mobile-wrapper {
-    display: flex;
-    gap: 10px;
-  }
-  #variant-price-desktop {
-    display: none;
-  }
-  /* #selected-variant-display {
-    font-size: var(--font-large);
-    font-weight: 500;
-    color: var(--color-secondary);
-    border: 1px solid var(--color-border);
-  } */
-}
 {% endstyle %}
 
 <div id="custom-variant-selector">
@@ -233,41 +238,73 @@
       <div class="variant-option" data-option-index="{{ forloop.index0 }}">
         <label class="variant-picker__label">{{ option.name }}</label>
         <select class="variant-dropdown" data-option-name="{{ option.name }}">
-  <option value="" disabled selected hidden>Choose Option</option>
-  {% assign values_seen = "" %}
-  {% for value in option.values %}
-    {% unless values_seen contains value %}
-      <option value="{{ value }}">{{ value }}</option>
-      {% assign values_seen = values_seen | append: value | append: "," %}
-    {% endunless %}
-  {% endfor %}
-</select>
+          <option
+            value=""
+            disabled
+            selected
+            hidden>Choose Option</option>
+          {% assign values_seen = "" %}
+          {% for value in option.values %}
+            {% unless values_seen contains value %}
+              <option value="{{ value }}">{{ value }}</option>
+              {% assign values_seen = values_seen | append: value | append: "," %}
+            {% endunless %}
+          {% endfor %}
+        </select>
 
       </div>
     {% endfor %}
   </div>
 
+  <div id="variant-metafield-display" class="my-4"></div>
   <!-- Quantity -->
   <div class="quantity-wrapper" style="margin: 1rem 0;">
-    <label class="variant-picker__label" for="quantity" style="display: block; margin-bottom: 4px;">Quantity:</label>
+    <label
+      class="variant-picker__label"
+      for="quantity"
+      style="display: block; margin-bottom: 4px;">Quantity:</label>
     <div class="quantity-input">
-      <button type="button" class="quantity-btn" id="quantity-decrease" style="border-right: 1px solid var(--color-border);">
+      <button
+        type="button"
+        class="quantity-btn"
+        id="quantity-decrease"
+        style="border-right: 1px solid var(--color-border);">
         <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
       </button>
-      <input type="number" id="quantity" name="quantity" min="1" value="1" class="quantity-number">
-      <button type="button" class="quantity-btn" id="quantity-increase" style="border-left: 1px solid var(--color-border);">
+      <input
+        type="number"
+        id="quantity"
+        name="quantity"
+        min="1"
+        value="1"
+        class="quantity-number">
+      <button
+        type="button"
+        class="quantity-btn"
+        id="quantity-increase"
+        style="border-left: 1px solid var(--color-border);">
         <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
       </button>
     </div>
   </div>
-  
+
   <!-- Tombol reset -->
   <button id="reset-plan" type="button">Reset Plan</button>
 
   <!-- Tombol cart dan buy -->
   <div class="variant-picker-btn">
-    <button class="cart" type="button" id="add-to-cart"><p>Add to Cart</p></button>
-    <button class="buy" type="button" id="buy-now-button"><p>Buy Now</p></button>
+    <button
+      class="cart"
+      type="button"
+      id="add-to-cart">
+      <p>Add to Cart</p>
+    </button>
+    <button
+      class="buy"
+      type="button"
+      id="buy-now-button">
+      <p>Buy Now</p>
+    </button>
   </div>
 </div>
 
@@ -284,20 +321,34 @@
 <div class="variant-picker-btn__mobile">
   <div id="bucks-mobile" style="margin-left: 11px;"></div>
   <div style="padding: 20px 24px; background-color: var(--color-neutral);">
-  <h2>{{ product.title }}</h2>
-  <span id="selected-variant-display">Selected Variant</span>
+    <h2>{{ product.title }}</h2>
+    <span id="selected-variant-display">Selected Variant</span>
 
-  <div id="variant-price-mobile" class="money">
-    {{ min_price_formatted }}{% unless min_price == max_price %} - {{ max_price_formatted }}{% endunless %}
-  </div>
-  <div class="variant-picker-btn__mobile-wrapper">
-    <button class="cart" type="button" id="add-to-cart-mobile"><p>Add to Cart</p></button>
-    <button class="buy" type="button" id="buy-now-button-mobile"><p>Buy Now</p></button>
-  </div>
+    <div id="variant-price-mobile" class="money">
+      {{ min_price_formatted }}{% unless min_price == max_price %}
+        - {{ max_price_formatted }}{% endunless %}
+    </div>
+    <div class="variant-picker-btn__mobile-wrapper">
+      <button
+        class="cart"
+        type="button"
+        id="add-to-cart-mobile">
+        <p>Add to Cart</p>
+      </button>
+      <button
+        class="buy"
+        type="button"
+        id="buy-now-button-mobile">
+        <p>Buy Now</p>
+      </button>
+    </div>
   </div>
 </div>
 
-<div class="variant-picker-popup" id="variant-popup" style="display: none;">
+<div
+  class="variant-picker-popup"
+  id="variant-popup"
+  style="display: none;">
   <span id="variant-popup-message"></span>
 </div>
 
@@ -319,6 +370,7 @@
   }
 {% endstyle %}
 
+
 <script>
   const productVariants = {{ product.variants | json }};
   const variantDropdowns = document.querySelectorAll('.variant-dropdown');
@@ -331,8 +383,8 @@
   const addToCartButton = document.getElementById('add-to-cart');
   const buyNowButton = document.getElementById('buy-now-button');
   const selectedVariantDisplay = document.getElementById('selected-variant-display');
-
-
+  
+  
   const addToCartButtonDesktop = document.getElementById('add-to-cart');
   const buyNowButtonDesktop = document.getElementById('buy-now-button');
   const addToCartButtonMobile = document.getElementById('add-to-cart-mobile');
@@ -343,18 +395,16 @@
   addToCartButtonMobile?.addEventListener("click", () => handleCartAction("add"));
   buyNowButtonMobile?.addEventListener("click", () => handleCartAction("buy"));
   
-
-
   const defaultPriceHTML = priceDivDesktop.innerHTML;
   const defaultPriceMobileHTML = priceDivMobile.innerHTML;
-
+  
   function getSelectedOptions() {
     return Array.from(variantDropdowns).map(select => select.value);
   }
-
+  
   function updateDropdownOptions() {
     const selectedOptions = getSelectedOptions();
-
+  
     variantDropdowns.forEach((select, index) => {
       Array.from(select.options).forEach(option => {
         if (option.value === "") {
@@ -362,16 +412,16 @@
           option.classList.remove('disabled-option');
           return;
         }
-
+  
         const testOptions = [...selectedOptions];
         testOptions[index] = option.value;
-
+  
         const match = productVariants.some(variant =>
           variant.options.every((opt, i) =>
             testOptions[i] === "" || testOptions[i] === opt
           )
         );
-
+  
         if (!match) {
           option.disabled = true;
           option.classList.add('disabled-option');
@@ -380,16 +430,16 @@
           option.classList.remove('disabled-option');
         }
       });
-
+  
       if (select.options[select.selectedIndex]?.disabled) {
         select.selectedIndex = 0;
       }
     });
   }
-
+  
   function findVariant() {
     const selectedOptions = getSelectedOptions();
-
+  
     if (selectedOptions.includes("")) {
       priceDivDesktop.innerHTML = defaultPriceHTML;
       priceDivMobile.innerHTML = defaultPriceMobileHTML;
@@ -397,11 +447,11 @@
       updateDropdownOptions();
       return null;
     }
-
+  
     const matchedVariant = productVariants.find(variant =>
       variant.options.every((opt, index) => opt === selectedOptions[index])
     );
-
+  
     if (matchedVariant) {
       if (matchedVariant.available) {
         const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
@@ -417,29 +467,29 @@
       priceDivDesktop.textContent = "Varian tidak ditemukan";
       priceDivMobile.textContent = "Varian tidak ditemukan";
     }
-
+  
     if (selectedVariantDisplay) {
       const selected = selectedOptions.filter(v => v !== "").join(" - ");
       selectedVariantDisplay.textContent = selected || "Choose Variant";
     }
-
+  
     updateDropdownOptions();
-
+  
     if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
       Currency.convertAll(shopCurrency, Currency.currentCurrency);
     }
-
+  
     return matchedVariant;
   }
-
+  
   function adjustQuantity(delta) {
     const current = parseInt(quantityInput.value) || 1;
     quantityInput.value = Math.max(1, current + delta);
   }
-
+  
   minusBtn?.addEventListener('click', () => adjustQuantity(-1));
   plusBtn?.addEventListener('click', () => adjustQuantity(1));
-
+  
   resetBtn.addEventListener('click', () => {
     variantDropdowns.forEach(select => {
       select.selectedIndex = 0;
@@ -449,12 +499,12 @@
     priceDivMobile.innerHTML = defaultPriceMobileHTML;
     if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Selected Variant";
     updateDropdownOptions();
-
+  
     if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
       Currency.convertAll(shopCurrency, Currency.currentCurrency);
     }
   });
-
+  
   function updateCartCount() {
     fetch('/cart.js')
       .then(response => response.json())
@@ -469,85 +519,139 @@
       });
   }
   
-
+  
   function handleCartAction(action) {
-    const variant = findVariant();
-    const quantity = parseInt(quantityInput.value) || 1;
+  const variant = findVariant();
+  const quantity = parseInt(quantityInput.value) || 1;
   
-    if (!variant || !variant.available) {
-      let hasEmpty = false;
-      variantDropdowns.forEach(select => {
-        if (select.value === "") {
-          select.classList.add("variant-warning");
-          hasEmpty = true;
-        }
-      });
-    
-      if (hasEmpty) {
-        const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
-        if (firstEmpty) {
-          firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+  if (!variant || !variant.available) {
+    let hasEmpty = false;
+    variantDropdowns.forEach(select => {
+      if (select.value === "") {
+        select.classList.add("variant-warning");
+        hasEmpty = true;
       }
-    
-      return;
-    }
-
+    });
   
-    const payload = { id: variant.id, quantity: quantity };
-    const popup = document.getElementById("variant-popup");
-  
-    function showPopup(message) {
-      const messageEl = document.getElementById("variant-popup-message");
-      if (messageEl) {
-        messageEl.textContent = message;
+    if (hasEmpty) {
+      const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
+      if (firstEmpty) {
+        firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
       }
-  
-      popup.style.display = "block";
-      setTimeout(() => {
-        popup.style.display = "none";
-      }, 2000);
     }
   
-    if (action === "buy") {
-      fetch("/cart/clear.js", { method: "POST" }).then(() => {
-        fetch("/cart/add.js", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }).then(() => {
-          window.location.href = "/checkout";
-        });
-      });
-    } else {
+    return;
+  }
+  
+  // Cek jika produk memiliki metafield kategori "Insurance"
+  const productCategory = "{{ product.metafields.product.category.value }}";
+  
+  if (action === "buy" && productCategory === "Insurance") {
+    // Dapatkan tipe variant dari metafield
+    const variantType = getVariantType(variant); // Assuming you have this function
+  
+    // Simpan variantType, variantId, dan quantity di sessionStorage
+    sessionStorage.setItem('variantType', variantType);
+    sessionStorage.setItem('variantId', variant.id);
+    sessionStorage.setItem('quantity', quantity);
+  
+    console.log('Stored Variant ID:', variant.id);  // Debugging
+    console.log('Stored Quantity:', quantity);  // Debugging
+    console.log('Stored Variant Type:', variantType);  // Debugging
+  
+    // Redirect ke halaman form-insurance
+    window.location.href = "/pages/form-insurance";
+    return;
+  }
+  
+  const payload = { id: variant.id, quantity: quantity };
+  const popup = document.getElementById("variant-popup");
+  
+  function showPopup(message) {
+    const messageEl = document.getElementById("variant-popup-message");
+    if (messageEl) {
+      messageEl.textContent = message;
+    }
+  
+    popup.style.display = "block";
+    setTimeout(() => {
+      popup.style.display = "none";
+    }, 2000);
+  }
+  
+  if (action === "buy") {
+    fetch("/cart/clear.js", { method: "POST" }).then(() => {
       fetch("/cart/add.js", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(() => {
-        showPopup("Item successfully added to cart.");
-        updateCartCount(); // ← tambahkan ini
-      })
-      .catch(err => {
-        console.error("Add to cart failed:", err);
-        showPopup("Failed to add product");
+      }).then(() => {
+        window.location.href = "/checkout";
       });
+    });
+  } else {
+    fetch("/cart/add.js", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(() => {
+      showPopup("Item successfully added to cart.");
+      updateCartCount();
+    })
+    .catch(err => {
+      console.error("Add to cart failed:", err);
+      showPopup("Failed to add product");
+    });
+  }
+  }
+  
+  // // Tambahkan event listener ke tombol "Buy Now"
+  // buyNowButton?.addEventListener("click", () => handleCartAction("buy"));
+  
+  
+  
+  // Fungsi untuk mendapatkan tipe variant
+  function getVariantType(variant) {
+  const variantsData = [
+    {% for variant in product.variants %}
+      {
+        id: {{ variant.id }},
+        type: {{ variant.metafields.variant.type | json }},
+        options: [
+          {% for option in variant.options %}
+            "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ]
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+  
+  const matchedVariant = variantsData.find(v => v.id === variant.id);
+  if (matchedVariant && matchedVariant.type) {
+    if (Array.isArray(matchedVariant.type)) {
+      return matchedVariant.type.join(', ');
+    } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
+      return matchedVariant.type.value;
+    } else {
+      return matchedVariant.type;
     }
   }
-
-
+  return '';
+  }
+  
+  
   addToCartButton?.addEventListener("click", () => handleCartAction("add"));
   buyNowButton?.addEventListener("click", () => handleCartAction("buy"));
-
+  
   variantDropdowns.forEach(select => {
     select.addEventListener('change', findVariant);
   });
-
+  
    // Scroll ke variant selector saat tombol "Selected Variant" ditekan (mobile)
    selectedVariantDisplay?.addEventListener('click', () => {
     const variantWrapper = document.querySelector('.variant-option__wrapper');
@@ -555,14 +659,14 @@
       const rect = variantWrapper.getBoundingClientRect();
       const offsetTop = window.scrollY + rect.top;
       const offsetMiddle = offsetTop - (window.innerHeight / 2) + (rect.height / 2) + 45; // sedikit ke atas
-
+  
       window.scrollTo({
         top: offsetMiddle,
         behavior: 'smooth'
       });
     }
   });
-
+  
   // Initial update
   updateDropdownOptions();
 </script>

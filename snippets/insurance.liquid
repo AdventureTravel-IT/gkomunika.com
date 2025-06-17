@@ -952,6 +952,10 @@
             {% if other.golf_equipment[0].basic or other.golf_equipment[0].executive or other.golf_equipment[0].premiere %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
+            {% if other.loss_of_hotel_reservation[0].basic or other.loss_of_hotel_reservation[0].executive or other.loss_of_hotel_reservation[0].premiere %}
+              {% assign other_row_count = other_row_count | plus: 1 %}
+            {% endif %}
+
 
             {% if other_row_count > 0 %}
               {% for item in other.automatic_extension_of_cover %}
@@ -1213,6 +1217,33 @@
                   </tr>
                 {% endif %}
               {% endfor %}
+
+              {% for item in other.loss_of_hotel_reservation %}
+                {% if item.basic or item.executive or item.premiere %}
+                  <tr>
+                    <td>Loss Of Hotel Resevation</td>
+                    {% if item.basic %}
+                      <td
+                        {% if item.executive == null and item.premiere == null %}
+                        colspan="2"
+                        {% endif %}>{{ item.basic }}</td>
+                    {% endif %}
+                    {% if item.executive %}
+                      <td
+                        {% if item.basic == null and item.premiere == null %}
+                        colspan="2"
+                        {% endif %}>{{ item.executive }}</td>
+                    {% endif %}
+                    {% if item.premiere %}
+                      <td
+                        {% if item.basic == null and item.executive == null %}
+                        colspan="2"
+                        {% endif %}>{{ item.premiere }}</td>
+                    {% endif %}
+                  </tr>
+                {% endif %}
+              {% endfor %}
+
             {% endif %}
 
           </tbody>
@@ -1546,6 +1577,15 @@
               <td>{{ item.premiere }}</td>
             {% endfor %}
           </tr>
+          <tr>
+            <td>Loss of Hotel Reservasion</td>
+            {% for item in other.loss_of_hotel_reservasion %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+
         </tbody>
       </table>
     {% endfor %}

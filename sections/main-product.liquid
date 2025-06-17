@@ -116,42 +116,49 @@
     </div>
     <div class="main-product-main-content">
       <div class="main-product-content">
-        {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-        {% if product_category == "Insurance" %}
-          {% render 'insurance' %}
-      {% endif %}
-
-
         <div class="main-product__content-container">
-          <div class="main-product-content-wrapper">
-            <label>Product Details</label>
-            <div class="main-product-content-left">
-              <ul>
-                {% for item in product.metafields.details %}
-                  {% assign key = item.first %}
-                  {% assign value = item.last %}
-                  {% if value != blank %}
-                    <div class="mp-content-wrapper">
-                      <div class="mp-content-icon-img">
-                        {{- key | append: '.svg' | inline_asset_content -}}
-                      </div>
-                      <div class="mp-content-text">
-                        <p class="title">{{ key | replace: '_', ' ' | capitalize }}</p>
-                        {% if value.value %}
-                          {% for v in value.value %}
-                            <p>{{ v }}</p>
-                          {% endfor %}
-                        {% else %}
-                          <p>{{ value }}</p>
-                        {% endif %}
-                      </div>
-                    </div>
-                    <hr class="mp-content-divider">
-                  {% endif %}
-                {% endfor %}
-              </ul>
+          {% if product.metafields.product.category != 'Insurance' %}
+  {% assign metafield_data = product.metafields.details %}
+{% else %}
+  {% assign metafield_data = product.metafields.insurance-product %}
+{% endif %}
+
+{% if metafield_data %}
+  <div class="main-product-content-wrapper">
+    {% if product.metafields.product.category != 'Insurance' %}
+  <label>Product Details</label>
+{% else %}
+  <label>Type of Plan</label>
+{% endif %}
+    <div class="main-product-content-left">
+      <ul>
+        {% for item in metafield_data %}
+          {% assign key = item.first %}
+          {% assign value = item.last %}
+          {% if value != blank %}
+            <div class="mp-content-wrapper">
+              <div class="mp-content-icon-img">
+                {{- key | append: '.svg' | inline_asset_content -}}
+              </div>
+              <div class="mp-content-text">
+                <p class="title">{{ key | replace: '_', ' ' | capitalize }}</p>
+                {% if value.value %}
+                  {% for v in value.value %}
+                    <li{% if product.metafields.product.category == 'Insurance' %} style="margin-left: 20px; list-style-type: disc;"{% endif %}>{{ v }}</li>
+                  {% endfor %}
+                {% else %}
+                  <p>{{ value }}</p>
+                {% endif %}
+              </div>
             </div>
-          </div>
+            <hr class="mp-content-divider">
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
+
 
 
           <div class="main-product-content-wrapper">
@@ -166,6 +173,10 @@
             </div>
           </div>
         </div>
+        {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
+        {% if product_category == "Insurance" %}
+          {% render 'insurance' %}
+      {% endif %}
       </div>
       <div class="main-product-ratting"></div>
     </div>

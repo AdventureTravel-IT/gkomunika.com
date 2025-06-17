@@ -152,6 +152,10 @@
   padding: 0;
   border-radius: 10px;
 }
+.main-product-content-left ul li {
+  color: var(--color-primary);
+  font-size: 16px;
+}
 .main-product-content-right-wrapper {
   width: 100%;
   max-height: 100%;
@@ -169,13 +173,12 @@
 .mp-content-wrapper {
   display: flex;
   gap: 10px;
-  align-items: center;
   justify-content: left;
 }
 .mp-content-wrapper .title {
   margin: 0;
   color: var(--color-primary);
-  font-size: var(--font-small);
+  font-size: var(--font-medium);
   font-weight: bold;
 }
 .mp-content-wrapper p {

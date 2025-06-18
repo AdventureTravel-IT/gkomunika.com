@@ -78,11 +78,13 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
+    background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 15px;
     background-color: var(--color-neutral);
   }
+
 
   #reset-plan {
     border: none;
@@ -253,6 +255,7 @@
     {% endfor %}
   </div>
 
+  <div id="variant-metafield-display" class="my-4"></div>
   <!-- Quantity -->
   <div class="quantity-wrapper" style="margin: 1rem 0;">
     <label
@@ -365,6 +368,7 @@
     text-align: center;
   }
 {% endstyle %}
+
 
 <script>
   const productVariants = {{ product.variants | json }};
@@ -518,8 +522,8 @@
   
   
   function handleCartAction(action) {
-    const variant = findVariant();
-    const quantity = parseInt(quantityInput.value) || 1;
+  const variant = findVariant();
+  const quantity = parseInt(quantityInput.value) || 1;
   
     if (!variant || !variant.available) {
       let hasEmpty = false;
@@ -541,50 +545,50 @@
     }
   
   
-    const payload = { id: variant.id, quantity: quantity };
-    const popup = document.getElementById("variant-popup");
+  const payload = { id: variant.id, quantity: quantity };
+  const popup = document.getElementById("variant-popup");
   
-    function showPopup(message) {
-      const messageEl = document.getElementById("variant-popup-message");
-      if (messageEl) {
-        messageEl.textContent = message;
-      }
-  
-      popup.style.display = "block";
-      setTimeout(() => {
-        popup.style.display = "none";
-      }, 2000);
+  function showPopup(message) {
+    const messageEl = document.getElementById("variant-popup-message");
+    if (messageEl) {
+      messageEl.textContent = message;
     }
   
-    if (action === "buy") {
-      fetch("/cart/clear.js", { method: "POST" }).then(() => {
-        fetch("/cart/add.js", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }).then(() => {
-          window.location.href = "/checkout";
-        });
-      });
-    } else {
+    popup.style.display = "block";
+    setTimeout(() => {
+      popup.style.display = "none";
+    }, 2000);
+  }
+  
+  if (action === "buy") {
+    fetch("/cart/clear.js", { method: "POST" }).then(() => {
       fetch("/cart/add.js", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(() => {
-        showPopup("Item successfully added to cart.");
-        updateCartCount(); // ← tambahkan ini
-      })
-      .catch(err => {
-        console.error("Add to cart failed:", err);
-        showPopup("Failed to add product");
+      }).then(() => {
+        window.location.href = "/checkout";
       });
-    }
+    });
+  } else {
+    fetch("/cart/add.js", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(() => {
+      showPopup("Item successfully added to cart.");
+      updateCartCount();
+    })
+    .catch(err => {
+      console.error("Add to cart failed:", err);
+      showPopup("Failed to add product");
+    });
+  }
   }
   
   

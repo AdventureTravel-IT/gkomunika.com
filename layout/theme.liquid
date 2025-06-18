@@ -144,6 +144,7 @@
           --color-border: #D9D9D9;
           --color-neutral: #ffffff;
           --color-gray: #6C757D;
+          --color-background-third: #B8ECFF;
 
           /* Variable Font Sizes */
           --font-supper-large: 20px;
@@ -412,10 +413,10 @@ body {
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
 
     {% comment %} 
-                                                                        {% unless template == 'product' %}
-                                                                        <div id="bucks-mobile"></div>
-                                                                        {% endunless %} 
-                                                {% endcomment %}
+                                                                                    {% unless template == 'product' %}
+                                                                                    <div id="bucks-mobile"></div>
+                                                                                    {% endunless %} 
+                                                        {% endcomment %}
 
     {% sections 'header-group' %}
 

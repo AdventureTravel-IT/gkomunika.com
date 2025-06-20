@@ -1,6 +1,33 @@
-<form>
-  <input type="button" value="Check">
-</form>
+<input
+  type="text"
+  id="iccid"
+  placeholder="Masukkan ICCID">
+<button onclick="checkICCID()">Cek ICCID</button>
+
+<div id="result"></div>
+
+<script>
+  function checkICCID() {
+    const iccid = document.getElementById('iccid').value;
+  
+    fetch('https://gkomunika.id/api/v1/check/data_info', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ iccid: iccid })
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('result').innerHTML = `
+        <pre>${JSON.stringify(data, null, 2)}</pre>
+      `;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+    }
+</script>
 
 {% schema %}
   {

@@ -519,49 +519,67 @@
   }
   
   function findVariant() {
-    const selectedOptions = getSelectedOptions();
+  const selectedOptions = getSelectedOptions();
   
-    if (selectedOptions.includes("")) {
-      priceDivDesktop.innerHTML = defaultPriceHTML;
-      priceDivMobile.innerHTML = defaultPriceMobileHTML;
-      if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Pilih varian";
-      updateDropdownOptions();
-      return null;
-    }
+  if (selectedOptions.includes("")) {
+    priceDivDesktop.innerHTML = defaultPriceHTML;
+    priceDivMobile.innerHTML = defaultPriceMobileHTML;
+    if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Pilih varian";
+    updateDropdownOptions();
+    return null;
+  }
   
-    const matchedVariant = productVariants.find(variant =>
-      variant.options.every((opt, index) => opt === selectedOptions[index])
-    );
+  const matchedVariant = productVariants.find(variant =>
+    variant.options.every((opt, index) => opt === selectedOptions[index])
+  );
   
-    if (matchedVariant) {
-      if (matchedVariant.available) {
-        const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
-        if (moneySpan) {
-          priceDivDesktop.innerHTML = moneySpan.outerHTML;
-          priceDivMobile.innerHTML = moneySpan.outerHTML;
-        }
-      } else {
-        priceDivDesktop.textContent = "Varian tidak tersedia";
-        priceDivMobile.textContent = "Varian tidak tersedia";
+  if (matchedVariant) {
+    if (matchedVariant.available) {
+      const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
+      if (moneySpan) {
+        priceDivDesktop.innerHTML = moneySpan.outerHTML;
+        priceDivMobile.innerHTML = moneySpan.outerHTML;
       }
     } else {
-      priceDivDesktop.textContent = "Varian tidak ditemukan";
-      priceDivMobile.textContent = "Varian tidak ditemukan";
+      priceDivDesktop.textContent = "Varian tidak tersedia";
+      priceDivMobile.textContent = "Varian tidak tersedia";
     }
   
-    if (selectedVariantDisplay) {
-      const selected = selectedOptions.filter(v => v !== "").join(" - ");
-      selectedVariantDisplay.textContent = selected || "Choose Variant";
+    // 🟡 CEK VARIANT.TYPE DAN ATUR MINIMAL QTY JIKA DUOPLUS
+    const variantType = getVariantType(matchedVariant);
+    if (variantType === "DuoPlus") {
+      quantityInput.value = Math.max(2, parseInt(quantityInput.value) || 2);
+      quantityInput.min = 2;
+  
+      // Cegah pengurangan quantity di bawah 2
+      minusBtn?.addEventListener('click', () => {
+        if (parseInt(quantityInput.value) <= 2) {
+          quantityInput.value = 2;
+        }
+      });
+    } else {
+      quantityInput.min = 1;
     }
   
-    updateDropdownOptions();
-  
-    if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
-      Currency.convertAll(shopCurrency, Currency.currentCurrency);
-    }
-  
-    return matchedVariant;
+  } else {
+    priceDivDesktop.textContent = "Varian tidak ditemukan";
+    priceDivMobile.textContent = "Varian tidak ditemukan";
   }
+  
+  if (selectedVariantDisplay) {
+    const selected = selectedOptions.filter(v => v !== "").join(" - ");
+    selectedVariantDisplay.textContent = selected || "Choose Variant";
+  }
+  
+  updateDropdownOptions();
+  
+  if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
+    Currency.convertAll(shopCurrency, Currency.currentCurrency);
+  }
+  
+  return matchedVariant;
+  }
+  
   
   function adjustQuantity(delta) {
     const current = parseInt(quantityInput.value) || 1;

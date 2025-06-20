@@ -13,6 +13,8 @@
   .form-index {
     background-color: var(--color-primary);
     padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
   }
   .form-insurance__form {
     padding: 15px;
@@ -310,15 +312,7 @@
   </div>
 </div>
 
-<div class="form-insurance__wrapper">
-      <div class="form-insurance__field">
-<button
-        id="add-form-button"
-        class="insurance-form__add-form"
-        type="button"
-        onclick="addForm()">Add traveler</button>
-        </div>
-        </div>
+
 </section>
 
 
@@ -326,7 +320,14 @@
 {% endcapture %}
 
 <section class="form-insurance__container">
-  <div class="form-insurance__content-wrapper">
+  <div class="form-insurance__content-wrapper" id="form-insurance-content-container">
+
+    <div class="form-insurance__header">
+      <p id="variant-id-display">Variant 1</p>
+      <p>Variant 2</p>
+      <p>Variant 3</p>
+    </div>
+
 
     <!-- Tombol pengganti ketika variantType tidak ditemukan -->
     <button
@@ -339,7 +340,7 @@
     <!-- Section Individual -->
     <section class="form-insurance individual" id="individual-section">
       <div id="individual-forms">
-        <div class="form-index">1st</div>
+        <div class="form-index"></div>
         <div class="form-insurance__form">{{ FormInsurance }}</div>
       </div>
     </section>
@@ -347,11 +348,11 @@
     <!-- Section DuoPlus -->
     <section class="form-insurance duoplus" id="duoplus-section">
       <div id="duoplus-forms">
-        <div class="form-index">1st</div>
+        <div class="form-index"></div>
         <div class="form-insurance__form">{{ FormInsurance }}</div>
       </div>
       <div>
-        <div class="form-index">2nd</div>
+        <div class="form-index"></div>
         <div class="form-insurance__form">{{ FormInsurance }}</div>
       </div>
     </section>
@@ -360,11 +361,13 @@
     <section class="form-insurance family" id="family-section">
       <div id="family-forms">
         <div>
-          <div class="form-index">1st</div>
+          <div class="form-index"></div>
+
           <div class="form-insurance__form">{{ FormInsurance }}</div>
         </div>
         <div>
-          <div class="form-index">2nd</div>
+          <div class="form-index"></div>
+
           <div class="form-insurance__form">{{ FormInsurance }}</div>
         </div>
       </div>
@@ -405,121 +408,166 @@
   }
 </style>
 
+<div class="form-insurance__wrapper">
+  <div class="form-insurance__field">
+    <button
+      id="add-form-button"
+      class="insurance-form__add-form"
+      type="button"
+      onclick="addForm()">Add traveler</button>
+  </div>
+</div>
+
 <script>
   const maxForms = 4;
-  let formCount = 2;  // Mulai dengan 2 form yang sudah ada
+  let formCount = 2;  // Start with 2 forms
   
-  const formTemplate = `
-  <div class="dynamic-form">
-    <div class="form-index"></div>
-    <div class="form-insurance__form">
-      ${document.querySelector('.form-insurance.family .form-insurance__form').innerHTML}
-    </div>
-    <button type="button" onclick="removeForm(this)">Remove Form</button>
-  </div>
-  `;
+  //Initially place the button in the 2nd form
+  document.addEventListener('DOMContentLoaded', function() {
+  const secondForm = document.querySelector('#family-forms div:nth-child(2) .form-insurance__form');
+  if (secondForm) {
+    secondForm.appendChild(document.querySelector('#add-form-button').parentNode);
+  }
+  });
   
-  
+  // const formTemplate = `
+  // <div class="dynamic-form">
+  //   <div class="form-index">
+  //     <button type="button" onclick="removeForm(this)">Remove Form</button>
+  //     <span></span>
+  //   </div>
+  //   <div class="form-insurance__form">
+  //     ${document.querySelector('.form-insurance.family .form-insurance__form').innerHTML}
+  //   </div>
+  // </div>
+  // `;
   
   function addForm() {
-    if (formCount < maxForms) {
-        const wrapper = document.getElementById('family-forms');
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = formTemplate;
-        wrapper.appendChild(tempDiv.firstElementChild);
-        formCount++;
+  if (formCount < maxForms) {
+    const wrapper = document.getElementById('family-forms');
   
-        // Update the indexes after adding new form
-        updateIndexes();
+    // Clone the original form element
+    const originalForm = document.querySelector('.form-insurance.family .form-insurance__form');
+    const clonedForm = originalForm.cloneNode(true); // true = deep clone
   
-        // Hide the "Add Traveler" button for all previous forms
-        const allForms = document.querySelectorAll('.form-insurance.family .form-insurance__form');
-        allForms.forEach((form, index) => {
-            const addButton = form.querySelector('.insurance-form__add-form');
-            if (index !== formCount - 1) {
-                addButton.style.display = 'none';
-            } else {
-                addButton.style.display = 'block'; // Show button only for the last form
-            }
-        });
-    } else {
-        alert("Maximum of 4 forms allowed.");
+    // Reset input values in the cloned form
+    const inputs = clonedForm.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+      if (input.type === 'radio' || input.type === 'checkbox') {
+        input.checked = false;
+      } else {
+        input.value = '';
+      }
+    });
+  
+    // Bungkus form dalam container baru
+    const container = document.createElement('div');
+    container.classList.add('dynamic-form');
+  
+    // Buat index element
+    const indexDiv = document.createElement('div');
+    indexDiv.classList.add('form-index');
+  
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.textContent = 'Remove Form';
+    removeButton.onclick = function () {
+      removeForm(removeButton);
+    };
+  
+    indexDiv.appendChild(removeButton);
+    indexDiv.appendChild(document.createElement('span')); // tempat label seperti "2nd", "3rd"
+  
+    // Tambahkan index dan form ke container
+    container.appendChild(indexDiv);
+    container.appendChild(clonedForm);
+  
+    // Tambahkan ke DOM
+    wrapper.appendChild(container);
+    formCount++;
+  
+    // Pindahkan tombol add ke form baru
+    clonedForm.appendChild(document.getElementById('add-form-button').parentNode);
+  
+    updateIndexes();
+  
+    if (formCount >= maxForms) {
+      document.getElementById('add-form-button').style.display = 'none';
     }
+  } else {
+    alert("Maximum of 4 forms allowed.");
+  }
   }
   
   
   function removeForm(button) {
-    const formDiv = button.closest('.dynamic-form');
-    if (formDiv) {
-        formDiv.remove();
-        formCount--;
+  const formDiv = button.closest('.dynamic-form');
+  const addFormField = document.getElementById('add-form-button')?.closest('.form-insurance__field');
+  const wrapper = document.getElementById('family-forms');
   
-        // Update the indexes after removing a form
-        updateIndexes();
+  if (formDiv && addFormField && wrapper) {
+    // Jika tombol addForm ada di dalam form yang mau dihapus, pindahkan dulu ke form terakhir lainnya
+    if (formDiv.contains(addFormField)) {
+      const forms = wrapper.querySelectorAll('.form-insurance__form');
+      const lastForm = forms[forms.length - 2]; // karena yang terakhir akan dihapus
   
-        // Hide the "Add Traveler" button for all forms
-        const allForms = document.querySelectorAll('.form-insurance.family .form-insurance__form');
-        allForms.forEach((form, index) => {
-            const addButton = form.querySelector('.insurance-form__add-form');
-            if (index !== formCount - 1) {
-                addButton.style.display = 'none';
-            } else {
-                addButton.style.display = 'block'; // Show button only for the last form
-            }
-        });
-  
-        // If the form count is less than max, show the "Add Traveler" button again
-        if (formCount < maxForms) {
-            document.getElementById('add-form-button').style.display = 'block';
-        }
+      if (lastForm) {
+        lastForm.appendChild(addFormField);
+      }
     }
+  
+    // Hapus form-nya
+    formDiv.remove();
+    formCount--;
+  
+    // Update urutan label
+    updateIndexes();
+  
+    // Tampilkan kembali tombol Add jika kurang dari maksimum
+    if (formCount < maxForms) {
+      document.getElementById('add-form-button').style.display = 'block';
+    }
+  
+    // Pastikan tombol tetap di form terakhir yang tersisa
+    const remainingForms = wrapper.querySelectorAll('.form-insurance__form');
+    if (remainingForms.length > 0 && !remainingForms[remainingForms.length - 1].contains(addFormField)) {
+      remainingForms[remainingForms.length - 1].appendChild(addFormField);
+    }
+  }
   }
   
   
   function updateIndexes() {
-    const formIndexes = document.querySelectorAll('.form-insurance.family .form-index');
+  const formIndexes = document.querySelectorAll('.form-insurance.family .form-index');
+  formIndexes.forEach((indexEl, i) => {
+    let label = '';
+    if (i === 0) {
+      indexEl.querySelector('span').textContent = '1st';
+      label = 'Insured (Policy Holder)';
+    } else if (i === 1) {
+      indexEl.querySelector('span').textContent = '2nd';
+      label = 'Traveler (Spouse)';
+    } else if (i === 2) {
+      indexEl.querySelector('span').textContent = '3rd';
+      label = 'Traveler (Child)';
+    } else if (i === 3) {
+      indexEl.querySelector('span').textContent = '4th';
+      label = 'Traveler (Child)';
+    }
   
-    formIndexes.forEach((indexEl, i) => {
-        let label = '';
-        if (i === 0) {
-            indexEl.textContent = '1st';
-            label = 'Insured (Policy Holder)';
-        } else if (i === 1) {
-            indexEl.textContent = '2nd';
-            label = 'Traveler (Spouse)';
-        } else if (i === 2) {
-            indexEl.textContent = '3rd';
-            label = 'Traveler (Child)';
-        } else if (i === 3) {
-            indexEl.textContent = '4th';
-            label = 'Traveler (Child)';
-        }
+    const existingSpan = indexEl.querySelector('span');
+    if (existingSpan) existingSpan.remove();
   
-        // Remove previous span label if exists
-        const existingSpan = indexEl.querySelector('span');
-        if (existingSpan) existingSpan.remove();
-  
-        // Add the label span
-        if (label) {
-            const span = document.createElement('span');
-            span.style.marginLeft = '10px';
-            span.textContent = label;
-            indexEl.appendChild(span);
-        }
-    });
-  
-    // Ensure "Add Traveler" button visibility only in the last form
-    const allForms = document.querySelectorAll('.form-insurance.family .form-insurance__form');
-    allForms.forEach((form, index) => {
-        const addButton = form.querySelector('.insurance-form__add-form');
-        if (index !== formCount - 1) {
-            addButton.style.display = 'none';
-        } else {
-            addButton.style.display = 'block'; // Show button only for the last form
-        }
-    });
+    if (label) {
+      const span = document.createElement('span');
+      span.style.marginLeft = '10px';
+      span.textContent = label;
+      indexEl.appendChild(span);
+    }
+  });
   }
 </script>
+
 
 <script>
    function applyRelationshipFieldLogic() {
@@ -562,22 +610,30 @@
   
         // Event listener untuk update label
         const radios = form.querySelectorAll('input[name="Relationship"]');
-        radios.forEach(radio => {
-          radio.addEventListener('change', function () {
-            const selected = form.querySelector('input[name="Relationship"]:checked');
-            const labelSpan = formIndexDiv.querySelector('span');
-            if (selected && labelSpan) {
-              labelSpan.textContent = selected.value === 'Spouse' ? 'Traveler (Spouse)' : 'Traveler (Child)';
-            }
-          });
   
-          if (radio.checked) {
-            const labelSpan = formIndexDiv.querySelector('span');
-            if (labelSpan) {
-              labelSpan.textContent = radio.value === 'Spouse' ? 'Traveler (Spouse)' : 'Traveler (Child)';
-            }
-          }
-        });
+  let labelSpan = formIndexDiv.querySelector('span');
+  if (!labelSpan) {
+  labelSpan = document.createElement('span');
+  labelSpan.style.marginLeft = '10px';
+  formIndexDiv.appendChild(labelSpan);
+  }
+  
+  labelSpan.textContent = 'Traveler'; // Default label saat belum dipilih
+  
+  radios.forEach(radio => {
+  radio.addEventListener('change', function () {
+    const selected = form.querySelector('input[name="Relationship"]:checked');
+    if (selected && labelSpan) {
+      labelSpan.textContent = `Traveler (${selected.value})`;
+    }
+  });
+  
+  // Saat halaman load, update jika sudah ada pilihan
+  if (radio.checked && labelSpan) {
+    labelSpan.textContent = `Traveler (${radio.value})`;
+  }
+  });
+  
       } else {
         // Traveler (Child)
         allowedFields = [
@@ -663,6 +719,13 @@
     console.log('Retrieved Variant ID:', variantId);
     console.log('Retrieved Quantity:', quantity);
     console.log('Retrieved Variant Type:', variantType);
+    // Tampilkan variantId ke dalam div.form-insurance__header
+  const variantDisplay = document.getElementById('variant-id-display');
+  if (variantDisplay && variantId) {
+  variantDisplay.textContent = `Variant ID: ${variantId}`;
+  }
+  
+  
   
     // If variantType exists, display the corresponding section
     if (variantType) {
@@ -685,12 +748,15 @@
   const formIndividualIndexes = document.querySelectorAll('.form-insurance.individual .form-index');
   const formDuoPlusIndexes = document.querySelectorAll('.form-insurance.duoplus .form-index');
   
-  function appendLabelSpan(indexElement, label) {
+   function appendLabelSpan(indexElement, label) {
+  const existingSpan = indexElement.querySelector('span');
+  if (existingSpan) return; // Hindari dobel
   const span = document.createElement('span');
   span.style.marginLeft = '10px';
   span.textContent = label;
   indexElement.appendChild(span);
   }
+  
   
   if (variantType === 'Individual') {
   formIndividualIndexes.forEach((el, i) => {
@@ -708,10 +774,11 @@
   if (variantType === 'Family') {
   formFamilyIndexes.forEach((el, i) => {
     if (i === 0) appendLabelSpan(el, 'Insured (Policy Holder)');
-    if (i === 1) appendLabelSpan(el, 'Traveler (Spouse)');
     if (i === 2 || i === 3) appendLabelSpan(el, 'Traveler (Child)');
+    // Index ke-1 (Traveler) biarkan kosong → akan di-handle oleh applyRelationshipFieldLogic()
   });
   }
+  
   
   // Sembunyikan tombol pilih produk jika sebelumnya ditampilkan
   document.getElementById('choose-product-button').style.display = 'none';

@@ -24,7 +24,9 @@
       `;
     })
     .catch(error => {
-      console.error('Error:', error);
+      error.text().then(msg => {
+        document.getElementById('result').innerHTML = `<p style="color:red">Terjadi kesalahan</p>`;
+      });
     });
     }
 </script>

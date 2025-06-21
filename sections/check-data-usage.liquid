@@ -21,7 +21,7 @@
     .then(data => {
       if (data.tradeCode === "1000") {
         // Sukses
-        if (data.tradeData && (Array.isArray(data.tradeData) ? data.tradeData.length > 0 : Object.keys(data.tradeData).length > 0) {
+        if (data.tradeData && (Array.isArray(data.tradeData) ? data.tradeData.length > 0 : Object.keys(data.tradeData).length > 0)) {
           document.getElementById('result').innerHTML = `
             <pre>${JSON.stringify(data, null, 2)}</pre>
           `;

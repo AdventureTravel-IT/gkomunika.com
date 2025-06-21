@@ -22,13 +22,13 @@
       if (data.tradeCode === "1000") {
         // Sukses
         document.getElementById('result').innerHTML = `
-          <pre>${JSON.stringify(data.tradeData, null, 2)}</pre>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
         `;
       } else {
         // Gagal
         const message = data.tradeMsg || "Terjadi kesalahan.";
         document.getElementById('result').innerHTML = `
-          <p style="color: red;">Gagal mengambil data: ${message}</p>
+          <p style="color: red;">Terjadi kesalahan</p>
         `;
       }
     })

@@ -19,15 +19,9 @@
     })
     .then(response => response.json())
     .then(data => {
-      if (data.status === 'success') {
-        document.getElementById('result').innerHTML = `
-          <pre>${JSON.stringify(data.data, null, 2)}</pre>
-        `;
-      } else {
-        document.getElementById('result').innerHTML = `
-          <p style="color: red;">${data.message}</p>
-        `;
-      }
+      document.getElementById('result').innerHTML = `
+        <pre>${JSON.stringify(data, null, 2)}</pre>
+      `;
     })
     .catch(error => {
       error.text().then(msg => {

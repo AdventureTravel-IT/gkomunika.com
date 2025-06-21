@@ -21,12 +21,17 @@
     .then(data => {
       if (data.tradeCode === "1000") {
         // Sukses
-        document.getElementById('result').innerHTML = `
-          <pre>${JSON.stringify(data, null, 2)}</pre>
+        if (data.tradeData && Object.keys(data.tradeData > 0)) {
+          document.getElementById('result').innerHTML = `
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+        } else {
+          document.getElementById('result').innerHTML = `
+          <p style="color: red;">Data tidak ditemukan</p>
         `;
+        }
       } else {
         // Gagal
-        const message = data.tradeMsg || "Terjadi kesalahan.";
         document.getElementById('result').innerHTML = `
           <p style="color: red;">Terjadi kesalahan</p>
         `;

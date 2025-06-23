@@ -168,7 +168,6 @@
     white-space: nowrap;
     z-index: 1000;
   }
-
 </style>
 
 {% style %}
@@ -193,7 +192,6 @@
       left: 0;
       bottom: 0;
       width: 100%;
-
 
       z-index: 999;
     }
@@ -242,16 +240,17 @@
             value=""
             disabled
             selected
-            hidden>Choose Option</option>
-          {% assign values_seen = "" %}
+            hidden>
+            Choose Option
+          </option>
+          {% assign values_seen = '' %}
           {% for value in option.values %}
             {% unless values_seen contains value %}
               <option value="{{ value }}">{{ value }}</option>
-              {% assign values_seen = values_seen | append: value | append: "," %}
+              {% assign values_seen = values_seen | append: value | append: ',' %}
             {% endunless %}
           {% endfor %}
         </select>
-
       </div>
     {% endfor %}
   </div>
@@ -325,8 +324,10 @@
     <span id="selected-variant-display">Selected Variant</span>
 
     <div id="variant-price-mobile" class="money">
-      {{ min_price_formatted }}{% unless min_price == max_price %}
-        - {{ max_price_formatted }}{% endunless %}
+      {{ min_price_formatted -}}
+      {%- unless min_price == max_price %}
+        - {{ max_price_formatted -}}
+      {%- endunless %}
     </div>
     <div class="variant-picker-btn__mobile-wrapper">
       <button
@@ -646,22 +647,39 @@
   const productCategory = "{{ product.metafields.product.category.value }}";
   
   if (action === "buy" && productCategory === "Insurance") {
-    // Dapatkan tipe variant dari metafield
-    const variantType = getVariantType(variant); // Assuming you have this function
+  // Ambil tipe variant dari metafield
+  const variantType = getVariantType(variant); // Pastikan fungsi ini ada dan benar
   
-    // Simpan variantType, variantId, dan quantity di sessionStorage
-    sessionStorage.setItem('variantType', variantType);
-    sessionStorage.setItem('variantId', variant.id);
-    sessionStorage.setItem('quantity', quantity);
+  // Hapus data yang ada di sessionStorage terlebih dahulu
+  sessionStorage.removeItem('ProductItems');
   
-    console.log('Stored Variant ID:', variant.id);  // Debugging
-    console.log('Stored Quantity:', quantity);  // Debugging
-    console.log('Stored Variant Type:', variantType);  // Debugging
+  // Ambil data cart yang sudah ada dari sessionStorage, atau buat array kosong jika belum ada
+  let ProductItems = [];
   
-    // Redirect ke halaman form-insurance
-    window.location.href = "/pages/form-insurance";
-    return;
+  // Buat objek item baru
+  const newItem = {
+    productTitle: "{{ product.title }}", // Ambil judul produk dari template Shopify
+    category: productCategory,
+    variantType: variantType,
+    variantId: variant.id,
+    variantTitle: variant.title, // Ambil judul variant dari produk
+    quantity: quantity
+  };
+  
+  // Tambahkan item baru ke dalam array ProductItems
+  ProductItems.push(newItem);
+  
+  // Simpan kembali array ProductItems yang sudah diperbarui ke sessionStorage
+  sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+  
+  console.log('Stored Cart Data:', ProductItems);  // Debugging
+  
+  // Redirect ke halaman form-insurance
+  window.location.href = "/pages/form-insurance";
+  return;
   }
+  
+  
   
   const payload = { id: variant.id, quantity: quantity };
   const popup = document.getElementById("variant-popup");

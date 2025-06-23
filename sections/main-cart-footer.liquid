@@ -106,17 +106,24 @@
             {%- else -%}
               <div class="cart__ctas" {{ block.shopify_attributes }}>
                 <button
-                  type="submit"
-                  id="checkout"
-                  class="cart__checkout-button button"
-                  name="checkout"
-                  {% if cart == empty %}
-                    disabled
-                  {% endif %}
-                  form="cart"
+                  type="button"
+                  id="insurance-checkout-button"
+                  class="button button--secondary"
                 >
-                  {{ 'sections.cart.checkout' | t }}
+                  Proceed Insurance Checkout
                 </button>
+
+                {% for item in cart.items %}
+                  <div class="debug-product">
+                    <p>Product Title: {{ item.product.title }}</p>
+                    <p>Product Category: {{ item.product.metafields.product.category }}</p>
+                    <p>Variant Type: {{ item.variant.metafields.variant.type }}</p>
+                    <p>Product Title: {{ item.product.title }}</p>
+                    <p>Variant Title: {{ item.variant.title }}</p>
+                    <p>Variant ID: {{ item.variant.id }}</p>
+                    <p>Quantity: {{ item.quantity }}</p>
+                  </div>
+                {% endfor %}
               </div>
 
               {%- if additional_checkout_buttons -%}
@@ -133,6 +140,40 @@
   </div>
 </div>
 
+<script>
+  document.getElementById('insurance-checkout-button')?.addEventListener('click', function () {
+    // Clear sessionStorage data if it exists
+    sessionStorage.removeItem('ProductItems'); // or sessionStorage.clear(); to remove all session storage data
+
+    const ProductItems = [];
+
+    {% for item in cart.items %}
+      ProductItems.push({
+        productTitle: {{ item.product.title | json }},
+        category: {{ item.product.metafields.product.category.value | json }},
+        variantType: {{ item.variant.metafields.variant.type | json }},
+        variantTitle: {{ item.variant.title | json }},
+        variantId: {{ item.variant.id }},
+        quantity: {{ item.quantity }}
+      });
+    {% endfor %}
+
+    if (ProductItems.length === 0) {
+      alert('Cart is empty.');
+      return;
+    }
+
+    // Save all items in sessionStorage
+    sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+
+    // Debug
+    console.log("Stored ProductItems:", ProductItems);
+
+    // Redirect to form-insurance
+    window.location.href = '/pages/form-insurance';
+  });
+</script>
+
 {% schema %}
 {
   "name": "t:sections.main-cart-footer.name",
@@ -147,7 +188,7 @@
     {
       "type": "header",
       "content": "t:sections.all.padding.section_padding_heading"
-    },    
+    },
     {
       "type": "range",
       "id": "padding_top",

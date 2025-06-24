@@ -48,9 +48,9 @@
         }
       }
 
-      if (!response.ok) {
-        resultEl.innerHTML = `
-          <p style="color: red">${data.message || 'Terjadi kesalahan'}</p>
+      if (data.status === 'rate_limited' || data.customCode === 429) {
+        document.getElementById('result').innerHTML = `
+          <p style="color: red">${data.message}</p>
         `;
         return;
       }

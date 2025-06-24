@@ -8,36 +8,37 @@
 
 <script>
   function checkICCID() {
-    const iccid = document.getElementById('iccid').value;
+    const contentType = response.headers.get("Content-Type") || "";
+    const isJson = contentType.includes("application/json");
   
-    fetch('https://80e4-202-138-242-49.ngrok-free.app/api/v1/check/data_info', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({ iccid: iccid })
-    })
-    .then(async (response) => {
-      const data = await response.json();
-
-      if (!response.ok) {
-        document.getElementById('result').innerHTML = `
-          <p style="color: red">${data.message || 'Terjadi kesalahan'}</p>
-        `;
-        return;
+    let data = {};
+    if (isJson) {
+      try {
+        data = await response.json();
+      } catch (e) {
+        // JSON parsing error, response tidak valid
+        data = { message: 'Response tidak valid' };
       }
-
-      if (data.tradeCode === "1000" && data.tradeData &&
-           (Array.isArray(data.tradeData) ? data.tradeData.length > 0 : Object.keys(data.tradeData).length > 0)
-         ) {
-        document.getElementById('result').innerHTML = `
-          <pre>${JSON.stringify(data, null, 2)}</pre>
-        `;
-      } else {
-        document.getElementById('result').innerHTML = `
-          <p style="color: red">Data tidak ditemukan</p>
-        `;
-      }
+    }
+  
+    if (!response.ok) {
+      document.getElementById('result').innerHTML = `
+        <p style="color: red">${data.message || 'Terjadi kesalahan'}</p>
+      `;
+      return;
+    }
+  
+    if (data.tradeCode === "1000" && data.tradeData &&
+         (Array.isArray(data.tradeData) ? data.tradeData.length > 0 : Object.keys(data.tradeData).length > 0)
+       ) {
+      document.getElementById('result').innerHTML = `
+        <pre>${JSON.stringify(data, null, 2)}</pre>
+      `;
+    } else {
+      document.getElementById('result').innerHTML = `
+        <p style="color: red">Data tidak ditemukan</p>
+      `;
+    }
     })
     .catch(error => {
       document.getElementById('result').innerHTML = `

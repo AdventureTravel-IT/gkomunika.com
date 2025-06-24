@@ -7,7 +7,12 @@
 <div id="result"></div>
 
 <script>
+  let lastSubmit = 0;
   function checkICCID() {
+    const now = Date.now();
+    if (now - lastSubmit < 3000) return; // minimum 3 detik antar klik
+    lastSubmit = now;
+    
     const iccid = document.getElementById('iccid').value;
   
     fetch('https://80e4-202-138-242-49.ngrok-free.app/api/v1/check/data_info', {

@@ -17,24 +17,14 @@
       },
       body: new URLSearchParams({ iccid: iccid })
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.tradeCode === "1000") {
-        // Sukses
-        if (data.tradeData && (Array.isArray(data.tradeData) ? data.tradeData.length > 0 : Object.keys(data.tradeData).length > 0)) {
-          document.getElementById('result').innerHTML = `
-            <pre>${JSON.stringify(data, null, 2)}</pre>
-          `;
-        } else {
-          document.getElementById('result').innerHTML = `
-          <p style="color: red;">Data tidak ditemukan</p>
-        `;
-        }
-      } else {
-        // Gagal
+    .then(async (response) => {
+      const data = await response.json();
+
+      if (!response.ok) {
         document.getElementById('result').innerHTML = `
-          <p style="color: red;">Terjadi kesalahan</p>
+          <p style="color: red">${data.message || 'Terjadi kesalahan'}</p>
         `;
+        return;
       }
     })
     .catch(error => {

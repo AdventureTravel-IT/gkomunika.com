@@ -18,18 +18,27 @@
       body: new URLSearchParams({ iccid: iccid })
     })
     .then(async (response) => {
-      const data = await response.json();
-
+      let data = {};
+      try {
+        data = await response.json();
+      } catch (e) {
+        // Tidak JSON valid, diamkan atau buat data tetap kosong
+      }
+    
       if (!response.ok) {
         document.getElementById('result').innerHTML = `
           <p style="color: red">${data.message || 'Terjadi kesalahan'}</p>
         `;
         return;
       }
-
-      if (data.tradeCode === "1000" && data.tradeData &&
-           (Array.isArray(data.tradeData) ? data.tradeData.length > 0 : Object.keys(data.tradeData).length > 0)
-         ) {
+    
+      if (
+        data.tradeCode === "1000" &&
+        data.tradeData &&
+        (Array.isArray(data.tradeData)
+          ? data.tradeData.length > 0
+          : Object.keys(data.tradeData).length > 0)
+      ) {
         document.getElementById('result').innerHTML = `
           <pre>${JSON.stringify(data, null, 2)}</pre>
         `;

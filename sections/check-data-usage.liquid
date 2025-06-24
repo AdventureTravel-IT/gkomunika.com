@@ -40,9 +40,9 @@
       }
     })
     .catch(error => {
-      error.text().then(msg => {
-        document.getElementById('result').innerHTML = `<p style="color:red">Terjadi kesalahan koneksi</p>`;
-      });
+      document.getElementById('result').innerHTML = `
+        <p style="color: red">Terjadi kesalahan koneksi</p>
+      `;
     });
   }
 </script>

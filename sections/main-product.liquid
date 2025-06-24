@@ -2,6 +2,11 @@
 
 <!-- CSS for Popup -->
 <style>
+  .gw-full-width {
+    width: 34% !important;
+    display: flex;
+    align-items: center;
+  }
   .cart-popup {
     position: fixed !important;
     top: 10% !important;
@@ -12,10 +17,12 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     z-index: 9999;
   }
+
   .cart-popup-content {
     text-align: center;
     color: var(--color-neutral);
   }
+
   @media (max-width: 768px) {
     .cart-popup {
       top: 30%;
@@ -29,11 +36,9 @@
   data-section="{{ section.id }}"
   data-product-id="{{ product.id }}"
   data-update-url="true"
-  data-url="{{ product.url }}">
-  <div
-    id="cart-popup"
-    class="cart-popup"
-    style="display: none;">
+  data-url="{{ product.url }}"
+>
+  <div id="cart-popup" class="cart-popup" style="display: none;">
     <div class="cart-popup-content">
       <p id="popup-product-title">Success add to cart</p>
     </div>
@@ -49,13 +54,15 @@
           id="mainImage"
           src="{{ product.featured_image | img_url: 'master' }}"
           alt="{{ product.title | escape }}"
-          loading="lazy">
+          loading="lazy"
+        >
         <div class="main-product-sub-images-wrapper">
           <button
             class="scroll-btn left"
             style="transform: rotate(180deg);"
             onclick="scrollSubImages(-1)"
-            aria-label="Scroll left">
+            aria-label="Scroll left"
+          >
             {{- 'icon-arrow-back.svg' | inline_asset_content -}}
           </button>
           <div class="main-product-sub-images">
@@ -65,35 +72,38 @@
                 src="{{ image | img_url: 'master' }}"
                 alt="Sub Image {{ forloop.index }}"
                 data-src="{{ image | img_url: 'large' }}"
-                loading="lazy">
+                loading="lazy"
+              >
             {% endfor %}
           </div>
-          <button
-            class="scroll-btn right"
-            onclick="scrollSubImages(1)"
-            aria-label="Scroll right">
+          <button class="scroll-btn right" onclick="scrollSubImages(1)" aria-label="Scroll right">
             {{- 'icon-arrow-back.svg' | inline_asset_content -}}
           </button>
         </div>
       </div>
 
+      {% assign product-sold = product.metafields.product.sold %}
       <div class="main-product-header-right">
         {% if product.title %}
           <h2 class="product-title">{{ product.title }}</h2>
         {% endif %}
+        <div style="display: flex; align-items: center">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when '@app' -%}
-              {% render block %}
+              {% render block -%}
+              {%- if product-sold %}
+                <ul style="padding: 0 0 0 10  px; display: flex;
+                align-items: center;"><li style="padding: 0; font-size: 0.875em;">{{ product-sold.value }} sold</li></ul>
+              {% endif %}
           {%- endcase -%}
         {%- endfor -%}
+        </div>
 
         {% assign min_price = product.variants.first.price %}
         {% assign max_price = product.variants.first.price %}
         {% for variant in product.variants %}
-          {% if variant.price < min_price %}
-            {% assign min_price = variant.price %}
-          {% endif %}
+          {% if variant.price < min_price %} {% assign min_price = variant.price %} {% endif %}
           {% if variant.price > max_price %}
             {% assign max_price = variant.price %}
           {% endif %}
@@ -103,14 +113,15 @@
         {% assign max_price_formatted = max_price | money_with_currency %}
         <!-- Harga untuk desktop -->
         <div id="variant-price-desktop" class="money">
-          {{ min_price_formatted }}{% unless min_price == max_price %}
-            - {{ max_price_formatted }}{% endunless %}
+          {{ min_price_formatted -}}
+          {%- unless min_price == max_price %}
+            - {{ max_price_formatted -}}
+          {%- endunless %}
         </div>
 
         <div style="max-height: 200px; overflow-y: auto;">{{ product.description }}</div>
         <div class="main-product-variant-picker">
-          {% render 'custom-variant-picker'
-            , product: product %}
+          {% render 'custom-variant-picker', product: product %}
         </div>
       </div>
     </div>
@@ -164,7 +175,7 @@
                     {% assign field_parts = field | split: ':' %}
                     {% assign field_key = field_parts[0] %}
                     {% assign title = field_parts[1] %}
-                    {% assign metafield = product.metafields.insurance-product[field_key] %}
+                    {% assign metafield = product.metafields['insurance-product'][field_key] %}
                     {% if metafield != blank %}
                       <div class="mp-content-wrapper">
                         <div class="mp-content-icon-img">
@@ -202,7 +213,7 @@
           </div>
         </div>
         {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-        {% if product_category == "Insurance" %}
+        {% if product_category == 'Insurance' %}
           {% render 'insurance' %}
         {% endif %}
       </div>
@@ -215,18 +226,18 @@
 </product-info>
 
 {% schema %}
-  {
-    "name": "Main Product",
-    "settings": [],
-    "blocks": [
-      {
-        "type": "@app"
-      }
-    ],
-    "presets": [
-      {
-        "name": "Main Product"
-      }
-    ]
-  }
+{
+  "name": "Main Product",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main Product"
+    }
+  ]
+}
 {% endschema %}

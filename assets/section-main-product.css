@@ -178,7 +178,7 @@
 .mp-content-wrapper .title {
   margin: 0;
   color: var(--color-primary);
-  font-size: var(--font-medium);
+  font-size: var(--font-large);
   font-weight: bold;
 }
 .mp-content-wrapper p {

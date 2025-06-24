@@ -2,7 +2,7 @@
   type="text"
   id="iccid"
   placeholder="Masukkan ICCID" required>
-<button onclick="checkICCID()">Cek</button>
+<button id="check-iccid" onclick="checkICCID()">Cek</button>
 
 <div id="result"></div>
 
@@ -13,7 +13,7 @@
     if (now - lastSubmit < 3000) return; // minimum 3 detik antar klik
     lastSubmit = now;
 
-    const button = document.getElementById();
+    const button = document.getElementById('check-iccid');
     button.disabled = true;
     
     const iccid = document.getElementById('iccid').value;

@@ -12,6 +12,7 @@
     const now = Date.now();
     if (now - lastSubmit < 3000) return; // minimum 3 detik antar klik
     lastSubmit = now;
+    button.disabled = true;
     
     const iccid = document.getElementById('iccid').value;
   

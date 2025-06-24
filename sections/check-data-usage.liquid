@@ -26,6 +26,14 @@
         `;
         return;
       }
+
+      if (data.tradeCode === "1000" && data.tradeData &&
+           (Array.isArray(data.tradeData) ? data.tradeData.length > 0 : Object.keys(data.tradeData).length > 0)
+         ) {
+        document.getElementById('result').innerHTML = `
+          <pre></pre>
+        `
+      }
     })
     .catch(error => {
       error.text().then(msg => {

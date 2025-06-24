@@ -31,13 +31,17 @@
            (Array.isArray(data.tradeData) ? data.tradeData.length > 0 : Object.keys(data.tradeData).length > 0)
          ) {
         document.getElementById('result').innerHTML = `
-          <pre></pre>
-        `
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+      } else {
+        document.getElementById('result').innerHTML = `
+          <p style="color: red">Data tidak ditemukan</p>
+        `;
       }
     })
     .catch(error => {
       error.text().then(msg => {
-        document.getElementById('result').innerHTML = `<p style="color:red">Terjadi kesalahan</p>`;
+        document.getElementById('result').innerHTML = `<p style="color:red">Terjadi kesalahan koneksi</p>`;
       });
     });
     }

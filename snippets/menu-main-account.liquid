@@ -1,8 +1,6 @@
 <!-- Profile Section -->
 <div class="ma-menu-username">
-  <div
-    class="ma-menu__profile"
-    data-maskots='
+  <div class="ma-menu__profile" data-maskots='
       [
         "{{ 'Maskot1.webp' | asset_url }}",
         "{{ 'Maskot2.webp' | asset_url }}",
@@ -10,8 +8,8 @@
         "{{ 'Maskot4.webp' | asset_url }}",
         "{{ 'Maskot5.webp' | asset_url }}"
       ]
-    '
-  ></div>
+    '>
+</div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -44,37 +42,57 @@
 
 <button class="ma-menu-wrapper" data-tab="edit-profile">
   <div class="menu-wrapper">
-    <img width="25" height="25" src="{{ 'profile.svg' | asset_url }}" alt="Edit Profile">
+    <img
+      width="25"
+      height="25"
+      src="{{ 'profile.svg' | asset_url }}"
+      alt="Edit Profile">
     <h2>Edit Profile</h2>
   </div>
 </button>
 
 <button class="ma-menu-wrapper active" data-tab="order-history">
   <div class="menu-wrapper">
-    <img width="25" height="25" src="{{ 'group.svg' | asset_url }}" alt="Order History">
+    <img
+      width="25"
+      height="25"
+      src="{{ 'group.svg' | asset_url }}"
+      alt="Order History">
     <h2>Order History</h2>
   </div>
 </button>
 
-<!--
-  <button class="ma-menu-wrapper" data-tab="referral">
-    <div class="menu-wrapper">
-      <img width="25" height="25" src="{{ 'referral.svg' | asset_url }}" alt="Referral">
-      <h2>Referral</h2>
-    </div>
-  </button>
--->
+
+{% comment %} <button class="ma-menu-wrapper" data-tab="referral">
+  <div class="menu-wrapper">
+    <img
+      width="25"
+      height="25"
+      src="{{ 'referral.svg' | asset_url }}"
+      alt="Referral">
+    <h2>Referral</h2>
+  </div>
+</button> {% endcomment %}
+
 
 <button class="ma-menu-wrapper" data-tab="membership">
   <div class="menu-wrapper">
-    <img width="25" height="25" src="{{ 'membership.svg' | asset_url }}" alt="Membership">
+    <img
+      width="25"
+      height="25"
+      src="{{ 'membership.svg' | asset_url }}"
+      alt="Membership">
     <h2>Membership</h2>
   </div>
 </button>
 
 <a class="ma-link" href="{{ routes.account_logout_url }}">
   <div class="ma-menu-wrapper">
-    <img width="25" height="25" src="{{ 'logout.svg' | asset_url }}" alt="Back">
+    <img
+      width="25"
+      height="25"
+      src="{{ 'logout.svg' | asset_url }}"
+      alt="Back">
     <h2>Log Out</h2>
   </div>
 </a>

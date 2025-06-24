@@ -1,0 +1,92 @@
+<div class="referral-container">
+  <div class="referral-wrapper">
+    <div
+      class="referral-content"
+      {% if section.settings.bg_image %}
+      style="background-image: url({{ section.settings.bg_image | image_url }});"
+      {% endif %}>
+      <div class="referral-content__text">
+        <img src="{{ section.settings.logo_image | image_url }}" alt="Logo">
+        <h2>Share & Earn With<br>GLobal Komunika!</h2>
+        <p>Share the fun with friend and <br> enjoy exclusive rewards.</p>
+        <button>
+          <a href="pages/global-komunika-referral">
+            Learn More
+          </a>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .referral-container {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+  .referral-wrapper {
+    padding: 20px 10%;
+  }
+  .referral-content {
+    width: 100%;
+    height: 430px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 15px;
+  }
+  .referral-content__text {
+    padding: 5% 8%;
+  }
+  .referral-content__text span,
+  .referral-content__text h2,
+  .referral-content__text p {
+    color: var(--color-primary);
+    line-height: 1.3;
+    margin: 15px 0;
+  }
+  .referral-content__text h2 {
+    font-size: 34px;
+    font-weight: 600;
+  }
+  .referral-content__text p {
+    font-size: 24px;
+  }
+  .referral-content__text button {
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+    font-size: 22px;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 30px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  .referral-content__text img {
+    width: auto;
+    height: 60px;
+  }
+{% endstyle %}
+
+{% schema %}
+  {
+    "name": "Referral",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "bg_image",
+        "label": "Background Image"
+      }, {
+        "type": "image_picker",
+        "id": "logo_image",
+        "label": "Logo Image"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Referral",
+        "category": "Custom"
+      }
+    ]
+  }
+{% endschema %}

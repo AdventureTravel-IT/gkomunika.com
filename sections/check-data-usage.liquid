@@ -42,10 +42,6 @@
         document.getElementById('result').innerHTML = `
           <pre>${JSON.stringify(data, null, 2)}</pre>
         `;
-      } else {
-        document.getElementById('result').innerHTML = `
-          <p style="color: red">Data tidak ditemukan</p>
-        `;
       }
     })
     .catch(error => {

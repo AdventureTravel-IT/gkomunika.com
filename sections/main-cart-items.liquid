@@ -94,7 +94,10 @@
 
               <tbody>
                 {%- for item in cart.items -%}
-                  <tr class="cart-item" id="CartItem-{{ item.index | plus: 1 }}">
+                  <tr
+                    class="cart-item"
+                    id="CartItem-{{ item.index | plus: 1 }}"
+                    data-key="{{ item.key }}">
                     <td class="cart-item__media">
                       {% if item.image %}
                         {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
@@ -472,6 +475,57 @@
     </form>
   </div>
 </cart-items>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const formatMoney = (cents) => {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR'
+      }).format(cents / 100);
+    };
+  
+    document.querySelectorAll('.quantity__input').forEach(function (input) {
+      input.addEventListener('change', function () {
+        const row = this.closest('tr.cart-item');
+        const key = row.dataset.key;
+        const newQuantity = parseInt(this.value, 10);
+  
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: key,
+            quantity: newQuantity
+          })
+        })
+        .then(res => res.json())
+        .then(cart => {
+          const updatedItem = cart.items.find(i => i.key === key);
+          if (updatedItem) {
+            this.value = updatedItem.quantity;
+  
+            const priceEls = row.querySelectorAll('.cart-item__price-wrapper');
+            priceEls.forEach(el => {
+              el.innerHTML = `<span class="price price--end">${formatMoney(updatedItem.final_line_price)}</span>`;
+            });
+          }
+  
+          const subtotalEl = document.querySelector('.cart__footer .totals__subtotal-value');
+          if (subtotalEl) {
+            subtotalEl.textContent = formatMoney(cart.total_price);
+          }
+        })
+        .catch(error => {
+          console.error('Gagal update cart:', error);
+        });
+      });
+    });
+  });
+</script>   
+
 
 {% schema %}
   {

@@ -1,3 +1,151 @@
+{% style %}
+  .form-insurance__container {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+  .form-insurance__content-wrapper {
+    padding: 20px 20%;
+  }
+  .form-insurance {
+    display: flex;
+    gap: 10px;
+  }
+  .form-index {
+    background-color: var(--color-primary);
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .form-insurance__form {
+    padding: 15px;
+    border-radius: 0 0 15px 15px;
+    background-color: var(--color-neutral);
+    margin-bottom: 20px;
+  }
+
+  .form-index {
+    color: var(--color-neutral);
+    border-radius: 15px 15px 0 0;
+  }
+
+  .form-insurance__checkout {
+    width: 100%;
+    background-color: var(--color-neutral);
+    padding: 15px;
+    position: relative;
+    border-radius: 15px;
+    color: var(--color-primary);
+  }
+  .form-insurance__checkout-button,
+  .insurance-form__add-form {
+    border-radius: 15px;
+    padding: 10px 15px;
+    color: var(--color-neutral);
+    font-size: var(--font-large);
+    outline: none;
+    border: none;
+    width: 130px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease
+    , box-shadow 0.3s ease;
+  }
+  .form-insurance__checkout-button {
+    background-color: var(--color-primary);
+  }
+  .insurance-form__add-form {
+    background-color: var(--color-secondary);
+  }
+  .form-insurance__checkout-button:hover {
+    transform: translateY(2px);
+    box-shadow: var(--box-shadow);
+  }
+  .form-insurance__right {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .form-insurance__wrapper {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+  }
+  .form-insurance__field label,
+  .form-insurance__wrapper label {
+    color: var(--color-primary);
+    font-size: 16px;
+  }
+
+  .form-insurance__field select,
+  .form-insurance__wrapper input {
+    border-radius: 10px;
+    outline: none;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    padding: 10px;
+    color: var(--color-primary);
+  }
+  .form-insurance__wrapper input::placeholder {
+    color: var(--color-primary);
+    letter-spacing: 0.5px;
+    font-size: 14px;
+  }
+  .form-insurance__field {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-width: 100%;
+  }
+  .form-insurance__wrapper-item {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+  }
+  .form-insurance__wrapper-item .form-insurance__field {
+    flex: 1;
+  }
+  .form-insurance__field input,
+  .form-insurance__field select,
+  .form-insurance__field textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .form-insurance__field textarea {
+    color: var(--color-primary);
+    min-height: 100px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    border: 1px solid var(--color-border);
+  }
+  .form-insurance__field textarea::placeholder {
+    color: var(--color-primary);
+    font-size: 14px;
+  }
+  #add-form-button,
+  #checkout-button {
+    margin-left: auto;
+    margin-top: 10px;
+  }
+{% endstyle %}
+
+{% style %}
+  .add-traveler__button {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .form-insurance__label-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+{% endstyle %}
+
 {{ 'component-cart.css' | asset_url | stylesheet_tag }}
 {{ 'component-totals.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
@@ -108,11 +256,27 @@
                 <button
                   type="button"
                   id="insurance-checkout-button"
-                  class="button button--secondary"
+                  class="cart__checkout-button button"
+                  {% if cart == empty %}
+                    disabled
+                  {% endif %}
+                  form="cart"
                 >
-                  Proceed Insurance Checkout
+                  {{ 'sections.cart.checkout' | t }}
                 </button>
-
+                {% comment %} <button
+                  type="submit"
+                  id="checkout"
+                  class="cart__checkout-button button"
+                  name="checkout"
+                  {% if cart == empty %}
+                    disabled
+                  {% endif %}
+                  form="cart"
+                >
+                  
+                </button> {% endcomment %}
+{% comment %} 
                 {% for item in cart.items %}
                   <div class="debug-product">
                     <p>Product Title: {{ item.product.title }}</p>
@@ -123,7 +287,7 @@
                     <p>Variant ID: {{ item.variant.id }}</p>
                     <p>Quantity: {{ item.quantity }}</p>
                   </div>
-                {% endfor %}
+                {% endfor %} {% endcomment %}
               </div>
 
               {%- if additional_checkout_buttons -%}

@@ -2,6 +2,11 @@
 
 <!-- CSS for Popup -->
 <style>
+  .gw-full-width {
+    width: 34% !important;
+    display: flex;
+    align-items: center;
+  }
   .cart-popup {
     position: fixed !important;
     top: 10% !important;
@@ -12,10 +17,12 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     z-index: 9999;
   }
+
   .cart-popup-content {
     text-align: center;
     color: var(--color-neutral);
   }
+
   @media (max-width: 768px) {
     .cart-popup {
       top: 30%;
@@ -78,23 +85,28 @@
         </div>
       </div>
 
+      {% assign product-sold = product.metafields.product.sold %}
       <div class="main-product-header-right">
         {% if product.title %}
           <h2 class="product-title">{{ product.title }}</h2>
         {% endif %}
+        <div style="display: flex; align-items: center">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when '@app' -%}
-              {% render block %}
+              {% render block -%}
+              {%- if product-sold %}
+                <ul style="padding: 0 0 0 10  px; display: flex;
+                align-items: center;"><li style="padding: 0; font-size: 0.875em;">{{ product-sold.value }} sold</li></ul>
+              {% endif %}
           {%- endcase -%}
         {%- endfor -%}
+        </div>
 
         {% assign min_price = product.variants.first.price %}
         {% assign max_price = product.variants.first.price %}
         {% for variant in product.variants %}
-          {% if variant.price < min_price %}
-            {% assign min_price = variant.price %}
-          {% endif %}
+          {% if variant.price < min_price %} {% assign min_price = variant.price %} {% endif %}
           {% if variant.price > max_price %}
             {% assign max_price = variant.price %}
           {% endif %}
@@ -108,7 +120,7 @@
             - {{ max_price_formatted }}{% endunless %}
         </div>
 
-        {{ product.description }}
+        <div style="max-height: 200px; overflow-y: auto;">{{ product.description }}</div>
         <div class="main-product-variant-picker">
           {% render 'custom-variant-picker'
             , product: product %}
@@ -117,47 +129,95 @@
     </div>
     <div class="main-product-main-content">
       <div class="main-product-content">
-        <div class="main-product-content-wrapper">
-          <label>Product Details</label>
-          <div class="main-product-content-left">
-            <ul>
-              {% for item in product.metafields.details %}
-                {% assign key = item.first %}
-                {% assign value = item.last %}
-                {% if value != blank %}
-                  <div class="mp-content-wrapper">
-                    <div class="mp-content-icon-img">
-                      {{- key | append: '.svg' | inline_asset_content -}}
-                    </div>
-                    <div class="mp-content-text">
-                      <p class="title">{{ key | replace: '_', ' ' | capitalize }}</p>
-                      {% if value.value %}
-                        {% for v in value.value %}
-                          <p>{{ v }}</p>
-                        {% endfor %}
-                      {% else %}
-                        <p>{{ value }}</p>
-                      {% endif %}
-                    </div>
-                  </div>
-                  <hr class="mp-content-divider">
-                {% endif %}
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
+        <div class="main-product__content-container">
+          {% assign type = product.metafields.product.category %}
+          {% if type and type.value != 'Insurance' %}
+            <div class="main-product-content-wrapper">
+              <label>Product Details</label>
+              <div class="main-product-content-left">
+                <ul>
+                  {% for item in product.metafields.details %}
+                    {% assign key = item.first %}
+                    {% assign value = item.last %}
+                    {% if value != blank %}
+                      <div class="mp-content-wrapper">
+                        <div class="mp-content-icon-img">
+                          {{- key | append: '.svg' | inline_asset_content -}}
+                        </div>
+                        <div class="mp-content-text">
+                          <p class="title">{{ key | replace: '_', ' ' | capitalize }}</p>
+                          {% if value.value %}
+                            {% for v in value.value %}
+                              <li>{{ v }}</li>
+                            {% endfor %}
+                          {% else %}
+                            <p>{{ value }}</p>
+                          {% endif %}
+                        </div>
+                      </div>
+                      <hr class="mp-content-divider">
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          {% else %}
+            <div class="main-product-content-wrapper">
+              <label>Product Details</label>
+              <div class="main-product-content-left">
+                <ul>
+                  {% assign fields = '' %}
+                  {% assign fields = fields | append: 'type-of-plans:type of plans,' %}
+                  {% assign fields = fields | append: 'insurance-requirements:Insurance Requirements,' %}
+                  {% assign fields = fields | append: 'children-requirements:Children Requirements' %}
 
-        <div class="main-product-content-wrapper">
-          <label>Coverage</label>
-          <div class="main-product-content-right">
-            <div class="main-product-content-right-wrapper">
-              {% if product.metafields.coverage.country.value.size > 10 %}
-                {% render 'coverage-search' %}
-              {% endif %}
-              {% render 'coverage' %}
+                  {% assign fields_array = fields | split: ',' %}
+
+                  {% for field in fields_array %}
+                    {% assign field_parts = field | split: ':' %}
+                    {% assign field_key = field_parts[0] %}
+                    {% assign title = field_parts[1] %}
+                    {% assign metafield = product.metafields['insurance-product'][field_key] %}
+                    {% if metafield != blank %}
+                      <div class="mp-content-wrapper">
+                        <div class="mp-content-icon-img">
+                          {{- field_key | append: '.svg' | inline_asset_content -}}
+                        </div>
+                        <div class="mp-content-text">
+                          <p class="title">{{ title }}</p>
+                          {% if metafield.value %}
+                            {% for v in metafield.value %}
+                              <li style="margin-left: 20px; list-style-type: disc;">{{ v }}</li>
+                            {% endfor %}
+                          {% else %}
+                            <p>{{ metafield }}</p>
+                          {% endif %}
+                        </div>
+                      </div>
+                      <hr class="mp-content-divider">
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="main-product-content-wrapper">
+            <label>Coverage</label>
+            <div class="main-product-content-right">
+              <div class="main-product-content-right-wrapper">
+                {% if product.metafields.coverage.country.value.size > 10 %}
+                  {% render 'coverage-search' %}
+                {% endif %}
+                {% render 'coverage' %}
+              </div>
             </div>
           </div>
         </div>
+        {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
+        {% if product_category == 'Insurance' %}
+          {% render 'insurance' %}
+        {% endif %}
       </div>
       <div class="main-product-ratting"></div>
     </div>

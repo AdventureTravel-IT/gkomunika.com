@@ -201,8 +201,7 @@
     }
     #variant-price-desktop {
       display: none;
-    };
-
+    }
 
     /*
 
@@ -240,7 +239,8 @@
             value=""
             disabled
             selected
-            hidden>
+            hidden
+          >
             Choose Option
           </option>
           {% assign values_seen = '' %}
@@ -261,13 +261,16 @@
     <label
       class="variant-picker__label"
       for="quantity"
-      style="display: block; margin-bottom: 4px;">Quantity:</label>
+      style="display: block; margin-bottom: 4px;"
+      >Quantity:</label
+    >
     <div class="quantity-input">
       <button
         type="button"
         class="quantity-btn"
         id="quantity-decrease"
-        style="border-right: 1px solid var(--color-border);">
+        style="border-right: 1px solid var(--color-border);"
+      >
         <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
       </button>
       <input
@@ -276,12 +279,14 @@
         name="quantity"
         min="1"
         value="1"
-        class="quantity-number">
+        class="quantity-number"
+      >
       <button
         type="button"
         class="quantity-btn"
         id="quantity-increase"
-        style="border-left: 1px solid var(--color-border);">
+        style="border-left: 1px solid var(--color-border);"
+      >
         <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
       </button>
     </div>
@@ -295,13 +300,15 @@
     <button
       class="cart"
       type="button"
-      id="add-to-cart">
+      id="add-to-cart"
+    >
       <p>Add to Cart</p>
     </button>
     <button
       class="buy"
       type="button"
-      id="buy-now-button">
+      id="buy-now-button"
+    >
       <p>Buy Now</p>
     </button>
   </div>
@@ -333,13 +340,15 @@
       <button
         class="cart"
         type="button"
-        id="add-to-cart-mobile">
+        id="add-to-cart-mobile"
+      >
         <p>Add to Cart</p>
       </button>
       <button
         class="buy"
         type="button"
-        id="buy-now-button-mobile">
+        id="buy-now-button-mobile"
+      >
         <p>Buy Now</p>
       </button>
     </div>
@@ -349,7 +358,8 @@
 <div
   class="variant-picker-popup"
   id="variant-popup"
-  style="display: none;">
+  style="display: none;"
+>
   <span id="variant-popup-message"></span>
 </div>
 
@@ -378,78 +388,80 @@
   
   // Data semua variant dengan metafield variant.type
   const variantsData = [
-    {% for variant in product.variants %}
-      {
-        id: {{ variant.id }},
-        title: "{{ variant.title | escape }}",
-        type: {{ variant.metafields.variant.type | json }}, // Perubahan disini
-        options: [
-          {% for option in variant.options %}
-            "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
-          {% endfor %}
-        ]
-      }{% unless forloop.last %},{% endunless %}
-    {% endfor %}
-  ];
+  {% for variant in product.variants %}
+    {
+      id: {{ variant.id }},
+      title: "{{ variant.title | escape }}",
+      type: {{ variant.metafields.variant.type | json }},
+      coverage: {{ variant.metafields.variant.coverage.value | json }},
+      options: [
+        {% for option in variant.options %}
+          "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+
   
-  function updateMetafieldDisplay() {
-    const selectedOptions = [];
-    variantDropdowns.forEach(dropdown => {
-      selectedOptions.push(dropdown.value);
-    });
+  // function updateMetafieldDisplay() {
+  //   const selectedOptions = [];
+  //   variantDropdowns.forEach(dropdown => {
+  //     selectedOptions.push(dropdown.value);
+  //   });
     
-    const matchedVariant = variantsData.find(variant => {
-      return variant.options.every((option, index) => {
-        return option === selectedOptions[index];
-      });
-    });
+  //   const matchedVariant = variantsData.find(variant => {
+  //     return variant.options.every((option, index) => {
+  //       return option === selectedOptions[index];
+  //     });
+  //   });
     
-    // Debugging: Lihat di console
-    console.log('Variant yang cocok:', matchedVariant);
+  //   // Debugging: Lihat di console
+  //   console.log('Variant yang cocok:', matchedVariant);
     
-    if (matchedVariant) {
-      // Tampilkan metafield variant.type
-      if (matchedVariant.type) {
-        if (Array.isArray(matchedVariant.type)) {
-          // Jika berupa array
-          metafieldDisplay.innerHTML = `
-            <div class="variant-type-wrapper">
-              <strong>Tipe Variant:</strong>
-              <ul>
-                ${matchedVariant.type.map(item => `<li>${item}</li>`).join('')}
-              </ul>
-            </div>
-          `;
-        } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
-          // Jika format object {value: ...}
-          metafieldDisplay.innerHTML = `
-            <div class="variant-type-wrapper">
-              <strong>Tipe Variant:</strong>
-              <span>${matchedVariant.type.value}</span>
-            </div>
-          `;
-        } else {
-          // Jika string biasa
-          metafieldDisplay.innerHTML = `
-            <div class="variant-type-wrapper">
-              <strong>Tipe Variant:</strong>
-              <span>${matchedVariant.type}</span>
-            </div>
-          `;
-        }
-      } else {
-        metafieldDisplay.innerHTML = '<em>Tidak ada tipe variant</em>';
-      }
-    } else {
-      metafieldDisplay.innerHTML = '';
-    }
-  }
+  //   if (matchedVariant) {
+  //     // Tampilkan metafield variant.type
+  //     if (matchedVariant.type) {
+  //       if (Array.isArray(matchedVariant.type)) {
+  //         // Jika berupa array
+  //         metafieldDisplay.innerHTML = `
+  //           <div class="variant-type-wrapper">
+  //             <strong>Tipe Variant:</strong>
+  //             <ul>
+  //               ${matchedVariant.type.map(item => `<li>${item}</li>`).join('')}
+  //             </ul>
+  //           </div>
+  //         `;
+  //       } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
+  //         // Jika format object {value: ...}
+  //         metafieldDisplay.innerHTML = `
+  //           <div class="variant-type-wrapper">
+  //             <strong>Tipe Variant:</strong>
+  //             <span>${matchedVariant.type.value}</span>
+  //           </div>
+  //         `;
+  //       } else {
+  //         // Jika string biasa
+  //         metafieldDisplay.innerHTML = `
+  //           <div class="variant-type-wrapper">
+  //             <strong>Tipe Variant:</strong>
+  //             <span>${matchedVariant.type}</span>
+  //           </div>
+  //         `;
+  //       }
+  //     } else {
+  //       metafieldDisplay.innerHTML = '<em>Tidak ada tipe variant</em>';
+  //     }
+  //   } else {
+  //     metafieldDisplay.innerHTML = '';
+  //   }
+  // }
   
-  variantDropdowns.forEach(dropdown => {
-    dropdown.addEventListener('change', updateMetafieldDisplay);
-  });
+  // variantDropdowns.forEach(dropdown => {
+  //   dropdown.addEventListener('change', updateMetafieldDisplay);
+  // });
   
-  updateMetafieldDisplay();
+  // updateMetafieldDisplay();
   });
 </script>
 
@@ -623,6 +635,9 @@
   function handleCartAction(action) {
   const variant = findVariant();
   const quantity = parseInt(quantityInput.value) || 1;
+  const matchedVariantData = variantsData.find(v => v.id === variant.id);
+const variantCoverage = matchedVariantData?.coverage || [];
+
   
   if (!variant || !variant.available) {
     let hasEmpty = false;
@@ -648,31 +663,31 @@
   
   if (action === "buy" && productCategory === "Insurance") {
   // Ambil tipe variant dari metafield
-  const variantType = getVariantType(variant); // Pastikan fungsi ini ada dan benar
-  
-  // Hapus data yang ada di sessionStorage terlebih dahulu
-  sessionStorage.removeItem('ProductItems');
-  
-  // Ambil data cart yang sudah ada dari sessionStorage, atau buat array kosong jika belum ada
-  let ProductItems = [];
-  
-  // Buat objek item baru
-  const newItem = {
-    productTitle: "{{ product.title }}", // Ambil judul produk dari template Shopify
-    category: productCategory,
-    variantType: variantType,
-    variantId: variant.id,
-    variantTitle: variant.title, // Ambil judul variant dari produk
-    quantity: quantity
-  };
-  
-  // Tambahkan item baru ke dalam array ProductItems
-  ProductItems.push(newItem);
-  
-  // Simpan kembali array ProductItems yang sudah diperbarui ke sessionStorage
-  sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-  
-  console.log('Stored Cart Data:', ProductItems);  // Debugging
+const variantType = getVariantType(variant);
+
+const matchedVariantData = window.variantsData.find(v => v.id === variant.id);
+const variantCoverage = matchedVariantData?.coverage || [];
+// Hapus data yang ada di sessionStorage terlebih dahulu
+sessionStorage.removeItem('ProductItems');
+
+let ProductItems = [];
+
+const newItem = {
+  productTitle: "{{ product.title }}",
+  category: productCategory,
+  variantType: variantType,
+  variantId: variant.id,
+  variantTitle: variant.title,
+  quantity: quantity,
+  variantCoverage: variantCoverage
+};
+
+
+ProductItems.push(newItem);
+
+sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+// console.log('Stored Cart Data:', ProductItems);
+
   
   // Redirect ke halaman form-insurance
   window.location.href = "/pages/form-insurance";
@@ -731,22 +746,24 @@
   // buyNowButton?.addEventListener("click", () => handleCartAction("buy"));
   
   
-  
   // Fungsi untuk mendapatkan tipe variant
   function getVariantType(variant) {
-  const variantsData = [
-    {% for variant in product.variants %}
-      {
-        id: {{ variant.id }},
-        type: {{ variant.metafields.variant.type | json }},
-        options: [
-          {% for option in variant.options %}
-            "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
-          {% endfor %}
-        ]
-      }{% unless forloop.last %},{% endunless %}
-    {% endfor %}
-  ];
+  window.variantsData = [
+  {% for variant in product.variants %}
+    {
+      id: {{ variant.id }},
+      title: "{{ variant.title | escape }}",
+      type: {{ variant.metafields.variant.type | json }},
+      coverage: {{ variant.metafields.variant.coverage.value | json }},
+      options: [
+        {% for option in variant.options %}
+          "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+
   
   const matchedVariant = variantsData.find(v => v.id === variant.id);
   if (matchedVariant && matchedVariant.type) {

@@ -46,8 +46,7 @@
     border: none;
     width: 130px;
     margin-bottom: 15px;
-    transition: transform 0.3s ease
-    , box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .form-insurance__checkout-button {
     background-color: var(--color-primary);
@@ -143,7 +142,6 @@
     justify-content: space-between;
     align-items: center;
   }
-
 {% endstyle %}
 
 {{ 'component-cart.css' | asset_url | stylesheet_tag }}
@@ -264,30 +262,39 @@
                 >
                   {{ 'sections.cart.checkout' | t }}
                 </button>
-                {% comment %} <button
-                  type="submit"
-                  id="checkout"
-                  class="cart__checkout-button button"
-                  name="checkout"
-                  {% if cart == empty %}
-                    disabled
-                  {% endif %}
-                  form="cart"
-                >
-                  
-                </button> {% endcomment %}
-{% comment %} 
-                {% for item in cart.items %}
-                  <div class="debug-product">
-                    <p>Product Title: {{ item.product.title }}</p>
-                    <p>Product Category: {{ item.product.metafields.product.category }}</p>
-                    <p>Variant Type: {{ item.variant.metafields.variant.type }}</p>
-                    <p>Product Title: {{ item.product.title }}</p>
-                    <p>Variant Title: {{ item.variant.title }}</p>
-                    <p>Variant ID: {{ item.variant.id }}</p>
-                    <p>Quantity: {{ item.quantity }}</p>
-                  </div>
-                {% endfor %} {% endcomment %}
+                {% comment %}
+                  <button
+                    type="submit"
+                    id="checkout"
+                    class="cart__checkout-button button"
+                    name="checkout"
+                    {% if cart == empty %}
+                      disabled
+                    {% endif %}
+                    form="cart"
+                  >
+
+                  </button>
+                {% endcomment %}
+                {% comment %}
+                  {% for item in cart.items %}
+                    <div class="debug-product">
+                      <p>Product Title: {{ item.product.title }}</p>
+                      <p>Product Category: {{ item.product.metafields.product.category }}</p>
+                      <p>Variant Type: {{ item.variant.metafields.variant.type }}</p>
+                      <p>Variant Title: {{ item.variant.title }}</p>
+                      <p>Variant ID: {{ item.variant.id }}</p>
+                      <p>Quantity: {{ item.quantity }}</p>
+                      <p>Variant Coverage:
+                        {% if item.variant.metafields.variant.coverage != blank %}
+                          {{ item.variant.metafields.variant.coverage | join: ', ' }}
+                        {% else %}
+                          -
+                        {% endif %}
+                      </p>
+                    </div>
+                  {% endfor %}
+                {% endcomment %}
               </div>
 
               {%- if additional_checkout_buttons -%}
@@ -318,7 +325,8 @@
         variantType: {{ item.variant.metafields.variant.type | json }},
         variantTitle: {{ item.variant.title | json }},
         variantId: {{ item.variant.id }},
-        quantity: {{ item.quantity }}
+        quantity: {{ item.quantity }},
+        variantCoverage: {{ item.variant.metafields.variant.coverage.value | json }}
       });
     {% endfor %}
 

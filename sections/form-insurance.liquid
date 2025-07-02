@@ -63,8 +63,7 @@
     outline: none;
     border: none;
     width: 130px;
-    transition: transform 0.3s ease
-    , box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .form-insurance__checkout-button {
     background-color: var(--color-primary);
@@ -105,6 +104,7 @@
     padding: 10px;
     color: var(--color-primary);
   }
+
   .form-insurance__wrapper input::placeholder {
     color: var(--color-primary);
     letter-spacing: 0.5px;
@@ -129,6 +129,7 @@
   .form-insurance__field textarea {
     width: 100%;
     box-sizing: border-box;
+    font-size: 14px;
   }
   .form-insurance__field textarea {
     color: var(--color-primary);
@@ -139,6 +140,7 @@
     outline: none;
     border-radius: 15px;
     border: 1px solid var(--color-border);
+    padding: 10px;
   }
   .form-insurance__field textarea::placeholder {
     color: var(--color-primary);
@@ -163,6 +165,55 @@
     border: none;
     color: var(--color-neutral);
     font-size: var(--font-large);
+  }
+  .form-insurance__section-top {
+    padding: 15px;
+    border-radius: 15px;
+    background-color: var(--color-neutral);
+    margin-bottom: 15px;
+  }
+  .form-insurance__section-bottom {
+  }
+
+  .form-insurance.form-family {
+    background-color: var(--color-neutral);
+    padding: 10px 15px 15px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+  }
+  .product-title,
+  .variant-title {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--color-primary);
+    font-size: var(--font-extra-large);
+  }
+  .form-insurance__label-wrapper {
+    border-radius: 15px 15px 0 0;
+  }
+  .form-itinerary-container {
+    margin-top: 10px;
+  }
+  .form-insurance {
+    background-color: var(--color-neutral);
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  .form-insurance__same-checkbox {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    color: var(--color-primary);
+  }
+
+  .form-insurance__field input[type='date']::-webkit-calendar-picker-indicator {
+    filter: brightness(0) saturate(100%) invert(31%) sepia(95%) saturate(746%) hue-rotate(175deg) brightness(96%)
+      contrast(102%);
+  }
+  .add-traveler__button {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
   }
 {% endstyle %}
 
@@ -264,7 +315,7 @@
     </div>
 
     <div class="form-insurance__wrapper relationship-wrapper">
-      <label>Relationship with Policy Holder<span style="color: red">*</span></label>
+      <label>Relationship with Policy Holder</label>
       <div>
         <input type="radio" id="relationship-spouse" name="Relationship" value="Spouse" required>
         <label for="relationship-spouse">Spouse</label>
@@ -278,7 +329,7 @@
 </form>
 {% endcapture %}
 
-{% capture FormItineray %}
+{% capture formItinerary %}
 <div class="form-insurance__itinerary-date">
   <div class="form-insurance__wrapper">
     <div class="form-insurance__field">
@@ -289,6 +340,12 @@
       <label for="end-date">End Date</label>
       <input type="date" id="end-date" name="End Date" required>
     </div>
+    <div class="form-insurance__field">
+      <label for="country-destination">Destination Country</label>
+      <select name="Destination Country" class="itinerary-country-dropdown" required>
+        <option value="">Select Country</option>
+      </select>
+    </div>
   </div>
 </div>
 {% endcapture %}
@@ -296,17 +353,17 @@
 <div class="form-insurance__container">
   <div class="form-insurance__content-wrapper">
     <div class="form-insurance__form-section">
-      <div class="form-section--wrapper" style="background-color: red;">
+      <div class="form-section--wrapper">
         <div class="section-header"></div>
         <section id="form-individual"></section>
       </div>
 
-      <div class="form-section--wrapper" style="background-color: blue;">
+      <div class="form-section--wrapper">
         <div class="section-header"></div>
         <section id="form-duoplus"></section>
       </div>
 
-      <div class="form-section--wrapper" style="background-color: orange;">
+      <div class="form-section--wrapper">
         <section id="form-family"></section>
       </div>
 
@@ -315,7 +372,7 @@
       </template>
 
       <template id="form-itinerary-template">
-        {{ FormItineray }}
+        {{ formItinerary }}
       </template>
     </div>
 
@@ -325,7 +382,8 @@
           <input
             type="checkbox"
             id="check-data-global"
-            required>
+            required
+          >
           Data is correct
         </label>
 
@@ -333,7 +391,8 @@
           <input
             type="checkbox"
             id="check-itinerary-global"
-            required>
+            required
+          >
           Flight itinerary is the same
         </label>
       </div>
@@ -342,7 +401,8 @@
         id="checkout-button"
         type="button"
         class="form-insurance__checkout-button"
-        onclick="handleCheckout()">
+        onclick="handleCheckout()"
+      >
         Checkout
       </button>
     </section>
@@ -352,7 +412,23 @@
 <script>
   // Mengambil data ProductItems dari sessionStorage
   const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems'));
-  
+
+  function injectCountryOptions(itineraryContainer, variantCoverage) {
+    const dropdown = itineraryContainer.querySelector('.itinerary-country-dropdown');
+    if (!dropdown) return;
+
+    // Bersihkan dulu
+    dropdown.innerHTML = '<option value="">Select Country</option>';
+
+    // Tambahkan opsi
+    variantCoverage.forEach((country) => {
+      const option = document.createElement('option');
+      option.value = country;
+      option.textContent = country;
+      dropdown.appendChild(option);
+    });
+  }
+
   if (ProductItems) {
     console.log('Retrieved ProductItems from sessionStorage:', ProductItems);
     // Tampilkan productTitle dan variantTitle dalam <pre>
@@ -361,264 +437,574 @@
       'form-duoplus': 'DuoPlus',
       'form-family': 'Family',
     };
-  
+
     Object.entries(sectionMap).forEach(([sectionId, variantType]) => {
       const wrapper = document.getElementById(sectionId)?.closest('.form-section--wrapper');
       const product = ProductItems.find((item) => item.variantType === variantType && item.category === 'Insurance');
-  
+
       if (wrapper && product) {
         const titleEl = wrapper.querySelector('.product-title');
         const variantEl = wrapper.querySelector('.variant-title');
-  
+
         if (titleEl) titleEl.innerHTML = `${product.productTitle}`;
         if (variantEl) variantEl.textContent = product.variantTitle;
       }
     });
-  
+
     // Membuat container untuk form di masing-masing section
     const individualContainer = document.getElementById('form-individual');
     const duoplusContainer = document.getElementById('form-duoplus');
     const familyContainer = document.getElementById('form-family');
-  
+
     // Mengelompokkan produk berdasarkan variantType
     const insuranceProducts = ProductItems.filter((item) => item.category === 'Insurance');
-  
+
     // Proses untuk variantType Individual
     const individualProducts = insuranceProducts.filter((item) => item.variantType === 'Individual');
+
     individualProducts.forEach((product) => {
       const formTemplate = document.getElementById('form-insurance-template').innerHTML;
       const formItineraryTemplate = document.getElementById('form-itinerary-template').innerHTML;
-  
+
       for (let i = 0; i < product.quantity; i++) {
         const formWrapper = document.createElement('div');
         formWrapper.classList.add('form-section--wrapper');
-  
-        formWrapper.innerHTML = `
-      <section>
-        <div class="form-insurance__section-wrapper">
-        <div class="form-insurance__section-header">
-        <p class="product-title">${product.productTitle}</p>
-          <p class="variant-title">${product.variantTitle}</p>
-        </div>
-        
-          <div class="form-insurance__label-wrapper">
-            <span class="form-insurance__label-index">${getFormIndexText(i + 1)}</span>
-            <span>Insured (Policy Holder)</span>
-          </div>
-          ${formTemplate}
-        </div>
-      </section>
-    `;
-  
-        individualContainer.appendChild(formWrapper);
-      }
-    });
-  
-    // Proses untuk variantType DuoPlus
-    const duoplusProducts = insuranceProducts.filter((item) => item.variantType === 'DuoPlus');
-  
-    duoplusProducts.forEach((product) => {
-      console.log(`Processing DuoPlus Product: ${product.productTitle} with quantity ${product.quantity}`);
-  
-      const formWrapper = document.createElement('div');
-      formWrapper.classList.add('form-section--wrapper');
-  
-      const formTemplateElement = document.getElementById('form-insurance-template');
-      const formTemplate = formTemplateElement.innerHTML;
-  
-      for (let i = 0; i < product.quantity; i++) {
-        const formElement = document.createElement('div');
-        formElement.classList.add('form-insurance__section-wrapper');
-  
-        const index = i + 1;
-        const label = index === 1 ? 'Insured (Policy Holder)' : 'Traveler';
-  
-        // 🔽 Hanya tampilkan header di form pertama
-        if (i === 0) {
-          const sectionHeader = document.createElement('div');
-          sectionHeader.classList.add('form-insurance__section-header');
-  
-          const productTitle = document.createElement('p');
-          productTitle.classList.add('product-title');
-          productTitle.textContent = product.productTitle || '';
-  
-          const variantTitle = document.createElement('p');
-          variantTitle.classList.add('variant-title');
-          variantTitle.textContent = product.variantTitle || '';
-  
-          sectionHeader.appendChild(productTitle);
-          sectionHeader.appendChild(variantTitle);
-          formElement.appendChild(sectionHeader);
+
+        const sectionWrapper = document.createElement('div');
+        sectionWrapper.classList.add('form-insurance__section-wrapper');
+        sectionWrapper.setAttribute('data-product-id', product.variantId);
+
+        // ---------- section-top ----------
+        const sectionTop = document.createElement('div');
+        sectionTop.classList.add('form-insurance__section-top');
+
+        // Section header
+        const sectionHeader = document.createElement('div');
+        sectionHeader.classList.add('form-insurance__section-header');
+
+        const productTitle = document.createElement('p');
+        productTitle.classList.add('product-title');
+        productTitle.textContent = product.productTitle || '';
+
+        const variantTitle = document.createElement('p');
+        variantTitle.classList.add('variant-title');
+        variantTitle.textContent = product.variantTitle || '';
+
+        sectionHeader.appendChild(productTitle);
+        sectionHeader.appendChild(variantTitle);
+
+        sectionTop.appendChild(sectionHeader);
+        // Itinerary container
+        const itineraryContainer = document.createElement('div');
+        itineraryContainer.classList.add('form-itinerary-container');
+        itineraryContainer.innerHTML = formItineraryTemplate;
+
+        // Inject options ke dropdown
+        if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
+          injectCountryOptions(itineraryContainer, product.variantCoverage);
         }
-  
-        // 🔽 Label wrapper
+
+        sectionTop.appendChild(itineraryContainer);
+
+        // Checkbox hanya di form pertama
+        if (i === 0 && product.quantity > 1) {
+          const sameCheckboxDiv = document.createElement('div');
+          sameCheckboxDiv.classList.add('form-insurance__same-checkbox');
+
+          const labelEl = document.createElement('label');
+          labelEl.innerHTML = `
+        <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
+        The insurance is the same
+      `;
+
+          sameCheckboxDiv.appendChild(labelEl);
+          sectionTop.appendChild(sameCheckboxDiv);
+        }
+
+        sectionWrapper.appendChild(sectionTop);
+
+        // ---------- section-bottom ----------
+        const sectionBottom = document.createElement('div');
+        sectionBottom.classList.add('form-insurance__section-bottom');
+
+        // Label wrapper
         const labelDivWrapper = document.createElement('div');
         labelDivWrapper.classList.add('form-insurance__label-wrapper');
-  
+
         const labelTitleDiv = document.createElement('div');
         labelTitleDiv.classList.add('form-insurance__label-title');
-  
+
         const spanIndex = document.createElement('span');
-        spanIndex.textContent = getFormIndexText(index);
+        spanIndex.textContent = getFormIndexText(i + 1);
         spanIndex.classList.add('form-insurance__label-index');
-  
+
         const spanLabel = document.createElement('span');
-        spanLabel.textContent = label;
-  
+        spanLabel.textContent = 'Insured (Policy Holder)';
+
         labelTitleDiv.appendChild(spanIndex);
         labelTitleDiv.appendChild(spanLabel);
         labelDivWrapper.appendChild(labelTitleDiv);
-        formElement.appendChild(labelDivWrapper);
-  
-        // 🔽 Masukkan isi form
+
+        sectionBottom.appendChild(labelDivWrapper);
+
+        // Form container
         const formContainer = document.createElement('div');
         formContainer.innerHTML = formTemplate;
-  
-        formElement.appendChild(formContainer);
-        duoplusContainer.appendChild(formElement);
+        sectionBottom.appendChild(formContainer);
+
+        sectionWrapper.appendChild(sectionBottom);
+
+        formWrapper.appendChild(sectionWrapper);
+        individualContainer.appendChild(formWrapper);
       }
-  
-      console.log(`Total DuoPlus Forms added: ${product.quantity}`);
+
+      // Tambahkan event listener hanya jika quantity > 1
+      if (product.quantity > 1) {
+        const checkboxId = `sameInsuranceCheckbox-${product.variantId}`;
+        setTimeout(() => {
+          const sameInsuranceCheckbox = document.getElementById(checkboxId);
+          if (sameInsuranceCheckbox) {
+            const wrappersOfProduct = document.querySelectorAll(
+              `.form-insurance__section-wrapper[data-product-id="${product.variantId}"]`
+            );
+            sameInsuranceCheckbox.addEventListener('change', (e) => {
+              handleSameInsuranceToggle(e.target.checked, wrappersOfProduct, product);
+            });
+          }
+        }, 0);
+      }
     });
-  
+
+    function handleSameInsuranceToggle(isChecked, wrappers, product) {
+      wrappers.forEach((wrapper, index) => {
+        if (index === 0) return;
+
+        const itineraryContainer = wrapper.querySelector('.form-itinerary-container');
+        if (!itineraryContainer) return;
+
+        if (isChecked) {
+          itineraryContainer.innerHTML = '';
+        } else {
+          const template = document.getElementById('form-itinerary-template');
+          if (template) {
+            itineraryContainer.innerHTML = template.innerHTML;
+
+            // ⭐ FIX: Inject country options ke dropdown
+            if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
+              injectCountryOptions(itineraryContainer, product.variantCoverage);
+            }
+          }
+        }
+      });
+    }
+
+    // Proses untuk variantType DuoPlus
+    const duoplusProducts = insuranceProducts.filter((item) => item.variantType === 'DuoPlus');
+
+    duoplusProducts.forEach((product) => {
+      const formTemplate = document.getElementById('form-insurance-template').innerHTML;
+      const formItineraryTemplate = document.getElementById('form-itinerary-template').innerHTML;
+
+      // 🔽 Section wrapper per variant
+      const variantSection = document.createElement('div');
+      variantSection.classList.add('form-section--wrapper');
+      variantSection.id = `duoplus-section-${product.variantId}`;
+      variantSection.setAttribute('data-product-id', product.variantId);
+
+      duoplusContainer.appendChild(variantSection);
+
+      for (let i = 0; i < product.quantity; i++) {
+        const formWrapper = document.createElement('div');
+        formWrapper.classList.add('form-section--wrapper');
+
+        const formElement = document.createElement('div');
+        formElement.classList.add('form-insurance__section-wrapper');
+        formElement.setAttribute('data-product-id', product.variantId);
+
+        // ------------------------
+        // SECTION TOP
+        // ------------------------
+        const sectionTop = document.createElement('div');
+        sectionTop.classList.add('form-insurance__section-top');
+
+        // header hanya di Insured pertama
+        if (i === 0) {
+          const sectionHeader = document.createElement('div');
+          sectionHeader.classList.add('form-insurance__section-header');
+
+          const productTitle = document.createElement('p');
+          productTitle.classList.add('product-title');
+          productTitle.textContent = product.productTitle || '';
+
+          const variantTitle = document.createElement('p');
+          variantTitle.classList.add('variant-title');
+          variantTitle.textContent = product.variantTitle || '';
+
+          sectionHeader.appendChild(productTitle);
+          sectionHeader.appendChild(variantTitle);
+          sectionTop.appendChild(sectionHeader);
+        }
+
+        // --- ⬇️ PINDAHKAN itinerary lebih dulu
+        const itineraryContainer = document.createElement('div');
+        itineraryContainer.classList.add('form-itinerary-container');
+        itineraryContainer.innerHTML = formItineraryTemplate;
+
+        if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
+          injectCountryOptions(itineraryContainer, product.variantCoverage);
+        }
+
+        sectionTop.appendChild(itineraryContainer);
+
+        // --- ⬇️ Baru same-checkbox di bawah itinerary
+        if (i === 0 && product.quantity > 1) {
+          const sameCheckboxDiv = document.createElement('div');
+          sameCheckboxDiv.classList.add('form-insurance__same-checkbox');
+
+          const labelEl = document.createElement('label');
+          labelEl.innerHTML = `
+        <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
+        The insurance is the same
+      `;
+
+          sameCheckboxDiv.appendChild(labelEl);
+          sectionTop.appendChild(sameCheckboxDiv);
+        }
+
+        formElement.appendChild(sectionTop);
+
+        // ------------------------
+        // SECTION BOTTOM
+        // ------------------------
+        const sectionBottom = document.createElement('div');
+        sectionBottom.classList.add('form-insurance__section-bottom');
+
+        // label
+        const labelDivWrapper = document.createElement('div');
+        labelDivWrapper.classList.add('form-insurance__label-wrapper');
+
+        const labelTitleDiv = document.createElement('div');
+        labelTitleDiv.classList.add('form-insurance__label-title');
+
+        const spanIndex = document.createElement('span');
+        spanIndex.textContent = getFormIndexText(i + 1);
+        spanIndex.classList.add('form-insurance__label-index');
+
+        const spanLabel = document.createElement('span');
+        spanLabel.textContent = i === 0 ? 'Insured (Policy Holder)' : 'Traveler';
+
+        labelTitleDiv.appendChild(spanIndex);
+        labelTitleDiv.appendChild(spanLabel);
+        labelDivWrapper.appendChild(labelTitleDiv);
+
+        sectionBottom.appendChild(labelDivWrapper);
+
+        // form
+        const formContainer = document.createElement('div');
+        formContainer.innerHTML = formTemplate;
+        sectionBottom.appendChild(formContainer);
+
+        formElement.appendChild(sectionBottom);
+
+        formWrapper.appendChild(formElement);
+        variantSection.appendChild(formWrapper);
+      }
+
+      // Checkbox listener hanya jika qty > 1
+      if (product.quantity > 1) {
+        const checkboxSelector = `#sameInsuranceCheckbox-${product.variantId}`;
+        setTimeout(() => {
+          const sameInsuranceCheckbox = document.querySelector(
+            `#duoplus-section-${product.variantId} ${checkboxSelector}`
+          );
+          if (sameInsuranceCheckbox) {
+            const wrappersOfProduct = document.querySelectorAll(
+              `#duoplus-section-${product.variantId} .form-insurance__section-wrapper[data-product-id="${product.variantId}"]`
+            );
+            sameInsuranceCheckbox.addEventListener('change', (e) => {
+              handleSameInsuranceToggle(e.target.checked, wrappersOfProduct, product);
+            });
+          }
+        }, 0);
+      }
+    });
+
+    function handleSameInsuranceToggle(isChecked, wrappers) {
+      wrappers.forEach((wrapper, index) => {
+        if (index === 0) return;
+
+        const itineraryContainer = wrapper.querySelector('.form-itinerary-container');
+        if (!itineraryContainer) return;
+
+        if (isChecked) {
+          itineraryContainer.innerHTML = '';
+        } else {
+          const template = document.getElementById('form-itinerary-template');
+          if (template) {
+            itineraryContainer.innerHTML = template.innerHTML;
+          }
+        }
+      });
+    }
+
     // Fungsi untuk menentukan urutan teks (1st, 2nd, 3rd, dll)
     function getFormIndexText(index) {
       const suffix = ['th', 'st', 'nd', 'rd'];
       const v = index % 100;
       return index + (suffix[(v - 20) % 10] || suffix[v] || suffix[0]);
     }
-  
+
     const formTemplateElement = document.getElementById('form-insurance-template');
     const formTemplate = formTemplateElement.innerHTML;
-  
+    const formItineraryTemplate = document.getElementById('form-itinerary-template').innerHTML;
+
     const familyProducts = insuranceProducts.filter((item) => item.variantType === 'Family');
+
+    /**
+     * Helper function → pindahkan Add Traveler Button ke form terakhir
+     */
+    function moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper) {
+      const forms = sectionBottom.querySelectorAll('.form-family');
+      const lastForm = forms[forms.length - 1];
+      if (!lastForm) return;
+
+      const lastFormRight = lastForm.querySelector('.form-insurance__right');
+      if (lastFormRight) {
+        lastFormRight.appendChild(addTravelerButtonWrapper);
+        addTravelerButtonWrapper.style.display = forms.length >= 4 ? 'none' : 'inline-block';
+      }
+    }
+
+    // ⭐ FIX - helper untuk ordinal suffix
+    function getOrdinalSuffix(i) {
+      const j = i % 10,
+        k = i % 100;
+      if (j == 1 && k != 11) return i + 'st';
+      if (j == 2 && k != 12) return i + 'nd';
+      if (j == 3 && k != 13) return i + 'rd';
+      return i + 'th';
+    }
+
+    // ⭐ FIX - helper untuk update label indeks & teks
+    function updateFamilyFormIndices(sectionBottom, groupSuffix) {
+      const labelWrappers = sectionBottom.querySelectorAll('.form-insurance__label-wrapper');
+      labelWrappers.forEach((labelWrapper, i) => {
+        const spanIndex = labelWrapper.querySelector('.form-insurance__label-index');
+        if (spanIndex) {
+          spanIndex.textContent = getOrdinalSuffix(i + 1);
+        }
+
+        const spanLabel = labelWrapper.querySelector('.form-insurance__label-title span:nth-child(2)');
+        const form = labelWrapper.nextElementSibling;
+
+        if (spanLabel) {
+          if (i === 0) {
+            spanLabel.textContent = 'Insured (Policy Holder)';
+          } else {
+            // PERBAIKAN: Gunakan relationship dari dataset atau default ke 'Traveler'
+            const relationship = form?.dataset?.relationship || '';
+            spanLabel.textContent = relationship ? `Traveler - ${relationship}` : 'Traveler';
+
+            // PERBAIKAN: Sync radio buttons dengan label
+            if (form?.labelElement) {
+              form.labelElement.textContent = spanLabel.textContent;
+            }
+          }
+        }
+      });
+    }
+
     familyProducts.forEach((product) => {
       console.log(`Processing Family Product: ${product.productTitle} with quantity ${product.quantity}`);
-  
-      for (let q = 0; q < product.quantity; q++) {
+
+      const familySectionWrapper = document.createElement('div');
+      familySectionWrapper.classList.add('form-family__section-wrapper');
+      familySectionWrapper.setAttribute('data-product-id', product.variantId);
+
+      // Buat header (nanti clone ke tiap section-top)
+      const sectionHeader = document.createElement('div');
+      sectionHeader.classList.add('form-insurance__section-header');
+
+      const productTitle = document.createElement('p');
+      productTitle.classList.add('product-title');
+      productTitle.textContent = product.productTitle || '';
+
+      const variantTitle = document.createElement('p');
+      variantTitle.classList.add('variant-title');
+      variantTitle.textContent = product.variantTitle || '';
+
+      sectionHeader.appendChild(productTitle);
+      sectionHeader.appendChild(variantTitle);
+
+      let sameCheckboxDiv = null;
+      if (product.quantity > 1) {
+        sameCheckboxDiv = document.createElement('div');
+        sameCheckboxDiv.classList.add('form-insurance__same-checkbox');
+
+        const labelEl = document.createElement('label');
+        labelEl.innerHTML = `
+      <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
+      The insurance is the same
+    `;
+        sameCheckboxDiv.appendChild(labelEl);
+      }
+
+      for (let groupIndex = 0; groupIndex < product.quantity; groupIndex++) {
         const formWrapper = document.createElement('div');
         formWrapper.classList.add('form-section--wrapper');
         formWrapper.style.marginBottom = '30px';
-  
-        // 🔽 Tambahkan HEADER ke formWrapper
-        const sectionHeader = document.createElement('div');
-        sectionHeader.classList.add('form-insurance__section-header');
-  
-        const productTitle = document.createElement('p');
-        productTitle.classList.add('product-title');
-        productTitle.textContent = product.productTitle || '';
-  
-        const variantTitle = document.createElement('p');
-        variantTitle.classList.add('variant-title');
-        variantTitle.textContent = product.variantTitle || '';
-  
-        sectionHeader.appendChild(productTitle);
-        sectionHeader.appendChild(variantTitle);
-        formWrapper.appendChild(sectionHeader);
-  
-        // 🔽 Container untuk form-form Family
+
+        const sectionWrapper = document.createElement('div');
+        sectionWrapper.classList.add('form-insurance__section-wrapper');
+        sectionWrapper.setAttribute('data-product-id', product.variantId);
+
+        // ➤ SECTION TOP
+        const sectionTop = document.createElement('div');
+        sectionTop.classList.add('form-insurance__section-top');
+
+        // clone section header
+        const clonedHeader = sectionHeader.cloneNode(true);
+        sectionTop.appendChild(clonedHeader);
+
+        if (sameCheckboxDiv && groupIndex === 0) {
+          sectionTop.appendChild(sameCheckboxDiv.cloneNode(true));
+        }
+
+        const itineraryContainer = document.createElement('div');
+        itineraryContainer.classList.add('form-itinerary-container');
+        itineraryContainer.innerHTML = formItineraryTemplate;
+
+        if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
+          injectCountryOptions(itineraryContainer, product.variantCoverage);
+        }
+        sectionTop.appendChild(itineraryContainer);
+
+        sectionWrapper.appendChild(sectionTop);
+
+        // ➤ SECTION BOTTOM
+        const sectionBottom = document.createElement('div');
+        sectionBottom.classList.add('form-insurance__section-bottom');
+
         const formsContainer = document.createElement('div');
         formsContainer.classList.add('family-forms-container');
-        const uniqueId = `form-family-${Date.now()}-${q}`;
+        const uniqueId = `form-family-${Date.now()}-${groupIndex}`;
         formsContainer.setAttribute('data-section-id', uniqueId);
-  
-        // 🔽 Fungsi createForm menerima product
-        const createForm = (fromAdd = false, product) => {
+
+        const addTravelerButtonWrapper = document.createElement('div');
+        addTravelerButtonWrapper.classList.add('add-traveler__button');
+
+        const addTravelerButton = document.createElement('button');
+        addTravelerButton.type = 'button';
+        addTravelerButton.classList.add('insurance-form__add-form');
+        addTravelerButton.textContent = 'Add Traveler';
+
+        addTravelerButtonWrapper.appendChild(addTravelerButton);
+
+        const createForm = (fromAdd = false, variantType, product) => {
           const wrapper = document.createElement('div');
           wrapper.innerHTML = formTemplate;
-  
+
           const formElement = wrapper.querySelector('form');
           if (!formElement) return null;
-  
+
           formElement.classList.add('form-family');
-  
-          const index = formsContainer.querySelectorAll('.form-family').length;
-  
+
+          const index = sectionBottom.querySelectorAll('form.form-family').length;
+
+          // label suffix logic
+          const groupSuffix = ` #${groupIndex + 1}`;
+
+          // Label default
           let label = '';
-          if (index === 0) label = 'Insured (Policy Holder)';
-          else if (index === 1) label = 'Traveler';
-          else if (index === 2 || index === 3) label = 'Traveler (Child)';
-  
-          const getOrdinalSuffix = (i) => {
-            const j = i % 10,
-              k = i % 100;
-            if (j == 1 && k != 11) return i + 'st';
-            if (j == 2 && k != 12) return i + 'nd';
-            if (j == 3 && k != 13) return i + 'rd';
-            return i + 'th';
-          };
-  
+          if (index === 0) {
+            label = 'Insured (Policy Holder)';
+          } else {
+            label = 'Traveler';
+          }
+
           const labelDivWrapper = document.createElement('div');
           labelDivWrapper.classList.add('form-insurance__label-wrapper');
-  
+
           const labelTitleDiv = document.createElement('div');
           labelTitleDiv.classList.add('form-insurance__label-title');
-  
+
           const spanIndex = document.createElement('span');
           spanIndex.textContent = getOrdinalSuffix(index + 1);
           spanIndex.classList.add('form-insurance__label-index');
-  
+
           const spanLabel = document.createElement('span');
           spanLabel.textContent = label;
-  
+
           labelTitleDiv.appendChild(spanIndex);
           labelTitleDiv.appendChild(spanLabel);
           labelDivWrapper.appendChild(labelTitleDiv);
-  
+
           if (fromAdd || index >= 2) {
             const removeBtn = document.createElement('button');
             removeBtn.type = 'button';
             removeBtn.textContent = 'Remove';
             removeBtn.classList.add('insurance-form__remove-form');
-  
+
             removeBtn.addEventListener('click', () => {
               formElement.remove();
               labelDivWrapper.remove();
-  
-              const currentForms = formsContainer.querySelectorAll('.form-family');
-              if (currentForms.length < 4) {
-                addTravelerButtonWrapper.style.display = 'inline-block';
-                const lastForm = currentForms[currentForms.length - 1];
-                const lastFormRight = lastForm.querySelector('.form-insurance__right');
-                if (lastFormRight) {
-                  lastFormRight.appendChild(addTravelerButtonWrapper);
-                }
-              }
+              moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper);
+              updateFamilyFormIndices(sectionBottom, groupSuffix);
             });
-  
+
             const removeWrapper = document.createElement('div');
             removeWrapper.classList.add('form-insurance__button-wrapper');
             removeWrapper.appendChild(removeBtn);
             labelDivWrapper.appendChild(removeWrapper);
           }
-  
-          wrapper.appendChild(labelDivWrapper);
-          wrapper.appendChild(formElement);
-  
-          const formTemplateElement = document.getElementById('form-insurance-template');
-          formElement.innerHTML = formTemplateElement.innerHTML;
-  
-          // Update label dinamis berdasarkan radio Relationship
+
+          sectionBottom.appendChild(labelDivWrapper);
+          sectionBottom.appendChild(formElement);
+
           const relationshipWrapper = formElement.querySelector('.form-insurance__wrapper.relationship-wrapper');
           if (relationshipWrapper) {
             const spouseRadio = relationshipWrapper.querySelector('#relationship-spouse');
             const childRadio = relationshipWrapper.querySelector('#relationship-child');
-  
+
+            // PERBAIKAN: Tidak ada yang di-select secara default
             spouseRadio.checked = false;
             childRadio.checked = false;
-  
+            spanLabel.textContent = 'Traveler'; // Label default tanpa relationship
+
+            // PERBAIKAN: Simpan referensi ke spanLabel di form element
+            formElement.labelElement = spanLabel;
+
             spouseRadio.addEventListener('change', () => {
-              spanLabel.textContent = 'Traveler (Spouse)';
+              if (spouseRadio.checked) {
+                spanLabel.textContent = 'Traveler - Spouse';
+                formElement.dataset.relationship = 'Spouse';
+                updateFamilyFormIndices(sectionBottom, groupSuffix);
+              }
             });
-  
+
             childRadio.addEventListener('change', () => {
-              spanLabel.textContent = 'Traveler (Child)';
+              if (childRadio.checked) {
+                spanLabel.textContent = 'Traveler - Child';
+                formElement.dataset.relationship = 'Child';
+                updateFamilyFormIndices(sectionBottom, groupSuffix);
+              }
             });
+
+            // PERBAIKAN: Handler untuk ketika radio button di-uncheck
+            const handleRadioChange = () => {
+              if (!spouseRadio.checked && !childRadio.checked) {
+                spanLabel.textContent = 'Traveler';
+                delete formElement.dataset.relationship;
+                updateFamilyFormIndices(sectionBottom, groupSuffix);
+              }
+            };
+
+            spouseRadio.addEventListener('change', handleRadioChange);
+            childRadio.addEventListener('change', handleRadioChange);
           }
-  
-          // Hapus field sesuai posisi form
+
           const toRemoveFields = [];
-  
+
           if (!fromAdd && index === 0) {
             toRemoveFields.push('.relationship-wrapper');
           } else if (!fromAdd && index === 1) {
@@ -641,58 +1027,74 @@
               '.relationship-wrapper'
             );
           }
-  
+
           toRemoveFields.forEach((selector) => {
             const el = formElement.querySelector(selector);
             if (el) {
-              const fieldWrapper = el.closest('.form-insurance__field') || el;
-              fieldWrapper.remove();
+              const fieldWrapper = el.closest('.form-insurance__field');
+              if (fieldWrapper) {
+                fieldWrapper.remove();
+              } else {
+                el.remove();
+              }
             }
           });
-  
+
           return wrapper;
         };
-  
-        // Tambah 2 form default
-        formsContainer.appendChild(createForm(false, product));
-        formsContainer.appendChild(createForm(false, product));
-  
-        // Add Traveler Button
-        const addTravelerButtonWrapper = document.createElement('div');
-        addTravelerButtonWrapper.classList.add('add-traveler__button');
-  
-        const addTravelerButton = document.createElement('button');
-        addTravelerButton.type = 'button';
-        addTravelerButton.classList.add('insurance-form__add-form');
-        addTravelerButton.textContent = 'Add Traveler';
-  
-        addTravelerButtonWrapper.appendChild(addTravelerButton);
-  
+
+        sectionBottom.appendChild(createForm(false, product.variantType, product));
+        sectionBottom.appendChild(createForm(false, product.variantType, product));
+
         addTravelerButton.addEventListener('click', () => {
-          const currentForms = formsContainer.querySelectorAll('.form-family').length;
+          const currentForms = sectionBottom.querySelectorAll('.form-family').length;
           if (currentForms < 4) {
-            const newForm = createForm(true, product);
-            formsContainer.appendChild(newForm);
-  
-            const newFormRight = newForm.querySelector('.form-insurance__right');
-            if (newFormRight) {
-              newFormRight.appendChild(addTravelerButtonWrapper);
-            }
-  
-            if (formsContainer.querySelectorAll('.form-family').length >= 4) {
-              addTravelerButtonWrapper.style.display = 'none';
-            }
+            const newForm = createForm(true, product.variantType, product);
+            sectionBottom.appendChild(newForm);
+            moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper);
+            updateFamilyFormIndices(sectionBottom, ` #${groupIndex + 1}`);
           }
         });
-  
-        const secondForm = formsContainer.querySelectorAll('.form-family')[1];
-        const secondFormRight = secondForm.querySelector('.form-insurance__right');
-        if (secondFormRight) {
-          secondFormRight.appendChild(addTravelerButtonWrapper);
-        }
-  
-        formWrapper.appendChild(formsContainer);
-        familyContainer.appendChild(formWrapper);
+
+        moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper);
+
+        sectionWrapper.appendChild(sectionBottom);
+        formWrapper.appendChild(sectionWrapper);
+        familySectionWrapper.appendChild(formWrapper);
+      }
+
+      familyContainer.appendChild(familySectionWrapper);
+
+      if (product.quantity > 1) {
+        const checkboxSelector = `#sameInsuranceCheckbox-${product.variantId}`;
+        setTimeout(() => {
+          const sameInsuranceCheckbox = familySectionWrapper.querySelector(checkboxSelector);
+          if (sameInsuranceCheckbox) {
+            const groups = familySectionWrapper.querySelectorAll(
+              `.form-section--wrapper .form-insurance__section-wrapper`
+            );
+
+            sameInsuranceCheckbox.addEventListener('change', (e) => {
+              const isChecked = e.target.checked;
+              groups.forEach((group, index) => {
+                if (index === 0) return;
+
+                const itineraryContainer = group.querySelector('.form-itinerary-container');
+                if (!itineraryContainer) return;
+
+                if (isChecked) {
+                  itineraryContainer.innerHTML = '';
+                } else {
+                  itineraryContainer.innerHTML = formItineraryTemplate;
+
+                  if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
+                    injectCountryOptions(itineraryContainer, product.variantCoverage);
+                  }
+                }
+              });
+            });
+          }
+        }, 0);
       }
     });
   } else {
@@ -710,19 +1112,21 @@
         relationshipField.remove();
       }
     });
-  
-    // --- DUOPLUS SECTION ---
+
     const duoplusForms = document.querySelectorAll('#form-duoplus form');
-    duoplusForms.forEach((form, index) => {
-      // Hapus Relationship untuk semua
+
+    duoplusForms.forEach((form) => {
       const relationshipField = form.querySelector('.relationship-wrapper');
       if (relationshipField) {
         relationshipField.remove();
       }
-  
-      // Untuk form ke-2 dan seterusnya (index > 0), hapus field tambahan
-      if (index > 0) {
-        const toRemove = [
+
+      const labelSpan = form
+        .closest('.form-insurance__section-wrapper')
+        ?.querySelector('.form-insurance__label-wrapper span:nth-child(2)');
+
+      if (labelSpan && labelSpan.textContent.trim().toLowerCase() === 'traveler') {
+        const toRemoveFields = [
           'input[name="Mobile Phone"]',
           'input[name="Email"]',
           'input[name="Additional Email"]',
@@ -730,29 +1134,32 @@
           'input[name="Postal Code"]',
           'textarea[name="Address"]',
         ];
-        toRemove.forEach((selector) => {
+
+        toRemoveFields.forEach((selector) => {
           const el = form.querySelector(selector);
           if (el) {
             const wrapper = el.closest('.form-insurance__field');
-            if (wrapper) wrapper.remove();
+            if (wrapper) {
+              wrapper.remove();
+            }
           }
         });
       }
     });
-  
+
     // --- FAMILY SECTION ---
     const familySections = document.querySelectorAll('[data-section-id^="form-family"]');
-  
+
     familySections.forEach((section) => {
       const forms = section.querySelectorAll('form');
-  
+
       forms.forEach((form, index) => {
         // Urutan pertama: hapus relationship saja
         if (index === 0) {
           const rel = form.querySelector('.relationship-wrapper');
           if (rel) rel.remove();
         }
-  
+
         // Urutan kedua: hapus sebagian field
         if (index === 1) {
           const toRemove = [
@@ -771,7 +1178,7 @@
             }
           });
         }
-  
+
         // Urutan ketiga dan seterusnya: hapus semua seperti urutan 2 + relationship
         if (index >= 2) {
           const toRemove = [
@@ -794,7 +1201,7 @@
       });
     });
   }
-  
+
   // Jalankan setelah render form selesai
   window.addEventListener('DOMContentLoaded', () => {
     customizeInsuranceForms();
@@ -805,38 +1212,63 @@
   async function handleCheckout() {
     const isDataCorrectChecked = document.getElementById('check-data-global').checked;
     const isItineraryChecked = document.getElementById('check-itinerary-global').checked;
-  
+
     if (!isDataCorrectChecked || !isItineraryChecked) {
       alert('You must confirm that the data is correct and the flight itinerary is the same.');
       return;
     }
-  
+
     const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems')) || [];
     const insuranceItems = ProductItems.filter((p) => p.category === 'Insurance');
-  
+
     if (insuranceItems.length === 0) {
       alert('No insurance product selected.');
       return;
     }
-  
-    // Fungsi collectFormData dengan parameter formsPerSection
-    const collectFormData = (formList, section, formsPerSection) => {
+
+    // Collect itinerary data from a section-top div
+    const collectItineraryFromSectionTop = (sectionTopElement) => {
+      if (!sectionTopElement) return { startDate: '', endDate: '', destinationCountry: '' };
+
+      const startDate = sectionTopElement.querySelector('#start-date')?.value || '';
+      const endDate = sectionTopElement.querySelector('#end-date')?.value || '';
+      const destCountry = sectionTopElement.querySelector('.itinerary-country-dropdown')?.value || '';
+
+      return {
+        startDate,
+        endDate,
+        destinationCountry: destCountry,
+      };
+    };
+
+    // Collect form data for a list of forms
+    const collectFormData = (formList, section, itineraryMapPerForm) => {
       return Array.from(formList).map((form, index) => {
-        const relativeIndex = index % formsPerSection;
         const data = new FormData(form);
+
+        // itinerary for this form
+        const itinerary = itineraryMapPerForm?.[index] || { startDate: '', endDate: '', destinationCountry: '' };
+
         let title = '';
-  
+        let relationshipValue = '';
+
         if (section === 'Individual') {
-          if (relativeIndex === 0) title = 'Insured (Policy Holder)';
-          else title = 'Traveler'; // sesuaikan jika perlu
+          title = `Insured (Policy Holder) #${index + 1}`;
         } else if (section === 'DuoPlus') {
-          title = relativeIndex === 0 ? 'Insured (Policy Holder)' : 'Traveler';
+          title = index === 0 ? 'Insured (Policy Holder)' : 'Traveler';
         } else if (section === 'Family') {
-          if (relativeIndex === 0) title = 'Insured (Policy Holder)';
-          else if (relativeIndex === 1) title = 'Traveler';
-          else title = 'Traveler (Child)';
+          // Ambil nilai relationship dari radio button yang dipilih
+          const selectedRelationship = form.querySelector('input[name="Relationship"]:checked');
+          relationshipValue = selectedRelationship ? selectedRelationship.value : '';
+
+          // Format title dengan relationship setelah tanda "-"
+          if (index === 0) {
+            title = 'Insured (Policy Holder)';
+          } else {
+            title = relationshipValue ? `Traveler - ${relationshipValue}` : 'Traveler';
+          }
         }
-  
+
         return {
           title,
           salutation: data.get('Salutation'),
@@ -852,126 +1284,163 @@
           city: data.get('City'),
           postalCode: data.get('Postal Code'),
           address: data.get('Address'),
-          relationship: data.get('Relationship'),
+          relationship: relationshipValue, // Menggunakan nilai dari radio button yang dipilih
+          startDate: itinerary.startDate,
+          endDate: itinerary.endDate,
+          destinationCountry: itinerary.destinationCountry,
         };
       });
     };
-  
-    // Format data dengan nomor insured per section Family
-    const formatData = (dataArray, insuredIndex = null) => {
-      let insuredNumberApplied = false;
-      return dataArray
-        .map((item) => {
-          const lines = [];
-  
-          let title = item.title;
-  
-          if (title === 'Insured (Policy Holder)' && insuredIndex !== null && !insuredNumberApplied) {
-            title = `${title} #Insured ${insuredIndex + 1}`;
-            insuredNumberApplied = true;
-          } else if (title === 'Traveler' || title === 'Traveler (Child)') {
-            if (item.relationship === 'Spouse') {
-              title = 'Traveler (Spouse)';
-            } else if (item.relationship === 'Child') {
-              title = 'Traveler (Child)';
-            }
-          }
-  
-          if (title) lines.push(title);
-          lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
-          lines.push(
-            `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
-          );
-          if (item.passportNumber) lines.push(`passport Number: ${item.passportNumber}`);
-          if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
-          if (item.email) lines.push(`Email: ${item.email}`);
-          if (item.city || item.postalCode)
-            lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
-          if (item.address) lines.push(`Address: ${item.address}`);
-          return lines.join('\n');
-        })
-        .join('\n\n');
-    };
-  
-    const attributes = {};
-  
-    // INDIVIDUAL
-    const individualForms = document.querySelectorAll('#form-individual form');
-    if (individualForms.length > 0) {
-      const data = collectFormData(individualForms, 'Individual', individualForms.length);
-      attributes['Form Individual'] = formatData(data);
-    }
-  
-    // DUOPLUS
-    const duoForms = document.querySelectorAll('#form-duoplus form');
-    if (duoForms.length > 0) {
-      const data = collectFormData(duoForms, 'DuoPlus', duoForms.length);
-      attributes['Form DuoPlus'] = formatData(data);
-    }
-  
-    // FAMILY
-    const familySections = document.querySelectorAll('[data-section-id^="form-family"]');
-    if (familySections.length > 0) {
-      let fullFamilyText = '';
-  
-      familySections.forEach((section, index) => {
-        const groupForms = section.querySelectorAll('form.form-family');
-        const data = collectFormData(groupForms, 'Family', groupForms.length);
-        const formatted = formatData(data, index);
-        fullFamilyText += (index > 0 ? '\n\n' : '') + formatted;
+
+    // Format all insured data into attribute text
+    const formatData = (dataArray, globalItinerary = null) => {
+      let globalLines = [];
+      if (globalItinerary) {
+        if (globalItinerary.startDate) globalLines.push(`Start Date: ${globalItinerary.startDate}`);
+        if (globalItinerary.endDate) globalLines.push(`End Date: ${globalItinerary.endDate}`);
+        if (globalItinerary.destinationCountry)
+          globalLines.push(`Destination Country: ${globalItinerary.destinationCountry}`);
+      }
+
+      const insuredBlocks = dataArray.map((item) => {
+        const lines = [];
+
+        if (!globalItinerary) {
+          if (item.startDate) lines.push(`Start Date: ${item.startDate}`);
+          if (item.endDate) lines.push(`End Date: ${item.endDate}`);
+          if (item.destinationCountry) lines.push(`Destination Country: ${item.destinationCountry}`);
+        }
+
+        lines.push(item.title);
+        lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
+        lines.push(
+          `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
+        );
+        if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
+        if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
+        if (item.email) lines.push(`Email: ${item.email}`);
+        if (item.city || item.postalCode) lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
+        if (item.address) lines.push(`Address: ${item.address}`);
+
+        return lines.join('\n');
       });
-  
-      attributes['Form Family'] = fullFamilyText;
+
+      let result = '';
+
+      if (globalLines.length > 0) {
+        result += globalLines.join('\n') + '\n\n';
+      }
+
+      result += insuredBlocks.join('\n\n');
+
+      return result;
+    };
+
+    const attributes = {};
+    const groupedByVariant = {};
+
+    // Group products by variantId
+    ProductItems.forEach((product) => {
+      if (!groupedByVariant[product.variantId]) {
+        groupedByVariant[product.variantId] = [];
+      }
+      groupedByVariant[product.variantId].push(product);
+    });
+
+    for (const variantId in groupedByVariant) {
+      const variantProducts = groupedByVariant[variantId];
+      const section = variantProducts[0].variantType;
+      const variantTitle = variantProducts[0].variantTitle || '';
+
+      // All insured wrappers for this variant
+      const wrappers = document.querySelectorAll(
+        `#form-${section.toLowerCase()} .form-insurance__section-wrapper[data-product-id="${variantId}"]`
+      );
+
+      if (!wrappers.length) continue;
+
+      let sameInsuranceChecked = false;
+      let globalItinerary = null;
+      const itineraryMapPerForm = [];
+
+      if (variantProducts[0].quantity > 1) {
+        // there is a same insurance checkbox
+        const checkbox = document.querySelector(
+          `#form-${section.toLowerCase()} .form-insurance__section-wrapper[data-product-id="${variantId}"] input[id^="sameInsuranceCheckbox-"]`
+        );
+
+        if (checkbox && checkbox.checked) {
+          sameInsuranceChecked = true;
+
+          // get itinerary only once from first section-top
+          const firstWrapper = wrappers[0];
+          const sectionTop = firstWrapper.querySelector('.form-insurance__section-top');
+          globalItinerary = collectItineraryFromSectionTop(sectionTop);
+        } else {
+          sameInsuranceChecked = false;
+        }
+      }
+
+      // collect per-form itinerary if not using global itinerary
+      if (!sameInsuranceChecked) {
+        wrappers.forEach((wrapper) => {
+          const sectionTop = wrapper.querySelector('.form-insurance__section-top');
+          itineraryMapPerForm.push(collectItineraryFromSectionTop(sectionTop));
+        });
+      }
+
+      const forms = document.querySelectorAll(
+        `#form-${section.toLowerCase()} .form-insurance__section-wrapper[data-product-id="${variantId}"] form`
+      );
+
+      const data = collectFormData(forms, section, sameInsuranceChecked ? null : itineraryMapPerForm);
+
+      const attrKey = `Form ${section} - ${variantTitle}`;
+      attributes[attrKey] = formatData(data, sameInsuranceChecked ? globalItinerary : null);
     }
-  
-    // Jika hanya 1 produk, redirect via URL
+
+    // Single product flow
     if (ProductItems.length === 1) {
       const product = ProductItems[0];
-      let queryData = {};
-  
-      if (product.variantType === 'Family') {
-        queryData = { 'Form Family': attributes['Form Family'] };
-      } else if (attributes[`Form ${product.variantType}`]) {
-        queryData = { [`Form ${product.variantType}`]: attributes[`Form ${product.variantType}`] };
+      const variantTitle = product.variantTitle || '';
+      const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+      const queryData = {};
+
+      if (product.category === 'Insurance' && attributes[attrKey]) {
+        queryData[attrKey] = attributes[attrKey];
       }
-  
+
       const queryParams = Object.entries(queryData)
         .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
         .join('&');
-  
+
       const checkoutUrl = `/cart/${product.variantId}:${product.quantity}?${queryParams}`;
       window.location.href = checkoutUrl;
       return;
     }
-  
-    // Jika >1 produk, fetch clear + add
+
+    // Multi-product flow
     try {
       await fetch('/cart/clear.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
-  
+
       for (const product of ProductItems) {
-        let key = '';
-        if (product.variantType === 'Individual') key = 'Form Individual';
-        else if (product.variantType === 'DuoPlus') key = 'Form DuoPlus';
-  
+        const variantTitle = product.variantTitle || '';
+        const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+
         let itemAttributes = {};
-  
-        if (product.category === 'Insurance') {
-          if (product.variantType === 'Family') {
-            itemAttributes = { 'Form Family': attributes['Form Family'] };
-          } else if (attributes[key]) {
-            itemAttributes = { [key]: attributes[key] };
-          }
+        if (product.category === 'Insurance' && attributes[attrKey]) {
+          itemAttributes = { [attrKey]: attributes[attrKey] };
         }
-  
+
         console.log('🛒 Adding to cart:', {
           id: product.variantId,
           quantity: product.quantity,
           attributes: itemAttributes,
         });
-  
+
         await fetch('/cart/add.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -982,7 +1451,7 @@
           }),
         });
       }
-  
+
       window.location.href = '/checkout';
     } catch (error) {
       console.error('Checkout error:', error);
@@ -992,14 +1461,14 @@
 </script>
 
 {% schema %}
-  {
-    "name": "form insurance",
-    "settings": [],
-    "presets": [
-      {
-        "name": "form insurance",
-        "category": "Custom"
-      }
-    ]
-  }
+{
+  "name": "form insurance",
+  "settings": [],
+  "presets": [
+    {
+      "name": "form insurance",
+      "category": "Custom"
+    }
+  ]
+}
 {% endschema %}

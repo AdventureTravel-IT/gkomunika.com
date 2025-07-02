@@ -251,31 +251,42 @@
               </div>
             {%- else -%}
               <div class="cart__ctas" {{ block.shopify_attributes }}>
-                <button
-                  type="button"
-                  id="insurance-checkout-button"
-                  class="cart__checkout-button button"
-                  {% if cart == empty %}
-                    disabled
-                  {% endif %}
-                  form="cart"
-                >
-                  {{ 'sections.cart.checkout' | t }}
-                </button>
-                {% comment %}
-                  <button
-                    type="submit"
-                    id="checkout"
-                    class="cart__checkout-button button"
-                    name="checkout"
-                    {% if cart == empty %}
-                      disabled
-                    {% endif %}
-                    form="cart"
-                  >
+  {% assign hasInsuranceProduct = false %}
+  
+  {% for item in cart.items %}
+    {% if item.product.metafields.product.category == 'Insurance' %}
+      {% assign hasInsuranceProduct = true %}
+    {% endif %}
+  {% endfor %}
 
-                  </button>
-                {% endcomment %}
+  {% if hasInsuranceProduct %}
+    <!-- Display the "Insurance Checkout" button -->
+    <button
+      type="button"
+      id="insurance-checkout-button"
+      class="cart__checkout-button button"
+      {% if cart == empty %}
+        disabled
+      {% endif %}
+      form="cart"
+    >
+      {{ 'sections.cart.checkout' | t }}
+    </button>
+  {% else %}
+    <!-- Display the regular "Checkout" button -->
+    <button
+      type="submit"
+      id="checkout"
+      class="cart__checkout-button button"
+      name="checkout"
+      {% if cart == empty %}
+        disabled
+      {% endif %}
+      form="cart"
+    >
+      {{ 'sections.cart.checkout' | t }}
+    </button>
+  {% endif %}
                 {% comment %}
                   {% for item in cart.items %}
                     <div class="debug-product">

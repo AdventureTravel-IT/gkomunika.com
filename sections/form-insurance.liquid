@@ -1209,152 +1209,154 @@
 </script>
 
 <script>
-  async function handleCheckout() {
-    const isDataCorrectChecked = document.getElementById('check-data-global').checked;
-    const isItineraryChecked = document.getElementById('check-itinerary-global').checked;
+async function handleCheckout() {
+  const isDataCorrectChecked = document.getElementById('check-data-global').checked;
+  const isItineraryChecked = document.getElementById('check-itinerary-global').checked;
 
-    if (!isDataCorrectChecked || !isItineraryChecked) {
-      alert('You must confirm that the data is correct and the flight itinerary is the same.');
-      return;
-    }
+  if (!isDataCorrectChecked || !isItineraryChecked) {
+    alert('You must confirm that the data is correct and the flight itinerary is the same.');
+    return;
+  }
 
-    const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems')) || [];
-    const insuranceItems = ProductItems.filter((p) => p.category === 'Insurance');
+  const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems')) || [];
+  const insuranceItems = ProductItems.filter((p) => p.category === 'Insurance');
 
-    if (insuranceItems.length === 0) {
-      alert('No insurance product selected.');
-      return;
-    }
+  if (insuranceItems.length === 0) {
+    alert('No insurance product selected.');
+    return;
+  }
 
-    // Collect itinerary data from a section-top div
-    const collectItineraryFromSectionTop = (sectionTopElement) => {
-      if (!sectionTopElement) return { startDate: '', endDate: '', destinationCountry: '' };
+  // Collect itinerary data from a section-top div
+  const collectItineraryFromSectionTop = (sectionTopElement) => {
+    if (!sectionTopElement) return { startDate: '', endDate: '', destinationCountry: '' };
 
-      const startDate = sectionTopElement.querySelector('#start-date')?.value || '';
-      const endDate = sectionTopElement.querySelector('#end-date')?.value || '';
-      const destCountry = sectionTopElement.querySelector('.itinerary-country-dropdown')?.value || '';
+    const startDate = sectionTopElement.querySelector('#start-date')?.value || '';
+    const endDate = sectionTopElement.querySelector('#end-date')?.value || '';
+    const destCountry = sectionTopElement.querySelector('.itinerary-country-dropdown')?.value || '';
+
+    return {
+      startDate,
+      endDate,
+      destinationCountry: destCountry,
+    };
+  };
+
+  // Collect form data for a list of forms
+  const collectFormData = (formList, section, itineraryMapPerForm) => {
+    return Array.from(formList).map((form, index) => {
+      const data = new FormData(form);
+
+      // itinerary for this form
+      const itinerary = itineraryMapPerForm?.[index] || { startDate: '', endDate: '', destinationCountry: '' };
+
+      let title = '';
+      let relationshipValue = '';
+
+      if (section === 'Individual') {
+        title = `Insured (Policy Holder) #${index + 1}`;
+      } else if (section === 'DuoPlus') {
+        title = index === 0 ? 'Insured (Policy Holder)' : 'Traveler';
+      } else if (section === 'Family') {
+        // Ambil nilai relationship dari radio button yang dipilih
+        const selectedRelationship = form.querySelector('input[name="Relationship"]:checked');
+        relationshipValue = selectedRelationship ? selectedRelationship.value : '';
+
+        // Format title dengan relationship setelah tanda "-"
+        if (index === 0) {
+          title = 'Insured (Policy Holder)';
+        } else {
+          title = relationshipValue ? `Traveler - ${relationshipValue}` : 'Traveler';
+        }
+      }
 
       return {
-        startDate,
-        endDate,
-        destinationCountry: destCountry,
+        title,
+        salutation: data.get('Salutation'),
+        firstName: data.get('First Name'),
+        lastName: data.get('Last Name'),
+        placeOfBirth: data.get('Place Of Birth'),
+        day: data.get('Day'),
+        month: data.get('Month'),
+        year: data.get('Year'),
+        passportNumber: data.get('Passport Number'),
+        mobilePhone: data.get('Mobile Phone'),
+        email: data.get('Email'),
+        city: data.get('City'),
+        postalCode: data.get('Postal Code'),
+        address: data.get('Address'),
+        relationship: relationshipValue, // Menggunakan nilai dari radio button yang dipilih
+        startDate: itinerary.startDate,
+        endDate: itinerary.endDate,
+        destinationCountry: itinerary.destinationCountry,
       };
-    };
+    });
+  };
 
-    // Collect form data for a list of forms
-    const collectFormData = (formList, section, itineraryMapPerForm) => {
-      return Array.from(formList).map((form, index) => {
-        const data = new FormData(form);
+  // Format all insured data into attribute text
+  const formatData = (dataArray, globalItinerary = null) => {
+    let globalLines = [];
+    if (globalItinerary) {
+      if (globalItinerary.startDate) globalLines.push(`Start Date: ${globalItinerary.startDate}`);
+      if (globalItinerary.endDate) globalLines.push(`End Date: ${globalItinerary.endDate}`);
+      if (globalItinerary.destinationCountry)
+        globalLines.push(`Destination Country: ${globalItinerary.destinationCountry}`);
+    }
 
-        // itinerary for this form
-        const itinerary = itineraryMapPerForm?.[index] || { startDate: '', endDate: '', destinationCountry: '' };
+    const insuredBlocks = dataArray.map((item) => {
+      const lines = [];
 
-        let title = '';
-        let relationshipValue = '';
-
-        if (section === 'Individual') {
-          title = `Insured (Policy Holder) #${index + 1}`;
-        } else if (section === 'DuoPlus') {
-          title = index === 0 ? 'Insured (Policy Holder)' : 'Traveler';
-        } else if (section === 'Family') {
-          // Ambil nilai relationship dari radio button yang dipilih
-          const selectedRelationship = form.querySelector('input[name="Relationship"]:checked');
-          relationshipValue = selectedRelationship ? selectedRelationship.value : '';
-
-          // Format title dengan relationship setelah tanda "-"
-          if (index === 0) {
-            title = 'Insured (Policy Holder)';
-          } else {
-            title = relationshipValue ? `Traveler - ${relationshipValue}` : 'Traveler';
-          }
-        }
-
-        return {
-          title,
-          salutation: data.get('Salutation'),
-          firstName: data.get('First Name'),
-          lastName: data.get('Last Name'),
-          placeOfBirth: data.get('Place Of Birth'),
-          day: data.get('Day'),
-          month: data.get('Month'),
-          year: data.get('Year'),
-          passportNumber: data.get('Passport Number'),
-          mobilePhone: data.get('Mobile Phone'),
-          email: data.get('Email'),
-          city: data.get('City'),
-          postalCode: data.get('Postal Code'),
-          address: data.get('Address'),
-          relationship: relationshipValue, // Menggunakan nilai dari radio button yang dipilih
-          startDate: itinerary.startDate,
-          endDate: itinerary.endDate,
-          destinationCountry: itinerary.destinationCountry,
-        };
-      });
-    };
-
-    // Format all insured data into attribute text
-    const formatData = (dataArray, globalItinerary = null) => {
-      let globalLines = [];
-      if (globalItinerary) {
-        if (globalItinerary.startDate) globalLines.push(`Start Date: ${globalItinerary.startDate}`);
-        if (globalItinerary.endDate) globalLines.push(`End Date: ${globalItinerary.endDate}`);
-        if (globalItinerary.destinationCountry)
-          globalLines.push(`Destination Country: ${globalItinerary.destinationCountry}`);
+      if (!globalItinerary) {
+        if (item.startDate) lines.push(`Start Date: ${item.startDate}`);
+        if (item.endDate) lines.push(`End Date: ${item.endDate}`);
+        if (item.destinationCountry) lines.push(`Destination Country: ${item.destinationCountry}`);
       }
 
-      const insuredBlocks = dataArray.map((item) => {
-        const lines = [];
+      lines.push(item.title);
+      lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
+      lines.push(
+        `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
+      );
+      if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
+      if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
+      if (item.email) lines.push(`Email: ${item.email}`);
+      if (item.city || item.postalCode) lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
+      if (item.address) lines.push(`Address: ${item.address}`);
 
-        if (!globalItinerary) {
-          if (item.startDate) lines.push(`Start Date: ${item.startDate}`);
-          if (item.endDate) lines.push(`End Date: ${item.endDate}`);
-          if (item.destinationCountry) lines.push(`Destination Country: ${item.destinationCountry}`);
-        }
-
-        lines.push(item.title);
-        lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
-        lines.push(
-          `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
-        );
-        if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
-        if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
-        if (item.email) lines.push(`Email: ${item.email}`);
-        if (item.city || item.postalCode) lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
-        if (item.address) lines.push(`Address: ${item.address}`);
-
-        return lines.join('\n');
-      });
-
-      let result = '';
-
-      if (globalLines.length > 0) {
-        result += globalLines.join('\n') + '\n\n';
-      }
-
-      result += insuredBlocks.join('\n\n');
-
-      return result;
-    };
-
-    const attributes = {};
-    const groupedByVariant = {};
-
-    // Group products by variantId
-    ProductItems.forEach((product) => {
-      if (!groupedByVariant[product.variantId]) {
-        groupedByVariant[product.variantId] = [];
-      }
-      groupedByVariant[product.variantId].push(product);
+      return lines.join('\n');
     });
 
-    for (const variantId in groupedByVariant) {
-      const variantProducts = groupedByVariant[variantId];
-      const section = variantProducts[0].variantType;
-      const variantTitle = variantProducts[0].variantTitle || '';
+    let result = '';
 
+    if (globalLines.length > 0) {
+      result += globalLines.join('\n') + '\n\n';
+    }
+
+    result += insuredBlocks.join('\n\n');
+
+    return result;
+  };
+
+  const attributes = {};
+  const groupedByVariant = {};
+
+  // Group products by variantId
+  ProductItems.forEach((product) => {
+    if (!groupedByVariant[product.variantId]) {
+      groupedByVariant[product.variantId] = [];
+    }
+    groupedByVariant[product.variantId].push(product);
+  });
+
+  for (const variantId in groupedByVariant) {
+    const variantProducts = groupedByVariant[variantId];
+    const section = variantProducts[0].variantType;
+    const variantTitle = variantProducts[0].variantTitle || '';
+
+    // Only process the form if the product is an insurance product
+    if (variantProducts[0].category === 'Insurance') {
       // All insured wrappers for this variant
       const wrappers = document.querySelectorAll(
-        `#form-${section.toLowerCase()} .form-insurance__section-wrapper[data-product-id="${variantId}"]`
+        `#form-${section ? section.toLowerCase() : ''} .form-insurance__section-wrapper[data-product-id="${variantId}"]`
       );
 
       if (!wrappers.length) continue;
@@ -1366,7 +1368,7 @@
       if (variantProducts[0].quantity > 1) {
         // there is a same insurance checkbox
         const checkbox = document.querySelector(
-          `#form-${section.toLowerCase()} .form-insurance__section-wrapper[data-product-id="${variantId}"] input[id^="sameInsuranceCheckbox-"]`
+          `#form-${section ? section.toLowerCase() : ''} .form-insurance__section-wrapper[data-product-id="${variantId}"] input[id^="sameInsuranceCheckbox-"]`
         );
 
         if (checkbox && checkbox.checked) {
@@ -1390,7 +1392,7 @@
       }
 
       const forms = document.querySelectorAll(
-        `#form-${section.toLowerCase()} .form-insurance__section-wrapper[data-product-id="${variantId}"] form`
+        `#form-${section ? section.toLowerCase() : ''} .form-insurance__section-wrapper[data-product-id="${variantId}"] form`
       );
 
       const data = collectFormData(forms, section, sameInsuranceChecked ? null : itineraryMapPerForm);
@@ -1398,66 +1400,75 @@
       const attrKey = `Form ${section} - ${variantTitle}`;
       attributes[attrKey] = formatData(data, sameInsuranceChecked ? globalItinerary : null);
     }
+  }
 
-    // Single product flow
-    if (ProductItems.length === 1) {
-      const product = ProductItems[0];
-      const variantTitle = product.variantTitle || '';
-      const attrKey = `Form ${product.variantType} - ${variantTitle}`;
-      const queryData = {};
+  // Single product flow
+  if (ProductItems.length === 1) {
+    const product = ProductItems[0];
+    const variantTitle = product.variantTitle || '';
+    const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+    const queryData = {};
 
-      if (product.category === 'Insurance' && attributes[attrKey]) {
-        queryData[attrKey] = attributes[attrKey];
-      }
-
-      const queryParams = Object.entries(queryData)
-        .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
-        .join('&');
-
-      const checkoutUrl = `/cart/${product.variantId}:${product.quantity}?${queryParams}`;
-      window.location.href = checkoutUrl;
-      return;
+    if (product.category === 'Insurance' && attributes[attrKey]) {
+      queryData[attrKey] = attributes[attrKey];
     }
 
-    // Multi-product flow
-    try {
-      await fetch('/cart/clear.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    const queryParams = Object.entries(queryData)
+      .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
+      .join('&');
+
+    const checkoutUrl = `/cart/${product.variantId}:${product.quantity}?${queryParams}`;
+    window.location.href = checkoutUrl;
+    return;
+  }
+
+  // Multi-product flow
+  try {
+    await fetch('/cart/clear.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    for (const product of ProductItems) {
+      const variantTitle = product.variantTitle || '';
+      const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+
+      let itemAttributes = {};
+
+      // Periksa apakah produk ini asuransi
+      if (product.category === 'Insurance' && attributes[attrKey]) {
+        itemAttributes = { [attrKey]: attributes[attrKey] };
+      }
+
+      // Tangani produk selain asuransi, jika ada
+      if (product.category !== 'Insurance') {
+        itemAttributes = {}; // Bisa kosong jika tidak perlu atribut khusus
+      }
+
+      console.log('🛒 Adding to cart:', {
+        id: product.variantId,
+        quantity: product.quantity,
+        attributes: itemAttributes,
       });
 
-      for (const product of ProductItems) {
-        const variantTitle = product.variantTitle || '';
-        const attrKey = `Form ${product.variantType} - ${variantTitle}`;
-
-        let itemAttributes = {};
-        if (product.category === 'Insurance' && attributes[attrKey]) {
-          itemAttributes = { [attrKey]: attributes[attrKey] };
-        }
-
-        console.log('🛒 Adding to cart:', {
+      await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           id: product.variantId,
           quantity: product.quantity,
           attributes: itemAttributes,
-        });
-
-        await fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: product.variantId,
-            quantity: product.quantity,
-            attributes: itemAttributes,
-          }),
-        });
-      }
-
-      window.location.href = '/checkout';
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('There was an error during checkout. Please try again.');
+        }),
+      });
     }
+
+    window.location.href = '/checkout';
+  } catch (error) {
+    console.error('Checkout error:', error);
+    alert('There was an error during checkout. Please try again.');
   }
+}
+
 </script>
 
 {% schema %}

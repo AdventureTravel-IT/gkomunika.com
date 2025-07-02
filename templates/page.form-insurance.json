@@ -16,9 +16,15 @@
         "padding_top": 28,
         "padding_bottom": 28
       }
+    },
+    "form_insurance_TnYJQM": {
+      "type": "form-insurance",
+      "name": "form insurance",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "form_insurance_TnYJQM"
   ]
 }

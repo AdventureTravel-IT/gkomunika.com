@@ -36,9 +36,11 @@
   data-section="{{ section.id }}"
   data-product-id="{{ product.id }}"
   data-update-url="true"
-  data-url="{{ product.url }}"
->
-  <div id="cart-popup" class="cart-popup" style="display: none;">
+  data-url="{{ product.url }}">
+  <div
+    id="cart-popup"
+    class="cart-popup"
+    style="display: none;">
     <div class="cart-popup-content">
       <p id="popup-product-title">Success add to cart</p>
     </div>
@@ -54,15 +56,14 @@
           id="mainImage"
           src="{{ product.featured_image | img_url: 'master' }}"
           alt="{{ product.title | escape }}"
-          loading="lazy"
-        >
+          width=""
+          loading="lazy">
         <div class="main-product-sub-images-wrapper">
           <button
             class="scroll-btn left"
             style="transform: rotate(180deg);"
             onclick="scrollSubImages(-1)"
-            aria-label="Scroll left"
-          >
+            aria-label="Scroll left">
             {{- 'icon-arrow-back.svg' | inline_asset_content -}}
           </button>
           <div class="main-product-sub-images">
@@ -72,11 +73,13 @@
                 src="{{ image | img_url: 'master' }}"
                 alt="Sub Image {{ forloop.index }}"
                 data-src="{{ image | img_url: 'large' }}"
-                loading="lazy"
-              >
+                loading="lazy">
             {% endfor %}
           </div>
-          <button class="scroll-btn right" onclick="scrollSubImages(1)" aria-label="Scroll right">
+          <button
+            class="scroll-btn right"
+            onclick="scrollSubImages(1)"
+            aria-label="Scroll right">
             {{- 'icon-arrow-back.svg' | inline_asset_content -}}
           </button>
         </div>
@@ -113,15 +116,14 @@
         {% assign max_price_formatted = max_price | money_with_currency %}
         <!-- Harga untuk desktop -->
         <div id="variant-price-desktop" class="money">
-          {{ min_price_formatted -}}
-          {%- unless min_price == max_price %}
-            - {{ max_price_formatted -}}
-          {%- endunless %}
+          {{ min_price_formatted }}{% unless min_price == max_price %}
+            - {{ max_price_formatted }}{% endunless %}
         </div>
 
         <div style="max-height: 200px; overflow-y: auto;">{{ product.description }}</div>
         <div class="main-product-variant-picker">
-          {% render 'custom-variant-picker', product: product %}
+          {% render 'custom-variant-picker'
+            , product: product %}
         </div>
       </div>
     </div>
@@ -226,18 +228,18 @@
 </product-info>
 
 {% schema %}
-{
-  "name": "Main Product",
-  "settings": [],
-  "blocks": [
-    {
-      "type": "@app"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Main Product"
-    }
-  ]
-}
+  {
+    "name": "Main Product",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "@app"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Main Product"
+      }
+    ]
+  }
 {% endschema %}

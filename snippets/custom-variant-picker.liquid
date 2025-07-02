@@ -78,13 +78,11 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
-    background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 15px;
     background-color: var(--color-neutral);
   }
-
 
   #reset-plan {
     border: none;
@@ -170,7 +168,6 @@
     white-space: nowrap;
     z-index: 1000;
   }
-
 </style>
 
 {% style %}
@@ -196,7 +193,6 @@
       bottom: 0;
       width: 100%;
 
-
       z-index: 999;
     }
     .variant-picker-btn__mobile-wrapper {
@@ -205,14 +201,18 @@
     }
     #variant-price-desktop {
       display: none;
-    };
-  }
-  @media (max-width: 426px) {
-    .variant-option__wrapper.insurance-category {
-      flex-direction: column !important;
     }
-  }
 
+    /*
+
+   #selected-variant-display { 
+   font-size: var(--font-large); 
+   font-weight: 500; 
+   color: var(--color-secondary); 
+   border: 1px solid var(--color-border); 
+   } 
+*/
+  }
 {% endstyle %}
 
 <div id="custom-variant-selector">
@@ -229,10 +229,8 @@
 
   {% assign min_price_formatted = min_price | money_with_currency %}
   {% assign max_price_formatted = max_price | money_with_currency %}
-  {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
 
-
-  <div class="variant-option__wrapper{% if product_category == 'Insurance' %} insurance-category{% endif %}">
+  <div class="variant-option__wrapper">
     {% for option in product.options_with_values %}
       <div class="variant-option" data-option-index="{{ forloop.index0 }}">
         <label class="variant-picker__label">{{ option.name }}</label>
@@ -241,16 +239,18 @@
             value=""
             disabled
             selected
-            hidden>Choose Option</option>
-          {% assign values_seen = "" %}
+            hidden
+          >
+            Choose Option
+          </option>
+          {% assign values_seen = '' %}
           {% for value in option.values %}
             {% unless values_seen contains value %}
               <option value="{{ value }}">{{ value }}</option>
-              {% assign values_seen = values_seen | append: value | append: "," %}
+              {% assign values_seen = values_seen | append: value | append: ',' %}
             {% endunless %}
           {% endfor %}
         </select>
-
       </div>
     {% endfor %}
   </div>
@@ -261,13 +261,16 @@
     <label
       class="variant-picker__label"
       for="quantity"
-      style="display: block; margin-bottom: 4px;">Quantity:</label>
+      style="display: block; margin-bottom: 4px;"
+      >Quantity:</label
+    >
     <div class="quantity-input">
       <button
         type="button"
         class="quantity-btn"
         id="quantity-decrease"
-        style="border-right: 1px solid var(--color-border);">
+        style="border-right: 1px solid var(--color-border);"
+      >
         <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
       </button>
       <input
@@ -276,12 +279,14 @@
         name="quantity"
         min="1"
         value="1"
-        class="quantity-number">
+        class="quantity-number"
+      >
       <button
         type="button"
         class="quantity-btn"
         id="quantity-increase"
-        style="border-left: 1px solid var(--color-border);">
+        style="border-left: 1px solid var(--color-border);"
+      >
         <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
       </button>
     </div>
@@ -295,13 +300,15 @@
     <button
       class="cart"
       type="button"
-      id="add-to-cart">
+      id="add-to-cart"
+    >
       <p>Add to Cart</p>
     </button>
     <button
       class="buy"
       type="button"
-      id="buy-now-button">
+      id="buy-now-button"
+    >
       <p>Buy Now</p>
     </button>
   </div>
@@ -324,20 +331,24 @@
     <span id="selected-variant-display">Selected Variant</span>
 
     <div id="variant-price-mobile" class="money">
-      {{ min_price_formatted }}{% unless min_price == max_price %}
-        - {{ max_price_formatted }}{% endunless %}
+      {{ min_price_formatted -}}
+      {%- unless min_price == max_price %}
+        - {{ max_price_formatted -}}
+      {%- endunless %}
     </div>
     <div class="variant-picker-btn__mobile-wrapper">
       <button
         class="cart"
         type="button"
-        id="add-to-cart-mobile">
+        id="add-to-cart-mobile"
+      >
         <p>Add to Cart</p>
       </button>
       <button
         class="buy"
         type="button"
-        id="buy-now-button-mobile">
+        id="buy-now-button-mobile"
+      >
         <p>Buy Now</p>
       </button>
     </div>
@@ -347,7 +358,8 @@
 <div
   class="variant-picker-popup"
   id="variant-popup"
-  style="display: none;">
+  style="display: none;"
+>
   <span id="variant-popup-message"></span>
 </div>
 
@@ -369,6 +381,89 @@
   }
 {% endstyle %}
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  const variantDropdowns = document.querySelectorAll('.variant-dropdown');
+  const metafieldDisplay = document.getElementById('variant-metafield-display');
+  
+  // Data semua variant dengan metafield variant.type
+  const variantsData = [
+  {% for variant in product.variants %}
+    {
+      id: {{ variant.id }},
+      title: "{{ variant.title | escape }}",
+      type: {{ variant.metafields.variant.type | json }},
+      coverage: {{ variant.metafields.variant.coverage.value | json }},
+      options: [
+        {% for option in variant.options %}
+          "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+
+  
+  // function updateMetafieldDisplay() {
+  //   const selectedOptions = [];
+  //   variantDropdowns.forEach(dropdown => {
+  //     selectedOptions.push(dropdown.value);
+  //   });
+    
+  //   const matchedVariant = variantsData.find(variant => {
+  //     return variant.options.every((option, index) => {
+  //       return option === selectedOptions[index];
+  //     });
+  //   });
+    
+  //   // Debugging: Lihat di console
+  //   console.log('Variant yang cocok:', matchedVariant);
+    
+  //   if (matchedVariant) {
+  //     // Tampilkan metafield variant.type
+  //     if (matchedVariant.type) {
+  //       if (Array.isArray(matchedVariant.type)) {
+  //         // Jika berupa array
+  //         metafieldDisplay.innerHTML = `
+  //           <div class="variant-type-wrapper">
+  //             <strong>Tipe Variant:</strong>
+  //             <ul>
+  //               ${matchedVariant.type.map(item => `<li>${item}</li>`).join('')}
+  //             </ul>
+  //           </div>
+  //         `;
+  //       } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
+  //         // Jika format object {value: ...}
+  //         metafieldDisplay.innerHTML = `
+  //           <div class="variant-type-wrapper">
+  //             <strong>Tipe Variant:</strong>
+  //             <span>${matchedVariant.type.value}</span>
+  //           </div>
+  //         `;
+  //       } else {
+  //         // Jika string biasa
+  //         metafieldDisplay.innerHTML = `
+  //           <div class="variant-type-wrapper">
+  //             <strong>Tipe Variant:</strong>
+  //             <span>${matchedVariant.type}</span>
+  //           </div>
+  //         `;
+  //       }
+  //     } else {
+  //       metafieldDisplay.innerHTML = '<em>Tidak ada tipe variant</em>';
+  //     }
+  //   } else {
+  //     metafieldDisplay.innerHTML = '';
+  //   }
+  // }
+  
+  // variantDropdowns.forEach(dropdown => {
+  //   dropdown.addEventListener('change', updateMetafieldDisplay);
+  // });
+  
+  // updateMetafieldDisplay();
+  });
+</script>
 
 <script>
   const productVariants = {{ product.variants | json }};
@@ -393,8 +488,6 @@
   
   addToCartButtonMobile?.addEventListener("click", () => handleCartAction("add"));
   buyNowButtonMobile?.addEventListener("click", () => handleCartAction("buy"));
-  
-  
   
   const defaultPriceHTML = priceDivDesktop.innerHTML;
   const defaultPriceMobileHTML = priceDivMobile.innerHTML;
@@ -439,49 +532,67 @@
   }
   
   function findVariant() {
-    const selectedOptions = getSelectedOptions();
+  const selectedOptions = getSelectedOptions();
   
-    if (selectedOptions.includes("")) {
-      priceDivDesktop.innerHTML = defaultPriceHTML;
-      priceDivMobile.innerHTML = defaultPriceMobileHTML;
-      if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Pilih varian";
-      updateDropdownOptions();
-      return null;
-    }
+  if (selectedOptions.includes("")) {
+    priceDivDesktop.innerHTML = defaultPriceHTML;
+    priceDivMobile.innerHTML = defaultPriceMobileHTML;
+    if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Pilih varian";
+    updateDropdownOptions();
+    return null;
+  }
   
-    const matchedVariant = productVariants.find(variant =>
-      variant.options.every((opt, index) => opt === selectedOptions[index])
-    );
+  const matchedVariant = productVariants.find(variant =>
+    variant.options.every((opt, index) => opt === selectedOptions[index])
+  );
   
-    if (matchedVariant) {
-      if (matchedVariant.available) {
-        const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
-        if (moneySpan) {
-          priceDivDesktop.innerHTML = moneySpan.outerHTML;
-          priceDivMobile.innerHTML = moneySpan.outerHTML;
-        }
-      } else {
-        priceDivDesktop.textContent = "Varian tidak tersedia";
-        priceDivMobile.textContent = "Varian tidak tersedia";
+  if (matchedVariant) {
+    if (matchedVariant.available) {
+      const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
+      if (moneySpan) {
+        priceDivDesktop.innerHTML = moneySpan.outerHTML;
+        priceDivMobile.innerHTML = moneySpan.outerHTML;
       }
     } else {
-      priceDivDesktop.textContent = "Varian tidak ditemukan";
-      priceDivMobile.textContent = "Varian tidak ditemukan";
+      priceDivDesktop.textContent = "Varian tidak tersedia";
+      priceDivMobile.textContent = "Varian tidak tersedia";
     }
   
-    if (selectedVariantDisplay) {
-      const selected = selectedOptions.filter(v => v !== "").join(" - ");
-      selectedVariantDisplay.textContent = selected || "Choose Variant";
+    // 🟡 CEK VARIANT.TYPE DAN ATUR MINIMAL QTY JIKA DUOPLUS
+    const variantType = getVariantType(matchedVariant);
+    if (variantType === "DuoPlus") {
+      quantityInput.value = Math.max(2, parseInt(quantityInput.value) || 2);
+      quantityInput.min = 2;
+  
+      // Cegah pengurangan quantity di bawah 2
+      minusBtn?.addEventListener('click', () => {
+        if (parseInt(quantityInput.value) <= 2) {
+          quantityInput.value = 2;
+        }
+      });
+    } else {
+      quantityInput.min = 1;
     }
   
-    updateDropdownOptions();
-  
-    if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
-      Currency.convertAll(shopCurrency, Currency.currentCurrency);
-    }
-  
-    return matchedVariant;
+  } else {
+    priceDivDesktop.textContent = "Varian tidak ditemukan";
+    priceDivMobile.textContent = "Varian tidak ditemukan";
   }
+  
+  if (selectedVariantDisplay) {
+    const selected = selectedOptions.filter(v => v !== "").join(" - ");
+    selectedVariantDisplay.textContent = selected || "Choose Variant";
+  }
+  
+  updateDropdownOptions();
+  
+  if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
+    Currency.convertAll(shopCurrency, Currency.currentCurrency);
+  }
+  
+  return matchedVariant;
+  }
+  
   
   function adjustQuantity(delta) {
     const current = parseInt(quantityInput.value) || 1;
@@ -524,25 +635,65 @@
   function handleCartAction(action) {
   const variant = findVariant();
   const quantity = parseInt(quantityInput.value) || 1;
+  const matchedVariantData = variantsData.find(v => v.id === variant.id);
+const variantCoverage = matchedVariantData?.coverage || [];
+
   
-    if (!variant || !variant.available) {
-      let hasEmpty = false;
-      variantDropdowns.forEach(select => {
-        if (select.value === "") {
-          select.classList.add("variant-warning");
-          hasEmpty = true;
-        }
-      });
-    
-      if (hasEmpty) {
-        const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
-        if (firstEmpty) {
-          firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+  if (!variant || !variant.available) {
+    let hasEmpty = false;
+    variantDropdowns.forEach(select => {
+      if (select.value === "") {
+        select.classList.add("variant-warning");
+        hasEmpty = true;
       }
-    
-      return;
+    });
+  
+    if (hasEmpty) {
+      const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
+      if (firstEmpty) {
+        firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     }
+  
+    return;
+  }
+  
+  // Cek jika produk memiliki metafield kategori "Insurance"
+  const productCategory = "{{ product.metafields.product.category.value }}";
+  
+  if (action === "buy" && productCategory === "Insurance") {
+  // Ambil tipe variant dari metafield
+const variantType = getVariantType(variant);
+
+const matchedVariantData = window.variantsData.find(v => v.id === variant.id);
+const variantCoverage = matchedVariantData?.coverage || [];
+// Hapus data yang ada di sessionStorage terlebih dahulu
+sessionStorage.removeItem('ProductItems');
+
+let ProductItems = [];
+
+const newItem = {
+  productTitle: "{{ product.title }}",
+  category: productCategory,
+  variantType: variantType,
+  variantId: variant.id,
+  variantTitle: variant.title,
+  quantity: quantity,
+  variantCoverage: variantCoverage
+};
+
+
+ProductItems.push(newItem);
+
+sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+// console.log('Stored Cart Data:', ProductItems);
+
+  
+  // Redirect ke halaman form-insurance
+  window.location.href = "/pages/form-insurance";
+  return;
+  }
+  
   
   
   const payload = { id: variant.id, quantity: quantity };
@@ -591,6 +742,41 @@
   }
   }
   
+  // // Tambahkan event listener ke tombol "Buy Now"
+  // buyNowButton?.addEventListener("click", () => handleCartAction("buy"));
+  
+  
+  // Fungsi untuk mendapatkan tipe variant
+  function getVariantType(variant) {
+  window.variantsData = [
+  {% for variant in product.variants %}
+    {
+      id: {{ variant.id }},
+      title: "{{ variant.title | escape }}",
+      type: {{ variant.metafields.variant.type | json }},
+      coverage: {{ variant.metafields.variant.coverage.value | json }},
+      options: [
+        {% for option in variant.options %}
+          "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+
+  
+  const matchedVariant = variantsData.find(v => v.id === variant.id);
+  if (matchedVariant && matchedVariant.type) {
+    if (Array.isArray(matchedVariant.type)) {
+      return matchedVariant.type.join(', ');
+    } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
+      return matchedVariant.type.value;
+    } else {
+      return matchedVariant.type;
+    }
+  }
+  return '';
+  }
   
   addToCartButton?.addEventListener("click", () => handleCartAction("add"));
   buyNowButton?.addEventListener("click", () => handleCartAction("buy"));

@@ -216,7 +216,7 @@
         </div>
         {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
         {% if product_category == 'Insurance' %}
-          {% render 'insurance' %}
+          {% render 'insurance-benefits' %}
         {% endif %}
       </div>
       <div class="main-product-ratting"></div>

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 47dab0be45e66f7c95c944994d75581a288afdd5
 {% comment %} section for mobile {% endcomment %}
 <section>
   <div class="insurance-table__title mobile">
@@ -16,15 +20,22 @@
           </tr>
         </thead>
         <tbody>
+<<<<<<< HEAD
 
           {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
           {% if cancelation.basic or cancelation.executive or cancelation.premiere %}
           <tr>
+=======
+          <!-- Trip Cancellation and Alteration -->
+          <tr>
+            {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
+>>>>>>> 47dab0be45e66f7c95c944994d75581a288afdd5
             <td>Trip Cancellation and Alteration</td>
             <td>{{ cancelation.basic }}</td>
             <td>{{ cancelation.executive }}</td>
             <td>{{ cancelation.premiere }}</td>
           </tr>
+<<<<<<< HEAD
           {% endif %}
 
           {% assign medical = package.medical_and_other_emergency_expenses %}
@@ -516,8 +527,311 @@
             {% endif %}
           {% endfor %}
 
+=======
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Medical & Other Emergency Expenses</b>
+            </td>
+          </tr>
+          {% assign medical = package.medical_and_other_emergency_expenses %}
+          <tr>
+            <td>Medical Expenses</td>
+            {% for item in medical.medical_expenses %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Emergency Medical Evacuation & Repatriation</td>
+            {% for item in medical.emergency_medical_evacuation_and_repatriation %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Compassionate Visit Expenses</td>
+            {% for item in medical.compassionate_visit_expenses %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Return of Children</td>
+            {% for item in medical.return_of_children %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Hospital Daily Benefit</td>
+            {% for item in medical.hospital_daily_benefit %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Emergency Telephone Charges</td>
+            {% for item in medical.emergency_telephone_charges %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Follow up Medical Treatment</td>
+            {% for item in medical.follow_up_medical_treatment %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+        </tr>
+          <!-- Travel & Associated Expenses -->
+          {% assign travel = package.travel_and_associated_expenses %}
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Travel & Associated Expenses</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Trip Curtailment</td>
+            {% for item in travel.trip_curtailment %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Travel Delay</td>
+            {% for item in travel.travel_delay %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Missed Flight Connection</td>
+            {% for item in travel.missed_flight_connection %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Overbooked Flight</td>
+            {% for item in travel.overbooked_flight %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Flight Diversion</td>
+            {% for item in travel.flight_diversion %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+        </tr>
+          <!-- Baggage and Personal Belongings Cover -->
+          {% assign baggage = package.baggage_and_personal_belongings_cover %}
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Baggage & Personal Belongings Cover</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Baggage Delay</td>
+            {% for item in baggage.baggage_delay %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Baggage and Personal Belongings</td>
+            {% for item in baggage.baggage_and_personal_belongings %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Personal Money and Travel Documents</td>
+            {% for item in baggage.personal_money_and_travel_documents %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+        </tr>
+          <!-- Personal Accident -->
+          {% assign accident = package.personal_accident %}
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Personal Accident</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Aged 18 and Below</td>
+            {% for item in accident.aged_18_and_below %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Aged 19 to 65</td>
+            {% for item in accident.aged_19_to_65 %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Aged 66 to 75</td>
+            {% for item in accident.aged_66_to_75 %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Aged 76 and Over</td>
+            {% for item in accident.aged_76_and_over %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+        </tr>
+          <!-- Repatriation of Mortal Remains and Other Related Benefit -->
+          {% assign repatriation = package.repatriation_of_mortal_remains_and_other_related_benefit %}
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Repatriation & Related Benefit</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Repatriation of Mortal Remains to Home Country</td>
+            {% for item in repatriation.repatriation_of_mortal_remains_to_home_country %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Compassionate Death Visit</td>
+            {% for item in repatriation.compassionate_death_visit %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Compassionate Funeral Expenses</td>
+            {% for item in repatriation.compassionate_funeral_expenses %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+        </tr>
+          <!-- Other Benefits -->
+          {% assign other = package.other_benefits %}
+          <tr class="highlight-row">
+            <td style="white-space: nowrap; overflow: visible; border-right: none;" colspan="2">
+              <b>Other Benefits</b>
+            </td>
+          </tr>
+          <tr>
+            <td>Automatic Extension of Cover</td>
+            {% for item in other.automatic_extension_of_cover %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Personal Liability</td>
+            {% for item in other.personal_liability %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Legal Expenses</td>
+            {% for item in other.legal_expenses %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Loss of Home Contents</td>
+            {% for item in other.loss_of_home_contents %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Hijack</td>
+            {% for item in other.hijack %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Rental Vehicle</td>
+            {% for item in other.rental_vehicle %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Terrorism Cover</td>
+            {% for item in other.terrorism_cover %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Recreational Sports and Activities</td>
+            {% for item in other.recreational_sports_and_activities %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Fraudulent Use of Credit Card</td>
+            {% for item in other.fraudulent_use_of_credit_card %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Golf Equipment</td>
+            {% for item in other.golf_equipment %}
+              <td>{{ item.basic }}</td>
+              <td>{{ item.executive }}</td>
+              <td>{{ item.premiere }}</td>
+            {% endfor %}
+          </tr>
+>>>>>>> 47dab0be45e66f7c95c944994d75581a288afdd5
         </tbody>
       </table>
     {% endfor %}
   </div>
+<<<<<<< HEAD
 </section>
+=======
+</section>
+>>>>>>> 47dab0be45e66f7c95c944994d75581a288afdd5

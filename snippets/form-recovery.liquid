@@ -7,65 +7,104 @@
   </a>
 </div>
 
-<form id="CustomRecoverForm" class="custom-recover-form">
-  <div class="field-auth">
-    <input
-      type="email"
-      value=""
-      name="email"
-      id="RecoverEmail"
-      autocorrect="off"
-      autocapitalize="off"
-      autocomplete="email"
-      placeholder="{{ 'customer.login_page.email' | t }}"
-      required
-    >
-  </div>
-  <div id="RecoverFormError" class="form__message" style="display:none; color: red;"></div>
-  <div class="WrapperButton-form">
-    <button type="submit" class="button-form">
-      {{ 'customer.login_page.submit' | t }}
-    </button>
-  </div>
-</form>
+{% form 'recover_customer_password' %}
+  {% if form.posted_successfully? %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        sessionStorage.setItem('login', 'true');
+        sessionStorage.setItem('recoveryEmail', '{{ form.email }}');
+
+        var popup = document.querySelector('.recovery-popup');
+        var recoveryText = document.getElementById('recovery-email');
+        var formContainer = document.getElementById('CustomRecoverForm');
+        var backButtonWrapper = document.getElementById('BackButtonWrapper');
+
+        if (popup && recoveryText) {
+          recoveryText.textContent = '{{ form.email }}';
+          popup.style.display = 'block';
+        }
+        if (formContainer) {
+          formContainer.style.display = 'none';
+        }
+        if (backButtonWrapper) {
+          backButtonWrapper.style.display = 'none';
+        }
+      });
+    </script>
+  {% endif %}
+
+  <form id="CustomRecoverForm" class="custom-recover-form" method="post" action="/account/recover">
+    <input type="hidden" name="form_type" value="recover_customer_password">
+    <input type="hidden" name="utf8" value="✓">
+
+    <div class="field-auth">
+      <input
+        type="email"
+        value=""
+        name="email"
+        id="RecoverEmail"
+        autocorrect="off"
+        autocapitalize="off"
+        autocomplete="email"
+        placeholder="{{ 'customer.login_page.email' | t }}"
+        required
+      >
+    </div>
+
+    {% if form.errors %}
+      <div id="RecoverFormError" class="form__message" style="color: red;">
+        {{ form.errors | default_errors }}
+      </div>
+    {% endif %}
+
+    <div class="WrapperButton-form">
+      <button
+  type="submit"
+  class="button-form"
+  id="RecoverSubmitButton"
+  data-loading-text="{{ 'customer.general.loading' | t }}"
+>
+  {{ 'customer.login_page.submit' | t }}
+</button>
+
+    </div>
+  </form>
+{% endform %}
 
 <div class="recovery-popup" style="display: none;">
-  <p style="color: var(--color-primary); margin: 0 0 10px 0;">The link to reset your email has been sent to <span id="recovery-email"></span></p>
+  <p style="color: var(--color-primary); margin: 0 0 10px 0;">
+    The link to reset your password has been sent to <span id="recovery-email"></span>.
+  </p>
   <div class="WrapperButton-form">
-    <button type="submit" class="button-form">
-    <a href="/account/login" style="color: var(--color-neutral);">go to login page</a>
-    </button>
+    <a
+      href="/account/login"
+      class="button-form"
+      style="color: var(--color-neutral); text-align: center; display: inline-block;"
+    >
+      Go to login page
+    </a>
   </div>
 </div>
 
 <script>
-  document.getElementById("CustomRecoverForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+  document.addEventListener('DOMContentLoaded', function () {
+    var recoverForm = document.getElementById('CustomRecoverForm');
+    var recoverButton = document.getElementById('RecoverSubmitButton');
 
-    const emailInput = document.getElementById("RecoverEmail");
-    const email = emailInput.value.trim();
-    const popup = document.querySelector(".recovery-popup");
-    const recoveryText = document.getElementById("recovery-email");
-    const errorBox = document.getElementById("RecoverFormError");
-    const backButtonWrapper = document.getElementById("BackButtonWrapper");
+    if (recoverForm && recoverButton) {
+      recoverForm.addEventListener('submit', function (e) {
+        // Disable button
+        recoverButton.disabled = true;
 
-    // Simple email validation
-    if (!email || !email.includes("@")) {
-      errorBox.textContent = "Please enter a valid email address.";
-      errorBox.style.display = "block";
-      return;
-    }
+        // Tambahkan class loading bawaan Shopify
+        recoverButton.classList.add('button--loading');
 
-    errorBox.style.display = "none";
-
-    // Show recovery popup
-    recoveryText.textContent = email;
-    popup.style.display = "block";
-
-    // Hide form & cancel/back button
-    document.getElementById("CustomRecoverForm").style.display = "none";
-    if (backButtonWrapper) {
-      backButtonWrapper.style.display = "none";
+        // Jika ingin mengganti teks di tombol:
+        var loadingText = recoverButton.getAttribute('data-loading-text');
+        if (loadingText) {
+          recoverButton.textContent = loadingText;
+        }
+      });
     }
   });
 </script>

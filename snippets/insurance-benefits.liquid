@@ -165,17 +165,16 @@
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.insurance-table__container');
     const button = container.querySelector('.insurance-table__expand-button');
-  
-    button.addEventListener('click', function() {
+
+    button.addEventListener('click', function () {
       container.classList.add('insurance-table__container--expanded');
       button.style.display = 'none';
     });
   });
 </script>
-
 
 {% comment %} Section For Desktop {% endcomment %}
 <h2 class="insurance__heading">Insurance Details</h2>
@@ -195,7 +194,8 @@
         <table
           cellspacing="0"
           cellpadding="8"
-          style="border-collapse: separate; border-spacing: 10px; width: 100%;">
+          style="border-collapse: separate; border-spacing: 10px; width: 100%;"
+        >
           <thead style="background-color: var(--color-neutral);">
             <tr>
               {% assign benefits_plan = package.benefits_plan[0] %}
@@ -203,8 +203,11 @@
               {% if benefits_plan.column1 %}
                 <th
                   {% if benefits_plan.column2 == null and benefits_plan.column3 == null %}
-                  colspan="2"
-                  {% endif %}>{{ benefits_plan.column1 }}</th>
+                    colspan="2"
+                  {% endif %}
+                >
+                  {{ benefits_plan.column1 }}
+                </th>
               {% endif %}
               {% if benefits_plan.column2 %}
                 <th>{{ benefits_plan.column2 }}</th>
@@ -222,47 +225,77 @@
                 {% if cancelation.basic %}
                   <td
                     {% if cancelation.executive == null and cancelation.premiere == null %}
-                    colspan="2"
-                    {% endif %}>{{ cancelation.basic }}</td>
+                      colspan="2"
+                    {% endif %}
+                  >
+                    {{ cancelation.basic }}
+                  </td>
                 {% endif %}
                 {% if cancelation.executive %}
                   <td
                     {% if cancelation.basic == null and cancelation.premiere == null %}
-                    colspan="2"
-                    {% endif %}>{{ cancelation.executive }}</td>
+                      colspan="2"
+                    {% endif %}
+                  >
+                    {{ cancelation.executive }}
+                  </td>
                 {% endif %}
                 {% if cancelation.premiere %}
                   <td
                     {% if cancelation.basic == null and cancelation.executive == null %}
-                    colspan="2"
-                    {% endif %}>{{ cancelation.premiere }}</td>
+                      colspan="2"
+                    {% endif %}
+                  >
+                    {{ cancelation.premiere }}
+                  </td>
                 {% endif %}
               </tr>
-          {% endif %}
+            {% endif %}
 
             <!-- Medical & Other Emergency Expenses -->
             {% assign medical = package.medical_and_other_emergency_expenses %}
             {% assign medical_row_count = 0 %}
 
-            {% if medical.medical_expenses[0].basic or medical.medical_expenses[0].executive or medical.medical_expenses[0].premiere %}
+            {% if medical.medical_expenses[0].basic
+              or medical.medical_expenses[0].executive
+              or medical.medical_expenses[0].premiere
+            %}
               {% assign medical_row_count = medical_row_count | plus: 1 %}
             {% endif %}
-            {% if medical.emergency_medical_evacuation_and_repatriation[0].basic or medical.emergency_medical_evacuation_and_repatriation[0].executive or medical.emergency_medical_evacuation_and_repatriation[0].premiere %}
+            {% if medical.emergency_medical_evacuation_and_repatriation[0].basic
+              or medical.emergency_medical_evacuation_and_repatriation[0].executive
+              or medical.emergency_medical_evacuation_and_repatriation[0].premiere
+            %}
               {% assign medical_row_count = medical_row_count | plus: 1 %}
             {% endif %}
-            {% if medical.compassionate_visit_expenses[0].basic or medical.compassionate_visit_expenses[0].executive or medical.compassionate_visit_expenses[0].premiere %}
+            {% if medical.compassionate_visit_expenses[0].basic
+              or medical.compassionate_visit_expenses[0].executive
+              or medical.compassionate_visit_expenses[0].premiere
+            %}
               {% assign medical_row_count = medical_row_count | plus: 1 %}
             {% endif %}
-            {% if medical.return_of_children[0].basic or medical.return_of_children[0].executive or medical.return_of_children[0].premiere %}
+            {% if medical.return_of_children[0].basic
+              or medical.return_of_children[0].executive
+              or medical.return_of_children[0].premiere
+            %}
               {% assign medical_row_count = medical_row_count | plus: 1 %}
             {% endif %}
-            {% if medical.hospital_daily_benefit[0].basic or medical.hospital_daily_benefit[0].executive or medical.hospital_daily_benefit[0].premiere %}
+            {% if medical.hospital_daily_benefit[0].basic
+              or medical.hospital_daily_benefit[0].executive
+              or medical.hospital_daily_benefit[0].premiere
+            %}
               {% assign medical_row_count = medical_row_count | plus: 1 %}
             {% endif %}
-            {% if medical.emergency_telephone_charges[0].basic or medical.emergency_telephone_charges[0].executive or medical.emergency_telephone_charges[0].premiere %}
+            {% if medical.emergency_telephone_charges[0].basic
+              or medical.emergency_telephone_charges[0].executive
+              or medical.emergency_telephone_charges[0].premiere
+            %}
               {% assign medical_row_count = medical_row_count | plus: 1 %}
             {% endif %}
-            {% if medical.follow_up_medical_treatment[0].basic or medical.follow_up_medical_treatment[0].executive or medical.follow_up_medical_treatment[0].premiere %}
+            {% if medical.follow_up_medical_treatment[0].basic
+              or medical.follow_up_medical_treatment[0].executive
+              or medical.follow_up_medical_treatment[0].premiere
+            %}
               {% assign medical_row_count = medical_row_count | plus: 1 %}
             {% endif %}
 
@@ -275,20 +308,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -301,20 +343,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -327,20 +378,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -353,20 +413,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -379,20 +448,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -405,20 +483,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -431,69 +518,104 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
               {% endfor %}
-          {% endif %}
+            {% endif %}
 
             <!-- Travel & Associated Expenses -->
             {% assign travel = package.travel_and_associated_expenses %}
             {% assign travel_row_count = 0 %}
 
-            {% if travel.trip_curtailment[0].basic or travel.trip_curtailment[0].executive or travel.trip_curtailment[0].premiere %}
+            {% if travel.trip_curtailment[0].basic
+              or travel.trip_curtailment[0].executive
+              or travel.trip_curtailment[0].premiere
+            %}
               {% assign travel_row_count = travel_row_count | plus: 1 %}
             {% endif %}
             {% if travel.travel_delay[0].basic or travel.travel_delay[0].executive or travel.travel_delay[0].premiere %}
               {% assign travel_row_count = travel_row_count | plus: 1 %}
             {% endif %}
-            {% if travel.missed_flight_connection[0].basic or travel.missed_flight_connection[0].executive or travel.missed_flight_connection[0].premiere %}
+            {% if travel.missed_flight_connection[0].basic
+              or travel.missed_flight_connection[0].executive
+              or travel.missed_flight_connection[0].premiere
+            %}
               {% assign travel_row_count = travel_row_count | plus: 1 %}
             {% endif %}
-            {% if travel.overbooked_flight[0].basic or travel.overbooked_flight[0].executive or travel.overbooked_flight[0].premiere %}
+            {% if travel.overbooked_flight[0].basic
+              or travel.overbooked_flight[0].executive
+              or travel.overbooked_flight[0].premiere
+            %}
               {% assign travel_row_count = travel_row_count | plus: 1 %}
             {% endif %}
-            {% if travel.flight_diversion[0].basic or travel.flight_diversion[0].executive or travel.flight_diversion[0].premiere %}
+            {% if travel.flight_diversion[0].basic
+              or travel.flight_diversion[0].executive
+              or travel.flight_diversion[0].premiere
+            %}
               {% assign travel_row_count = travel_row_count | plus: 1 %}
             {% endif %}
 
             {% if travel_row_count > 0 %}
+              {% assign travel_has_heading = false %}
+
               {% for item in travel.trip_curtailment %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
-                    <th rowspan="{{ travel_row_count }}">Travel & Associated Expenses</th>
+                    {% unless travel_has_heading %}
+                      <th rowspan="{{ travel_row_count }}">Travel & Associated Expenses</th>
+                      {% assign travel_has_heading = true %}
+                    {% endunless %}
                     <td>Trip Curtailment</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -502,24 +624,37 @@
               {% for item in travel.travel_delay %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless travel_has_heading %}
+                      <th rowspan="{{ travel_row_count }}">Travel & Associated Expenses</th>
+                      {% assign travel_has_heading = true %}
+                    {% endunless %}
                     <td>Travel Delay</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -528,24 +663,37 @@
               {% for item in travel.missed_flight_connection %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless travel_has_heading %}
+                      <th rowspan="{{ travel_row_count }}">Travel & Associated Expenses</th>
+                      {% assign travel_has_heading = true %}
+                    {% endunless %}
                     <td>Missed Flight Connection</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -554,24 +702,37 @@
               {% for item in travel.overbooked_flight %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless travel_has_heading %}
+                      <th rowspan="{{ travel_row_count }}">Travel & Associated Expenses</th>
+                      {% assign travel_has_heading = true %}
+                    {% endunless %}
                     <td>Overbooked Flight</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -580,41 +741,63 @@
               {% for item in travel.flight_diversion %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless travel_has_heading %}
+                      <th rowspan="{{ travel_row_count }}">Travel & Associated Expenses</th>
+                      {% assign travel_has_heading = true %}
+                    {% endunless %}
                     <td>Flight Diversion</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
               {% endfor %}
-          {% endif %}
+            {% endif %}
 
             <!-- Baggage and Personal Belongings Cover -->
             {% assign baggage = package.baggage_and_personal_belongings_cover %}
             {% assign baggage_row_count = 0 %}
 
-            {% if baggage.baggage_delay[0].basic or baggage.baggage_delay[0].executive or baggage.baggage_delay[0].premiere %}
+            {% if baggage.baggage_delay[0].basic
+              or baggage.baggage_delay[0].executive
+              or baggage.baggage_delay[0].premiere
+            %}
               {% assign baggage_row_count = baggage_row_count | plus: 1 %}
             {% endif %}
-            {% if baggage.baggage_and_personal_belongings[0].basic or baggage.baggage_and_personal_belongings[0].executive or baggage.baggage_and_personal_belongings[0].premiere %}
+            {% if baggage.baggage_and_personal_belongings[0].basic
+              or baggage.baggage_and_personal_belongings[0].executive
+              or baggage.baggage_and_personal_belongings[0].premiere
+            %}
               {% assign baggage_row_count = baggage_row_count | plus: 1 %}
             {% endif %}
-            {% if baggage.personal_money_and_travel_documents[0].basic or baggage.personal_money_and_travel_documents[0].executive or baggage.personal_money_and_travel_documents[0].premiere %}
+            {% if baggage.personal_money_and_travel_documents[0].basic
+              or baggage.personal_money_and_travel_documents[0].executive
+              or baggage.personal_money_and_travel_documents[0].premiere
+            %}
               {% assign baggage_row_count = baggage_row_count | plus: 1 %}
             {% endif %}
 
@@ -627,20 +810,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -653,20 +845,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -679,40 +880,61 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
               {% endfor %}
-          {% endif %}
+            {% endif %}
 
             <!-- Personal Accident -->
             {% assign accident = package.personal_accident %}
             {% assign accident_row_count = 0 %}
 
-            {% if accident.aged_18_and_below[0].basic or accident.aged_18_and_below[0].executive or accident.aged_18_and_below[0].premiere %}
+            {% if accident.aged_18_and_below[0].basic
+              or accident.aged_18_and_below[0].executive
+              or accident.aged_18_and_below[0].premiere
+            %}
               {% assign accident_row_count = accident_row_count | plus: 1 %}
             {% endif %}
-            {% if accident.aged_19_to_65[0].basic or accident.aged_19_to_65[0].executive or accident.aged_19_to_65[0].premiere %}
+            {% if accident.aged_19_to_65[0].basic
+              or accident.aged_19_to_65[0].executive
+              or accident.aged_19_to_65[0].premiere
+            %}
               {% assign accident_row_count = accident_row_count | plus: 1 %}
             {% endif %}
-            {% if accident.aged_66_to_75[0].basic or accident.aged_66_to_75[0].executive or accident.aged_66_to_75[0].premiere %}
+            {% if accident.aged_66_to_75[0].basic
+              or accident.aged_66_to_75[0].executive
+              or accident.aged_66_to_75[0].premiere
+            %}
               {% assign accident_row_count = accident_row_count | plus: 1 %}
             {% endif %}
-            {% if accident.aged_76_and_over[0].basic or accident.aged_76_and_over[0].executive or accident.aged_76_and_over[0].premiere %}
+            {% if accident.aged_76_and_over[0].basic
+              or accident.aged_76_and_over[0].executive
+              or accident.aged_76_and_over[0].premiere
+            %}
               {% assign accident_row_count = accident_row_count | plus: 1 %}
             {% endif %}
 
@@ -725,20 +947,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -751,20 +982,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -777,20 +1017,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -803,37 +1052,55 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
               {% endfor %}
-          {% endif %}
+            {% endif %}
 
             <!-- Repatriation of Mortal Remains and Other Related Benefit -->
             {% assign repatriation = package.repatriation_of_mortal_remains_and_other_related_benefit %}
             {% assign repatriation_row_count = 0 %}
 
-            {% if repatriation.repatriation_of_mortal_remains_to_home_country[0].basic or repatriation.repatriation_of_mortal_remains_to_home_country[0].executive or repatriation.repatriation_of_mortal_remains_to_home_country[0].premiere %}
+            {% if repatriation.repatriation_of_mortal_remains_to_home_country[0].basic
+              or repatriation.repatriation_of_mortal_remains_to_home_country[0].executive
+              or repatriation.repatriation_of_mortal_remains_to_home_country[0].premiere
+            %}
               {% assign repatriation_row_count = repatriation_row_count | plus: 1 %}
             {% endif %}
-            {% if repatriation.compassionate_death_visit[0].basic or repatriation.compassionate_death_visit[0].executive or repatriation.compassionate_death_visit[0].premiere %}
+            {% if repatriation.compassionate_death_visit[0].basic
+              or repatriation.compassionate_death_visit[0].executive
+              or repatriation.compassionate_death_visit[0].premiere
+            %}
               {% assign repatriation_row_count = repatriation_row_count | plus: 1 %}
             {% endif %}
-            {% if repatriation.compassionate_funeral_expenses[0].basic or repatriation.compassionate_funeral_expenses[0].executive or repatriation.compassionate_funeral_expenses[0].premiere %}
+            {% if repatriation.compassionate_funeral_expenses[0].basic
+              or repatriation.compassionate_funeral_expenses[0].executive
+              or repatriation.compassionate_funeral_expenses[0].premiere
+            %}
               {% assign repatriation_row_count = repatriation_row_count | plus: 1 %}
             {% endif %}
 
@@ -846,20 +1113,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -872,20 +1148,29 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -898,84 +1183,140 @@
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
               {% endfor %}
-          {% endif %}
+            {% endif %}
 
             <!-- Other Benefits -->
             {% assign other = package.other_benefits %}
             {% assign other_row_count = 0 %}
 
-            {% if other.automatic_extension_of_cover[0].basic or other.automatic_extension_of_cover[0].executive or other.automatic_extension_of_cover[0].premiere %}
+            {% if other.automatic_extension_of_cover[0].basic
+              or other.automatic_extension_of_cover[0].executive
+              or other.automatic_extension_of_cover[0].premiere
+            %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
-            {% if other.personal_liability[0].basic or other.personal_liability[0].executive or other.personal_liability[0].premiere %}
+            {% if other.personal_liability[0].basic
+              or other.personal_liability[0].executive
+              or other.personal_liability[0].premiere
+            %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
-            {% if other.legal_expenses[0].basic or other.legal_expenses[0].executive or other.legal_expenses[0].premiere %}
+            {% if other.legal_expenses[0].basic
+              or other.legal_expenses[0].executive
+              or other.legal_expenses[0].premiere
+            %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
-            {% if other.loss_of_home_contents[0].basic or other.loss_of_home_contents[0].executive or other.loss_of_home_contents[0].premiere %}
+            {% if other.loss_of_home_contents[0].basic
+              or other.loss_of_home_contents[0].executive
+              or other.loss_of_home_contents[0].premiere
+            %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
             {% if other.hijack[0].basic or other.hijack[0].executive or other.hijack[0].premiere %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
-            {% if other.rental_vehicle[0].basic or other.rental_vehicle[0].executive or other.rental_vehicle[0].premiere %}
+            {% if other.rental_vehicle[0].basic
+              or other.rental_vehicle[0].executive
+              or other.rental_vehicle[0].premiere
+            %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
-            {% if other.terrorism_cover[0].basic or other.terrorism_cover[0].executive or other.terrorism_cover[0].premiere %}
+            {% if other.terrorism_cover[0].basic
+              or other.terrorism_cover[0].executive
+              or other.terrorism_cover[0].premiere
+            %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
-            {% if other.recreational_sports_and_activities[0].basic or other.recreational_sports_and_activities[0].executive or other.recreational_sports_and_activities[0].premiere %}
+            {% if other.recreational_sports_and_activities[0].basic
+              or other.recreational_sports_and_activities[0].executive
+              or other.recreational_sports_and_activities[0].premiere
+            %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
-            {% if other.fraudulent_use_of_credit_card[0].basic or other.fraudulent_use_of_credit_card[0].executive or other.fraudulent_use_of_credit_card[0].premiere %}
+            {% if other.fraudulent_use_of_credit_card[0].basic
+              or other.fraudulent_use_of_credit_card[0].executive
+              or other.fraudulent_use_of_credit_card[0].premiere
+            %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
-            {% if other.golf_equipment[0].basic or other.golf_equipment[0].executive or other.golf_equipment[0].premiere %}
+            {% if other.golf_equipment[0].basic
+              or other.golf_equipment[0].executive
+              or other.golf_equipment[0].premiere
+            %}
+              {% assign other_row_count = other_row_count | plus: 1 %}
+            {% endif %}
+            {% if other.loss_of_hotel_reservation[0].basic
+              or other.loss_of_hotel_reservation[0].executive
+              or other.loss_of_hotel_reservation[0].premiere
+            %}
               {% assign other_row_count = other_row_count | plus: 1 %}
             {% endif %}
 
             {% if other_row_count > 0 %}
+              {% assign other_has_heading = false %}
+
               {% for item in other.automatic_extension_of_cover %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
-                    <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
                     <td>Automatic Extension of Cover</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -984,24 +1325,37 @@
               {% for item in other.personal_liability %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
                     <td>Personal Liability</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -1010,24 +1364,37 @@
               {% for item in other.legal_expenses %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
                     <td>Legal Expenses</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -1036,24 +1403,37 @@
               {% for item in other.loss_of_home_contents %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
                     <td>Loss of Home Contents</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -1062,49 +1442,76 @@
               {% for item in other.hijack %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
                     <td>Hijack</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
               {% endfor %}
+
               {% for item in other.rental_vehicle %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
                     <td>Rental Vehicle</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -1113,24 +1520,37 @@
               {% for item in other.terrorism_cover %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
                     <td>Terrorism Cover</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -1139,24 +1559,37 @@
               {% for item in other.recreational_sports_and_activities %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
                     <td>Recreational Sports and Activities</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -1165,24 +1598,37 @@
               {% for item in other.fraudulent_use_of_credit_card %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
                     <td>Fraudulent Use of Credit Card</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
@@ -1191,37 +1637,87 @@
               {% for item in other.golf_equipment %}
                 {% if item.basic or item.executive or item.premiere %}
                   <tr>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
                     <td>Golf Equipment</td>
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.basic }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
                     {% endif %}
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.executive }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
                     {% endif %}
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
-                        colspan="2"
-                        {% endif %}>{{ item.premiere }}</td>
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
+                    {% endif %}
+                  </tr>
+                {% endif %}
+              {% endfor %}
+
+              {% for item in other.loss_of_hotel_reservation %}
+                {% if item.basic or item.executive or item.premiere %}
+                  <tr>
+                    {% unless other_has_heading %}
+                      <th rowspan="{{ other_row_count }}">Other Benefits</th>
+                      {% assign other_has_heading = true %}
+                    {% endunless %}
+                    <td>Loss of Hotel Reservation</td>
+                    {% if item.basic %}
+                      <td
+                        {% if item.executive == null and item.premiere == null %}
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.basic }}
+                      </td>
+                    {% endif %}
+                    {% if item.executive %}
+                      <td
+                        {% if item.basic == null and item.premiere == null %}
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.executive }}
+                      </td>
+                    {% endif %}
+                    {% if item.premiere %}
+                      <td
+                        {% if item.basic == null and item.executive == null %}
+                          colspan="2"
+                        {% endif %}
+                      >
+                        {{ item.premiere }}
+                      </td>
                     {% endif %}
                   </tr>
                 {% endif %}
               {% endfor %}
             {% endif %}
-
           </tbody>
         </table>
       {% endfor %}
     </div>
   </div>
 </div>
-
 
 {% comment %} section for mobile {% endcomment %}
 <section>
@@ -1310,7 +1806,7 @@
               <td>{{ item.executive }}</td>
               <td>{{ item.premiere }}</td>
             {% endfor %}
-        </tr>
+          </tr>
           <!-- Travel & Associated Expenses -->
           {% assign travel = package.travel_and_associated_expenses %}
           <tr class="highlight-row">
@@ -1357,7 +1853,7 @@
               <td>{{ item.executive }}</td>
               <td>{{ item.premiere }}</td>
             {% endfor %}
-        </tr>
+          </tr>
           <!-- Baggage and Personal Belongings Cover -->
           {% assign baggage = package.baggage_and_personal_belongings_cover %}
           <tr class="highlight-row">
@@ -1388,7 +1884,7 @@
               <td>{{ item.executive }}</td>
               <td>{{ item.premiere }}</td>
             {% endfor %}
-        </tr>
+          </tr>
           <!-- Personal Accident -->
           {% assign accident = package.personal_accident %}
           <tr class="highlight-row">
@@ -1427,7 +1923,7 @@
               <td>{{ item.executive }}</td>
               <td>{{ item.premiere }}</td>
             {% endfor %}
-        </tr>
+          </tr>
           <!-- Repatriation of Mortal Remains and Other Related Benefit -->
           {% assign repatriation = package.repatriation_of_mortal_remains_and_other_related_benefit %}
           <tr class="highlight-row">
@@ -1458,7 +1954,7 @@
               <td>{{ item.executive }}</td>
               <td>{{ item.premiere }}</td>
             {% endfor %}
-        </tr>
+          </tr>
           <!-- Other Benefits -->
           {% assign other = package.other_benefits %}
           <tr class="highlight-row">

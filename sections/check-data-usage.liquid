@@ -70,7 +70,7 @@
 
     button.disabled = true;
     button.innerText = 'Memproses...';
-    resultEl.innerHTML = `{% render 'loading-spinner' %}`;
+    resultEl.innerHTML = `<p>Sedang memproses...</p>`;
 
     fetch('https://gkomunika.id/api/v1/check/data_info', {
       method: 'POST',

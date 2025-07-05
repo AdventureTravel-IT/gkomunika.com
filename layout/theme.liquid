@@ -509,6 +509,8 @@ body {
       </div>
     {% endif %}
 
+    {% render 'whatsapp' %}
+
     <main
       id="MainContent"
       class="content-for-layout focus-none"
@@ -517,8 +519,6 @@ body {
       style="background-color: var(--color-background)">
       {{ content_for_layout }}
     </main>
-
-    {% render 'whatsapp' %}
 
     {% unless template.name == 'login' or template.name == 'register' or template.name == 'search' %}
       {% sections 'footer-group' %}

@@ -108,36 +108,7 @@
         const itemData = data.tradeData.subOrderList[0];
         const dataUsage = itemData.usageInfoList;
 
-        // --- Grouping usageInfoList by countryName ---
-        const usageByCountry = {};
-
-        if (dataUsage && dataUsage.length > 0) {
-          dataUsage.forEach(item => {
-            const country = item.countryName || 'Unknown Country';
-            if (!usageByCountry[country]) {
-              usageByCountry[country] = [];
-            }
-            usageByCountry[country].push(item);
-          });
-        }
-
-        let usageHtml = '';
-
-        for (const [country, items] of Object.entries(usageByCountry)) {
-          usageHtml += `
-            <div style="border:2px solid #000; margin:10px; padding:10px;">
-              <h4>${country}</h4>
-              ${items.map(item => `
-                <div style="border:1px solid #ccc; margin:5px; padding:5px;">
-                  <p><strong>Nama Paket:</strong> ${item.country || '-'}</p>
-                  <p><strong>Sisa Kuota:</strong> ${item.usedAmount || '-'} ${item.unit || ''}</p>
-                  <p><strong>Periode:</strong> ${item.usedDate || '-'} s/d ${item.endTime || '-'}</p>
-                </div>
-              `).join('')}
-            </div>
-          `;
-        }
-
+        // --- Informasi SIM ---
         let html = `
           <div>
             <h3>Informasi Kartu SIM</h3>
@@ -147,12 +118,21 @@
           </div>
 
           <div>
-            <h3>Penggunaan data</h3>
-            <div>
-              ${usageHtml || '<p>Tidak ada data usage ditemukan.</p>'}
+          <h3>Pneggunaan data</h3>
+          <div>
+          ${
+      dataUsage && dataUsage.length > 0
+        ? dataUsage.map(item => `
+            <div style="border:1px solid #ccc; margin:5px; padding:5px;">
+              <p><strong>Nama Paket:</strong> ${item.country || '-'}</p>
+              <p><strong>penggunaan Kuota:</strong> ${item.usedAmount || '-'} ${item.unit || ''}</p>
+              <p><strong>Periode:</strong> ${item.usedDate || '-'} s/d ${item.endTime || '-'}</p>
             </div>
+          `).join('')
+        : '<p>Tidak ada data usage ditemukan.</p>'
+    }
           </div>
-
+          </div>
           <pre>${JSON.stringify(data, null, 2)}</pre>
         `;
 
@@ -186,6 +166,7 @@
     window.location.href = "https://wa.me/6281234567890";
   });
 </script>
+
 
 <style>
   .invalid-popup {

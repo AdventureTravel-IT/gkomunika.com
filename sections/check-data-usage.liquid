@@ -41,6 +41,10 @@
     return null;
   }
 
+  function showInvalidPopup() {
+    document.getElementById("invalid-popup").style.display = "block";
+  }
+
   function checkICCID() {
     const now = Date.now();
     if (now - lastSubmit < 3000) return; // minimum 3 detik antar klik
@@ -60,7 +64,7 @@
     const vendor = detectVendor(iccid);
     if (!vendor) {
       // Tampilkan modal popup
-      document.getElementById("invalid-popup").style.display = "block";
+      showInvalidPopup();
       return;
     }
 
@@ -115,6 +119,7 @@
           <p style="color: red">Data tidak ditemukan</p>
           <p><strong>ICCID Vendor:</strong> ${vendor}</p>
         `;
+        showInvalidPopup();
       }
     })
     .catch(error => {

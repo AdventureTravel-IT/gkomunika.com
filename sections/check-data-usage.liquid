@@ -48,6 +48,18 @@
     document.getElementById("invalid-popup").style.display = "block";
   }
 
+  function formatBytes(usageBytes) {
+    if (usageBytes >= 1024 * 1024 * 1024) {
+      return (usageBytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+    } else if (usageBytes >= 1024 * 1024) {
+      return (usageBytes / (1024 * 1024)).toFixed(2) + ' MB';
+    } else if (usageBytes >= 1024) {
+      return (usageBytes / 1024).toFixed(2) + ' KB';
+    } else {
+      return usageBytes + ' Byte';
+    }
+  }
+
   function checkICCID() {
     const now = Date.now();
     if (now - lastSubmit < 3000) return; // minimum 3 detik antar klik
@@ -108,53 +120,59 @@
         const itemData = data.tradeData.subOrderList[0];
         const dataUsage = itemData.usageInfoList;
 
-// Ambil daftar negara unik
-let uniqueCountries = [];
-if (dataUsage && dataUsage.length > 0) {
-  uniqueCountries = [...new Set(
-    dataUsage
-      .map(item => item.country)
-      .filter(Boolean) // hilangkan null atau undefined
-  )];
-}
+        // Ambil daftar negara unik
+        let uniqueCountries = [];
+        if (dataUsage && dataUsage.length > 0) {
+          uniqueCountries = [...new Set(
+            dataUsage
+              .map(item => item.country)
+              .filter(Boolean) // hilangkan null atau undefined
+          )];
+        }
 
-// --- Informasi SIM ---
-let html = `
-  <div>
-    <h3>Informasi Kartu SIM</h3>
-    <p>Bundle mu:</strong> ${itemData.skuName || "-"}</p>
-    <p>Masa Aktif:</strong> ${itemData.planStartTime || "-"}</p>
-    <p>Tanggal Berakhir:</strong> ${itemData.planEndTime || "-"}</p>
-  </div>
+        // --- Informasi SIM ---
+        let html = `
+          <div>
+            <h3>Informasi Kartu SIM</h3>
+            <p>Bundle mu:</strong> ${itemData.skuName || "-"}</p>
+            <p>Masa Aktif:</strong> ${itemData.planStartTime || "-"}</p>
+            <p>Tanggal Berakhir:</strong> ${itemData.planEndTime || "-"}</p>
+          </div>
 
-  <div>
-    <h3>Daftar Negara Paket:</h3>
-    ${
-      uniqueCountries.length > 0
-        ? `<ul>${uniqueCountries.map(c => `<li>${c}</li>`).join('')}</ul>`
-        : '<p>Tidak ada negara ditemukan.</p>'
-    }
-  </div>
+          <div>
+            <h3>Daftar Negara Paket:</h3>
+            ${
+              uniqueCountries.length > 0
+                ? `<ul>${uniqueCountries.map(c => `<li>${c}</li>`).join('')}</ul>`
+                : '<p>Tidak ada negara ditemukan.</p>'
+            }
+          </div>
 
-  <div>
-    <h3>Pneggunaan data</h3>
-    <div>
-      ${
-        dataUsage && dataUsage.length > 0
-          ? dataUsage.map(item => `
-              <div style="border:1px solid #ccc; margin:5px; padding:5px;">
-                <p>Nama Paket:</strong> ${item.country || '-'}</p>
-                <p>penggunaan Kuota:</strong> ${item.usedAmount || '-'}</p>
-                <p>Periode:</strong> ${item.usedDate || '-'}</p>
-              </div>
-            `).join('')
-          : '<p>Tidak ada data usage ditemukan.</p>'
-      }
-    </div>
-  </div>
+          <div>
+            <h3>Penggunaan data</h3>
+            <div>
+              ${
+                dataUsage && dataUsage.length > 0
+                  ? dataUsage.map(item => {
+                      let formattedUsage = '-';
+                      if (item.usedAmount) {
+                        formattedUsage = formatBytes(Number(item.usedAmount));
+                      }
+                      return `
+                        <div style="border:1px solid #ccc; margin:5px; padding:5px;">
+                          <p>Nama Paket:</strong> ${item.country || '-'}</p>
+                          <p>Penggunaan Kuota:</strong> ${formattedUsage}</p>
+                          <p>Periode:</strong> ${item.usedDate || '-'}</p>
+                        </div>
+                      `;
+                    }).join('')
+                  : '<p>Tidak ada data usage ditemukan.</p>'
+              }
+            </div>
+          </div>
 
-  <pre>${JSON.stringify(data, null, 2)}</pre>
-`;
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
 
         resultEl.innerHTML = html;
 
@@ -186,7 +204,6 @@ let html = `
     window.location.href = "https://wa.me/6281234567890";
   });
 </script>
-
 
 <style>
   .invalid-popup {

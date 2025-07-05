@@ -8,14 +8,13 @@
 
 <script>
   let lastSubmit = 0;
-
   function checkICCID() {
     const now = Date.now();
     if (now - lastSubmit < 3000) return; // minimum 3 detik antar klik
     lastSubmit = now;
 
     const button = document.getElementById('check-iccid');
-    const iccid = document.getElementById('iccid').value.trim();
+    const iccid = document.getElementById('iccid').value;
     const resultEl = document.getElementById('result');
 
     // Validasi awal input
@@ -24,32 +23,10 @@
       return;
     }
 
-    // Tentukan vendor berdasarkan prefix ICCID
-    let vendor = null;
-
-    if (iccid.startsWith("8981200")) {
-      vendor = "bc";
-    } else if (iccid.startsWith("2210")) {
-      vendor = "bc";
-    } else if (iccid.startsWith("89810")) {
-      vendor = "tgt";
-    } else if (iccid.startsWith("89859")) {
-      vendor = "fm";
-    } else if (iccid.startsWith("89862")) {
-      vendor = "fm";
-    }
-
-    if (!vendor) {
-      resultEl.innerHTML = `<p style="color: red">Vendor tidak dikenali untuk ICCID ini</p>`;
-      return;
-    }
-
-    // Tampilkan vendor sebelum memproses
-    resultEl.innerHTML = `<p>Vendor terdeteksi: <strong>${vendor}</strong><br>Sedang memproses...</p>`;
-
     // Disable button & tampilkan loading
     button.disabled = true;
     button.innerText = 'Memproses...';
+    resultEl.innerHTML = `<p>Sedang memproses...</p>`;
 
     fetch('https://gkomunika.id/api/v1/check/data_info', {
       method: 'POST',
@@ -61,7 +38,7 @@
     .then(async (response) => {
       const contentType = response.headers.get("Content-Type") || "";
       const isJson = contentType.includes("application/json");
-
+    
       let data = {};
       if (isJson) {
         try {
@@ -72,44 +49,20 @@
       }
 
       if (data.status === 'rate_limited' || data.customCode === 429) {
-        resultEl.innerHTML = `
+        document.getElementById('result').innerHTML = `
           <p style="color: red">${data.message}</p>
         `;
         return;
       }
 
-      if (
-        data.tradeCode === "1000" &&
-        data.tradeData &&
-        Array.isArray(data.tradeData.subOrderList) &&
-        data.tradeData.subOrderList.length > 0
-      ) {
+      if (data.tradeCode === "1000" &&
+          data.tradeData &&
+          (Array.isArray(data.tradeData)
+            ? data.tradeData.length > 0
+            : Object.keys(data.tradeData).length > 0)) {
         resultEl.innerHTML = `
           <pre>${JSON.stringify(data, null, 2)}</pre>
-        const subOrders = data.tradeData.subOrderList;
-
-        let html = `<h3>Vendor: ${vendor.toUpperCase()}</h3>`;
-        html += '<h4>Sub Order List</h4>';
-
-        subOrders.forEach((order, index) => {
-          // Konversi Byte ke GB
-          const totalTrafficGB = (Number(order.totalTraffic) / 1024 / 1024).toFixed(2);
-          const remainingTrafficGB = (Number(order.remainingTraffic) / 1024 / 1024).toFixed(2);
-
-          html += `
-            <div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px;">
-              <p><strong>#${index + 1}</strong></p>
-              <p><strong>SKU Name:</strong> ${order.skuName || '-'}</p>
-              <p><strong>Start Time:</strong> ${order.planStartTime || '-'}</p>
-              <p><strong>End Time:</strong> ${order.planEndTime || '-'}</p>
-              <p><strong>Total Traffic:</strong> ${totalTrafficGB} GB</p>
-              <p><strong>Remaining Traffic:</strong> ${remainingTrafficGB} GB</p>
-            </div>
-          `;
-        });
-
-        resultEl.innerHTML = html;
-
+        `;
       } else {
         resultEl.innerHTML = `
           <p style="color: red">Data tidak ditemukan</p>

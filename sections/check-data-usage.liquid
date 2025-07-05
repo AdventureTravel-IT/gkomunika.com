@@ -2,7 +2,7 @@
   type="text"
   id="iccid"
   placeholder="Masukkan ICCID" required>
-<button id="check-iccid" onclick="checkICCID()">Cek</button>
+<button id="check-iccid" onclick="checkICCID()">Next</button>
 
 <div id="result"></div>
 
@@ -65,19 +65,19 @@
         `;
       } else {
         resultEl.innerHTML = `
-          <p style="color: red">Data tidak ditemukan</p>
+          <p style="color: red"></p>
         `;
       }
     })
     .catch(error => {
       resultEl.innerHTML = `
-        <p style="color: red">Terjadi kesalahan koneksi</p>
+        <p style="color: red">Connection Error</p>
       `;
     })
     .finally(() => {
       // Kembalikan state tombol
       button.disabled = false;
-      button.innerText = 'Cek';
+      button.innerText = 'Next';
     });
   }
 </script>

@@ -1,5 +1,5 @@
 <input
-  type="text"
+  type="number"
   id="iccid"
   placeholder="Masukkan ICCID" required>
 <button id="check-iccid" onclick="checkICCID()">Cek</button>
@@ -68,6 +68,7 @@
       return;
     }
 
+    // DEBUG: tampilkan vendor di console
     console.log("DEBUG ICCID Vendor →", vendor);
 
     // Disable button & tampilkan loading
@@ -114,9 +115,10 @@
         `;
 
       } else {
-        // Data tidak ditemukan → tampilkan hanya pop-up
-        showInvalidPopup();
-      }
+  resultEl.innerHTML = "";
+  showInvalidPopup();
+}
+
     })
     .catch(error => {
       resultEl.innerHTML = `

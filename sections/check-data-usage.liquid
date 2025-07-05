@@ -55,19 +55,57 @@
         return;
       }
 
-      if (data.tradeCode === "1000" &&
-          data.tradeData &&
-          (Array.isArray(data.tradeData)
-            ? data.tradeData.length > 0
-            : Object.keys(data.tradeData).length > 0)) {
-        resultEl.innerHTML = `
-          <pre>${JSON.stringify(data, null, 2)}</pre>
-        `;
-      } else {
-        resultEl.innerHTML = `
-          <p style="color: red"></p>
-        `;
-      }
+      if (
+  data.tradeCode === "1000" &&
+  data.tradeData &&
+  data.tradeData.subOrderList &&
+  data.tradeData.subOrderList.length > 0
+) {
+  let html = "";
+
+  data.tradeData.subOrderList.forEach((order, index) => {
+    html += `
+      <div style="border:1px solid #ccc; margin-bottom:10px; padding:10px;">
+        <h4>Order #${index + 1}</h4>
+        <p><strong>Sub Order ID:</strong> ${order.subOrderId}</p>
+        <p><strong>SKU Name:</strong> ${order.skuName}</p>
+        <p><strong>Copies:</strong> ${order.copies}</p>
+        <p><strong>Plan Status:</strong> ${order.planStatus}</p>
+        <p><strong>Plan Start Time:</strong> ${order.planStartTime}</p>
+        <p><strong>Plan End Time:</strong> ${order.planEndTime}</p>
+        <p><strong>Total Days:</strong> ${order.totalDays}</p>
+        <p><strong>Remaining Days:</strong> ${order.remainingDays}</p>
+        <p><strong>Total Traffic (MB):</strong> ${Math.round(parseInt(order.totalTraffic)/1024/1024)}</p>
+        <p><strong>Remaining Traffic (MB):</strong> ${Math.round(parseInt(order.remainingTraffic)/1024/1024)}</p>
+        <h5>Countries:</h5>
+        <ul>
+          ${
+            order.country.map(c => 
+              `<li>${c.name} (${c.operator}) - APN: ${c.apn}</li>`
+            ).join("")
+          }
+        </ul>
+        <h5>Usage Info:</h5>
+        <ul>
+          ${
+            order.usageInfoList && order.usageInfoList.length > 0
+              ? order.usageInfoList.map(u =>
+                  `<li>${u.country} - Used: ${Math.round(parseInt(u.usedAmount)/1024/1024)} MB on ${u.usedDate}</li>`
+                ).join("")
+              : "<li>No usage data</li>"
+          }
+        </ul>
+      </div>
+    `;
+  });
+
+  resultEl.innerHTML = html;
+} else {
+  resultEl.innerHTML = `
+    <p style="color: red">Data tidak ditemukan.</p>
+  `;
+}
+
     })
     .catch(error => {
       resultEl.innerHTML = `

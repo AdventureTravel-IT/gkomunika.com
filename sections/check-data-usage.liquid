@@ -41,13 +41,6 @@
       return;
     }
 
-    // Validasi prefix
-    const vendor = detectVendor(iccid);
-    if (!vendor) {
-      resultEl.innerHTML = `<p style="color: red">Prefix ICCID tidak dikenali</p>`;
-      return;
-    }
-
     // DEBUG: tampilkan vendor di console
     console.log("DEBUG ICCID Vendor →", vendor);
 

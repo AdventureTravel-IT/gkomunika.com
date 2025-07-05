@@ -163,11 +163,20 @@
 
           // --- Informasi SIM ---
           let html = `
-          <div>
+          <div class="check-data-usage__esim-information">
             <h3>Informasi Kartu SIM</h3>
-            <p>Bundle mu:</strong> ${itemData.skuName || '-'}</p>
-            <p>Masa Aktif:</strong> ${itemData.planStartTime || '-'}</p>
-            <p>Tanggal Berakhir:</strong> ${itemData.planEndTime || '-'}</p>
+            <div class="esim-information__wrapper">
+            <p>Your eSIM Bundle</p>
+            <p>${itemData.skuName || '-'}</p>
+            </div>
+            <div class="esim-information__wrapper">
+            <p>Active Period</p>
+            <p>${itemData.planStartTime || '-'}</p>
+            </div>
+            <div class="esim-information__wrapper">
+            <p>End Date</p>
+            <p>${itemData.planEndTime || '-'}</p>
+            </div>
           </div>
 
           <div>

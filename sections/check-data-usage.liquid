@@ -112,9 +112,9 @@
         let html = `
           <div>
             <h3>Informasi Kartu SIM</h3>
-            <p>Bundle mu:</strong> ${itemData.skuName || "-"}</p>
-            <p>Masa Aktif:</strong> ${itemData.planStartTime || "-"}</p>
-            <p>Tanggal Berakhir:</strong> ${itemData.planEndTime || "-"}</p>
+            Bundle mu:</strong> ${itemData.skuName || "-"}
+            Masa Aktif:</strong> ${itemData.planStartTime || "-"}
+            Tanggal Berakhir:</strong> ${itemData.planEndTime || "-"}
           </div>
 
           <div>
@@ -124,9 +124,9 @@
       dataUsage && dataUsage.length > 0
         ? dataUsage.map(item => `
             <div style="border:1px solid #ccc; margin:5px; padding:5px;">
-              <p>Nama Paket:</strong> ${item.country || '-'}</p>
-              <p>penggunaan Kuota:</strong> ${item.usedAmount || '-'} ${item.unit || ''}</p>
-              <p>Periode:</strong> ${item.usedDate || '-'} s/d ${item.endTime || '-'}</p>
+              Nama Paket:</strong> ${item.country || '-'}
+              penggunaan Kuota:</strong> ${item.usedAmount || '-'} ${item.unit || ''}
+              Periode:</strong> ${item.usedDate || '-'} s/d ${item.endTime || '-'}
             </div>
           `).join('')
         : '<p>Tidak ada data usage ditemukan.</p>'

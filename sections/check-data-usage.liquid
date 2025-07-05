@@ -26,7 +26,6 @@
     padding: 10px 20px;
     cursor: pointer;
   }
-
 {% endstyle %}
 
 <input
@@ -200,15 +199,15 @@
                           formattedUsage = formatBytes(Number(item.usedAmount));
                         }
                         return `
-                        <div style="border:1px solid #ccc; margin:5px; padding:5px;">
-                          <p>Nama Paket:</strong> ${item.country || '-'}</p>
-                          <p>Penggunaan Kuota:</strong> ${formattedUsage}</p>
-                          <p>Periode:</strong> ${item.usedDate || '-'}</p>
+                        <div class="data-usage__wrapper">
+                          <p>${item.country || '-'}</p>
+                          <p>${formattedUsage}</p>
+                          <p>${item.usedDate || '-'}</p>
                         </div>
                       `;
                       })
                       .join('')
-                  : '<p>Belum ada penggunaan data.</p>'
+                  : '<p>no data usage yet.</p>'
               }
             </div>
           </div>

@@ -15,7 +15,7 @@
     lastSubmit = now;
 
     const button = document.getElementById('check-iccid');
-    const iccid = document.getElementById('iccid').value;
+    const iccid = document.getElementById('iccid').value.trim();
     const resultEl = document.getElementById('result');
 
     // Validasi awal input
@@ -24,10 +24,32 @@
       return;
     }
 
+    // Tentukan vendor berdasarkan prefix ICCID
+    let vendor = null;
+
+    if (iccid.startsWith("8981200")) {
+      vendor = "bc";
+    } else if (iccid.startsWith("2210")) {
+      vendor = "bc";
+    } else if (iccid.startsWith("89810")) {
+      vendor = "tgt";
+    } else if (iccid.startsWith("89859")) {
+      vendor = "fm";
+    } else if (iccid.startsWith("89862")) {
+      vendor = "fm";
+    }
+
+    if (!vendor) {
+      resultEl.innerHTML = `<p style="color: red">Vendor tidak dikenali untuk ICCID ini</p>`;
+      return;
+    }
+
+    // Tampilkan vendor sebelum memproses
+    resultEl.innerHTML = `<p>Vendor terdeteksi: <strong>${vendor}</strong><br>Sedang memproses...</p>`;
+
     // Disable button & tampilkan loading
     button.disabled = true;
     button.innerText = 'Memproses...';
-    resultEl.innerHTML = `<p>Sedang memproses...</p>`;
 
     fetch('https://gkomunika.id/api/v1/check/data_info', {
       method: 'POST',
@@ -64,7 +86,8 @@
       ) {
         const subOrders = data.tradeData.subOrderList;
 
-        let html = '<h3>Sub Order List</h3>';
+        let html = `<h3>Vendor: ${vendor.toUpperCase()}</h3>`;
+        html += '<h4>Sub Order List</h4>';
 
         subOrders.forEach((order, index) => {
           // Konversi Byte ke GB

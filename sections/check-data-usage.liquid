@@ -7,23 +7,21 @@
 <div id="result"></div>
 
 <div class="invalid-popup" id="invalid-popup">
-  <h2>ICCID Invalid</h2>
-  <p>Sorry, currently your sim card does not support top up via the website. You can top up by contacting our CS via Whatsapp.</p>
-  <p>If your device supports eSIM. You can buy an eSIM for your travel connectivity.</p>
-  <div class="invalid-popup__button">
-    <button id="invalid-popup__buy-button">Buy eSIM</button>
-    <button id="invalid-poup__contact-button">Contact CS</button>
+  <div class="invalid-popup__content">
+    <h2>ICCID Invalid</h2>
+    <p>Sorry, currently your sim card does not support top up via the website. You can top up by contacting our CS via Whatsapp.</p>
+    <p>If your device supports eSIM. You can buy an eSIM for your travel connectivity.</p>
+    <div class="invalid-popup__button">
+      <button id="invalid-popup__buy-button">Buy eSIM</button>
+      <button id="invalid-popup__contact-button">Contact CS</button>
+    </div>
+    <button id="invalid-popup__button-hide">
+      OK
+    </button>
   </div>
-  <button id="invalid-popup__button-hide">
-    OK
-  </button>
 </div>
 
 <script>
-  document.getElementById('invalid-popup__button-hide').addEventListener('click', () => {
-  document.getElementById('invalid-popup').style.display = 'none';
-});
-
   let lastSubmit = 0;
 
   const prefixVendorMap = [
@@ -55,6 +53,14 @@
     // Validasi awal input
     if (!iccid || iccid.length < 10) {
       resultEl.innerHTML = `<p style="color: red">ICCID tidak valid (minimal 10 digit)</p>`;
+      return;
+    }
+
+    // Cek prefix
+    const vendor = detectVendor(iccid);
+    if (!vendor) {
+      // Tampilkan modal popup
+      document.getElementById("invalid-popup").style.display = "block";
       return;
     }
 
@@ -122,6 +128,20 @@
       button.innerText = 'Next';
     });
   }
+
+  // Tutup popup saat tombol OK diklik
+  document.getElementById('invalid-popup__button-hide').addEventListener('click', () => {
+    document.getElementById('invalid-popup').style.display = 'none';
+  });
+
+  // Tambahkan event ke tombol Buy eSIM dan Contact CS
+  document.getElementById('invalid-popup__buy-button').addEventListener('click', () => {
+    window.location.href = "https://example.com/esim";
+  });
+
+  document.getElementById('invalid-popup__contact-button').addEventListener('click', () => {
+    window.location.href = "https://wa.me/6281234567890";
+  });
 </script>
 
 <style>
@@ -149,9 +169,10 @@
 
   .invalid-popup__button button {
     margin: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
   }
 </style>
-
 
 {% schema %}
   {

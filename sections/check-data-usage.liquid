@@ -124,10 +124,9 @@
       dataUsage && dataUsage.length > 0
         ? dataUsage.map(item => `
             <div style="border:1px solid #ccc; margin:5px; padding:5px;">
-              <p><strong>Nama Paket:</strong> ${item.productName || '-'}</p>
-              <p><strong>Sisa Kuota:</strong> ${item.balance || '-'} ${item.unit || ''}</p>
-              <p><strong>Total Kuota:</strong> ${item.total || '-'} ${item.unit || ''}</p>
-              <p><strong>Periode:</strong> ${item.startTime || '-'} s/d ${item.endTime || '-'}</p>
+              <p><strong>Nama Paket:</strong> ${item.country || '-'}</p>
+              <p><strong>penggunaan Kuota:</strong> ${item.usedAmount || '-'} ${item.unit || ''}</p>
+              <p><strong>Periode:</strong> ${item.usedDate || '-'} s/d ${item.endTime || '-'}</p>
             </div>
           `).join('')
         : '<p>Tidak ada data usage ditemukan.</p>'

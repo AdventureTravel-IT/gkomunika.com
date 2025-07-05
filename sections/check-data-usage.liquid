@@ -84,6 +84,8 @@
         Array.isArray(data.tradeData.subOrderList) &&
         data.tradeData.subOrderList.length > 0
       ) {
+        resultEl.innerHTML = `
+          <pre>${JSON.stringify(data, null, 2)}</pre>
         const subOrders = data.tradeData.subOrderList;
 
         let html = `<h3>Vendor: ${vendor.toUpperCase()}</h3>`;

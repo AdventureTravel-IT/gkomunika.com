@@ -122,13 +122,10 @@
           
           </div>
           </div>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
         `;
 
         resultEl.innerHTML = html;
-        resultEl.innerHTML = `
-          <p><strong>ICCID Vendor:</strong> ${vendor}</p>
-          <pre>${JSON.stringify(data, null, 2)}</pre>
-        `;
 
       } else {
         resultEl.innerHTML = "";

@@ -518,7 +518,7 @@ body {
       {{ content_for_layout }}
     </main>
 
-    {% comment %} {% render 'whatsapp' %} {% endcomment %}
+    {% render 'whatsapp' %}
 
     {% unless template.name == 'login' or template.name == 'register' or template.name == 'search' %}
       {% sections 'footer-group' %}

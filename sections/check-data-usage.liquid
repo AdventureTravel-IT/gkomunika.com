@@ -117,92 +117,128 @@
       if (
   data.tradeCode === "1000" &&
   data.tradeData &&
-  (
-    Array.isArray(data.tradeData)
-      ? data.tradeData.length > 0
-      : Object.keys(data.tradeData).length > 0
-  )
+  data.tradeData.subOrderList &&
+  data.tradeData.subOrderList.length > 0
 ) {
-  const tradeData = data.tradeData;
+  const itemData = data.tradeData.subOrderList[0];
 
-  // HTML awal
+  // --- Format function ---
+  function formatDataSize(bytes) {
+    const gb = bytes / 1024 / 1024 / 1024;
+    const mb = bytes / 1024 / 1024;
+    if (gb >= 1) {
+      return gb.toFixed(2) + " GB";
+    }
+    return mb.toFixed(2) + " MB";
+  }
+
+  function formatDate(str) {
+    // Dari 20250703 → 03/07/2025
+    return `${str.substr(6,2)}/${str.substr(4,2)}/${str.substr(0,4)}`;
+  }
+
+  // --- Informasi SIM ---
   let html = `
     <h3>Informasi Kartu SIM</h3>
-    <p><strong>Bundle mu:</strong> ${tradeData.skuName || "-"}</p>
-    <p><strong>Masa Aktif:</strong> ${tradeData.planStartTime || "-"}</p>
-    <p><strong>Tanggal Berakhir:</strong> ${tradeData.planEndTime || "-"}</p>
+    <p><strong>Bundle mu:</strong> ${itemData.skuName || "-"}</p>
+    <p><strong>Masa Aktif:</strong> ${itemData.planStartTime || "-"}</p>
+    <p><strong>Tanggal Berakhir:</strong> ${itemData.planEndTime || "-"}</p>
     <br>
   `;
 
-  if (tradeData.usageList && tradeData.usageList.length > 0) {
-    tradeData.usageList.forEach((usage) => {
-      html += `
+  // --- Hitung total usage per negara ---
+  const usageInfoList = itemData.usageInfoList || [];
+
+  // Kelompokkan by country
+  const countryUsageMap = {};
+  usageInfoList.forEach(u => {
+    const country = u.country;
+    const usedBytes = parseInt(u.usedAmount, 10);
+
+    if (!countryUsageMap[country]) {
+      countryUsageMap[country] = {
+        totalBytes: 0,
+        daily: []
+      };
+    }
+
+    countryUsageMap[country].totalBytes += usedBytes;
+    countryUsageMap[country].daily.push({
+      date: formatDate(u.usedDate),
+      usage: formatDataSize(usedBytes)
+    });
+  });
+
+  // --- Tampilkan Total Penggunaan per Negara ---
+  for (const [country, usageData] of Object.entries(countryUsageMap)) {
+    html += `
+      <div style="
+        border: 1px solid #ccc; 
+        border-radius: 5px;
+        padding: 15px; 
+        margin-bottom: 20px;
+      ">
+        <h4>Total Penggunaan</h4>
         <div style="
-          border: 1px solid #ccc; 
-          border-radius: 5px;
-          padding: 15px; 
-          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-weight: bold;
+          font-size: 1.2em;
+          margin-bottom: 10px;
         ">
-          <h4>Total Penggunaan</h4>
-          <div style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-          ">
-            <span>${usage.country}</span>
-            <span>${usage.totalUsage}</span>
-          </div>
+          <span>${country}</span>
+          <span>${formatDataSize(usageData.totalBytes)}</span>
+        </div>
+    `;
+
+    // Tabel pemakaian harian
+    if (usageData.daily.length > 0) {
+      html += `
+        <table style="
+          width: 100%; 
+          border-collapse: collapse;
+          font-size: 0.9em;
+        ">
+          <thead>
+            <tr style="background-color: #f0f0f0;">
+              <th style="text-align: left; padding: 8px;">Negara</th>
+              <th style="text-align: right; padding: 8px;">Tanggal</th>
+              <th style="text-align: right; padding: 8px;">Penggunaan</th>
+            </tr>
+          </thead>
+          <tbody>
       `;
 
-      if (usage.dailyUsage && usage.dailyUsage.length > 0) {
+      usageData.daily.forEach(row => {
         html += `
-          <table style="
-            width: 100%; 
-            border-collapse: collapse;
-            font-size: 0.9em;
-          ">
-            <thead>
-              <tr style="background-color: #f0f0f0;">
-                <th style="text-align: left; padding: 8px;">Negara</th>
-                <th style="text-align: right; padding: 8px;">Tanggal</th>
-                <th style="text-align: right; padding: 8px;">Penggunaan</th>
-              </tr>
-            </thead>
-            <tbody>
+          <tr>
+            <td style="padding: 8px;">${country}</td>
+            <td style="padding: 8px; text-align: right;">${row.date}</td>
+            <td style="padding: 8px; text-align: right;">${row.usage}</td>
+          </tr>
         `;
+      });
 
-        usage.dailyUsage.forEach(day => {
-          html += `
-            <tr>
-              <td style="padding: 8px;">${usage.country}</td>
-              <td style="padding: 8px; text-align: right;">${day.date}</td>
-              <td style="padding: 8px; text-align: right;">${day.usage}</td>
-            </tr>
-          `;
-        });
+      html += `
+          </tbody>
+        </table>
+      `;
+    }
 
-        html += `
-            </tbody>
-          </table>
-        `;
-      }
-
-      html += `</div>`;
-    });
-  } else {
-    html += `<p>Tidak ada data penggunaan.</p>`;
+    html += `</div>`;
   }
 
+  // --- Tampilkan JSON untuk debug ---
   html += `<hr><pre>${JSON.stringify(data, null, 2)}</pre>`;
 
   resultEl.innerHTML = html;
+
 } else {
   resultEl.innerHTML = "";
   showInvalidPopup();
 }
+
 
 
     })

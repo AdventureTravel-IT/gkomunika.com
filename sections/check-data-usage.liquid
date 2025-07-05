@@ -103,22 +103,40 @@
         return;
       }
 
-      if (data.tradeCode === "1000" &&
-          data.tradeData &&
-          (Array.isArray(data.tradeData)
-            ? data.tradeData.length > 0
-            : Object.keys(data.tradeData).length > 0)) {
-const itemData = data.subOrderList[0];
-        resultEl.innerHTML = `
-          <p><strong>ICCID Vendor:</strong> ${vendor}</p>
-          <pre>${JSON.stringify(data, null, 2)}</pre>
-          <pre>${data.skuId}</pre>
-        `;
+      if (
+  data.tradeCode === "1000" &&
+  data.tradeData &&
+  (
+    Array.isArray(data.tradeData)
+      ? data.tradeData.length > 0
+      : Object.keys(data.tradeData).length > 0
+  )
+) {
+  let itemData = {};
 
-      } else {
+  if (Array.isArray(data.tradeData)) {
+    itemData = data.tradeData[0];
+  } else {
+    itemData = data.tradeData;
+  }
+
+  // Loop seluruh key-value di itemData
+  let mappedHtml = "";
+  for (const [key, value] of Object.entries(itemData)) {
+    mappedHtml += `<p><strong>${key}:</strong> ${value ?? "-"}</p>`;
+  }
+
+  resultEl.innerHTML = `
+    <p><strong>ICCID Vendor:</strong> ${vendor}</p>
+    ${mappedHtml}
+    <hr>
+    <pre>${JSON.stringify(data, null, 2)}</pre>
+  `;
+} else {
   resultEl.innerHTML = "";
   showInvalidPopup();
 }
+
 
     })
     .catch(error => {

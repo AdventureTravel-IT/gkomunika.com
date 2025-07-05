@@ -6,7 +6,7 @@
 >
 <button id="check-iccid" onclick="checkICCID()">Cek</button>
 
-<div id="result">{% render 'loading-spinner' %}</div>
+<div id="result"></div>
 
 <div class="invalid-popup" id="invalid-popup">
   <div class="invalid-popup__content">
@@ -70,7 +70,7 @@
 
     button.disabled = true;
     button.innerText = 'Memproses...';
-    resultEl.innerHTML = `<p>Sedang memproses...</p>`;
+    resultEl.innerHTML = `{% render 'loading-spinner' %}`;
 
     fetch('https://gkomunika.id/api/v1/check/data_info', {
       method: 'POST',

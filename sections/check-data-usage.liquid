@@ -2,7 +2,7 @@
   type="text"
   id="iccid"
   placeholder="Masukkan ICCID" required>
-<button id="check-iccid" onclick="checkICCID()">Next</button>
+<button id="check-iccid" onclick="checkICCID()">Cek</button>
 
 <div id="result"></div>
 
@@ -65,7 +65,7 @@
         `;
       } else {
         resultEl.innerHTML = `
-          <p style="color: red"></p>
+          <p style="color: red">Data tidak ditemukan</p>
         `;
       }
     })

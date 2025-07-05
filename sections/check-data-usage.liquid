@@ -37,12 +37,18 @@
 
     // Validasi awal input
     if (!iccid || iccid.length < 10) {
-      resultEl.innerHTML = `<p style="color: red">ICCID tidak valid</p>`;
+      resultEl.innerHTML = `<p style="color: red">ICCID tidak valid (minimal 10 digit)</p>`;
       return;
     }
 
-    // DEBUG: cek vendor
+    // Validasi prefix
     const vendor = detectVendor(iccid);
+    if (!vendor) {
+      resultEl.innerHTML = `<p style="color: red">Prefix ICCID tidak dikenali</p>`;
+      return;
+    }
+
+    // DEBUG: tampilkan vendor di console
     console.log("DEBUG ICCID Vendor →", vendor);
 
     // Disable button & tampilkan loading
@@ -83,27 +89,25 @@
             ? data.tradeData.length > 0
             : Object.keys(data.tradeData).length > 0)) {
 
-        // DEBUG: tampilkan hasil vendor
         resultEl.innerHTML = `
-          <p><strong>ICCID Vendor:</strong> ${vendor ? vendor : 'Tidak diketahui'}</p>
+          <p><strong>ICCID Vendor:</strong> ${vendor}</p>
           <pre>${JSON.stringify(data, null, 2)}</pre>
         `;
 
       } else {
         resultEl.innerHTML = `
           <p style="color: red">Data tidak ditemukan</p>
-          <p><strong>ICCID Vendor:</strong> ${vendor ? vendor : 'Tidak diketahui'}</p>
+          <p><strong>ICCID Vendor:</strong> ${vendor}</p>
         `;
       }
     })
     .catch(error => {
       resultEl.innerHTML = `
         <p style="color: red">Connection Error</p>
-        <p><strong>ICCID Vendor:</strong> ${vendor ? vendor : 'Tidak diketahui'}</p>
+        <p><strong>ICCID Vendor:</strong> ${vendor}</p>
       `;
     })
     .finally(() => {
-      // Kembalikan state tombol
       button.disabled = false;
       button.innerText = 'Next';
     });

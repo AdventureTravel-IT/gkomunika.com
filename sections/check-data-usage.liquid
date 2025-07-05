@@ -144,8 +144,8 @@ let html = `
           ? dataUsage.map(item => `
               <div style="border:1px solid #ccc; margin:5px; padding:5px;">
                 <p>Nama Paket:</strong> ${item.country || '-'}</p>
-                <p>penggunaan Kuota:</strong> ${item.usedAmount || '-'} ${item.unit || ''}</p>
-                <p>Periode:</strong> ${item.usedDate || '-'} s/d ${item.endTime || '-'}</p>
+                <p>penggunaan Kuota:</strong> ${item.usedAmount || '-'}</p>
+                <p>Periode:</strong> ${item.usedDate || '-'}</p>
               </div>
             `).join('')
           : '<p>Tidak ada data usage ditemukan.</p>'

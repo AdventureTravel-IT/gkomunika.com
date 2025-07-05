@@ -35,11 +35,18 @@
     const iccid = document.getElementById('iccid').value.trim();
     const resultEl = document.getElementById('result');
 
-    // Validasi awal input
     if (!iccid || iccid.length < 10) {
-      resultEl.innerHTML = `<p style="color: red">ICCID tidak valid</p>`;
-      return;
-    }
+  resultEl.innerHTML = `<p style="color: red">ICCID tidak valid (minimal 10 digit)</p>`;
+  return;
+}
+
+// cek prefix
+const vendor = detectVendor(iccid);
+if (!vendor) {
+  resultEl.innerHTML = `<p style="color: red">Prefix ICCID tidak dikenali</p>`;
+  return;
+}
+
 
     // DEBUG: cek vendor
     const vendor = detectVendor(iccid);

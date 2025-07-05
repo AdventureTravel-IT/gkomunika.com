@@ -8,13 +8,31 @@
 
 <script>
   let lastSubmit = 0;
+
+  const prefixVendorMap = [
+    { prefix: "89859", vendor: "fm" },
+    { prefix: "89862", vendor: "fm" },
+    { prefix: "89810", vendor: "tgt" },
+    { prefix: "2210", vendor: "bc" },
+    { prefix: "8981200", vendor: "bc" },
+  ];
+
+  function detectVendor(iccid) {
+    for (const item of prefixVendorMap) {
+      if (iccid.startsWith(item.prefix)) {
+        return item.vendor;
+      }
+    }
+    return null;
+  }
+
   function checkICCID() {
     const now = Date.now();
     if (now - lastSubmit < 3000) return; // minimum 3 detik antar klik
     lastSubmit = now;
 
     const button = document.getElementById('check-iccid');
-    const iccid = document.getElementById('iccid').value;
+    const iccid = document.getElementById('iccid').value.trim();
     const resultEl = document.getElementById('result');
 
     // Validasi awal input
@@ -22,6 +40,10 @@
       resultEl.innerHTML = `<p style="color: red">ICCID tidak valid</p>`;
       return;
     }
+
+    // DEBUG: cek vendor
+    const vendor = detectVendor(iccid);
+    console.log("DEBUG ICCID Vendor →", vendor);
 
     // Disable button & tampilkan loading
     button.disabled = true;
@@ -49,7 +71,7 @@
       }
 
       if (data.status === 'rate_limited' || data.customCode === 429) {
-        document.getElementById('result').innerHTML = `
+        resultEl.innerHTML = `
           <p style="color: red">${data.message}</p>
         `;
         return;
@@ -60,18 +82,24 @@
           (Array.isArray(data.tradeData)
             ? data.tradeData.length > 0
             : Object.keys(data.tradeData).length > 0)) {
+
+        // DEBUG: tampilkan hasil vendor
         resultEl.innerHTML = `
+          <p><strong>ICCID Vendor:</strong> ${vendor ? vendor : 'Tidak diketahui'}</p>
           <pre>${JSON.stringify(data, null, 2)}</pre>
         `;
+
       } else {
         resultEl.innerHTML = `
           <p style="color: red">Data tidak ditemukan</p>
+          <p><strong>ICCID Vendor:</strong> ${vendor ? vendor : 'Tidak diketahui'}</p>
         `;
       }
     })
     .catch(error => {
       resultEl.innerHTML = `
         <p style="color: red">Connection Error</p>
+        <p><strong>ICCID Vendor:</strong> ${vendor ? vendor : 'Tidak diketahui'}</p>
       `;
     })
     .finally(() => {

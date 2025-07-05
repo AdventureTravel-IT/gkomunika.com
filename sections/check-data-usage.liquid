@@ -180,16 +180,16 @@
           </div>
 
           <div>
-            <h3>Daftar Negara Paket:</h3>
+            <h3>Total Usage:</h3>
             ${
               uniqueCountries.length > 0
                 ? `<div>${uniqueCountries.map((c) => `<span>${c}</span>`).join('')}</div>`
-                : '<p>Tidak ada negara ditemukan.</p>'
+                : '<div>no data usage yet.</div>'
             }
           </div>
 
           <div>
-            <h3>Penggunaan data</h3>
+            <h3>Data Usage</h3>
             <div>
               ${
                 dataUsage && dataUsage.length > 0

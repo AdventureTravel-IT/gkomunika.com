@@ -115,9 +115,20 @@
             <p><strong>Masa Aktif:</strong> ${itemData.planStartTime || "-"}</p>
             <p><strong>Tanggal Berakhir:</strong> ${itemData.planEndTime || "-"}</p>
           </div>
+
+          <div>
+          <h3>Pneggunaan data</h3>
+          <div>
+          
+          </div>
+          </div>
         `;
 
         resultEl.innerHTML = html;
+        resultEl.innerHTML = `
+          <p><strong>ICCID Vendor:</strong> ${vendor}</p>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
 
       } else {
         resultEl.innerHTML = "";

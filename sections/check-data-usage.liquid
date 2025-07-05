@@ -8,6 +8,7 @@
 
 <script>
   let lastSubmit = 0;
+
   function checkICCID() {
     const now = Date.now();
     if (now - lastSubmit < 3000) return; // minimum 3 detik antar klik
@@ -38,7 +39,7 @@
     .then(async (response) => {
       const contentType = response.headers.get("Content-Type") || "";
       const isJson = contentType.includes("application/json");
-    
+
       let data = {};
       if (isJson) {
         try {
@@ -49,44 +50,46 @@
       }
 
       if (data.status === 'rate_limited' || data.customCode === 429) {
-        document.getElementById('result').innerHTML = `
+        resultEl.innerHTML = `
           <p style="color: red">${data.message}</p>
         `;
         return;
       }
 
-      if (data.tradeCode === "1000" &&
-          data.tradeData &&
-          (Array.isArray(data.tradeData)
-            ? data.tradeData.length > 0
-            : Object.keys(data.tradeData).length > 0)) {
-        const subOrders = data.tradeData?.subOrderList || [];
+      if (
+        data.tradeCode === "1000" &&
+        data.tradeData &&
+        Array.isArray(data.tradeData.subOrderList) &&
+        data.tradeData.subOrderList.length > 0
+      ) {
+        const subOrders = data.tradeData.subOrderList;
 
-if (subOrders.length > 0) {
-  let html = '<h3>Sub Order List</h3>';
-  subOrders.forEach((order, index) => {
-    // Konversi traffic dari Byte ke MB atau GB (misalnya GB)
-    const totalTrafficGB = (Number(order.totalTraffic) / 1024 / 1024).toFixed(2);
-    const remainingTrafficGB = (Number(order.remainingTraffic) / 1024 / 1024).toFixed(2);
+        let html = '<h3>Sub Order List</h3>';
 
-    html += `
-      <div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px;">
-        <p><strong>#${index + 1}</strong></p>
-        <p><strong>SKU Name:</strong> ${order.skuName}</p>
-        <p><strong>Start Time:</strong> ${order.planStartTime}</p>
-        <p><strong>End Time:</strong> ${order.planEndTime}</p>
-        <p><strong>Total Traffic:</strong> ${totalTrafficGB} GB</p>
-        <p><strong>Remaining Traffic:</strong> ${remainingTrafficGB} GB</p>
-      </div>
-    `;
-  });
+        subOrders.forEach((order, index) => {
+          // Konversi Byte ke GB
+          const totalTrafficGB = (Number(order.totalTraffic) / 1024 / 1024).toFixed(2);
+          const remainingTrafficGB = (Number(order.remainingTraffic) / 1024 / 1024).toFixed(2);
 
-  resultEl.innerHTML = html;
+          html += `
+            <div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px;">
+              <p><strong>#${index + 1}</strong></p>
+              <p><strong>SKU Name:</strong> ${order.skuName || '-'}</p>
+              <p><strong>Start Time:</strong> ${order.planStartTime || '-'}</p>
+              <p><strong>End Time:</strong> ${order.planEndTime || '-'}</p>
+              <p><strong>Total Traffic:</strong> ${totalTrafficGB} GB</p>
+              <p><strong>Remaining Traffic:</strong> ${remainingTrafficGB} GB</p>
+            </div>
+          `;
+        });
 
-} else {
-  resultEl.innerHTML = `<p style="color: red">Data tidak ditemukan</p>`;
-}
+        resultEl.innerHTML = html;
 
+      } else {
+        resultEl.innerHTML = `
+          <p style="color: red">Data tidak ditemukan</p>
+        `;
+      }
     })
     .catch(error => {
       resultEl.innerHTML = `

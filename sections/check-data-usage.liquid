@@ -4,7 +4,11 @@
   placeholder="Masukkan ICCID" required>
 <button id="check-iccid" onclick="checkICCID()">Cek</button>
 
-<div id="result"></div>
+<div id="result">
+  <div id="loading-spinner" style="display: none;">
+    {% render 'loading-spinner' %}
+  </div>
+</div>
 
 <div class="invalid-popup" id="invalid-popup">
   <div class="invalid-popup__content">
@@ -47,12 +51,13 @@
 
   function checkICCID() {
     const now = Date.now();
-    if (now - lastSubmit < 3000) return; // minimum 3 detik antar klik
+    if (now - lastSubmit < 3000) return; // minimal 3 detik antar klik
     lastSubmit = now;
 
     const button = document.getElementById('check-iccid');
     const iccid = document.getElementById('iccid').value.trim();
     const resultEl = document.getElementById('result');
+    const spinnerEl = document.getElementById('loading-spinner');
 
     // Validasi awal input
     if (!iccid || iccid.length < 10) {
@@ -63,18 +68,15 @@
     // Cek prefix
     const vendor = detectVendor(iccid);
     if (!vendor) {
-      // Tampilkan modal popup
       showInvalidPopup();
       return;
     }
 
-    // DEBUG: tampilkan vendor di console
     console.log("DEBUG ICCID Vendor →", vendor);
 
-    // Disable button & tampilkan loading
     button.disabled = true;
     button.innerText = 'Memproses...';
-    resultEl.innerHTML = `<p>Sedang memproses...</p>`;
+    spinnerEl.style.display = "block";
 
     fetch('https://gkomunika.id/api/v1/check/data_info', {
       method: 'POST',
@@ -86,7 +88,7 @@
     .then(async (response) => {
       const contentType = response.headers.get("Content-Type") || "";
       const isJson = contentType.includes("application/json");
-    
+
       let data = {};
       if (isJson) {
         try {
@@ -115,10 +117,10 @@
         `;
 
       } else {
-  resultEl.innerHTML = "";
-  showInvalidPopup();
-}
-
+        // Data tidak ditemukan → tampilkan hanya pop-up
+        resultEl.innerHTML = "";
+        showInvalidPopup();
+      }
     })
     .catch(error => {
       resultEl.innerHTML = `
@@ -127,17 +129,16 @@
       `;
     })
     .finally(() => {
+      spinnerEl.style.display = "none";
       button.disabled = false;
       button.innerText = 'Next';
     });
   }
 
-  // Tutup popup saat tombol OK diklik
   document.getElementById('invalid-popup__button-hide').addEventListener('click', () => {
     document.getElementById('invalid-popup').style.display = 'none';
   });
 
-  // Tambahkan event ke tombol Buy eSIM dan Contact CS
   document.getElementById('invalid-popup__buy-button').addEventListener('click', () => {
     window.location.href = "https://example.com/esim";
   });

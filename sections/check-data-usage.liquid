@@ -108,33 +108,53 @@
         const itemData = data.tradeData.subOrderList[0];
         const dataUsage = itemData.usageInfoList;
 
-        // --- Informasi SIM ---
-        let html = `
-          <div>
-            <h3>Informasi Kartu SIM</h3>
-            <p>Bundle mu:</strong> ${itemData.skuName || "-"}</p>
-            <p>Masa Aktif:</strong> ${itemData.planStartTime || "-"}</p>
-            <p>Tanggal Berakhir:</strong> ${itemData.planEndTime || "-"}</p>
-          </div>
+// Ambil daftar negara unik
+let uniqueCountries = [];
+if (dataUsage && dataUsage.length > 0) {
+  uniqueCountries = [...new Set(
+    dataUsage
+      .map(item => item.country)
+      .filter(Boolean) // hilangkan null atau undefined
+  )];
+}
 
-          <div>
-          <h3>Pneggunaan data</h3>
-          <div>
-          ${
-      dataUsage && dataUsage.length > 0
-        ? dataUsage.map(item => `
-            <div style="border:1px solid #ccc; margin:5px; padding:5px;">
-              <p>Nama Paket:</strong> ${item.country || '-'}</p>
-              <p>penggunaan Kuota:</strong> ${item.usedAmount || '-'} ${item.unit || ''}</p>
-              <p>Periode:</strong> ${item.usedDate || '-'} s/d ${item.endTime || '-'}</p>
-            </div>
-          `).join('')
-        : '<p>Tidak ada data usage ditemukan.</p>'
+// --- Informasi SIM ---
+let html = `
+  <div>
+    <h3>Informasi Kartu SIM</h3>
+    <p>Bundle mu:</strong> ${itemData.skuName || "-"}</p>
+    <p>Masa Aktif:</strong> ${itemData.planStartTime || "-"}</p>
+    <p>Tanggal Berakhir:</strong> ${itemData.planEndTime || "-"}</p>
+  </div>
+
+  <div>
+    <h3>Daftar Negara Paket:</h3>
+    ${
+      uniqueCountries.length > 0
+        ? `<ul>${uniqueCountries.map(c => `<li>${c}</li>`).join('')}</ul>`
+        : '<p>Tidak ada negara ditemukan.</p>'
     }
-          </div>
-          </div>
-          <pre>${JSON.stringify(data, null, 2)}</pre>
-        `;
+  </div>
+
+  <div>
+    <h3>Pneggunaan data</h3>
+    <div>
+      ${
+        dataUsage && dataUsage.length > 0
+          ? dataUsage.map(item => `
+              <div style="border:1px solid #ccc; margin:5px; padding:5px;">
+                <p>Nama Paket:</strong> ${item.country || '-'}</p>
+                <p>penggunaan Kuota:</strong> ${item.usedAmount || '-'} ${item.unit || ''}</p>
+                <p>Periode:</strong> ${item.usedDate || '-'} s/d ${item.endTime || '-'}</p>
+              </div>
+            `).join('')
+          : '<p>Tidak ada data usage ditemukan.</p>'
+      }
+    </div>
+  </div>
+
+  <pre>${JSON.stringify(data, null, 2)}</pre>
+`;
 
         resultEl.innerHTML = html;
 

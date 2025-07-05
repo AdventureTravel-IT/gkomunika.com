@@ -112,26 +112,82 @@
       : Object.keys(data.tradeData).length > 0
   )
 ) {
-  let itemData = {};
+  const tradeData = data.tradeData;
 
-  if (Array.isArray(data.tradeData)) {
-    itemData = data.tradeData[0];
-  } else {
-    itemData = data.tradeData;
-  }
-
-  // Loop seluruh key-value di itemData
-  let mappedHtml = "";
-  for (const [key, value] of Object.entries(itemData)) {
-    mappedHtml += `<p><strong>${key}:</strong> ${value ?? "-"}</p>`;
-  }
-
-  resultEl.innerHTML = `
-    <p><strong>ICCID Vendor:</strong> ${vendor}</p>
-    ${mappedHtml}
-    <hr>
-    <pre>${JSON.stringify(data, null, 2)}</pre>
+  // HTML awal
+  let html = `
+    <h3>Informasi Kartu SIM</h3>
+    <p><strong>Bundle mu:</strong> ${tradeData.bundleName || "-"}</p>
+    <p><strong>Masa Aktif:</strong> ${tradeData.startDate || "-"}</p>
+    <p><strong>Tanggal Berakhir:</strong> ${tradeData.expireDate || "-"}</p>
+    <br>
   `;
+
+  if (tradeData.usageList && tradeData.usageList.length > 0) {
+    tradeData.usageList.forEach((usage) => {
+      html += `
+        <div style="
+          border: 1px solid #ccc; 
+          border-radius: 5px;
+          padding: 15px; 
+          margin-bottom: 20px;
+        ">
+          <h4>Total Penggunaan</h4>
+          <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+          ">
+            <span>${usage.country}</span>
+            <span>${usage.totalUsage}</span>
+          </div>
+      `;
+
+      if (usage.dailyUsage && usage.dailyUsage.length > 0) {
+        html += `
+          <table style="
+            width: 100%; 
+            border-collapse: collapse;
+            font-size: 0.9em;
+          ">
+            <thead>
+              <tr style="background-color: #f0f0f0;">
+                <th style="text-align: left; padding: 8px;">Negara</th>
+                <th style="text-align: right; padding: 8px;">Tanggal</th>
+                <th style="text-align: right; padding: 8px;">Penggunaan</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        usage.dailyUsage.forEach(day => {
+          html += `
+            <tr>
+              <td style="padding: 8px;">${usage.country}</td>
+              <td style="padding: 8px; text-align: right;">${day.date}</td>
+              <td style="padding: 8px; text-align: right;">${day.usage}</td>
+            </tr>
+          `;
+        });
+
+        html += `
+            </tbody>
+          </table>
+        `;
+      }
+
+      html += `</div>`;
+    });
+  } else {
+    html += `<p>Tidak ada data penggunaan.</p>`;
+  }
+
+  html += `<hr><pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+  resultEl.innerHTML = html;
 } else {
   resultEl.innerHTML = "";
   showInvalidPopup();

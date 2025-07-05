@@ -20,6 +20,10 @@
 </div>
 
 <script>
+  document.getElementById('invalid-popup__button-hide').addEventListener('click', () => {
+  document.getElementById('invalid-popup').style.display = 'none';
+});
+
   let lastSubmit = 0;
 
   const prefixVendorMap = [
@@ -119,6 +123,35 @@
     });
   }
 </script>
+
+<style>
+  .invalid-popup {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+  }
+
+  .invalid-popup__content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .invalid-popup__button button {
+    margin: 5px;
+  }
+</style>
+
 
 {% schema %}
   {

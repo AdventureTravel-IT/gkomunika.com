@@ -183,7 +183,7 @@
             <h3>Daftar Negara Paket:</h3>
             ${
               uniqueCountries.length > 0
-                ? `<ul>${uniqueCountries.map((c) => `<li>${c}</li>`).join('')}</ul>`
+                ? `<div>${uniqueCountries.map((c) => `<span>${c}</span>`).join('')}</div>`
                 : '<p>Tidak ada negara ditemukan.</p>'
             }
           </div>

@@ -71,9 +71,6 @@
       return;
     }
 
-    // DEBUG: tampilkan vendor di console
-    console.log("DEBUG ICCID Vendor →", vendor);
-
     // Disable button & tampilkan loading
     button.disabled = true;
     button.innerText = 'Memproses...';
@@ -111,10 +108,11 @@
           (Array.isArray(data.tradeData)
             ? data.tradeData.length > 0
             : Object.keys(data.tradeData).length > 0)) {
-
+const itemData = data.subOrderList[0];
         resultEl.innerHTML = `
           <p><strong>ICCID Vendor:</strong> ${vendor}</p>
           <pre>${JSON.stringify(data, null, 2)}</pre>
+          <pre>${data.skuId}</pre>
         `;
 
       } else {

@@ -131,14 +131,14 @@
       <span>Enter your iccid</span>
     </div>
     <div class="check-data-usage__input">
-    <input
-      type="number"
-      id="iccid"
-      placeholder="Input ICCID Number"
-      value="22104483970"
-      required
-    >
-    <button id="check-iccid" onclick="checkICCID()">Next</button>
+      <input
+        type="number"
+        id="iccid"
+        placeholder="Input ICCID Number"
+        value="22104483970"
+        required
+      >
+      <button id="check-iccid" onclick="checkICCID()">Next</button>
     </div>
 
     <div class="check-data-usage__result">
@@ -287,7 +287,8 @@
             </div>
           </div>
 
-          <div>
+<div class="check-data-usage__usage-content">
+          <div class="check-data-usage__total-usage">
             <h3>Total Usage:</h3>
             ${
               uniqueCountries.length > 0
@@ -296,7 +297,7 @@
             }
           </div>
 
-          <div>
+          <div class="check-data-usage__data-usage">
             <h3>Data Usage</h3>
             <div>
               ${
@@ -319,6 +320,7 @@
                   : '<p>no data usage yet.</p>'
               }
             </div>
+          </div>
           </div>
 
           <pre>${JSON.stringify(data, null, 2)}</pre>

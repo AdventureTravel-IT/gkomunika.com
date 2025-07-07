@@ -67,12 +67,20 @@
     color: var(--color-neutral);
     font-size: var(--font-large);
   }
+  #iccid {
+    width: 100%;
+    padding: 15px;
+    border-radius: 15px;
+    outline: none;
+    border: none;
+    background-color: var(--color-background);
+  }
 {% endstyle %}
 
 <input
   type="number"
   id="iccid"
-  placeholder="Masukkan ICCID"
+  placeholder="Input ICCID Number"
   required
 >
 <button id="check-iccid" onclick="checkICCID()">Cek</button>

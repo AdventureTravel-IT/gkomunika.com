@@ -254,9 +254,6 @@
   }
 }
 
-
-
-
   function formatDate(dateStr) {
   if (!dateStr || dateStr.length !== 8) return dateStr || '-';
   const year = dateStr.substring(0, 4);
@@ -345,11 +342,11 @@
             </div>
             <div class="esim-information__wrapper">
             <p>Active Period</p>
-            <span>${itemData.planStartTime || '-'} ${itemData.timeZone || '-'}</span>
+            <span>${formatDate(itemData.planStartTime) || '-'} ${itemData.timeZone || '-'}</span>
             </div>
             <div class="esim-information__wrapper">
             <p>End Date</p>
-            <span>${itemData.planEndTime || '-'} ${itemData.timeZone || '-'}</span>
+            <span>${formatDate(itemData.planEndTime) || '-'} ${itemData.timeZone || '-'}</span>
             </div>
           </div>
 

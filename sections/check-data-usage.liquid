@@ -244,13 +244,13 @@
       return formatter.format(bytes / (1024 * 1024 * 1024)) + ' GB';
     } else if (bytes >= 1024 * 1024) {
       console.log("Converted to MB:", bytes / (1024 * 1024));
-      return formatter.format(bytes / (1024 * 1024)) + ' GB';
+      return formatter.format(bytes / (1024 * 1024)) + ' MB';
     } else if (bytes >= 1024) {
       console.log("Converted to KB:", bytes / 1024);
-      return formatter.format(bytes / 1024) + ' MB';
+      return formatter.format(bytes / 1024) + ' KB';
     } else {
       console.log("Less than 1 KB, stay in Bytes");
-      return formatter.format(bytes) + ' KB';
+      return formatter.format(bytes) + ' Byte';
     }
   }
 
@@ -330,15 +330,36 @@
           const itemData = data.tradeData.subOrderList[0];
           const dataUsage = itemData.usageInfoList;
 
-          let uniqueCountries = [];
+          // --- BUAT TOTAL USAGE PER NEGARA ---
+          const countryUsageMap = {};
+
           if (dataUsage && dataUsage.length > 0) {
-            uniqueCountries = [
-              ...new Set(
-                dataUsage.map((item) => item.country).filter(Boolean)
-              ),
-            ];
+            dataUsage.forEach((item) => {
+              const country = item.country || '-';
+              const usedAmount = Number(item.usedAmount) || 0;
+
+              if (!countryUsageMap[country]) {
+                countryUsageMap[country] = 0;
+              }
+              countryUsageMap[country] += usedAmount;
+            });
           }
 
+          let totalUsageHtml = '';
+
+          for (const country in countryUsageMap) {
+            const totalBytes = countryUsageMap[country];
+            const formattedTotal = formatBytes(totalBytes);
+            totalUsageHtml += `
+              <div class="data-usage__wrapper">
+                <p>${country}</p>
+                <p></p>
+                <p>${formattedTotal}</p>
+              </div>
+            `;
+          }
+
+          // --- TAMPILKAN HTML ---
           let html = `
           <div class="check-data-usage__esim-information">
             <h3>Informasi Kartu SIM</h3>
@@ -348,11 +369,11 @@
             </div>
             <div class="esim-information__wrapper">
               <p>Active Period</p>
-              <span>${formatDateTime(itemData.planStartTime) || '-'} ${itemData.timeZone || '-'}</span> <!-- ✅ PERBAIKAN DI SINI -->
+              <span>${formatDateTime(itemData.planStartTime) || '-'} ${itemData.timeZone || '-'}</span>
             </div>
             <div class="esim-information__wrapper">
               <p>End Date</p>
-              <span>${formatDateTime(itemData.planEndTime) || '-'} ${itemData.timeZone || '-'}</span> <!-- ✅ PERBAIKAN DI SINI -->
+              <span>${formatDateTime(itemData.planEndTime) || '-'} ${itemData.timeZone || '-'}</span>
             </div>
           </div>
 
@@ -361,8 +382,8 @@
             <div class="check-data-usage__total-usage">
               <h3>Total Usage:</h3>
               ${
-                uniqueCountries.length > 0
-                  ? `<div>${uniqueCountries.map((c) => `<span>${c}</span>`).join('')}</div>`
+                Object.keys(countryUsageMap).length > 0
+                  ? totalUsageHtml
                   : '<div>no data usage yet.</div>'
               }
             </div>
@@ -424,6 +445,7 @@
     window.location.href = 'https://wa.me/628986454071';
   });
 </script>
+
 
 {% schema %}
 {

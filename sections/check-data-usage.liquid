@@ -231,21 +231,28 @@
   }
 
   function formatBytes(bytes) {
+  console.log("Raw bytes:", bytes);
+
   const formatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 
   if (bytes >= 1024 * 1024 * 1024) {
+    console.log("Converted to GB:", bytes / (1024 * 1024 * 1024));
     return formatter.format(bytes / (1024 * 1024 * 1024)) + ' GB';
   } else if (bytes >= 1024 * 1024) {
-    return formatter.format(bytes / (1024 * 1024)) + ' GB';
+    console.log("Converted to MB:", bytes / (1024 * 1024));
+    return formatter.format(bytes / (1024 * 1024)) + ' MB';
   } else if (bytes >= 1024) {
-    return formatter.format(bytes / 1024) + ' MB';
+    console.log("Converted to KB:", bytes / 1024);
+    return formatter.format(bytes / 1024) + ' KB';
   } else {
+    console.log("Less than 1 KB, stay in Bytes");
     return formatter.format(bytes) + ' Byte';
   }
 }
+
 
 
 

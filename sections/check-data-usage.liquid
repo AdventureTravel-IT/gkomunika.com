@@ -67,6 +67,14 @@
   font-size: var(--font-large);
 }
 
+#iccid:focus {
+  outline: none;
+}
+
+#iccid::placeholder {
+  color: var(--color-primary);
+}
+
 #check-iccid {
   padding: 15px;
   border-radius: 15px;
@@ -177,6 +185,15 @@
   display: flex;
   justify-content: flex-end;
 }
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
 @media (max-width: 768px) {
   .check-data-usage__wrapper {
     padding: 20px 24px;
@@ -197,7 +214,6 @@
         type="number"
         id="iccid"
         placeholder="Input ICCID Number"
-        value="22104483970"
         required
       >
       <button id="check-iccid" type="button">Next</button>
@@ -332,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const iccid = iccidInput.value.trim();
     if (!iccid || iccid.length < 10) {
-      resultEl.innerHTML = `<p style="color:red;">ICCID tidak valid (minimal 10 digit)</p>`;
+      resultEl.innerHTML = `<p style="color:red;">Invalid ICCID (minimum 10 digits)</p>`;
       return;
     }
 
@@ -356,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = contentType.includes('application/json') ? await response.json() : {};
 
       if (data.status === 'rate_limited' || data.customCode === 429) {
-        resultEl.innerHTML = `<p style="color: red">${data.message}</p>`;
+        console.log(data.message);
         return;
       }
 
@@ -369,11 +385,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const countryUsageMap = {};
-      for (const item of dataUsage) {
-        const country = item.country || '-';
-        const usedAmount = Number(item.usedAmount) || 0;
-        countryUsageMap[country] = (countryUsageMap[country] || 0) + usedAmount;
-      }
+let totalUsedBytes = 0;
+
+for (const item of dataUsage) {
+  const country = item.country || '-';
+  const usedAmount = Number(item.usedAmount) || 0;
+  countryUsageMap[country] = (countryUsageMap[country] || 0) + usedAmount;
+
+  totalUsedBytes += usedAmount;
+}
+
 
       const esimHtml = renderEsimInfo(itemData);
       const totalUsageHtml = renderTotalUsage(countryUsageMap);
@@ -382,9 +403,14 @@ document.addEventListener('DOMContentLoaded', () => {
       resultEl.innerHTML = `
         ${esimHtml}
         <div class="check-data-usage__usage-content">
+        <div style="text-align: center;">
           <h2>Data Usage</h2>
+          </div>
           <div class="check-data-usage__total-usage">
+          <div style="display: flex; justify-content: space-between;">
             <h3>Total Usage:</h3>
+            <span style="font-weight: bold;">${formatBytes(totalUsedBytes)}</span>
+            </div>
             ${totalUsageHtml}
           </div>
           <div class="check-data-usage__data-usage">

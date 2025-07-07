@@ -92,6 +92,10 @@
     .insurance-table__scroll td:first-child {
       width: 20%;
     }
+    .insurance-table__scroll table.single-column-mode th:first-child,
+  .insurance-table__scroll table.single-column-mode td:first-child {
+    width: 10%;
+  }
   }
 </style>
 
@@ -1728,51 +1732,69 @@
   <div class="insurance-table__scroll">
     {% for package in packages %}
       {% assign benefits_plan = package.benefits_plan[0] %}
-      <table style="z-index: 1">
+
+      {% assign has_column2 = benefits_plan.column2 %}
+      {% assign has_column3 = benefits_plan.column3 %}
+      {% if has_column2 or has_column3 %}
+        {% assign full_columns = true %}
+        {% assign table_class = "" %}
+      {% else %}
+        {% assign full_columns = false %}
+        {% assign table_class = "single-column-mode" %}
+      {% endif %}
+
+      <table class="{{ table_class }}" style="z-index: 1">
         <thead>
           <tr>
             <th>Benefits</th>
             {% if benefits_plan.column1 %}
-              <th
-                {% if benefits_plan.column2 == null and benefits_plan.column3 == null %}
-                  colspan="2"
-                {% endif %}
-              >
+              <th {% unless full_columns %} colspan="2" {% endunless %}>
                 {{ benefits_plan.column1 }}
               </th>
             {% endif %}
-            {% if benefits_plan.column2 %}
-              <th>{{ benefits_plan.column2 }}</th>
-            {% endif %}
-            {% if benefits_plan.column3 %}
-              <th>{{ benefits_plan.column3 }}</th>
+            {% if full_columns %}
+              {% if benefits_plan.column2 %}
+                <th>{{ benefits_plan.column2 }}</th>
+              {% endif %}
+              {% if benefits_plan.column3 %}
+                <th>{{ benefits_plan.column3 }}</th>
+              {% endif %}
             {% endif %}
           </tr>
         </thead>
         <tbody>
-          <!-- Trip Cancellation and Alteration -->
+
           {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
           {% if cancelation.basic or cancelation.executive or cancelation.premiere %}
             <tr>
               <td>Trip Cancellation and Alteration</td>
-              <td>{{ cancelation.basic }}</td>
-              <td>{{ cancelation.executive }}</td>
-              <td>{{ cancelation.premiere }}</td>
+              {% if full_columns %}
+                <td>{{ cancelation.basic }}</td>
+                <td>{{ cancelation.executive }}</td>
+                <td>{{ cancelation.premiere }}</td>
+              {% else %}
+                <td colspan="2">{{ cancelation.basic }}</td>
+              {% endif %}
             </tr>
           {% endif %}
 
           <tr class="highlight-row">
             <td colspan="2"><b>Medical & Other Emergency Expenses</b></td>
           </tr>
+
           {% assign medical = package.medical_and_other_emergency_expenses %}
 
           {% for item in medical.medical_expenses %}
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Medical Expenses</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1781,9 +1803,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Emergency Medical Evacuation & Repatriation</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1792,9 +1818,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Compassionate Visit Expenses</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1803,9 +1833,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Return of Children</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1814,9 +1848,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Hospital Daily Benefit</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1825,9 +1863,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Emergency Telephone Charges</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1836,14 +1878,17 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Follow up Medical Treatment</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
 
-          <!-- Travel & Associated Expenses -->
           <tr class="highlight-row">
             <td colspan="2"><b>Travel & Associated Expenses</b></td>
           </tr>
@@ -1854,9 +1899,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Trip Curtailment</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1865,9 +1914,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Travel Delay</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1876,9 +1929,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Missed Flight Connection</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1887,9 +1944,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Overbooked Flight</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1898,14 +1959,17 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Flight Diversion</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
 
-          <!-- Baggage and Personal Belongings Cover -->
           <tr class="highlight-row">
             <td colspan="2"><b>Baggage & Personal Belongings Cover</b></td>
           </tr>
@@ -1916,9 +1980,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Baggage Delay</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1927,9 +1995,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Baggage and Personal Belongings</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1938,14 +2010,17 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Personal Money and Travel Documents</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
 
-          <!-- Personal Accident -->
           <tr class="highlight-row">
             <td colspan="2"><b>Personal Accident</b></td>
           </tr>
@@ -1956,9 +2031,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Aged 18 and Below</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1967,9 +2046,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Aged 19 to 65</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1978,9 +2061,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Aged 66 to 75</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -1989,14 +2076,17 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Aged 76 and Over</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
 
-          <!-- Repatriation of Mortal Remains and Other Related Benefit -->
           <tr class="highlight-row">
             <td colspan="2"><b>Repatriation & Related Benefit</b></td>
           </tr>
@@ -2007,9 +2097,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Repatriation of Mortal Remains to Home Country</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2018,9 +2112,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Compassionate Death Visit</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2029,14 +2127,17 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Compassionate Funeral Expenses</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
 
-          <!-- Other Benefits -->
           <tr class="highlight-row">
             <td colspan="2"><b>Other Benefits</b></td>
           </tr>
@@ -2047,9 +2148,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Automatic Extension of Cover</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2058,9 +2163,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Personal Liability</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2069,9 +2178,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Legal Expenses</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2080,9 +2193,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Loss of Home Contents</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2091,9 +2208,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Hijack</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2102,9 +2223,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Rental Vehicle</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2113,9 +2238,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Terrorism Cover</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2124,9 +2253,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Recreational Sports and Activities</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2135,9 +2268,13 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Fraudulent Use of Credit Card</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
@@ -2146,12 +2283,17 @@
             {% if item.basic or item.executive or item.premiere %}
               <tr>
                 <td>Golf Equipment</td>
-                <td>{{ item.basic }}</td>
-                <td>{{ item.executive }}</td>
-                <td>{{ item.premiere }}</td>
+                {% if full_columns %}
+                  <td>{{ item.basic }}</td>
+                  <td>{{ item.executive }}</td>
+                  <td>{{ item.premiere }}</td>
+                {% else %}
+                  <td colspan="2">{{ item.basic }}</td>
+                {% endif %}
               </tr>
             {% endif %}
           {% endfor %}
+
         </tbody>
       </table>
     {% endfor %}

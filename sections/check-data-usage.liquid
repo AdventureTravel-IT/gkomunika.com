@@ -251,15 +251,12 @@
       maximumFractionDigits: 2,
     });
 
-    if (bytes >= 1024 * 1024 * 1024) {
-      console.log("Converted to GB:", bytes / (1024 * 1024 * 1024));
-      return formatter.format(bytes / (1024 * 1024 * 1024)) + ' GB';
-    } else if (bytes >= 1024 * 1024) {
+    if (bytes >= 1024 * 1024) {
       console.log("Converted to MB:", bytes / (1024 * 1024));
-      return formatter.format(bytes / (1024 * 1024)) + ' MB';
+      return formatter.format(bytes / (1024 * 1024)) + ' GB';
     } else if (bytes >= 1024) {
       console.log("Converted to KB:", bytes / 1024);
-      return formatter.format(bytes / 1024) + ' KB';
+      return formatter.format(bytes / 1024) + ' MB';
     } else {
       console.log("Less than 1 KB, stay in Bytes");
       return formatter.format(bytes) + ' Byte';

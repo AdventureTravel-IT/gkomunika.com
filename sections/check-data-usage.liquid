@@ -254,13 +254,15 @@
   }
 }
 
-  function formatDate(dateStr) {
-  if (!dateStr || dateStr.length !== 8) return dateStr || '-';
-  const year = dateStr.substring(0, 4);
-  const month = dateStr.substring(4, 6);
-  const day = dateStr.substring(6, 8);
+  function formatDateTime(dateTimeStr) {
+  if (!dateTimeStr) return '-';
+
+  // Pisah tanggal & waktu
+  const parts = dateTimeStr.split(' ')[0]; // ambil hanya tanggal
+  const [year, month, day] = parts.split('-');
   return `${day}/${month}/${year}`;
 }
+
 
 
   function checkICCID() {

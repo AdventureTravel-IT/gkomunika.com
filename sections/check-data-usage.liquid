@@ -1,16 +1,10 @@
 {% style %}
-  .invalid-popup__wrapper {
-    display: flex;
-    position: fixed;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100dvh;
-  }
     .invalid-popup {
     display: none;
     position: fixed;
     z-index: 9999;
+    top: 0;
+    right: 0;
     width: 100%;
     height: 100dvh;
     overflow: auto;
@@ -85,7 +79,6 @@
 
 <div id="result"></div>
 
-<div class="invalid-popup__wrapper">
 <div class="invalid-popup" id="invalid-popup">
   <div class="invalid-popup__content">
     <h2>ICCID Invalid</h2>
@@ -100,7 +93,6 @@
     </div>
     <button id="invalid-popup__button-hide"><span>OK</span></button>
   </div>
-</div>
 </div>
 
 <script>

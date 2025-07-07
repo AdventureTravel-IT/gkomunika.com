@@ -87,6 +87,7 @@
     {% endif %}
 
     {% render 'meta-tags' %}
+    {% render 'whatsapp' %}
 
     <script src="{{ 'constants.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'pubsub.js' | asset_url }}" defer="defer"></script>
@@ -530,8 +531,6 @@
     >
       {{ content_for_layout }}
     </main>
-
-    {% render 'whatsapp' %}
 
     {% unless template.name == 'login' or template.name == 'register' or template.name == 'search' %}
       {% sections 'footer-group' %}

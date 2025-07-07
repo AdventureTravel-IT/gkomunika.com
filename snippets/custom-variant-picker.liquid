@@ -92,7 +92,6 @@
     text-align: left;
     background: transparent;
     text-decoration: underline;
-    margin-bottom: 10px;
   }
 
   .variant-picker-btn__mobile,
@@ -202,6 +201,9 @@
     #variant-price-desktop {
       display: none;
     }
+    .insurance-product {
+      flex-direction: column;
+    }
 
     /*
 
@@ -230,7 +232,9 @@
   {% assign min_price_formatted = min_price | money_with_currency %}
   {% assign max_price_formatted = max_price | money_with_currency %}
 
-  <div class="variant-option__wrapper">
+  <div class="variant-option__wrapper {% if product.metafields.product.category.value == "Insurance" %}
+    insurance-product
+  {% endif %}">
     {% for option in product.options_with_values %}
       <div class="variant-option" data-option-index="{{ forloop.index0 }}">
         <label class="variant-picker__label">{{ option.name }}</label>
@@ -253,6 +257,10 @@
         </select>
       </div>
     {% endfor %}
+<!-- Tombol reset -->
+  {% if product.metafields.product.category.value != "Insurance" %}
+  <button id="reset-plan" type="button">Reset Plan</button>
+  {% endif %}
   </div>
 
   <div id="variant-metafield-display" class="my-4"></div>
@@ -292,8 +300,9 @@
     </div>
   </div>
 
-  <!-- Tombol reset -->
-  <button id="reset-plan" type="button">Reset Plan</button>
+  {% if product.metafields.product.category.value == "Insurance" %}
+  <button id="reset-plan" type="button" style="padding-bottom: 15px;">Reset Plan</button>
+  {% endif %}
 
   <!-- Tombol cart dan buy -->
   <div class="variant-picker-btn">

@@ -230,17 +230,20 @@
     document.getElementById('invalid-popup').style.display = 'block';
   }
 
-  function formatBytes(usageBytes) {
-    if (usageBytes >= 1024 * 1024 * 1024) {
-      return (usageBytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
-    } else if (usageBytes >= 1024 * 1024) {
-      return (usageBytes / (1024 * 1024)).toFixed(2) + ' MB';
-    } else if (usageBytes >= 1024) {
-      return (usageBytes / 1024).toFixed(2) + ' KB';
-    } else {
-      return usageBytes + ' Byte';
-    }
+  function formatBytes(bytes) {
+  const formatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
+
+  if (bytes >= 1024 * 1024 * 1024) {
+    return formatter.format(bytes / (1024 * 1024 * 1024)) + ' GB';
+  } else if (bytes >= 1024 * 1024) {
+    return formatter.format(bytes / (1024 * 1024)) + ' MB';
+  } else if (bytes >= 1024) {
+    return formatter.format(bytes / 1024) + ' KB';
+  } else {
+    return formatter.format(bytes) + ' Byte';
   }
+}
+
 
   function formatDate(dateStr) {
   if (!dateStr || dateStr.length !== 8) return dateStr || '-';
@@ -364,6 +367,7 @@
                           <p>${item.country || '-'}</p>
                           <p>${formatDate(item.usedDate) || '-'}</p>
                           <p>${formattedUsage}</p>
+
                         </div>
                       `;
                       })

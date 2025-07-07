@@ -29,12 +29,12 @@
     line-height: 1.5;
     margin: 10px 0;
   }
-  
+
   .invalid-popup__button {
     display: flex;
     gap: 15px;
   }
-  
+
   .invalid-popup__button button {
     width: 100%;
     padding: 15px;
@@ -77,23 +77,32 @@
     color: var(--color-primary);
     font-size: var(--font-large);
   }
+  .check-data-usage__container {
+    margin: 0 auto;
+    max-width: 1920px;
+  }
+  .check-data-usage__wrapper {
+    background-color: var(--color-neutral);
+    border-radius: 15px;
+    padding: 20px 10%;
+  }
 {% endstyle %}
 
 <div class="check-data-usage__container">
   <div class="check-data-usage__wrapper">
-<form class="check-data-usage__form">
-<input
-  type="number"
-  id="iccid"
-  placeholder="Input ICCID Number"
-  required
->
-<button id="check-iccid" onclick="checkICCID()">Cek</button>
-</form>
+    <form class="check-data-usage__form">
+      <input
+        type="number"
+        id="iccid"
+        placeholder="Input ICCID Number"
+        required
+      >
+      <button id="check-iccid" onclick="checkICCID()">Cek</button>
+    </form>
 
-<div id="result"></div>
-    </div>
+    <div id="result"></div>
   </div>
+</div>
 
 <div class="invalid-popup" id="invalid-popup">
   <div class="invalid-popup__content">

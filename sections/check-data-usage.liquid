@@ -231,18 +231,22 @@
   }
 
   function formatBytes(bytes) {
-  const formatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
+  const formatter = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
   if (bytes >= 1024 * 1024 * 1024) {
     return formatter.format(bytes / (1024 * 1024 * 1024)) + ' GB';
   } else if (bytes >= 1024 * 1024) {
-    return formatter.format(bytes / (1024 * 1024)) + ' GB';
+    return formatter.format(bytes / (1024 * 1024)) + ' MB';
   } else if (bytes >= 1024) {
-    return formatter.format(bytes / 1024) + ' MB';
+    return formatter.format(bytes / 1024) + ' KB';
   } else {
     return formatter.format(bytes) + ' Byte';
   }
 }
+
 
 
   function formatDate(dateStr) {

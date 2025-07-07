@@ -137,6 +137,13 @@
   .data-usage__wrapper p {
     width: 150px;
   }
+  .data-usage__wrapper p:nth-child(3) {
+  display: flex;
+  flex-direction: row; /* atau column, sesuai keinginanmu */
+  justify-content: flex-end; /* untuk menggeser isi ke ujung kanan (jika row) */
+  width: 150px;
+}
+
 {% endstyle %}
 
 <div class="check-data-usage__container">

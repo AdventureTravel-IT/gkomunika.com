@@ -121,6 +121,7 @@
   }
   .esim-information__wrapper span {
     font-weight: bold;
+    font-family: arial;
   }
 {% endstyle %}
 
@@ -283,7 +284,7 @@
             </div>
             <div class="esim-information__wrapper">
             <p>End Date</p>
-            ${itemData.planEndTime || '-'}
+            <span>${itemData.planEndTime || '-'}</span>
             </div>
           </div>
 

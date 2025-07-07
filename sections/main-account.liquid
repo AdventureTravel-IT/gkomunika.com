@@ -110,7 +110,6 @@
   .ma-section-order-history-wrapper {
     display: flex;
     flex-direction: column;
-    /* background-color: var(--color-neutral); */
     border-radius: 15px;
     gap: 15px;
   }
@@ -245,12 +244,24 @@
     font-weight: bold;
     cursor: pointer;
   }
-
   .ma-back-button.show {
     display: block;
   }
   .mobile-hidden {
     display: none !important;
+  }
+  .hidden {
+    display: none;
+  }
+
+  .ma-menu-wrapper.active {
+    color: var(--color-secondary);
+  }
+  .ma-menu-wrapper.active .menu-wrapper {
+    filter: brightness(0) saturate(100%) invert(80%) sepia(63%) saturate(5712%) hue-rotate(158deg) brightness(89%) contrast(111%);
+  }
+  .ma-menu-wrapper.active h2 {
+    color: var(--color-neutral);
   }
 
   @media (max-width: 768px) {
@@ -290,17 +301,11 @@
     }
     .ma-order-button button {
       white-space: nowrap;
-      /* Mencegah teks turun ke bawah */
       padding: 10px 15px;
-      /* Memberikan padding agar terlihat proporsional */
       width: auto;
-      /* Membuat lebar mengikuti konten */
       min-width: max-content;
-      /* Pastikan tombol tidak menyusut terlalu kecil */
       display: inline-block;
-      /* Pastikan tombol sejajar */
       text-align: center;
-      /* Pusatkan teks di dalam tombol */
       height: 100%;
       max-height: 35px;
     }
@@ -316,16 +321,23 @@
       membership: document.getElementById('membership'),
       referral: document.getElementById('referral'),
     };
+
     const menuSection = document.querySelector('.ma-section-menu');
     const backToMenuBtn = document.getElementById('back-to-menu');
 
     function hideAllTabs() {
-      Object.values(tabContents).forEach((section) => section.classList.add('hidden'));
+      Object.values(tabContents).forEach((section) => {
+        if (section) {
+          section.classList.add('hidden');
+        }
+      });
     }
 
     function showMenu() {
       menuSection.classList.remove('mobile-hidden');
-      backToMenuBtn.classList.remove('show');
+      if (backToMenuBtn) {
+        backToMenuBtn.classList.remove('show');
+      }
       tabButtons.forEach((btn) => btn.classList.remove('active'));
       hideAllTabs();
     }
@@ -336,103 +348,119 @@
       tabButtons.forEach((btn) => btn.classList.remove('active'));
     } else {
       hideAllTabs();
-      tabContents['order-history'].classList.remove('hidden');
-      document.querySelector('.ma-menu-wrapper[data-tab="order-history"]').classList.add('active');
+      if (tabContents['order-history']) {
+        tabContents['order-history'].classList.remove('hidden');
+      }
+      const orderBtn = document.querySelector('.ma-menu-wrapper[data-tab="order-history"]');
+      if (orderBtn) {
+        orderBtn.classList.add('active');
+      }
     }
 
     tabButtons.forEach((button) => {
       button.addEventListener('click', () => {
         const selectedTab = button.getAttribute('data-tab');
 
-        // Update active state
         tabButtons.forEach((btn) => btn.classList.remove('active'));
         button.classList.add('active');
 
-        // Show selected tab
         hideAllTabs();
-        tabContents[selectedTab].classList.remove('hidden');
+        if (tabContents[selectedTab]) {
+          tabContents[selectedTab].classList.remove('hidden');
+        }
 
-        // Mobile: hide menu, show back button
         if (window.innerWidth <= 768) {
           menuSection.classList.add('mobile-hidden');
-          backToMenuBtn.classList.add('show');
+          if (backToMenuBtn) {
+            backToMenuBtn.classList.add('show');
+          }
         }
       });
     });
 
-    // Handle back button
-    backToMenuBtn.addEventListener('click', () => {
-      showMenu();
-    });
+    if (backToMenuBtn) {
+      backToMenuBtn.addEventListener('click', () => {
+        showMenu();
+      });
+    }
   });
 </script>
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const pageParam = urlParams.get('page');
 
-    // Hanya berlaku di mobile
     const isMobile = window.innerWidth <= 768;
 
     if (pageParam && isMobile) {
       const menuSection = document.querySelector('.ma-section-menu');
-      const orderHistorySection = document.getElementById('order-history');
+      const targetSection = document.getElementById(pageParam);
       const backToMenuBtn = document.getElementById('back-to-menu');
 
       if (menuSection) {
-        menuSection.classList.add('mobile-hidden'); // sesuai class CSS
+        menuSection.classList.add('mobile-hidden');
       }
 
-      if (orderHistorySection) {
-        orderHistorySection.classList.remove('hidden'); // pastikan order history tampil
+      if (targetSection) {
+        targetSection.classList.remove('hidden');
       }
 
       if (backToMenuBtn) {
-        backToMenuBtn.classList.add('show'); // tampilkan tombol back
+        backToMenuBtn.classList.add('show');
       }
+
+      const tabButtons = document.querySelectorAll('.ma-menu-wrapper[data-tab]');
+      tabButtons.forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === pageParam);
+      });
     }
   });
 </script>
 
 <div class="ma-container">
   <section class="ma-section-menu">
-    <!-- Profile Section -->
     {% render 'menu-main-account' %}
   </section>
+
   <section class="ma-section-order-history-container">
-    <div id="order-history">{% render 'order-history' %}</div>
-    <div id="edit-profile">{% render 'edit-profile' %}</div>
-    <div id="membership">{% render 'membership' %}</div>
-  {% comment %} <div id="referral">{% render 'referral' %}</div> {% endcomment %}
+    <button id="back-to-menu" class="ma-back-button">Back</button>
+
+    <div id="order-history" class="hidden">{% render 'order-history' %}</div>
+    <div id="edit-profile" class="hidden">{% render 'edit-profile' %}</div>
+    <div id="membership" class="hidden">{% render 'membership' %}</div>
+    {% comment %} <div id="referral" class="hidden">{% render 'referral' %}</div> {% endcomment %}
   </section>
 </div>
 
 {% schema %}
-  {
-    "name": "t:sections.main-account.name",
-    "settings": [
-      {
-        "type": "header",
-        "content": "t:sections.all.padding.section_padding_heading"
-      }, {
-        "type": "range",
-        "id": "padding_top",
-        "min": 0,
-        "max": 100,
-        "step": 4,
-        "unit": "px",
-        "label": "t:sections.all.padding.padding_top",
-        "default": 36
-      }, {
-        "type": "range",
-        "id": "padding_bottom",
-        "min": 0,
-        "max": 100,
-        "step": 4,
-        "unit": "px",
-        "label": "t:sections.all.padding.padding_bottom",
-        "default": 36
-      }
-    ]
-  }
+{
+  "name": "t:sections.main-account.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
 {% endschema %}

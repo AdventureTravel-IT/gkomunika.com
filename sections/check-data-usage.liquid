@@ -263,8 +263,7 @@
     }
 
     button.disabled = true;
-    button.innerText = 'Memproses...';
-    resultEl.innerHTML = `<p>On Progress</p>`;
+    button.innerText = 'Loading..';
 
     fetch('https://gkomunika.id/api/v1/check/data_info', {
       method: 'POST',

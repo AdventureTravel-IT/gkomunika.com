@@ -113,7 +113,7 @@
         placeholder="Input ICCID Number"
         required
       >
-      <button id="check-iccid" onclick="checkICCID()">Cek</button>
+      <button id="check-iccid" onclick="checkICCID()">Next</button>
 
     <div id="result"></div>
   </div>
@@ -309,7 +309,7 @@
       })
       .finally(() => {
         button.disabled = false;
-        button.innerText = 'Cek';
+        button.innerText = 'Next';
       });
   }
 

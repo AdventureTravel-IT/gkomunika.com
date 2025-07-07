@@ -236,9 +236,9 @@
   if (bytes >= 1024 * 1024 * 1024) {
     return formatter.format(bytes / (1024 * 1024 * 1024)) + ' GB';
   } else if (bytes >= 1024 * 1024) {
-    return formatter.format(bytes / (1024 * 1024)) + ' MB';
+    return formatter.format(bytes / (1024 * 1024)) + ' GB';
   } else if (bytes >= 1024) {
-    return formatter.format(bytes / 1024) + ' KB';
+    return formatter.format(bytes / 1024) + ' MB';
   } else {
     return formatter.format(bytes) + ' Byte';
   }

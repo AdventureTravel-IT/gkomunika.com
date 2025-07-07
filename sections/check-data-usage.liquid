@@ -173,7 +173,10 @@
   font-size: var(--font-large);
   color: var(--color-primary);
 }
-
+.data-usage__wrapper p:nth-child(3) {
+  display: flex;
+  justify-content: flex-end;
+}
 @media (max-width: 768px) {
   .check-data-usage__wrapper {
     padding: 20px 24px;
@@ -217,6 +220,7 @@
     <button id="invalid-popup__button-hide"><span>OK</span></button>
   </div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const iccidInput = document.getElementById('iccid');

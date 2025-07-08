@@ -14,10 +14,18 @@
             aria-labelledby="predictive-search-queries">
 
             {% for product in collections['all-country'].products %}
+              {% if matched_index > 0 %}
+                {% break %}
+              {% endif %}
+
               {% assign search_keys = product.metafields.search.key.value %}
 
               {% if search_keys != blank %}
                 {% for search_key in search_keys %}
+                  {% if matched_index > 0 %}
+                    {% break %}
+                  {% endif %}
+
                   {% assign matched = false %}
 
                   {%- assign country_value = search_key.country | downcase | strip -%}
@@ -52,7 +60,7 @@
                         tabindex="-1">
                         <div class="predictive-search__item-content predictive-search__item-content--centered">
                           <img
-                          class="predictive-search__image"
+                            class="predictive-search__image"
                             src="{{ country_search | append: '.svg' | file_url }}"
                             alt="{{ country_search }}"
                             width="50"
@@ -63,6 +71,7 @@
                         </div>
                       </a>
                     </li>
+                    {% break %}
                   {% endif %}
 
                 {% endfor %}

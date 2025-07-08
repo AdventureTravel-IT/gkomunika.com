@@ -1,172 +1,196 @@
 <style>
-  .quantity-input {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid var(--color-primary);
-    border-radius: 24px;
-    overflow: hidden;
-    width: fit-content;
+    .quantity-input {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--color-primary);
+      border-radius: 24px;
+      overflow: hidden;
+      width: fit-content;
+    }
+
+    .quantity-btn {
+      background-color: transparent;
+      border: none;
+      padding: 8px 12px;
+      font-size: 16px;
+      color: var(--color-primary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .quantity-number {
+      width: 40px;
+      text-align: center;
+      border: none;
+      font-size: 16px;
+      outline: none;
+      color: var(--color-primary);
+    }
+
+    .quantity-btn:disabled {
+      color: var(--color-primary);
+      cursor: not-allowed;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    .quantity-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
+
+    .disabled-option {
+      color: #bbb;
+    }
+
+    .variant-option__wrapper {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+    .variant-option {
+      display: flex;
+
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .variant-picker__label {
+      font-weight: bold;
+    }
+
+    .variant-dropdown {
+      padding: 15px 35px 15px 15px;
+      border-radius: 15px;
+      border: 1px solid var(--color-primary);
+      font-size: var(--font-large);
+      color: var(--color-primary);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 15px;
+      background-color: var(--color-neutral);
+    }
+
+    #reset-plan {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      gap: 7px;
+      width: auto;
+      padding: 8px 12px 8px 8px;
+      border-radius: 15px;
+      cursor: pointer;
+      color: var(--color-primary);
+      font-size: 14px;
+      font-weight: bold;
+      text-align: left;
+      background: transparent;
+      text-decoration: none;
+      background-color: var(--color-background-third);
+    }
+
+    #reset-plan .reset-text {
+      line-height: 1;
+    }
+
+    #reset-plan svg {
+    vertical-align: middle;
+    transition: transform 0.5s ease;
   }
 
-  .quantity-btn {
-    background-color: transparent;
-    border: none;
-    padding: 8px 12px;
-    font-size: 16px;
-    color: var(--color-primary);
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .quantity-number {
-    width: 40px;
-    text-align: center;
-    border: none;
-    font-size: 16px;
-    outline: none;
-    color: var(--color-primary);
-  }
-
-  .quantity-btn:disabled {
-    color: var(--color-primary);
-    cursor: not-allowed;
-  }
-
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  input[type="number"] {
-    -moz-appearance: textfield;
-  }
-  .quantity-btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.4;
-  }
-
-  .disabled-option {
-    color: #bbb;
-  }
-
-  .variant-option__wrapper {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-  }
-  .variant-option {
-    display: flex;
-
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  .variant-picker__label {
-    font-weight: bold;
-  }
-
-  .variant-dropdown {
-    padding: 15px 35px 15px 15px;
-    border-radius: 15px;
-    border: 1px solid var(--color-primary);
-    font-size: var(--font-large);
-    color: var(--color-primary);
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 15px;
-    background-color: var(--color-neutral);
-  }
-
-  #reset-plan {
-    border: none;
-    width: 150px;
-    color: var(--color-secondary);
-    font-size: var(--font-large);
-    text-align: left;
-    background: transparent;
-    text-decoration: underline;
-  }
-
-  .variant-picker-btn__mobile,
-  .variant-picker-btn {
-    display: flex;
-    gap: 15px;
-    width: 500px;
-  }
-
-  .variant-picker-btn__mobile button,
-  .variant-picker-btn button {
-    width: 100%;
-    border-radius: 15px;
-    font-size: var(--font-large);
-    font-weight: bold;
-    color: var(--color-neutral);
-    transition: transform 0.3s ease
-    , box-shadow 0.3s ease;
-    cursor: pointer;
-  }
-
-
-  .variant-picker-btn__mobile button:active,
-  .variant-picker-btn button:active {
-    transform: scale(0.96);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  .variant-picker-btn__mobile .cart,
-  .variant-picker-btn .cart {
-    border: 1px groove var(--secondary);
-    background-color: var(--color-secondary);
-  }
-
-  .variant-picker-btn__mobile .buy,
-  .variant-picker-btn .buy {
-    border: 1px groove var(--color-primary);
-    background-color: var(--color-primary);
-  }
-  .variant-picker-btn__mobile h2 {
-    font-size: 22px;
-    font-weight: normal;
-  }
-  #variant-price {
-    color: var(--color-secondary) !important;
-    margin-top: 7px;
-  }
-  .money,
-  .buckscc-money {
-    color: var(--color-secondary) !important;
-    font-size: var(--font-supper-large);
-    font-weight: bold;
+  #reset-plan svg.rotated {
+    transform: rotate(360deg);
   }
 
 
-  .variant-dropdown.variant-warning {
-    border-color: red;
-    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
-    position: relative;
-  }
 
-  .variant-dropdown.variant-warning::after {
-    content: "Please select this option";
-    position: absolute;
-    left: 10px;
-    top: 100%;
-    margin-top: 4px;
-    background: red;
-    color: white;
-    padding: 4px 8px;
-    font-size: 12px;
-    border-radius: 5px;
-    white-space: nowrap;
-    z-index: 1000;
-  }
+    .variant-picker-btn__mobile,
+    .variant-picker-btn {
+      display: flex;
+      gap: 15px;
+      width: 500px;
+    }
+
+    .variant-picker-btn__mobile button,
+    .variant-picker-btn button {
+      width: 100%;
+      border-radius: 15px;
+      font-size: var(--font-large);
+      font-weight: bold;
+      color: var(--color-neutral);
+      transition: transform 0.3s ease
+      , box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+
+    .variant-picker-btn__mobile button:active,
+    .variant-picker-btn button:active {
+      transform: scale(0.96);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .variant-picker-btn__mobile .cart,
+    .variant-picker-btn .cart {
+      border: 1px groove var(--secondary);
+      background-color: var(--color-secondary);
+    }
+
+    .variant-picker-btn__mobile .buy,
+    .variant-picker-btn .buy {
+      border: 1px groove var(--color-primary);
+      background-color: var(--color-primary);
+    }
+    .variant-picker-btn__mobile h2 {
+      font-size: 22px;
+      font-weight: normal;
+    }
+    #variant-price {
+      color: var(--color-secondary) !important;
+      margin-top: 7px;
+    }
+    .money,
+    .buckscc-money {
+      color: var(--color-secondary) !important;
+      font-size: var(--font-supper-large);
+      font-weight: bold;
+    }
+
+
+    .variant-dropdown.variant-warning {
+      border-color: red;
+      box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .variant-dropdown.variant-warning::after {
+      content: "Please select this option";
+      position: absolute;
+      left: 10px;
+      top: 100%;
+      margin-top: 4px;
+      background: red;
+      color: white;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 5px;
+      white-space: nowrap;
+      z-index: 1000;
+    }
 </style>
 
 {% style %}
@@ -204,6 +228,15 @@
     .insurance-product {
       flex-direction: column;
     }
+    #reset-plan {
+      padding: 8px 10px;
+    }
+    #reset-plan .reset-text {
+      display: none;
+    }
+    #reset-plan svg {
+      vertical-align: middle;
+    }
 
     /*
 
@@ -232,35 +265,47 @@
   {% assign min_price_formatted = min_price | money_with_currency %}
   {% assign max_price_formatted = max_price | money_with_currency %}
 
-  <div class="variant-option__wrapper {% if product.metafields.product.category.value == "Insurance" %}
-    insurance-product
-  {% endif %}">
-    {% for option in product.options_with_values %}
-      <div class="variant-option" data-option-index="{{ forloop.index0 }}">
-        <label class="variant-picker__label">{{ option.name }}</label>
-        <select class="variant-dropdown" data-option-name="{{ option.name }}">
-          <option
-            value=""
-            disabled
-            selected
-            hidden
+  <div style="display: flex; align-items: center;">
+    <div
+      class="
+        variant-option__wrapper {% if product.metafields.product.category.value == "Insurance" %}
+          insurance-product
+        {% endif %}
+      "
+    >
+      {% for option in product.options_with_values %}
+        <div class="variant-option" data-option-index="{{ forloop.index0 }}">
+          <label class="variant-picker__label">{{ option.name }}</label>
+          <select class="variant-dropdown" data-option-name="{{ option.name }}">
+            <option
+              value=""
+              disabled
+              selected
+              hidden
+            >
+              Choose Option
+            </option>
+            {% assign values_seen = '' %}
+            {% for value in option.values %}
+              {% unless values_seen contains value %}
+                <option value="{{ value }}">{{ value }}</option>
+                {% assign values_seen = values_seen | append: value | append: ',' %}
+              {% endunless %}
+            {% endfor %}
+          </select>
+        </div>
+      {% endfor %}
+      <!-- Tombol reset -->
+      {% if product.metafields.product.category.value != 'Insurance' %}
+        <button id="reset-plan" type="button" style="margin: 27px 0 0 0;">
+          {{- 'reset.svg' | inline_asset_content -}}
+          <span class="reset-text"
+            >reset<br>
+            selection</span
           >
-            Choose Option
-          </option>
-          {% assign values_seen = '' %}
-          {% for value in option.values %}
-            {% unless values_seen contains value %}
-              <option value="{{ value }}">{{ value }}</option>
-              {% assign values_seen = values_seen | append: value | append: ',' %}
-            {% endunless %}
-          {% endfor %}
-        </select>
-      </div>
-    {% endfor %}
-<!-- Tombol reset -->
-  {% if product.metafields.product.category.value != "Insurance" %}
-  <button id="reset-plan" type="button">Reset Plan</button>
-  {% endif %}
+        </button>
+      {% endif %}
+    </div>
   </div>
 
   <div id="variant-metafield-display" class="my-4"></div>
@@ -300,8 +345,10 @@
     </div>
   </div>
 
-  {% if product.metafields.product.category.value == "Insurance" %}
-  <button id="reset-plan" type="button" style="padding-bottom: 15px;">Reset Plan</button>
+  {% if product.metafields.product.category.value == 'Insurance' %}
+    <button id="reset-plan" type="button" style="padding-bottom: 15px;">
+      {{- 'reset.svg' | inline_asset_content -}}
+    </button>
   {% endif %}
 
   <!-- Tombol cart dan buy -->
@@ -389,6 +436,21 @@
     text-align: center;
   }
 {% endstyle %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('reset-plan');
+    var svg = btn?.querySelector('svg');
+    if (btn && svg) {
+      let currentRotation = 0;
+
+      btn.addEventListener('click', function () {
+        currentRotation += 360;
+        svg.style.transform = `rotate(${currentRotation}deg)`;
+      });
+    }
+  });
+</script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {

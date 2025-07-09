@@ -1,72 +1,6 @@
+<pre>${JSON.stringify(data, null, 2)}</pre>
+
 {% style %}
-    .invalid-popup {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100dvh;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-
-  .invalid-popup__content {
-    background-color: var(--color-neutral);
-    padding: 30px;
-    width: 100%;
-    max-width: 450px;
-    border-radius: 10px;
-    text-align: center;
-    color: var(--color-primary);
-    font-size: var(--font-extra-large);
-  }
-
-  .invalid-popup__content h2 {
-    color: var(--color-primary);
-    font-size: 34px;
-    font-weight: bold;
-    line-height: 1.5;
-    margin: 10px 0;
-  }
-
-  .invalid-popup__button {
-    display: flex;
-    gap: 15px;
-  }
-
-  .invalid-popup__button button {
-    width: 100%;
-    padding: 15px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-size: var(--font-large);
-  }
-
-  #invalid-popup__buy-button {
-    background-color: var(--color-secondary);
-    color: var(--color-neutral);
-  }
-
-  #invalid-popup__contact-button {
-    background-color: #25D366;
-    color: var(--color-neutral);
-  }
-
-  #invalid-popup__button-hide {
-    margin-top: 15px;
-    width: 100%;
-    padding: 15px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    background-color: var(--color-primary);
-    color: var(--color-neutral);
-    font-size: var(--font-large);
-  }
   #iccid {
     padding: 15px;
     border-radius: 15px;
@@ -123,34 +57,18 @@
       <span>Enter your iccid</span>
     </div>
     <div class="check-data-usage__input">
-    <input
-      type="number"
-      id="iccid"
-      placeholder="Input ICCID Number"
-      required
-    >
-    <button id="check-iccid" onclick="checkICCID()">Next</button>
+      <input
+        type="number"
+        id="iccid"
+        placeholder="Input ICCID Number"
+        required
+      >
+      <button id="check-iccid" onclick="checkICCID()">Next</button>
     </div>
 
     <div class="check-data-usage__result">
       <div id="result"></div>
     </div>
-  </div>
-</div>
-
-<div class="invalid-popup" id="invalid-popup">
-  <div class="invalid-popup__content">
-    <h2>ICCID Invalid</h2>
-    <p>
-      Sorry, currently your sim card does not support top up via the website. You can top up by contacting our CS via
-      Whatsapp.
-    </p>
-    <p>If your device supports eSIM. You can buy an eSIM for your travel connectivity.</p>
-    <div class="invalid-popup__button">
-      <button id="invalid-popup__buy-button"><span>Buy eSIM</span></button>
-      <button id="invalid-popup__contact-button"><span>Contact CS</span></button>
-    </div>
-    <button id="invalid-popup__button-hide"><span>OK</span></button>
   </div>
 </div>
 
@@ -174,10 +92,6 @@
     return null;
   }
 
-  function showInvalidPopup() {
-    document.getElementById('invalid-popup').style.display = 'block';
-  }
-
   function formatBytes(usageBytes) {
     if (usageBytes >= 1024 * 1024 * 1024) {
       return (usageBytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
@@ -192,7 +106,7 @@
 
   function checkICCID() {
     const now = Date.now();
-    if (now - lastSubmit < 3000) return; // minimum 3 detik antar klik
+    if (now - lastSubmit < 3000) return; // minimal 3 detik antar klik
     lastSubmit = now;
 
     const button = document.getElementById('check-iccid');
@@ -206,7 +120,7 @@
 
     const vendor = detectVendor(iccid);
     if (!vendor) {
-      showInvalidPopup();
+      resultEl.innerHTML = `<p style="color: red">ICCID invalid atau tidak dikenali vendor.</p>`;
       return;
     }
 
@@ -236,8 +150,8 @@
 
         if (data.status === 'rate_limited' || data.customCode === 429) {
           resultEl.innerHTML = `
-          <p style="color: red">${data.message}</p>
-        `;
+            <p style="color: red">${data.message}</p>
+          `;
           return;
         }
 
@@ -250,99 +164,85 @@
           const itemData = data.tradeData.subOrderList[0];
           const dataUsage = itemData.usageInfoList;
 
-          // Ambil daftar negara unik
           let uniqueCountries = [];
           if (dataUsage && dataUsage.length > 0) {
             uniqueCountries = [
               ...new Set(
-                dataUsage.map((item) => item.country).filter(Boolean) // hilangkan null atau undefined
+                dataUsage.map((item) => item.country).filter(Boolean)
               ),
             ];
           }
 
-          // --- Informasi SIM ---
           let html = `
-          <div class="check-data-usage__esim-information">
-            <h3>Informasi Kartu SIM</h3>
-            <div class="esim-information__wrapper">
-            <p>Your eSIM Bundle</p>
-            <p>${itemData.skuName || '-'}</p>
+            <div class="check-data-usage__esim-information">
+              <h3>Informasi Kartu SIM</h3>
+              <div class="esim-information__wrapper">
+                <p>Your eSIM Bundle</p>
+                <p>${itemData.skuName || '-'}</p>
+              </div>
+              <div class="esim-information__wrapper">
+                <p>Active Period</p>
+                <p>${itemData.planStartTime || '-'}</p>
+              </div>
+              <div class="esim-information__wrapper">
+                <p>End Date</p>
+                <p>${itemData.planEndTime || '-'}</p>
+              </div>
             </div>
-            <div class="esim-information__wrapper">
-            <p>Active Period</p>
-            <p>${itemData.planStartTime || '-'}</p>
-            </div>
-            <div class="esim-information__wrapper">
-            <p>End Date</p>
-            <p>${itemData.planEndTime || '-'}</p>
-            </div>
-          </div>
 
-          <div>
-            <h3>Total Usage:</h3>
-            ${
-              uniqueCountries.length > 0
-                ? `<div>${uniqueCountries.map((c) => `<span>${c}</span>`).join('')}</div>`
-                : '<div>no data usage yet.</div>'
-            }
-          </div>
-
-          <div>
-            <h3>Data Usage</h3>
             <div>
+              <h3>Total Usage:</h3>
               ${
-                dataUsage && dataUsage.length > 0
-                  ? dataUsage
-                      .map((item) => {
-                        let formattedUsage = '-';
-                        if (item.usedAmount) {
-                          formattedUsage = formatBytes(Number(item.usedAmount));
-                        }
-                        return `
-                        <div class="data-usage__wrapper">
-                          <p>${item.country || '-'}</p>
-                          <p>${formattedUsage}</p>
-                          <p>${item.usedDate || '-'}</p>
-                        </div>
-                      `;
-                      })
-                      .join('')
-                  : '<p>no data usage yet.</p>'
+                uniqueCountries.length > 0
+                  ? `<div>${uniqueCountries.map((c) => `<span>${c}</span>`).join('')}</div>`
+                  : '<div>no data usage yet.</div>'
               }
             </div>
-          </div>
 
-          <pre>${JSON.stringify(data, null, 2)}</pre>
-        `;
+            <div>
+              <h3>Data Usage</h3>
+              <div>
+                ${
+                  dataUsage && dataUsage.length > 0
+                    ? dataUsage
+                        .map((item) => {
+                          let formattedUsage = '-';
+                          if (item.usedAmount) {
+                            formattedUsage = formatBytes(Number(item.usedAmount));
+                          }
+                          return `
+                            <div class="data-usage__wrapper">
+                              <p>${item.country || '-'}</p>
+                              <p>${formattedUsage}</p>
+                              <p>${item.usedDate || '-'}</p>
+                            </div>
+                          `;
+                        })
+                        .join('')
+                    : '<p>no data usage yet.</p>'
+                }
+              </div>
+            </div>
+
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
 
           resultEl.innerHTML = html;
         } else {
-          resultEl.innerHTML = '';
-          showInvalidPopup();
+          resultEl.innerHTML = `<p style="color: red">ICCID invalid atau tidak dikenali di server.</p>
+          <pre>${JSON.stringify(data, null, 2)}</pre>`;
         }
       })
       .catch((error) => {
         resultEl.innerHTML = `
-        <p style="color: red">Connection Error</p>
-      `;
+          <p style="color: red">Connection Error</p>
+        `;
       })
       .finally(() => {
         button.disabled = false;
         button.innerText = 'Next';
       });
   }
-
-  document.getElementById('invalid-popup__button-hide').addEventListener('click', () => {
-    document.getElementById('invalid-popup').style.display = 'none';
-  });
-
-  document.getElementById('invalid-popup__buy-button').addEventListener('click', () => {
-    window.location.href = 'https://gkomunika.com/pages/all-destination';
-  });
-
-  document.getElementById('invalid-popup__contact-button').addEventListener('click', () => {
-    window.location.href = 'https://wa.me/628986454071';
-  });
 </script>
 
 {% schema %}

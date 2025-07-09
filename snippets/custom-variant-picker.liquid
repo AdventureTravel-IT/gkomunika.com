@@ -6,6 +6,13 @@
       border-radius: 24px;
       overflow: hidden;
       width: fit-content;
+      padding: 5px;
+    }
+
+    .quantity-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
     .quantity-btn {
@@ -311,6 +318,7 @@
   <div id="variant-metafield-display" class="my-4"></div>
   <!-- Quantity -->
   <div class="quantity-wrapper" style="margin: 1rem 0;">
+    <div>
     <label
       class="variant-picker__label"
       for="quantity"
@@ -343,13 +351,17 @@
         <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
       </button>
     </div>
-  </div>
-
-  {% if product.metafields.product.category.value == 'Insurance' %}
-    <button id="reset-plan" type="button" style="padding-bottom: 15px;">
-      {{- 'reset.svg' | inline_asset_content -}}
-    </button>
+    </div>
+     {% if product.metafields.product.category.value == 'Insurance' %}
+    <button id="reset-plan" type="button" style="margin-top: 30px;">
+          {{- 'reset.svg' | inline_asset_content -}}
+          <span
+            >reset<br>
+            selection</span
+          >
+        </button>
   {% endif %}
+  </div>
 
   <!-- Tombol cart dan buy -->
   <div class="variant-picker-btn">

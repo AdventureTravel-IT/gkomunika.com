@@ -1,243 +1,101 @@
 {%- if predictive_search.performed -%}
-  {% assign first_column_results_size = predictive_search.resources.queries.size
-    | plus: predictive_search.resources.collections.size
-  %}
   <div id="predictive-search-results" role="listbox">
-    {%- if first_column_results_size > 0 or predictive_search.resources.products.size > 0 -%}
-      <div
-        id="predictive-search-results-groups-wrapper"
-        class="predictive-search__results-groups-wrapper{% unless predictive_search.resources.products.size > 0 %} predictive-search__results-groups-wrapper--no-products{% endunless %}{% unless predictive_search.resources.queries.size > 0 or predictive_search.resources.collections.size > 0 %} predictive-search__results-groups-wrapper--no-suggestions{% endunless %}"
-      >
-    {%- endif -%}
+    <div id="predictive-search-results-groups-wrapper" class="predictive-search__results-groups-wrapper">
 
-    {%- if predictive_search.resources.products.size > 0 -%}
       <div class="predictive-search__result-group">
-        {%- if predictive_search.resources.products.size > 0 -%}
-          <div>
-            <h2
-              id="predictive-search-products"
-              class="predictive-search__heading text-body caption-with-letter-spacing"
-            ></h2>
-            {%- assign search_term = predictive_search.terms | downcase | strip -%}
-            {%- assign single_country = collections['single-country'].products -%}
-            {%- assign multi_country = collections['multi-country'].products -%}
-            {%- assign global_country = collections['global-country'].products -%}
+        <div>
+          {% assign search_term = predictive_search.terms | downcase | strip %}
+          {% assign matched_index = 0 %}
 
-            {% assign found_in_single = false %}
-            {% assign found_in_multi = false %}
-            {% assign found_in_global = false %}
-            {% assign matched_handle = '' %}
+          <ul
+            id="predictive-search-results-queries-list"
+            class="predictive-search__results-list list-unstyled"
+            role="group"
+            aria-labelledby="predictive-search-queries">
 
-            {%- for product in global_country -%}
-              {%- assign product_title = product.title | downcase -%}
-              {%- if product_title contains search_term -%}
-                {%- assign found_in_global = true -%}
-                {% assign matched_handle = product.handle %}
-              {%- endif -%}
-            {%- endfor -%}
+            {% for product in collections['all-country'].products %}
+              {% if matched_index > 0 %}
+                {% break %}
+              {% endif %}
 
-            {%- assign collection_count = 0 -%}
-            {%- if found_in_single -%}
-              {%- assign collection_count = collection_count | plus: 1 -%}
-            {%- endif -%}
-            {%- if found_in_multi -%}
-              {%- assign collection_count = collection_count | plus: 1 -%}
-            {%- endif -%}
-            {%- if found_in_global -%}
-              {%- assign collection_count = collection_count | plus: 1 -%}
-            {%- endif -%}
+              {% assign search_keys = product.metafields.search.key.value %}
 
-            {% if collection_count == 1 %}
-              {% assign search_url = '/products/' | append: matched_handle %}
-            {% else %}
-              {% assign search_url = '/search?q=' | append: search_term %}
-            {% endif %}
+              {% if search_keys != blank %}
+                {% for search_key in search_keys %}
+                  {% if matched_index > 0 %}
+                    {% break %}
+                  {% endif %}
 
-            <div id="predictive-search-results" role="listbox">
-              <h2
-                id="predictive-search-queries"
-                class="predictive-search__heading text-body caption-with-letter-spacing"
-              ></h2>
-              <ul
-                id="predictive-search-results-queries-list"
-                class="predictive-search__results-list list-unstyled"
-                role="group"
-                aria-labelledby="predictive-search-queries"
-              >
-                {%- for product in single_country -%}
-                  {%- assign product_title = product.title | downcase -%}
-                  {%- assign region_array = product.metafields.coverage.region.value -%}
+                  {% assign matched = false %}
 
-                  {%- assign match_found = false -%}
+                  {%- assign country_value = search_key.country | downcase | strip -%}
+                  {% if country_value contains search_term %}
+                    {% assign matched = true %}
+                  {% endif %}
 
-                  {%- for region in region_array -%}
-                    {%- assign region_lower = region | downcase -%}
-                    {%- if region_lower contains search_term -%}
-                      {%- assign match_found = true -%}
-                      {%- break -%}
-                    {%- endif -%}
-                  {%- endfor -%}
+                  {% if matched == false and search_key.alias.value %}
+                    {% assign alias_string = search_key.alias.value | strip %}
+                    {% assign alias_list = alias_string | split: ',' %}
 
-                  {%- if product_title contains search_term or match_found -%}
+                    {% for alias in alias_list %}
+                      {% assign alias_lower = alias | downcase | strip %}
+                      {% if alias_lower contains search_term %}
+                        {% assign matched = true %}
+                        {% break %}
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+
+                  {% if matched %}
+                    {% assign matched_index = matched_index | plus: 1 %}
+                    {% assign country_search = search_key.country.value %}
                     <li
-                      id="predictive-search-option-query-{{ forloop.index }}"
+                      id="predictive-search-option-query-{{ matched_index }}"
                       class="predictive-search__list-item"
                       role="option"
-                      aria-selected="false"
-                    >
-                      <a href="{{ search_url }}" class="predictive-search__item link link--text" tabindex="-1">
+                      aria-selected="false">
+                      <a
+                        href="/search?q={{ country_search | url_encode }}"
+                        class="predictive-search__item link link--text"
+                        tabindex="-1">
                         <div class="predictive-search__item-content predictive-search__item-content--centered">
                           <img
-                            src="{{ product.metafields.coverage.country.value.first | append: '.svg' | file_url }}"
-                            class="item__single-image"
-                            alt="{{ product.title }}"
-                          >
+                            class="predictive-search__image"
+                            src="{{ country_search | append: '.svg' | file_url }}"
+                            alt="{{ country_search }}"
+                            width="50"
+                            height="50">
                           <span class="predictive-search__item-heading predictive-search__item-query-result">
-                            {{- product.title -}}
+                            {{ country_search }}
                           </span>
                         </div>
                       </a>
                     </li>
-                  {%- endif -%}
-                {%- endfor -%}
-              </ul>
+                    {% break %}
+                  {% endif %}
 
-              <h2
-                id="predictive-search-queries"
-                class="predictive-search__heading text-body caption-with-letter-spacing"
-              ></h2>
-              <ul
-                id="predictive-search-results-queries-list"
-                class="predictive-search__results-list list-unstyled"
-                role="group"
-                aria-labelledby="predictive-search-queries"
-              >
-                {%- for product in multi_country -%}
-                  {%- assign product_title = product.title | downcase -%}
-                  {%- assign countries_array = product.metafields.coverage.country.value -%}
-                  {%- assign countries_count = countries_array.size -%}
-                  {%- assign region_array = product.metafields.coverage.region.value -%}
-                  {%- assign flattened_array = '' -%}
-
-                  {%- for country_group in countries_array -%}
-                    {%- for country in country_group -%}
-                      {%- capture flattened_array -%}{{ flattened_array }}|{{ country | replace: '_', ' ' | downcase }}{%- endcapture -%}
-                    {%- endfor -%}
-                  {%- endfor -%}
-
-                  {%- assign flattened_array = flattened_array | remove_first: '|' | split: '|' -%}
-                  {%- assign search_term_lower = search_term | downcase -%}
-
-                  {%- assign match_found_region = false -%}
-
-                  {%- for region in region_array -%}
-                    {%- assign region_lower = region | downcase -%}
-                    {%- if region_lower contains search_term_lower -%}
-                      {%- assign match_found_region = true -%}
-                      {%- break -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-
-                  {%- assign match_found = false -%}
-
-                  {%- for country in flattened_array -%}
-                    {%- if country contains search_term_lower -%}
-                      {%- assign match_found = true -%}
-                      {%- break -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-
-                  {%- if product_title contains search_term_lower or match_found or match_found_region -%}
-                    <li
-                      id="predictive-search-option-query-{{ forloop.index }}"
-                      class="predictive-search__list-item"
-                      role="option"
-                      aria-selected="false"
-                    >
-                      <a href="{{ search_url }}" class="predictive-search__item link link--text" tabindex="-1">
-                        <div class="predictive-search__item-content predictive-search__item-content--centered">
-                          <div class="predictive-search__item-image">
-                              {% assign max_flags_to_show = 4 %}
-                              
-                              {%- for country_flag in countries_array limit: max_flags_to_show -%}
-                                <img
-                                  src="{{ country_flag | append: '.svg' | file_url }}"
-                                  class="item__multi-image"
-                                  alt="{{ product.title }}"
-                                  width="25"
-                                  height="25"
-                                >
-                              {%- endfor -%}
-                            </div>
-                          <span class="predictive-search__item-heading predictive-search__item-query-result">
-                            {{- product.metafields.coverage.region.value | join: ', ' -}}
-                          </span>
-                        </div>
-                      </a>
-                    </li>
-                  {%- endif -%}
-                {%- endfor -%}
-              </ul>
-
-              <h2
-                id="predictive-search-queries"
-                class="predictive-search__heading text-body caption-with-letter-spacing"
-              ></h2>
-              <ul
-                id="predictive-search-results-queries-list"
-                class="predictive-search__results-list list-unstyled"
-                role="group"
-                aria-labelledby="predictive-search-queries"
-              >
-                {%- for product in global_country -%}
-                  {%- assign product_title = product.title | downcase -%}
-                  {%- if product_title contains search_term -%}
-                    <li
-                      id="predictive-search-option-query-{{ forloop.index }}"
-                      class="predictive-search__list-item"
-                      role="option"
-                      aria-selected="false"
-                    >
-                      <a href="{{ search_url }}" class="predictive-search__item link link--text" tabindex="-1">
-                        <div class="predictive-search__item-content predictive-search__item-content--centered">
-                          <img
-                            src="{{ product.metafields.coverage.region.value.first | append: '.svg' | file_url }}"
-                            alt="{{ product.title }}"
-                            width="35"
-                            height="35"
-                          >
-                          <span class="predictive-search__item-heading predictive-search__item-query-result">
-                            {{- product.title -}}
-                          </span>
-                        </div>
-                      </a>
-                    </li>
-                  {%- endif -%}
-                {%- endfor -%}
-              </ul>
-            </div>
-          </div>
-        {%- endif -%}
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
       </div>
-    {%- endif -%}
-    {%- if first_column_results_size > 0 or predictive_search.resources.products.size > 0 -%}
-      </div>
-    {%- endif -%}
+    </div>
 
-    {%- render 'loading-spinner', class: 'predictive-search__loading-state' -%}
+    {%- render 'loading-spinner'
+      , class: 'predictive-search__loading-state' -%}
 
     <div id="predictive-search-option-search-keywords" class="predictive-search__search-for-button">
       <button
         class="predictive-search__item predictive-search__item--term link link--text h5 animate-arrow"
         tabindex="-1"
         role="option"
-        aria-selected="false"
-      >
+        aria-selected="false">
         <span data-predictive-search-search-for-text>
-          {{- 'templates.search.search_for' | t: terms: predictive_search.terms -}}
+          {{ 'templates.search.search_for' | t: terms: predictive_search.terms }}
         </span>
         <span class="svg-wrapper">
-          {{- 'icon-arrow-back.svg' | inline_asset_content -}}
+          {{ 'icon-arrow-back.svg' | inline_asset_content }}
         </span>
       </button>
     </div>
@@ -245,292 +103,12 @@
 
   <span class="hidden" data-predictive-search-live-region-count-value>
     {% liquid
-      assign total_results = predictive_search.resources.products.size | plus: first_column_results_size
-      if total_results == 0
+      assign matched_count = matched_index
+      if matched_count == 0
         echo 'templates.search.no_results' | t: terms: predictive_search.terms
       else
-        echo 'templates.search.results_with_count' | t: count: total_results | append: ': '
-        if predictive_search.resources.queries.size > 0
-          assign count = predictive_search.resources.queries.size | plus: predictive_search.resources.collections.size
-          echo 'templates.search.results_suggestions_with_count' | t: count: count | append: ', '
-        endif
-        if predictive_search.resources.pages.size > 0
-          assign count = predictive_search.resources.pages.size | plus: predictive_search.resources.articles.size
-          echo 'templates.search.results_pages_with_count' | t: count: count | append: ', '
-        endif
-        if predictive_search.resources.products.size > 0
-          echo 'templates.search.results_products_with_count' | t: count: predictive_search.resources.products.size
-        endif
+        echo 'templates.search.results_products_with_count' | t: count: matched_count
       endif
     %}
   </span>
 {%- endif -%}
-
-
-{% comment %} {%- if predictive_search.performed -%}
-  {% assign first_column_results_size = predictive_search.resources.queries.size
-    | plus: predictive_search.resources.collections.size
-  %}
-  <div id="predictive-search-results" role="listbox">
-    {%- if first_column_results_size > 0 or predictive_search.resources.products.size > 0 -%}
-      <div
-        id="predictive-search-results-groups-wrapper"
-        class="predictive-search__results-groups-wrapper{% unless predictive_search.resources.products.size > 0 %} predictive-search__results-groups-wrapper--no-products{% endunless %}{% unless predictive_search.resources.queries.size > 0 or predictive_search.resources.collections.size > 0 %} predictive-search__results-groups-wrapper--no-suggestions{% endunless %}"
-      >
-    {%- endif -%}
-
-    {%- if predictive_search.resources.products.size > 0 -%}
-      <div class="predictive-search__result-group">
-        {%- if predictive_search.resources.products.size > 0 -%}
-          <div>
-            <h2
-              id="predictive-search-products"
-              class="predictive-search__heading text-body caption-with-letter-spacing"
-            ></h2>
-            {%- assign search_term = predictive_search.terms | downcase | strip -%}
-            {%- assign single_country = collections['single-country'].products -%}
-            {%- assign multi_country = collections['multi-country'].products -%}
-            {%- assign global_country = collections['global-country'].products -%}
-
-            {% assign found_in_single = false %}
-            {% assign found_in_multi = false %}
-            {% assign found_in_global = false %}
-            {% assign matched_handle = '' %}
-
-            {%- for product in global_country -%}
-              {%- assign product_title = product.title | downcase -%}
-              {%- if product_title contains search_term -%}
-                {%- assign found_in_global = true -%}
-                {% assign matched_handle = product.handle %}
-              {%- endif -%}
-            {%- endfor -%}
-
-            {%- assign collection_count = 0 -%}
-            {%- if found_in_single -%}
-              {%- assign collection_count = collection_count | plus: 1 -%}
-            {%- endif -%}
-            {%- if found_in_multi -%}
-              {%- assign collection_count = collection_count | plus: 1 -%}
-            {%- endif -%}
-            {%- if found_in_global -%}
-              {%- assign collection_count = collection_count | plus: 1 -%}
-            {%- endif -%}
-
-            {% if collection_count == 1 %}
-              {% assign search_url = '/products/' | append: matched_handle %}
-            {% else %}
-              {% assign search_url = '/search?q=' | append: search_term %}
-            {% endif %}
-
-            <div id="predictive-search-results" role="listbox">
-              <h2
-                id="predictive-search-queries"
-                class="predictive-search__heading text-body caption-with-letter-spacing"
-              ></h2>
-              <ul
-                id="predictive-search-results-queries-list"
-                class="predictive-search__results-list list-unstyled"
-                role="group"
-                aria-labelledby="predictive-search-queries"
-              >
-                {%- for product in single_country -%}
-                  {%- assign product_title = product.title | downcase -%}
-                  {%- assign region_array = product.metafields.coverage.region.value -%}
-
-                  {%- assign match_found = false -%}
-
-                  {%- for region in region_array -%}
-                    {%- assign region_lower = region | downcase -%}
-                    {%- if region_lower contains search_term -%}
-                      {%- assign match_found = true -%}
-                      {%- break -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-
-                  {%- if product_title contains search_term or match_found -%}
-                    <li
-                      id="predictive-search-option-query-{{ forloop.index }}"
-                      class="predictive-search__list-item"
-                      role="option"
-                      aria-selected="false"
-                    >
-                      <a href="{{ search_url }}" class="predictive-search__item link link--text" tabindex="-1">
-                        <div class="predictive-search__item-content predictive-search__item-content--centered">
-                          <img
-                            src="{{ product.metafields.coverage.country.value.first | append: '.svg' | file_url }}"
-                            class="item__single-image"
-                            alt="{{ product.title }}"
-                          >
-                          <span class="predictive-search__item-heading predictive-search__item-query-result">
-                            {{- product.title -}}
-                          </span>
-                        </div>
-                      </a>
-                    </li>
-                  {%- endif -%}
-                {%- endfor -%}
-              </ul>
-
-              <h2
-                id="predictive-search-queries"
-                class="predictive-search__heading text-body caption-with-letter-spacing"
-              ></h2>
-              <ul
-                id="predictive-search-results-queries-list"
-                class="predictive-search__results-list list-unstyled"
-                role="group"
-                aria-labelledby="predictive-search-queries"
-              >
-                {%- for product in multi_country -%}
-                  {%- assign product_title = product.title | downcase -%}
-                  {%- assign countries_array = product.metafields.coverage.country.value -%}
-                  {%- assign countries_count = countries_array.size -%}
-                  {%- assign region_array = product.metafields.coverage.region.value -%}
-                  {%- assign flattened_array = '' -%}
-
-                  {%- for country_group in countries_array -%}
-                    {%- for country in country_group -%}
-                      {%- capture flattened_array -%}{{ flattened_array }}|{{ country | replace: '_', ' ' | downcase }}{%- endcapture -%}
-                    {%- endfor -%}
-                  {%- endfor -%}
-
-                  {%- assign flattened_array = flattened_array | remove_first: '|' | split: '|' -%}
-                  {%- assign search_term_lower = search_term | downcase -%}
-
-                  {%- assign match_found_region = false -%}
-
-                  {%- for region in region_array -%}
-                    {%- assign region_lower = region | downcase -%}
-                    {%- if region_lower contains search_term_lower -%}
-                      {%- assign match_found_region = true -%}
-                      {%- break -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-
-                  {%- assign match_found = false -%}
-
-                  {%- for country in flattened_array -%}
-                    {%- if country contains search_term_lower -%}
-                      {%- assign match_found = true -%}
-                      {%- break -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-
-                  {%- if product_title contains search_term_lower or match_found or match_found_region -%}
-                    <li
-                      id="predictive-search-option-query-{{ forloop.index }}"
-                      class="predictive-search__list-item"
-                      role="option"
-                      aria-selected="false"
-                    >
-                      <a href="{{ search_url }}" class="predictive-search__item link link--text" tabindex="-1">
-                        <div class="predictive-search__item-content predictive-search__item-content--centered">
-                          <div class="predictive-search__item-image">
-                              {% assign max_flags_to_show = 4 %}
-                              
-                              {%- for country_flag in countries_array limit: max_flags_to_show -%}
-                                <img
-                                  src="{{ country_flag | append: '.svg' | file_url }}"
-                                  class="item__multi-image"
-                                  alt="{{ product.title }}"
-                                  width="25"
-                                  height="25"
-                                >
-                              {%- endfor -%}
-                            </div>
-                          <span class="predictive-search__item-heading predictive-search__item-query-result">
-                            {{- product.metafields.coverage.region.value | join: ', ' -}}
-                          </span>
-                        </div>
-                      </a>
-                    </li>
-                  {%- endif -%}
-                {%- endfor -%}
-              </ul>
-
-              <h2
-                id="predictive-search-queries"
-                class="predictive-search__heading text-body caption-with-letter-spacing"
-              ></h2>
-              <ul
-                id="predictive-search-results-queries-list"
-                class="predictive-search__results-list list-unstyled"
-                role="group"
-                aria-labelledby="predictive-search-queries"
-              >
-                {%- for product in global_country -%}
-                  {%- assign product_title = product.title | downcase -%}
-                  {%- if product_title contains search_term -%}
-                    <li
-                      id="predictive-search-option-query-{{ forloop.index }}"
-                      class="predictive-search__list-item"
-                      role="option"
-                      aria-selected="false"
-                    >
-                      <a href="{{ search_url }}" class="predictive-search__item link link--text" tabindex="-1">
-                        <div class="predictive-search__item-content predictive-search__item-content--centered">
-                          <img
-                            src="{{ product.metafields.coverage.region.value.first | append: '.svg' | file_url }}"
-                            alt="{{ product.title }}"
-                            width="35"
-                            height="35"
-                          >
-                          <span class="predictive-search__item-heading predictive-search__item-query-result">
-                            {{- product.title -}}
-                          </span>
-                        </div>
-                      </a>
-                    </li>
-                  {%- endif -%}
-                {%- endfor -%}
-              </ul>
-            </div>
-          </div>
-        {%- endif -%}
-      </div>
-    {%- endif -%}
-    {%- if first_column_results_size > 0 or predictive_search.resources.products.size > 0 -%}
-      </div>
-    {%- endif -%}
-
-    {%- render 'loading-spinner', class: 'predictive-search__loading-state' -%}
-
-    <div id="predictive-search-option-search-keywords" class="predictive-search__search-for-button">
-      <button
-        class="predictive-search__item predictive-search__item--term link link--text h5 animate-arrow"
-        tabindex="-1"
-        role="option"
-        aria-selected="false"
-      >
-        <span data-predictive-search-search-for-text>
-          {{- 'templates.search.search_for' | t: terms: predictive_search.terms -}}
-        </span>
-        <span class="svg-wrapper">
-          {{- 'icon-arrow-back.svg' | inline_asset_content -}}
-        </span>
-      </button>
-    </div>
-  </div>
-
-  <span class="hidden" data-predictive-search-live-region-count-value>
-    {% liquid
-      assign total_results = predictive_search.resources.products.size | plus: first_column_results_size
-      if total_results == 0
-        echo 'templates.search.no_results' | t: terms: predictive_search.terms
-      else
-        echo 'templates.search.results_with_count' | t: count: total_results | append: ': '
-        if predictive_search.resources.queries.size > 0
-          assign count = predictive_search.resources.queries.size | plus: predictive_search.resources.collections.size
-          echo 'templates.search.results_suggestions_with_count' | t: count: count | append: ', '
-        endif
-        if predictive_search.resources.pages.size > 0
-          assign count = predictive_search.resources.pages.size | plus: predictive_search.resources.articles.size
-          echo 'templates.search.results_pages_with_count' | t: count: count | append: ', '
-        endif
-        if predictive_search.resources.products.size > 0
-          echo 'templates.search.results_products_with_count' | t: count: predictive_search.resources.products.size
-        endif
-      endif
-    %}
-  </span>
-{%- endif -%} {% endcomment %}

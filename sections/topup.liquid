@@ -1,0 +1,444 @@
+<span id="iccid-display"></span>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const iccid = sessionStorage.getItem('iccid');
+    console.log('ICCID dari sessionStorage:', iccid);
+
+    if (iccid) {
+      // misalnya otomatis isi ke input:
+      const iccidInput = document.getElementById('your-iccid-input');
+      if (iccidInput) {
+        iccidInput.value = iccid;
+      }
+
+      // atau tampilkan ke span
+      const iccidSpan = document.getElementById('iccid-display');
+      if (iccidSpan) {
+        iccidSpan.textContent = iccid;
+      }
+    }
+  });
+</script>
+
+
+{% comment %}
+  Main Search section - simplified for Top-Up Plan only
+{% endcomment %}
+
+{% comment %} # STYLES SECTION {% endcomment %}
+{% style %}
+  /* (Styles tetap sesuai file awalmu) */
+  .main-search {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+  .main-search-container {
+    background-color: var(--color-background);
+    padding: 20px 10% 90px;
+  }
+  /* HAPUS .sim-filter-buttons styles karena tidak dipakai lagi */
+
+  /* Keep your original styles unchanged below */
+  .main-search-collection-wrapper {
+    margin-bottom: 30px;
+  }
+  .main-search-collection {
+    margin-top: 20px;
+  }
+  .main-search-collection.title {
+    margin: 0 0 10px;
+    font-weight: bold;
+    color: var(--color-primary);
+    font-size: 26px;
+  }
+  .product-card-wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+  }
+  .product-card-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 15px 15px;
+    background-color: white;
+    border-radius: 25px;
+    box-shadow: var(--box-shadow);
+  }
+  .product-card-country {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 20px;
+    min-height: 53px;
+  }
+  .product-card-country h1 {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: 20px;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .product-card-icon-single-flag {
+    border-radius: 15px;
+    border: 1px solid var(--color-border);
+  }
+  .product-card-multi-flag,
+  .product-card-icon-multi-flag {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3px;
+    border-radius: 5px;
+  }
+  .product-card-icon-multi-flag {
+    border: 1px solid var(--color-border);
+  }
+  .product-card-flag-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    color: var(--color-primary);
+    background-color: white;
+  }
+  .product-card-flag-count span {
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--color-primary);
+  }
+  .product-url-link {
+    text-decoration: none;
+    color: var(--color-primary);
+    min-height: 85px;
+  }
+  .product-card-field-icons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+  .product-card-field-icons h1 {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--color-primary);
+  }
+  .product-card-field-icons h2 {
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+  }
+  .product-card-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px ridge;
+    padding: 10px 0;
+  }
+  img.field-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .product-card-field h2 {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--color-secondary);
+  }
+  .product-card-btn {
+    width: 100%;
+    height: 55px;
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+  .product-card-btn p {
+    font-size: var(--font-large);
+    font-weight: bold;
+    color: var(--color-neutral);
+    margin: 0;
+  }
+  .product-card-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease-in-out;
+  }
+  .product-card-container .product-card-content {
+    transform: rotateY(0deg);
+  }
+  .product-card-container.flipped .product-card-content {
+    transform: rotateY(180deg);
+  }
+  .product-card-content-flip-front,
+  .product-card-content-flip-back {
+    backface-visibility: hidden;
+    transition: transform 0.6s ease-in-out;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .product-card-content-flip-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    background: var(--color-neutral);
+    text-align: center;
+    cursor: pointer;
+    transform: rotateY(180deg);
+  }
+  .country-total-atribut-wrapper {
+    max-width: 125px;
+    padding: 2px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .country-total-atribut span {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--color-secondary);
+  }
+  .country-total-atribut button {
+    width: 100%;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: 1px solid var(--color-primary);
+    background: none;
+  }
+  .country-total-including-atribut {
+    background-color: var(--color-primary);
+    text-align: center;
+    border-radius: 5px;
+  }
+  .country-total-including-atribut p {
+    margin: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--color-neutral);
+  }
+  .main-search__product-type {
+    background-color: var(--color-primary);
+    border-radius: 5px;
+    padding: 5px;
+    color: var(--color-neutral);
+    font-size: 12px;
+    margin: 0;
+    font-weight: bold;
+  }
+  .main-search__error {
+    display: flex;
+    justify-content: center;
+    border-radius: 15px;
+    padding: 15px;
+  }
+  .main-search__error p {
+    font-size: var(--font-supper-large);
+    color: var(--color-primary);
+  }
+  @media (max-width: 1600px) {
+    .product-card-wrapper {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (max-width: 1024px) {
+    .product-card-wrapper {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 768px) {
+    .main-search-container {
+      padding: 20px 10%;
+    }
+    .banner-search__content {
+      width: 100%;
+    }
+  }
+  @media (max-width: 426px) {
+    .product-card-wrapper {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+{% endstyle %}
+
+{% comment %} # JAVASCRIPT SECTION {% endcomment %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Flip card functionality
+    document.querySelectorAll('.flipped-trigger').forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.stopPropagation();
+        let card = this.closest('.product-card-container');
+        card.classList.toggle('flipped');
+      });
+    });
+    document.addEventListener('click', function (event) {
+      document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
+        if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
+          card.classList.remove('flipped');
+        }
+      });
+    });
+  });
+</script>
+
+{% comment %} # TEMPLATE SECTION {% endcomment %}
+<div class="main-search">
+  <div class="main-search-container">
+    {% assign collection = collections['top-up-plan'] %}
+    {% assign found_any_product = false %}
+    {% assign single_product_url = '' %}
+    {% assign product_count = 0 %}
+
+    {% if collection and collection.products.size > 0 %}
+      <div class="main-search-collection-wrapper" id="collection-top-up-plan">
+        <h1 class="main-search-collection title">{{ collection.title }}</h1>
+        <div class="main-search-collection">
+          <div class="product-card-wrapper">
+            {% for product in collection.products %}
+              {% assign found_any_product = true %}
+              {% assign product_count = product_count | plus: 1 %}
+              {% assign single_product_url = product.url %}
+
+              {% assign product_countries = product.metafields.coverage.country.value %}
+              {% assign all_matched_countries = '' %}
+              {% if product_countries %}
+                {% for country in product_countries %}
+                  {% assign all_matched_countries = all_matched_countries | append: country | append: ', ' %}
+                {% endfor %}
+              {% endif %}
+
+              <div class="product-card-container">
+                <a class="product-url-link" href="{{ product.url }}">
+                  <div class="product-card-country">
+                    {% assign total_countries = product_countries.size %}
+                    {% if total_countries == 1 %}
+                      {% assign country_trimmed = product_countries.first | strip %}
+                      {% assign country_filename = country_trimmed | replace: ' ', '-' | append: '.svg' %}
+                      <img class="product-card-icon-single-flag" src="{{ country_filename | file_url }}" alt="{{ country_trimmed }}" width="50" height="50">
+                    {% elsif total_countries > 1 %}
+                      <div class="product-card-multi-flag">
+                        {% for country in product_countries limit: 3 %}
+                          {% assign country_filename = country | replace: ' ', '-' | append: '.svg' %}
+                          <img class="product-card-icon-multi-flag" src="{{ country_filename | file_url }}" alt="{{ country }}" width="25" height="25">
+                        {% endfor %}
+                        {% if total_countries > 3 %}
+                          <div class="product-card-flag-count"><span>+{{ total_countries | minus: 3 }}</span></div>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                    <div class="main-search__product">
+                      <span class="main-search__product-type">Top-Up Plan</span>
+                      <h1>{{ product.title }}</h1>
+                    </div>
+                  </div>
+                </a>
+
+                <div class="product-card-content">
+                  <div class="product-card-content-flip-front">
+                    {% if product_countries.size > 1 %}
+                      <div class="product-card-field" style="border-top: 1px ridge;">
+                        <div class="product-card-field-icons">
+                          <img class="field-icon" src="{{ 'icon-park-outline_world.svg' | asset_url }}" alt="Icon">
+                          <h1>Coverage</h1>
+                        </div>
+                        <div class="country-total-atribut-wrapper">
+                          <div class="country-total-atribut">
+                            <button class="flipped-trigger"><span>{{ product_countries.size }} Countries</span></button>
+                          </div>
+                          <div class="country-total-including-atribut">
+                            {% if all_matched_countries != blank %}
+                              <p>Including {{ all_matched_countries | strip | replace: ',', ' ' }}</p>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    {% if product.variants.size > 0 %}
+                      {% assign first_optiondays = product.variants.first.option1 | replace: ' Days', '' %}
+                      {% assign last_optiondays = product.variants.last.option1 | strip %}
+                      {% assign last_optionquota = product.variants.last.option2 | strip %}
+
+                      <div class="product-card-field">
+                        <div class="product-card-field-icons">
+                          <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" alt="Icon">
+                          <h1>Data</h1>
+                        </div>
+                        <h2>{{ last_optionquota }}</h2>
+                      </div>
+
+                      <div class="product-card-field">
+                        <div class="product-card-field-icons">
+                          <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" alt="Icon">
+                          <h1>Days</h1>
+                        </div>
+                        <h2>{{ first_optiondays }} - {{ last_optiondays }}</h2>
+                      </div>
+
+                      <div class="product-card-field">
+                        <div class="product-card-field-icons">
+                          <img class="field-icon" src="{{ 'icon-dollar.svg' | asset_url }}" alt="Icon">
+                          <h1>Price</h1>
+                        </div>
+                        <h2>From {{ product.price | money_with_currency }}</h2>
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="product-card-content-flip-back">
+                    {% render 'coverage', product: product %}
+                  </div>
+                </div>
+
+                <div class="product-card-button">
+                  <a class="product-url-link" href="{{ product.url }}">
+                    <button class="product-card-btn">
+                      <p>Buy Now</p>
+                    </button>
+                  </a>
+                </div>
+              </div>
+
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="main-search__error">
+        <p>No products found in Top-Up Plan.</p>
+      </div>
+    {% endif %}
+
+    {% if product_count == 1 %}
+      <script>
+        window.location.href = '{{ single_product_url }}';
+      </script>
+    {% endif %}
+  </div>
+</div>
+
+
+{% schema %}
+{
+  "name": "Section Top Up",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Section Top Up",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

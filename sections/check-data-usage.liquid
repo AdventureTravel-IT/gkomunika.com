@@ -149,7 +149,7 @@
   }
 
   .data-usage__wrapper p:nth-child(2) {
-    justify-content: center;
+    text-align: center;
   }
 
   .check-data-usage__total-usage {
@@ -197,17 +197,18 @@
   }
 
   .top-up-plan-btn {
-  margin-top: 20px;
-  background-color: var(--color-secondary);
-  color: var(--color-neutral);
-  border: none;
-  padding: 15px 30px;
-  border-radius: 10px;
-  font-size: var(--font-large);
-  cursor: pointer;
-  width: 100%;
-  text-align: center;
-}
+    margin-top: 20px;
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: var(--font-large);
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+  }
 
   @media (max-width: 768px) {
     .check-data-usage__wrapper {
@@ -335,19 +336,15 @@
         </div>
         <div class="esim-information__wrapper">
           <p>Active Date</p>
-          <span>${
-            vendor === 'AF'
-              ? formatEpochMillis(itemData.useSDate)
-              : formatDateTime(itemData.planStartTime)
-          } ${itemData.timeZone || ''}</span>
+          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useSDate) : formatDateTime(itemData.planStartTime)} ${
+        itemData.timeZone || ''
+      }</span>
         </div>
         <div class="esim-information__wrapper">
           <p>End Date</p>
-          <span>${
-            vendor === 'AF'
-              ? formatEpochMillis(itemData.useEDate)
-              : formatDateTime(itemData.planEndTime)
-          } ${itemData.timeZone || ''}</span>
+          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useEDate) : formatDateTime(itemData.planEndTime)} ${
+        itemData.timeZone || ''
+      }</span>
         </div>
       </div>
     `;
@@ -376,13 +373,10 @@
 
       return dataUsage
         .map((item) => {
-          const country = vendor === 'AF' ? (item.enus || '-') : (item.country || '-');
-          const date = vendor === 'AF'
-            ? formatDate(item.usageDate)
-            : formatDate(item.usedDate);
-          const usage = vendor === 'AF'
-            ? formatBytes(Number(item.usage || 0))
-            : formatBytes(Number(item.usedAmount || 0));
+          const country = vendor === 'AF' ? item.enus || '-' : item.country || '-';
+          const date = vendor === 'AF' ? formatDate(item.usageDate) : formatDate(item.usedDate);
+          const usage =
+            vendor === 'AF' ? formatBytes(Number(item.usage || 0)) : formatBytes(Number(item.usedAmount || 0));
 
           return `
           <div class="data-usage__wrapper">
@@ -527,7 +521,6 @@
             ${topUpBtnHtml}
           </div>
         `;
-
       } catch (e) {
         console.error(e);
         resultEl.innerHTML = `<p style="color:red;">Connection error.</p>`;
@@ -547,14 +540,23 @@
     });
 
     document.addEventListener('click', (e) => {
-      if (e.target?.id === 'top-up-plan') {
-        window.location.href = 'https://gkomunika.com/pages/top-up';
-      }
-    });
+  if (e.target?.id === 'top-up-plan') {
+    const iccidInput = document.getElementById('iccid');
+    const iccid = iccidInput?.value?.trim();
+
+    if (iccid) {
+      sessionStorage.setItem('iccid', iccid);
+      console.log('ICCID berhasil disimpan ke sessionStorage:', iccid);
+    } else {
+      console.log('ICCID kosong, tidak disimpan ke sessionStorage.');
+    }
+
+    window.location.href = 'https://gkomunika.com/pages/top-up';
+  }
+});
+
   });
 </script>
-
-
 
 {% schema %}
 {

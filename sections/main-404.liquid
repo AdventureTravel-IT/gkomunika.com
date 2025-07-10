@@ -2,7 +2,20 @@
   .template-404 .title + * {
     margin-top: 1rem;
   }
-
+  .template-404,
+  .template-404 h1 {
+    color: var(--color-primary);
+  }
+  .button-404 {
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+    padding: 15px;
+    width: 180px;
+    border-radius: 15px;
+    margin-top: 30px;
+    text-decoration: none;
+    font-family: 'Gotham', Arial, sans-serif;
+  }
   @media screen and (min-width: 750px) {
     .template-404 .title + * {
       margin-top: 2rem;
@@ -17,7 +30,7 @@
   <h1 class="title">
     {{ 'templates.404.title' | t }}
   </h1>
-  <a href="{{ routes.all_products_collection_url }}" class="button">
+  <a href="{{ routes.all_products_collection_url }}" class="button-404">
     {{ 'general.continue_shopping' | t }}
   </a>
 </div>

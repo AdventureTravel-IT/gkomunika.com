@@ -240,6 +240,37 @@
       flex-basis: auto;
     }
   }
+=======
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('YOUR-ARROW-ICON.svg');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 15px;
+  padding-right: 35px;
+}
+@media (max-width: 768px) {
+  .form-insurance__content-wrapper {
+    padding: 20px 24px;
+  }
+}
+@media (max-width: 426px) {
+  .form-insurance {
+    display: flex;
+    flex-direction: column;
+  }
+  .form-insurance__right {
+    width: 100%;
+  }
+}
+@media (max-width: 376px) {
+  .form-insurance__field {
+    flex-grow: 1;
+    flex-shrink: initial;
+    flex-basis: auto;
+  }
+}
 {% endstyle %}
 
 {% capture FormInsurance %}

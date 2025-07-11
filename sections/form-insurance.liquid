@@ -240,27 +240,27 @@
       flex-basis: auto;
     }
   }
-  @media (max-width: 768px) {
-    .form-insurance__content-wrapper {
-      padding: 20px 24px;
-    }
+@media (max-width: 768px) {
+  .form-insurance__content-wrapper {
+    padding: 20px 24px;
   }
-  @media (max-width: 426px) {
-    .form-insurance {
-      display: flex;
-      flex-direction: column;
-    }
-    .form-insurance__right {
-      width: 100%;
-    }
+}
+@media (max-width: 426px) {
+  .form-insurance {
+    display: flex;
+    flex-direction: column;
   }
-  @media (max-width: 376px) {
-    .form-insurance__field {
-      flex-grow: 1;
-      flex-shrink: initial;
-      flex-basis: auto;
-    }
+  .form-insurance__right {
+    width: 100%;
   }
+}
+@media (max-width: 376px) {
+  .form-insurance__field {
+    flex-grow: 1;
+    flex-shrink: initial;
+    flex-basis: auto;
+  }
+}
 {% endstyle %}
 
 {% capture FormInsurance %}
@@ -434,16 +434,6 @@
             Data is correct
           </label>
         {% endcomment %}
-        {% comment %}
-          <label for="check-data">
-            <input
-              type="checkbox"
-              id="check-data-global"
-              required
-            >
-            Data is correct
-          </label>
-        {% endcomment %}
 
         <label for="check-itinerary">
           <input
@@ -451,7 +441,7 @@
             id="check-itinerary-global"
             required
           >
-          I understand that the data submitted is final and cannot be changed after submission.
+          I understand that the data submitted is final and cannot be changed after submission.
         </label>
       </div>
 
@@ -492,7 +482,6 @@
     // Tampilkan productTitle dan variantTitle dalam <pre>
     const sectionMap = {
       'form-individual': 'Individual',
-      'form-duoplus': 'Duo Plus',
       'form-duoplus': 'Duo Plus',
       'form-family': 'Family',
     };
@@ -573,7 +562,7 @@
           const labelEl = document.createElement('label');
           labelEl.innerHTML = `
         <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-        The travel dates and the destination country are the same for all the insurance plans.
+        The travel dates and the destination country are the same for all the insurance plans.
       `;
 
           sameCheckboxDiv.appendChild(labelEl);
@@ -659,7 +648,6 @@
 
     // Proses untuk variantType DuoPlus
     const duoplusProducts = insuranceProducts.filter((item) => item.variantType === 'Duo Plus');
-    const duoplusProducts = insuranceProducts.filter((item) => item.variantType === 'Duo Plus');
 
     duoplusProducts.forEach((product) => {
       const formTemplate = document.getElementById('form-insurance-template').innerHTML;
@@ -691,13 +679,6 @@
           const sectionTop = document.createElement('div');
           sectionTop.classList.add('form-insurance__section-top');
 
-        // ➡️ Perbaikan di sini:
-        // hanya buat section-top kalau kelipatan 10
-        if (i % 10 === 0) {
-          const sectionTop = document.createElement('div');
-          sectionTop.classList.add('form-insurance__section-top');
-
-          // header di setiap block
           // header di setiap block
           const sectionHeader = document.createElement('div');
           sectionHeader.classList.add('form-insurance__section-header');
@@ -718,25 +699,13 @@
           const itineraryContainer = document.createElement('div');
           itineraryContainer.classList.add('form-itinerary-container');
           itineraryContainer.innerHTML = formItineraryTemplate;
-          // itinerary
-          const itineraryContainer = document.createElement('div');
-          itineraryContainer.classList.add('form-itinerary-container');
-          itineraryContainer.innerHTML = formItineraryTemplate;
 
-          if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
-            injectCountryOptions(itineraryContainer, product.variantCoverage);
-          }
           if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
             injectCountryOptions(itineraryContainer, product.variantCoverage);
           }
 
           sectionTop.appendChild(itineraryContainer);
-          sectionTop.appendChild(itineraryContainer);
 
-          // ➡️ same-insurance checkbox hanya di insured ke-1
-          if (i === 0 && product.quantity > 1) {
-            const sameCheckboxDiv = document.createElement('div');
-            sameCheckboxDiv.classList.add('form-insurance__same-checkbox');
           // ➡️ same-insurance checkbox hanya di insured ke-1
           if (i === 0 && product.quantity > 1) {
             const sameCheckboxDiv = document.createElement('div');
@@ -745,18 +714,13 @@
             const labelEl = document.createElement('label');
             labelEl.innerHTML = `
             <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-            The travel dates and the destination country are the same for all the insurance plans.
+            The travel dates and the destination country are the same for all the insurance plans.
           `;
 
             sameCheckboxDiv.appendChild(labelEl);
             sectionTop.appendChild(sameCheckboxDiv);
           }
-            sameCheckboxDiv.appendChild(labelEl);
-            sectionTop.appendChild(sameCheckboxDiv);
-          }
 
-          formElement.appendChild(sectionTop);
-        }
           formElement.appendChild(sectionTop);
         }
 
@@ -935,7 +899,7 @@
         const labelEl = document.createElement('label');
         labelEl.innerHTML = `
       <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-      The travel dates and the destination country are the same for all the insurance plans.
+      The travel dates and the destination country are the same for all the insurance plans.
     `;
         sameCheckboxDiv.appendChild(labelEl);
       }
@@ -1300,6 +1264,7 @@
 </script>
 
 <script>
+
   function getSectionSelector(section, variantId) {
     if (section === 'Duo Plus') {
       return `#duoplus-section-${variantId}`;
@@ -1311,37 +1276,30 @@
   }
 
   async function handleCheckout() {
+    const isDataCorrectChecked = document.getElementById('check-data-global').checked;
     const isItineraryChecked = document.getElementById('check-itinerary-global').checked;
 
-    if (!isItineraryChecked) {
-      alert('You must confirm that the flight itinerary is the same.');
+    if (!isDataCorrectChecked || !isItineraryChecked) {
+      alert('You must confirm that the data is correct and the flight itinerary is the same.');
       return;
     }
 
     const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems')) || [];
     const insuranceItems = ProductItems.filter((p) => p.category === 'Insurance');
-
+    
     if (insuranceItems.length === 0) {
       alert('No insurance product selected.');
       return;
     }
 
+    // Collect itinerary data from a section-top div
     const collectItineraryFromSectionTop = (sectionTopElement) => {
       if (!sectionTopElement) return { startDate: '', endDate: '', destinationCountry: '' };
 
       const startDate = sectionTopElement.querySelector('#start-date')?.value || '';
       const endDate = sectionTopElement.querySelector('#end-date')?.value || '';
       const destCountry = sectionTopElement.querySelector('.itinerary-country-dropdown')?.value || '';
-      const startDate = sectionTopElement.querySelector('#start-date')?.value || '';
-      const endDate = sectionTopElement.querySelector('#end-date')?.value || '';
-      const destCountry = sectionTopElement.querySelector('.itinerary-country-dropdown')?.value || '';
 
-      return {
-        startDate,
-        endDate,
-        destinationCountry: destCountry,
-      };
-    };
       return {
         startDate,
         endDate,
@@ -1352,25 +1310,12 @@
     const collectFormData = (formList, section, itineraryMapPerForm, groupIndex = null) => {
       return Array.from(formList).map((form, index) => {
         const data = new FormData(form);
-    const collectFormData = (formList, section, itineraryMapPerForm, groupIndex = null) => {
-      return Array.from(formList).map((form, index) => {
-        const data = new FormData(form);
 
-        const itinerary = itineraryMapPerForm?.[index] || { startDate: '', endDate: '', destinationCountry: '' };
         const itinerary = itineraryMapPerForm?.[index] || { startDate: '', endDate: '', destinationCountry: '' };
 
         let title = '';
         let relationshipValue = '';
-        let title = '';
-        let relationshipValue = '';
 
-        if (section === 'Individual') {
-          title = `Insured (Policy Holder) #${index + 1}`;
-        } else if (section === 'Duo Plus') {
-          title = index === 0 ? 'Insured (Policy Holder)' : 'Traveler';
-        } else if (section === 'Family') {
-          const selectedRelationship = form.querySelector('input[name="Relationship"]:checked');
-          relationshipValue = selectedRelationship ? selectedRelationship.value : '';
         if (section === 'Individual') {
           title = `Insured (Policy Holder) #${index + 1}`;
         } else if (section === 'Duo Plus') {
@@ -1388,39 +1333,7 @@
             title = relationshipValue ? `Traveler - ${relationshipValue}` : 'Traveler';
           }
         }
-          if (index === 0) {
-            title =
-              groupIndex !== null && groupIndex > 0
-                ? `Insured (Policy Holder) #${groupIndex + 1}`
-                : 'Insured (Policy Holder)';
-          } else {
-            title = relationshipValue ? `Traveler - ${relationshipValue}` : 'Traveler';
-          }
-        }
 
-        return {
-          groupIndex,
-          title,
-          salutation: data.get('Salutation'),
-          firstName: data.get('First Name'),
-          lastName: data.get('Last Name'),
-          placeOfBirth: data.get('Place Of Birth'),
-          day: data.get('Day'),
-          month: data.get('Month'),
-          year: data.get('Year'),
-          passportNumber: data.get('Passport Number'),
-          mobilePhone: data.get('Mobile Phone'),
-          email: data.get('Email'),
-          city: data.get('City'),
-          postalCode: data.get('Postal Code'),
-          address: data.get('Address'),
-          relationship: relationshipValue,
-          startDate: itinerary.startDate,
-          endDate: itinerary.endDate,
-          destinationCountry: itinerary.destinationCountry,
-        };
-      });
-    };
         return {
           groupIndex,
           title,
@@ -1503,75 +1416,10 @@
           if (globalItinerary.destinationCountry)
             globalLines.push(`Destination Country: ${globalItinerary.destinationCountry}`);
         }
-    /**
-     * Format all insured data into attribute string
-     *
-     * For Family:
-     * - itinerary printed ONCE per group
-     *
-     * For others:
-     * - itinerary printed per block if no global
-     */
-    const formatData = (dataArray, globalItinerary = null, section = null, itineraryPerGroup = []) => {
-      let result = '';
-
-      if (section === 'Family' && itineraryPerGroup?.length) {
-        let currentGroup = 0;
-        let currentIndex = 0;
-
-        while (currentIndex < dataArray.length) {
-          const groupItinerary = itineraryPerGroup[currentGroup] || {};
-          const groupLines = [];
-
-          if (groupItinerary.startDate) groupLines.push(`Start Date: ${groupItinerary.startDate}`);
-          if (groupItinerary.endDate) groupLines.push(`End Date: ${groupItinerary.endDate}`);
-          if (groupItinerary.destinationCountry)
-            groupLines.push(`Destination Country: ${groupItinerary.destinationCountry}`);
-
-          const groupForms = [];
-          while (currentIndex < dataArray.length && dataArray[currentIndex].groupIndex === currentGroup) {
-            const item = dataArray[currentIndex];
-            const lines = [];
-
-            lines.push(item.title);
-            lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
-            lines.push(
-              `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
-            );
-            if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
-            if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
-            if (item.email) lines.push(`Email: ${item.email}`);
-            if (item.city || item.postalCode)
-              lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
-            if (item.address) lines.push(`Address: ${item.address}`);
-
-            groupForms.push(lines.join('\n'));
-            currentIndex++;
-          }
-
-          result += `${groupLines.join('\n')}\n\n${groupForms.join('\n\n')}\n\n`;
-
-          currentGroup++;
-        }
-      } else {
-        let globalLines = [];
-        if (globalItinerary) {
-          if (globalItinerary.startDate) globalLines.push(`Start Date: ${globalItinerary.startDate}`);
-          if (globalItinerary.endDate) globalLines.push(`End Date: ${globalItinerary.endDate}`);
-          if (globalItinerary.destinationCountry)
-            globalLines.push(`Destination Country: ${globalItinerary.destinationCountry}`);
-        }
 
         const insuredBlocks = dataArray.map((item) => {
           const lines = [];
-        const insuredBlocks = dataArray.map((item) => {
-          const lines = [];
 
-          if (!globalItinerary) {
-            if (item.startDate) lines.push(`Start Date: ${item.startDate}`);
-            if (item.endDate) lines.push(`End Date: ${item.endDate}`);
-            if (item.destinationCountry) lines.push(`Destination Country: ${item.destinationCountry}`);
-          }
           if (!globalItinerary) {
             if (item.startDate) lines.push(`Start Date: ${item.startDate}`);
             if (item.endDate) lines.push(`End Date: ${item.endDate}`);
@@ -1589,51 +1437,23 @@
           if (item.city || item.postalCode)
             lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
           if (item.address) lines.push(`Address: ${item.address}`);
-          lines.push(item.title);
-          lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
-          lines.push(
-            `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
-          );
-          if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
-          if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
-          if (item.email) lines.push(`Email: ${item.email}`);
-          if (item.city || item.postalCode)
-            lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
-          if (item.address) lines.push(`Address: ${item.address}`);
 
-          return lines.join('\n');
-        });
           return lines.join('\n');
         });
 
         if (globalLines.length > 0) {
           result += globalLines.join('\n') + '\n\n';
         }
-        if (globalLines.length > 0) {
-          result += globalLines.join('\n') + '\n\n';
-        }
 
-        result += insuredBlocks.join('\n\n');
-      }
         result += insuredBlocks.join('\n\n');
       }
 
       return result.trim();
     };
-      return result.trim();
-    };
 
     const attributes = {};
     const groupedByVariant = {};
-    const attributes = {};
-    const groupedByVariant = {};
 
-    ProductItems.forEach((product) => {
-      if (!groupedByVariant[product.variantId]) {
-        groupedByVariant[product.variantId] = [];
-      }
-      groupedByVariant[product.variantId].push(product);
-    });
     ProductItems.forEach((product) => {
       if (!groupedByVariant[product.variantId]) {
         groupedByVariant[product.variantId] = [];
@@ -1645,17 +1465,7 @@
       const variantProducts = groupedByVariant[variantId];
       const section = variantProducts[0].variantType;
       const variantTitle = variantProducts[0].variantTitle || '';
-    for (const variantId in groupedByVariant) {
-      const variantProducts = groupedByVariant[variantId];
-      const section = variantProducts[0].variantType;
-      const variantTitle = variantProducts[0].variantTitle || '';
 
-      if (variantProducts[0].category === 'Insurance') {
-        const sectionSelector = getSectionSelector(section, variantId);
-
-        const wrappers = document.querySelectorAll(
-          `${sectionSelector} .form-insurance__section-wrapper[data-product-id="${variantId}"]`
-        );
       if (variantProducts[0].category === 'Insurance') {
         const sectionSelector = getSectionSelector(section, variantId);
 
@@ -1664,64 +1474,10 @@
         );
 
         if (!wrappers.length) continue;
-        if (!wrappers.length) continue;
 
         let sameInsuranceChecked = false;
         let globalItinerary = null;
-        let sameInsuranceChecked = false;
-        let globalItinerary = null;
 
-        if (variantProducts[0].quantity > 1) {
-          const checkbox = document.querySelector(`${sectionSelector} input[id^="sameInsuranceCheckbox-"]`);
-          if (checkbox && checkbox.checked) {
-            sameInsuranceChecked = true;
-            const firstWrapper = wrappers[0];
-            const sectionTop = firstWrapper.querySelector('.form-insurance__section-top');
-            globalItinerary = collectItineraryFromSectionTop(sectionTop);
-          }
-        }
-
-        if (section === 'Family') {
-          let allFamilyFormsData = [];
-          let itineraryPerGroup = [];
-
-          wrappers.forEach((wrapper, groupIndex) => {
-            let itinerary = { startDate: '', endDate: '', destinationCountry: '' };
-
-            if (sameInsuranceChecked && groupIndex > 0) {
-              itinerary = globalItinerary;
-            } else {
-              const sectionTop = wrapper.querySelector('.form-insurance__section-top');
-              itinerary = collectItineraryFromSectionTop(sectionTop);
-            }
-
-            itineraryPerGroup.push(itinerary);
-
-            const forms = wrapper.querySelectorAll('form.form-family');
-
-            const dataPerGroup = collectFormData(
-              forms,
-              section,
-              forms.length ? Array(forms.length).fill(itinerary) : [],
-              groupIndex
-            );
-
-            allFamilyFormsData = allFamilyFormsData.concat(dataPerGroup);
-          });
-
-          const attrKey = `Form ${section} - ${variantTitle}`;
-          attributes[attrKey] = formatData(allFamilyFormsData, null, section, itineraryPerGroup);
-          continue;
-        }
-
-        let itineraryMapPerForm = [];
-
-        if (!sameInsuranceChecked) {
-          wrappers.forEach((wrapper) => {
-            const sectionTop = wrapper.querySelector('.form-insurance__section-top');
-            itineraryMapPerForm.push(collectItineraryFromSectionTop(sectionTop));
-          });
-        }
         if (variantProducts[0].quantity > 1) {
           const checkbox = document.querySelector(`${sectionSelector} input[id^="sameInsuranceCheckbox-"]`);
           if (checkbox && checkbox.checked) {
@@ -1779,19 +1535,9 @@
         );
 
         console.log(`[Checkout] Found ${forms.length} forms for variantId ${variantId}`);
-        const forms = document.querySelectorAll(
-          `${sectionSelector} .form-insurance__section-wrapper[data-product-id="${variantId}"] form`
-        );
-
-        console.log(`[Checkout] Found ${forms.length} forms for variantId ${variantId}`);
 
         const data = collectFormData(forms, section, sameInsuranceChecked ? null : itineraryMapPerForm);
-        const data = collectFormData(forms, section, sameInsuranceChecked ? null : itineraryMapPerForm);
 
-        const attrKey = `Form ${section} - ${variantTitle}`;
-        attributes[attrKey] = formatData(data, sameInsuranceChecked ? globalItinerary : null);
-      }
-    }
         const attrKey = `Form ${section} - ${variantTitle}`;
         attributes[attrKey] = formatData(data, sameInsuranceChecked ? globalItinerary : null);
       }
@@ -1802,22 +1548,11 @@
       const variantTitle = product.variantTitle || '';
       const attrKey = `Form ${product.variantType} - ${variantTitle}`;
       const queryData = {};
-    if (ProductItems.length === 1) {
-      const product = ProductItems[0];
-      const variantTitle = product.variantTitle || '';
-      const attrKey = `Form ${product.variantType} - ${variantTitle}`;
-      const queryData = {};
 
       if (product.category === 'Insurance' && attributes[attrKey]) {
         queryData[attrKey] = attributes[attrKey];
       }
-      if (product.category === 'Insurance' && attributes[attrKey]) {
-        queryData[attrKey] = attributes[attrKey];
-      }
 
-      const queryParams = Object.entries(queryData)
-        .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
-        .join('&');
       const queryParams = Object.entries(queryData)
         .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
         .join('&');
@@ -1826,11 +1561,8 @@
       window.location.href = checkoutUrl;
       return;
     }
-      const checkoutUrl = `/cart/${product.variantId}:${product.quantity}?${queryParams}`;
-      window.location.href = checkoutUrl;
-      return;
-    }
 
+    // Multi-product flow
     try {
       await fetch('/cart/clear.js', {
         method: 'POST',
@@ -1840,13 +1572,10 @@
       for (const product of ProductItems) {
         const variantTitle = product.variantTitle || '';
         const attrKey = `Form ${product.variantType} - ${variantTitle}`;
-      for (const product of ProductItems) {
-        const variantTitle = product.variantTitle || '';
-        const attrKey = `Form ${product.variantType} - ${variantTitle}`;
 
         let itemAttributes = {};
-        let itemAttributes = {};
 
+        // Periksa apakah produk ini asuransi
         if (product.category === 'Insurance' && attributes[attrKey]) {
           itemAttributes = { [attrKey]: attributes[attrKey] };
         }
@@ -1856,11 +1585,6 @@
           quantity: product.quantity,
           attributes: itemAttributes,
         });
-        console.log('🛒 Adding to cart:', {
-          id: product.variantId,
-          quantity: product.quantity,
-          attributes: itemAttributes,
-        });
 
         await fetch('/cart/add.js', {
           method: 'POST',
@@ -1872,23 +1596,7 @@
           }),
         });
       }
-        await fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: product.variantId,
-            quantity: product.quantity,
-            attributes: itemAttributes,
-          }),
-        });
-      }
 
-      window.location.href = '/checkout';
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('There was an error during checkout. Please try again.');
-    }
-  }
       window.location.href = '/checkout';
     } catch (error) {
       console.error('Checkout error:', error);

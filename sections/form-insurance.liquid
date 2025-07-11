@@ -201,7 +201,6 @@
   }
   .form-insurance__same-checkbox {
     display: flex;
-    justify-content: flex-end;
     margin-top: 10px;
     color: var(--color-primary);
   }
@@ -215,7 +214,53 @@
     display: flex;
     justify-content: flex-end;
   }
-  
+  .variant-dropdown {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  @media (max-width: 768px) {
+    .form-insurance__content-wrapper {
+      padding: 20px 24px;
+    }
+  }
+  @media (max-width: 426px) {
+    .form-insurance {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-insurance__right {
+      width: 100%;
+    }
+  }
+  @media (max-width: 376px) {
+    .form-insurance__field {
+      flex-grow: 1;
+      flex-shrink: initial;
+      flex-basis: auto;
+    }
+  }
+@media (max-width: 768px) {
+  .form-insurance__content-wrapper {
+    padding: 20px 24px;
+  }
+}
+@media (max-width: 426px) {
+  .form-insurance {
+    display: flex;
+    flex-direction: column;
+  }
+  .form-insurance__right {
+    width: 100%;
+  }
+}
+@media (max-width: 376px) {
+  .form-insurance__field {
+    flex-grow: 1;
+    flex-shrink: initial;
+    flex-basis: auto;
+  }
+}
 {% endstyle %}
 
 {% capture FormInsurance %}

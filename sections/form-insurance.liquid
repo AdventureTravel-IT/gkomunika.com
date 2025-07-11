@@ -1288,13 +1288,14 @@
         let title = '';
         let relationshipValue = '';
 
-        if (section === 'Individual') {
-          title = `Insured (Policy Holder) #${index + 1}`;
-        } else if (section === 'Duo Plus') {
-          title = index === 0 ? 'Insured (Policy Holder)' : 'Traveler';
-        } else if (section === 'Family') {
-          const selectedRelationship = form.querySelector('input[name="Relationship"]:checked');
-          relationshipValue = selectedRelationship ? selectedRelationship.value : '';
+      if (section === 'Individual') {
+        title = `Insured (Policy Holder) #${index + 1}`;
+      } else if (section === 'Duo Plus') {
+        title = index === 0 ? 'Insured (Policy Holder)' : 'Traveler';
+      } else if (section === 'Family') {
+        // Ambil nilai relationship dari radio button yang dipilih
+        const selectedRelationship = form.querySelector('input[name="Relationship"]:checked');
+        relationshipValue = selectedRelationship ? selectedRelationship.value : '';
 
           if (index === 0) {
             title =

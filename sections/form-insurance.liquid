@@ -1330,35 +1330,20 @@
             groupLines.push(`Destination Country: ${groupItinerary.destinationCountry}`);
 
           const groupForms = [];
-          while (
-            currentIndex < dataArray.length &&
-            dataArray[currentIndex].groupIndex === currentGroup
-          ) {
+          while (currentIndex < dataArray.length && dataArray[currentIndex].groupIndex === currentGroup) {
             const item = dataArray[currentIndex];
             const lines = [];
 
             lines.push(item.title);
+            lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
             lines.push(
-              `Full Name: ${[item.salutation, item.firstName, item.lastName]
-                .filter(Boolean)
-                .join(' ')}`
-            );
-            lines.push(
-              `Place Of Birth: ${item.placeOfBirth} - ${[
-                item.day,
-                item.month,
-                item.year,
-              ]
-                .filter(Boolean)
-                .join('-')}`
+              `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
             );
             if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
             if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
             if (item.email) lines.push(`Email: ${item.email}`);
             if (item.city || item.postalCode)
-              lines.push(
-                `City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`
-              );
+              lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
             if (item.address) lines.push(`Address: ${item.address}`);
 
             groupForms.push(lines.join('\n'));
@@ -1388,27 +1373,15 @@
           }
 
           lines.push(item.title);
+          lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
           lines.push(
-            `Full Name: ${[item.salutation, item.firstName, item.lastName]
-              .filter(Boolean)
-              .join(' ')}`
-          );
-          lines.push(
-            `Place Of Birth: ${item.placeOfBirth} - ${[
-              item.day,
-              item.month,
-              item.year,
-            ]
-              .filter(Boolean)
-              .join('-')}`
+            `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
           );
           if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
           if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
           if (item.email) lines.push(`Email: ${item.email}`);
           if (item.city || item.postalCode)
-            lines.push(
-              `City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`
-            );
+            lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
           if (item.address) lines.push(`Address: ${item.address}`);
 
           return lines.join('\n');
@@ -1452,9 +1425,7 @@
         let globalItinerary = null;
 
         if (variantProducts[0].quantity > 1) {
-          const checkbox = document.querySelector(
-            `${sectionSelector} input[id^="sameInsuranceCheckbox-"]`
-          );
+          const checkbox = document.querySelector(`${sectionSelector} input[id^="sameInsuranceCheckbox-"]`);
           if (checkbox && checkbox.checked) {
             sameInsuranceChecked = true;
             const firstWrapper = wrappers[0];
@@ -1492,12 +1463,7 @@
           });
 
           const attrKey = `Form ${section} - ${variantTitle}`;
-          attributes[attrKey] = formatData(
-            allFamilyFormsData,
-            null,
-            section,
-            itineraryPerGroup
-          );
+          attributes[attrKey] = formatData(allFamilyFormsData, null, section, itineraryPerGroup);
           continue;
         }
 
@@ -1516,11 +1482,7 @@
 
         console.log(`[Checkout] Found ${forms.length} forms for variantId ${variantId}`);
 
-        const data = collectFormData(
-          forms,
-          section,
-          sameInsuranceChecked ? null : itineraryMapPerForm
-        );
+        const data = collectFormData(forms, section, sameInsuranceChecked ? null : itineraryMapPerForm);
 
         const attrKey = `Form ${section} - ${variantTitle}`;
         attributes[attrKey] = formatData(data, sameInsuranceChecked ? globalItinerary : null);
@@ -1597,5 +1559,5 @@
       "category": "Custom"
     }
   ]
-}   
+}
 {% endschema %}

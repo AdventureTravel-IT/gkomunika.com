@@ -240,27 +240,6 @@
       flex-basis: auto;
     }
   }
-@media (max-width: 768px) {
-  .form-insurance__content-wrapper {
-    padding: 20px 24px;
-  }
-}
-@media (max-width: 426px) {
-  .form-insurance {
-    display: flex;
-    flex-direction: column;
-  }
-  .form-insurance__right {
-    width: 100%;
-  }
-}
-@media (max-width: 376px) {
-  .form-insurance__field {
-    flex-grow: 1;
-    flex-shrink: initial;
-    flex-basis: auto;
-  }
-}
 {% endstyle %}
 
 {% capture FormInsurance %}
@@ -441,7 +420,7 @@
             id="check-itinerary-global"
             required
           >
-          I understand that the data submitted is final and cannot be changed after submission.
+          I understand that the data submitted is final and cannot be changed after submission.
         </label>
       </div>
 
@@ -562,7 +541,7 @@
           const labelEl = document.createElement('label');
           labelEl.innerHTML = `
         <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-        The travel dates and the destination country are the same for all the insurance plans.
+        The travel dates and the destination country are the same for all the insurance plans.
       `;
 
           sameCheckboxDiv.appendChild(labelEl);
@@ -714,7 +693,7 @@
             const labelEl = document.createElement('label');
             labelEl.innerHTML = `
             <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-            The travel dates and the destination country are the same for all the insurance plans.
+            The travel dates and the destination country are the same for all the insurance plans.
           `;
 
             sameCheckboxDiv.appendChild(labelEl);
@@ -723,10 +702,6 @@
 
           formElement.appendChild(sectionTop);
         }
-
-        // wrapper for all insureds in this batch
-        const groupFormsContainer = document.createElement('div');
-        groupFormsContainer.classList.add('group-forms-container');
 
         // ➤ generate up to 10 forms
         for (let i = groupStart; i < Math.min(groupStart + 10, product.quantity); i++) {
@@ -899,7 +874,7 @@
         const labelEl = document.createElement('label');
         labelEl.innerHTML = `
       <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-      The travel dates and the destination country are the same for all the insurance plans.
+      The travel dates and the destination country are the same for all the insurance plans.
     `;
         sameCheckboxDiv.appendChild(labelEl);
       }
@@ -1264,7 +1239,6 @@
 </script>
 
 <script>
-
   function getSectionSelector(section, variantId) {
     if (section === 'Duo Plus') {
       return `#duoplus-section-${variantId}`;
@@ -1276,23 +1250,21 @@
   }
 
   async function handleCheckout() {
-    const isDataCorrectChecked = document.getElementById('check-data-global').checked;
     const isItineraryChecked = document.getElementById('check-itinerary-global').checked;
 
-    if (!isDataCorrectChecked || !isItineraryChecked) {
-      alert('You must confirm that the data is correct and the flight itinerary is the same.');
+    if (!isItineraryChecked) {
+      alert('You must confirm that the flight itinerary is the same.');
       return;
     }
 
     const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems')) || [];
     const insuranceItems = ProductItems.filter((p) => p.category === 'Insurance');
-    
+
     if (insuranceItems.length === 0) {
       alert('No insurance product selected.');
       return;
     }
 
-    // Collect itinerary data from a section-top div
     const collectItineraryFromSectionTop = (sectionTopElement) => {
       if (!sectionTopElement) return { startDate: '', endDate: '', destinationCountry: '' };
 
@@ -1512,7 +1484,7 @@
               forms.length ? Array(forms.length).fill(itinerary) : [],
               groupIndex
             );
-
+            
             allFamilyFormsData = allFamilyFormsData.concat(dataPerGroup);
           });
 
@@ -1562,7 +1534,6 @@
       return;
     }
 
-    // Multi-product flow
     try {
       await fetch('/cart/clear.js', {
         method: 'POST',
@@ -1575,7 +1546,7 @@
 
         let itemAttributes = {};
 
-        // Periksa apakah produk ini asuransi
+
         if (product.category === 'Insurance' && attributes[attrKey]) {
           itemAttributes = { [attrKey]: attributes[attrKey] };
         }

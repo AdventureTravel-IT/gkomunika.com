@@ -424,14 +424,16 @@
 
     <section class="form-insurance__checkout">
       <div style="display: flex; flex-direction: column;" id="confirmation-checkboxes">
-        <label for="check-data">
-          <input
-            type="checkbox"
-            id="check-data-global"
-            required
-          >
-          Data is correct
-        </label>
+        {% comment %}
+          <label for="check-data">
+            <input
+              type="checkbox"
+              id="check-data-global"
+              required
+            >
+            Data is correct
+          </label>
+        {% endcomment %}
 
         <label for="check-itinerary">
           <input
@@ -439,7 +441,7 @@
             id="check-itinerary-global"
             required
           >
-          Flight itinerary is the same
+          I understand that the data submitted is final and cannot be changed after submission.
         </label>
       </div>
 
@@ -560,7 +562,7 @@
           const labelEl = document.createElement('label');
           labelEl.innerHTML = `
         <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-        The insurance is the same
+        The travel dates and the destination country are the same for all the insurance plans.
       `;
 
           sameCheckboxDiv.appendChild(labelEl);
@@ -659,7 +661,7 @@
 
       duoplusContainer.appendChild(variantSection);
 
-      for (let i = 0; i < product.quantity; i++) {
+      for (let groupStart = 0; groupStart < product.quantity; groupStart += 10) {
         const formWrapper = document.createElement('div');
         formWrapper.classList.add('form-section--wrapper');
 
@@ -681,13 +683,13 @@
           const sectionHeader = document.createElement('div');
           sectionHeader.classList.add('form-insurance__section-header');
 
-          const productTitle = document.createElement('p');
-          productTitle.classList.add('product-title');
-          productTitle.textContent = product.productTitle || '';
+        const productTitle = document.createElement('p');
+        productTitle.classList.add('product-title');
+        productTitle.textContent = product.productTitle || '';
 
-          const variantTitle = document.createElement('p');
-          variantTitle.classList.add('variant-title');
-          variantTitle.textContent = product.variantTitle || '';
+        const variantTitle = document.createElement('p');
+        variantTitle.classList.add('variant-title');
+        variantTitle.textContent = product.variantTitle || '';
 
           sectionHeader.appendChild(productTitle);
           sectionHeader.appendChild(variantTitle);
@@ -712,7 +714,7 @@
             const labelEl = document.createElement('label');
             labelEl.innerHTML = `
             <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-            The insurance is the same
+            The travel dates and the destination country are the same for all the insurance plans.
           `;
 
             sameCheckboxDiv.appendChild(labelEl);
@@ -722,39 +724,43 @@
           formElement.appendChild(sectionTop);
         }
 
-        // ------------------------
-        // SECTION BOTTOM
-        // ------------------------
-        const sectionBottom = document.createElement('div');
-        sectionBottom.classList.add('form-insurance__section-bottom');
+        // wrapper for all insureds in this batch
+        const groupFormsContainer = document.createElement('div');
+        groupFormsContainer.classList.add('group-forms-container');
 
-        // label
-        const labelDivWrapper = document.createElement('div');
-        labelDivWrapper.classList.add('form-insurance__label-wrapper');
+        // ➤ generate up to 10 forms
+        for (let i = groupStart; i < Math.min(groupStart + 10, product.quantity); i++) {
+          const sectionBottom = document.createElement('div');
+          sectionBottom.classList.add('form-insurance__section-bottom');
 
-        const labelTitleDiv = document.createElement('div');
-        labelTitleDiv.classList.add('form-insurance__label-title');
+          const labelDivWrapper = document.createElement('div');
+          labelDivWrapper.classList.add('form-insurance__label-wrapper');
 
-        const spanIndex = document.createElement('span');
-        spanIndex.textContent = getFormIndexText(i + 1);
-        spanIndex.classList.add('form-insurance__label-index');
+          const labelTitleDiv = document.createElement('div');
+          labelTitleDiv.classList.add('form-insurance__label-title');
 
-        const spanLabel = document.createElement('span');
-        spanLabel.textContent = i === 0 ? 'Insured (Policy Holder)' : 'Traveler';
+          const spanIndex = document.createElement('span');
+          spanIndex.textContent = getFormIndexText(i + 1);
+          spanIndex.classList.add('form-insurance__label-index');
 
-        labelTitleDiv.appendChild(spanIndex);
-        labelTitleDiv.appendChild(spanLabel);
-        labelDivWrapper.appendChild(labelTitleDiv);
+          const spanLabel = document.createElement('span');
+          spanLabel.textContent = i === 0 ? 'Insured (Policy Holder)' : 'Traveler';
 
-        sectionBottom.appendChild(labelDivWrapper);
+          labelTitleDiv.appendChild(spanIndex);
+          labelTitleDiv.appendChild(spanLabel);
+          labelDivWrapper.appendChild(labelTitleDiv);
 
-        // form
-        const formContainer = document.createElement('div');
-        formContainer.innerHTML = formTemplate;
-        sectionBottom.appendChild(formContainer);
+          sectionBottom.appendChild(labelDivWrapper);
 
-        formElement.appendChild(sectionBottom);
+          // form
+          const formContainer = document.createElement('div');
+          formContainer.innerHTML = formTemplate;
+          sectionBottom.appendChild(formContainer);
 
+          groupFormsContainer.appendChild(sectionBottom);
+        }
+
+        formElement.appendChild(groupFormsContainer);
         formWrapper.appendChild(formElement);
         variantSection.appendChild(formWrapper);
       }
@@ -893,7 +899,7 @@
         const labelEl = document.createElement('label');
         labelEl.innerHTML = `
       <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-      The insurance is the same
+      The travel dates and the destination country are the same for all the insurance plans.
     `;
         sameCheckboxDiv.appendChild(labelEl);
       }
@@ -1258,6 +1264,7 @@
 </script>
 
 <script>
+
   function getSectionSelector(section, variantId) {
     if (section === 'Duo Plus') {
       return `#duoplus-section-${variantId}`;
@@ -1279,12 +1286,13 @@
 
     const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems')) || [];
     const insuranceItems = ProductItems.filter((p) => p.category === 'Insurance');
-
+    
     if (insuranceItems.length === 0) {
       alert('No insurance product selected.');
       return;
     }
 
+    // Collect itinerary data from a section-top div
     const collectItineraryFromSectionTop = (sectionTopElement) => {
       if (!sectionTopElement) return { startDate: '', endDate: '', destinationCountry: '' };
 
@@ -1554,6 +1562,7 @@
       return;
     }
 
+    // Multi-product flow
     try {
       await fetch('/cart/clear.js', {
         method: 'POST',
@@ -1566,6 +1575,7 @@
 
         let itemAttributes = {};
 
+        // Periksa apakah produk ini asuransi
         if (product.category === 'Insurance' && attributes[attrKey]) {
           itemAttributes = { [attrKey]: attributes[attrKey] };
         }

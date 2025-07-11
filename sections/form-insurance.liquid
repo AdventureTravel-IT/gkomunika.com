@@ -240,27 +240,27 @@
       flex-basis: auto;
     }
   }
-@media (max-width: 768px) {
-  .form-insurance__content-wrapper {
-    padding: 20px 24px;
+  @media (max-width: 768px) {
+    .form-insurance__content-wrapper {
+      padding: 20px 24px;
+    }
   }
-}
-@media (max-width: 426px) {
-  .form-insurance {
-    display: flex;
-    flex-direction: column;
+  @media (max-width: 426px) {
+    .form-insurance {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-insurance__right {
+      width: 100%;
+    }
   }
-  .form-insurance__right {
-    width: 100%;
+  @media (max-width: 376px) {
+    .form-insurance__field {
+      flex-grow: 1;
+      flex-shrink: initial;
+      flex-basis: auto;
+    }
   }
-}
-@media (max-width: 376px) {
-  .form-insurance__field {
-    flex-grow: 1;
-    flex-shrink: initial;
-    flex-basis: auto;
-  }
-}
 {% endstyle %}
 
 {% capture FormInsurance %}
@@ -424,14 +424,16 @@
 
     <section class="form-insurance__checkout">
       <div style="display: flex; flex-direction: column;" id="confirmation-checkboxes">
-        <label for="check-data">
-          <input
-            type="checkbox"
-            id="check-data-global"
-            required
-          >
-          Data is correct
-        </label>
+        {% comment %}
+          <label for="check-data">
+            <input
+              type="checkbox"
+              id="check-data-global"
+              required
+            >
+            Data is correct
+          </label>
+        {% endcomment %}
 
         <label for="check-itinerary">
           <input
@@ -439,7 +441,7 @@
             id="check-itinerary-global"
             required
           >
-          Flight itinerary is the same
+          I understand that the data submitted is final and cannot be changed after submission.
         </label>
       </div>
 
@@ -560,7 +562,7 @@
           const labelEl = document.createElement('label');
           labelEl.innerHTML = `
         <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-        The insurance is the same
+        The travel dates and the destination country are the same for all the insurance plans.
       `;
 
           sameCheckboxDiv.appendChild(labelEl);
@@ -712,7 +714,7 @@
             const labelEl = document.createElement('label');
             labelEl.innerHTML = `
             <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-            The insurance is the same
+            The travel dates and the destination country are the same for all the insurance plans.
           `;
 
             sameCheckboxDiv.appendChild(labelEl);
@@ -893,7 +895,7 @@
         const labelEl = document.createElement('label');
         labelEl.innerHTML = `
       <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-      The insurance is the same
+      The travel dates and the destination country are the same for all the insurance plans.
     `;
         sameCheckboxDiv.appendChild(labelEl);
       }
@@ -1269,11 +1271,10 @@
   }
 
   async function handleCheckout() {
-    const isDataCorrectChecked = document.getElementById('check-data-global').checked;
     const isItineraryChecked = document.getElementById('check-itinerary-global').checked;
 
-    if (!isDataCorrectChecked || !isItineraryChecked) {
-      alert('You must confirm that the data is correct and the flight itinerary is the same.');
+    if (!isItineraryChecked) {
+      alert('You must confirm that the flight itinerary is the same.');
       return;
     }
 

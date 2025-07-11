@@ -661,7 +661,7 @@
 
       duoplusContainer.appendChild(variantSection);
 
-      for (let i = 0; i < product.quantity; i++) {
+      for (let groupStart = 0; groupStart < product.quantity; groupStart += 10) {
         const formWrapper = document.createElement('div');
         formWrapper.classList.add('form-section--wrapper');
 
@@ -683,13 +683,13 @@
           const sectionHeader = document.createElement('div');
           sectionHeader.classList.add('form-insurance__section-header');
 
-          const productTitle = document.createElement('p');
-          productTitle.classList.add('product-title');
-          productTitle.textContent = product.productTitle || '';
+        const productTitle = document.createElement('p');
+        productTitle.classList.add('product-title');
+        productTitle.textContent = product.productTitle || '';
 
-          const variantTitle = document.createElement('p');
-          variantTitle.classList.add('variant-title');
-          variantTitle.textContent = product.variantTitle || '';
+        const variantTitle = document.createElement('p');
+        variantTitle.classList.add('variant-title');
+        variantTitle.textContent = product.variantTitle || '';
 
           sectionHeader.appendChild(productTitle);
           sectionHeader.appendChild(variantTitle);

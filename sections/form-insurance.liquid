@@ -434,7 +434,7 @@
     // Tampilkan productTitle dan variantTitle dalam <pre>
     const sectionMap = {
       'form-individual': 'Individual',
-      'form-duoplus': 'DuoPlus',
+      'form-duoplus': 'Duo Plus',
       'form-family': 'Family',
     };
 
@@ -599,7 +599,7 @@
     }
 
     // Proses untuk variantType DuoPlus
-    const duoplusProducts = insuranceProducts.filter((item) => item.variantType === 'DuoPlus');
+    const duoplusProducts = insuranceProducts.filter((item) => item.variantType === 'Duo Plus');
 
     duoplusProducts.forEach((product) => {
       const formTemplate = document.getElementById('form-insurance-template').innerHTML;
@@ -1254,7 +1254,7 @@ async function handleCheckout() {
 
       if (section === 'Individual') {
         title = `Insured (Policy Holder) #${index + 1}`;
-      } else if (section === 'DuoPlus') {
+      } else if (section === 'Duo Plus') {
         title = index === 0 ? 'Insured (Policy Holder)' : 'Traveler';
       } else if (section === 'Family') {
         // Ambil nilai relationship dari radio button yang dipilih

@@ -4,6 +4,12 @@
   touch-action: manipulation;
 }
 
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
 .hidden {
   display: none;
 }
@@ -23,20 +29,18 @@
 }
 
 /* Terapkan font secara global */
-body,
+body {
+  font-family: "Gotham", "Arial", sans-serif;
+}
+
 h1,
 h2,
 h3,
-h4,
-h5,
-h6,
 p,
-span,
-a,
-div,
-button {
-  font-family: "Gotham", Arial, sans-serif !important;
+span {
+  font-family: "Gotham", "Arial", sans-serif;
 }
+
 :root {
   --alpha-button-background: 1;
   --alpha-button-border: 1;

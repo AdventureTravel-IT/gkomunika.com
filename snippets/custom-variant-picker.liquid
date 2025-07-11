@@ -48,6 +48,7 @@
     input[type="number"] {
       -moz-appearance: textfield;
     }
+    
     .quantity-btn:disabled {
       cursor: not-allowed;
       opacity: 0.4;
@@ -319,48 +320,48 @@
   <!-- Quantity -->
   <div class="quantity-wrapper" style="margin: 15px 0;">
     <div>
-    <label
-      class="variant-picker__label"
-      for="quantity"
-      style="display: block; margin-bottom: 4px;"
-      >Quantity:</label
-    >
-    <div class="quantity-input">
-      <button
-        type="button"
-        class="quantity-btn"
-        id="quantity-decrease"
-        style="border-right: 1px solid var(--color-border);"
+      <label
+        class="variant-picker__label"
+        for="quantity"
+        style="display: block; margin-bottom: 4px;"
+        >Quantity:</label
       >
-        <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
-      </button>
-      <input
-        type="number"
-        id="quantity"
-        name="quantity"
-        min="1"
-        value="1"
-        class="quantity-number"
-      >
-      <button
-        type="button"
-        class="quantity-btn"
-        id="quantity-increase"
-        style="border-left: 1px solid var(--color-border);"
-      >
-        <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
-      </button>
-    </div>
-    </div>
-     {% if product.metafields.product.category.value == 'Insurance' %}
-    <button id="reset-plan" type="button" style="margin-top: 30px;">
-          {{- 'reset.svg' | inline_asset_content -}}
-          <span
-            >reset<br>
-            selection</span
-          >
+      <div class="quantity-input">
+        <button
+          type="button"
+          class="quantity-btn"
+          id="quantity-decrease"
+          style="border-right: 1px solid var(--color-border);"
+        >
+          <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
         </button>
-  {% endif %}
+        <input
+          type="number"
+          id="quantity"
+          name="quantity"
+          min="1"
+          value="1"
+          class="quantity-number"
+        >
+        <button
+          type="button"
+          class="quantity-btn"
+          id="quantity-increase"
+          style="border-left: 1px solid var(--color-border);"
+        >
+          <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
+        </button>
+      </div>
+    </div>
+    {% if product.metafields.product.category.value == 'Insurance' %}
+      <button id="reset-plan" type="button" style="margin-top: 30px;">
+        {{- 'reset.svg' | inline_asset_content -}}
+        <span
+          >reset<br>
+          selection</span
+        >
+      </button>
+    {% endif %}
   </div>
 
   <!-- Tombol cart dan buy -->
@@ -549,6 +550,23 @@
 </script>
 
 <script>
+  window.productCoverage = [].concat(
+    {% if product.metafields.coverage.country.value %}
+      {{ product.metafields.coverage.country.value | json }},
+    {% else %}
+      [],
+    {% endif %}
+    {% if product.metafields.coverage.country_1.value %}
+      {{ product.metafields.coverage.country_1.value | json }}
+    {% else %}
+      []
+    {% endif %}
+  );
+</script>
+
+
+
+<script>
   const productVariants = {{ product.variants | json }};
   const variantDropdowns = document.querySelectorAll('.variant-dropdown');
   const priceDivDesktop = document.getElementById('variant-price-desktop');
@@ -560,28 +578,45 @@
   const addToCartButton = document.getElementById('add-to-cart');
   const buyNowButton = document.getElementById('buy-now-button');
   const selectedVariantDisplay = document.getElementById('selected-variant-display');
-  
-  
+
   const addToCartButtonDesktop = document.getElementById('add-to-cart');
   const buyNowButtonDesktop = document.getElementById('buy-now-button');
   const addToCartButtonMobile = document.getElementById('add-to-cart-mobile');
   const buyNowButtonMobile = document.getElementById('buy-now-button-mobile');
+
   addToCartButtonDesktop?.addEventListener("click", () => handleCartAction("add"));
   buyNowButtonDesktop?.addEventListener("click", () => handleCartAction("buy"));
-  
   addToCartButtonMobile?.addEventListener("click", () => handleCartAction("add"));
   buyNowButtonMobile?.addEventListener("click", () => handleCartAction("buy"));
-  
-  const defaultPriceHTML = priceDivDesktop.innerHTML;
-  const defaultPriceMobileHTML = priceDivMobile.innerHTML;
-  
+
+  const defaultPriceHTML = priceDivDesktop?.innerHTML || "";
+  const defaultPriceMobileHTML = priceDivMobile?.innerHTML || "";
+
+  let currentMinusHandler = null;
+
+  function updateMinusButtonHandler(minQty) {
+    if (!minusBtn) return;
+
+    if (currentMinusHandler) {
+      minusBtn.removeEventListener('click', currentMinusHandler);
+    }
+
+    currentMinusHandler = function() {
+      if (parseInt(quantityInput.value) <= minQty) {
+        quantityInput.value = minQty;
+      }
+    };
+
+    minusBtn.addEventListener('click', currentMinusHandler);
+  }
+
   function getSelectedOptions() {
     return Array.from(variantDropdowns).map(select => select.value);
   }
-  
+
   function updateDropdownOptions() {
     const selectedOptions = getSelectedOptions();
-  
+
     variantDropdowns.forEach((select, index) => {
       Array.from(select.options).forEach(option => {
         if (option.value === "") {
@@ -589,16 +624,16 @@
           option.classList.remove('disabled-option');
           return;
         }
-  
+
         const testOptions = [...selectedOptions];
         testOptions[index] = option.value;
-  
+
         const match = productVariants.some(variant =>
           variant.options.every((opt, i) =>
             testOptions[i] === "" || testOptions[i] === opt
           )
         );
-  
+
         if (!match) {
           option.disabled = true;
           option.classList.add('disabled-option');
@@ -607,99 +642,99 @@
           option.classList.remove('disabled-option');
         }
       });
-  
+
       if (select.options[select.selectedIndex]?.disabled) {
         select.selectedIndex = 0;
       }
     });
   }
-  
+
   function findVariant() {
-  const selectedOptions = getSelectedOptions();
-  
-  if (selectedOptions.includes("")) {
-    priceDivDesktop.innerHTML = defaultPriceHTML;
-    priceDivMobile.innerHTML = defaultPriceMobileHTML;
-    if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Pilih varian";
-    updateDropdownOptions();
-    return null;
-  }
-  
-  const matchedVariant = productVariants.find(variant =>
-    variant.options.every((opt, index) => opt === selectedOptions[index])
-  );
-  
-  if (matchedVariant) {
-    if (matchedVariant.available) {
-      const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
-      if (moneySpan) {
-        priceDivDesktop.innerHTML = moneySpan.outerHTML;
-        priceDivMobile.innerHTML = moneySpan.outerHTML;
+    const selectedOptions = getSelectedOptions();
+
+    if (selectedOptions.includes("")) {
+      if (priceDivDesktop) priceDivDesktop.innerHTML = defaultPriceHTML;
+      if (priceDivMobile) priceDivMobile.innerHTML = defaultPriceMobileHTML;
+      if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Pilih varian";
+      updateDropdownOptions();
+      updateMinusButtonHandler(1);
+      return null;
+    }
+
+    const matchedVariant = productVariants.find(variant =>
+      variant.options.every((opt, index) => opt === selectedOptions[index])
+    );
+
+    if (matchedVariant) {
+      if (matchedVariant.available) {
+        const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
+        if (moneySpan) {
+          if (priceDivDesktop) priceDivDesktop.innerHTML = moneySpan.outerHTML;
+          if (priceDivMobile) priceDivMobile.innerHTML = moneySpan.outerHTML;
+        }
+      } else {
+        if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak tersedia";
+        if (priceDivMobile) priceDivMobile.textContent = "Varian tidak tersedia";
+      }
+
+      const variantType = getVariantType(matchedVariant);
+
+      if (variantType === "Duo Plus") {
+        quantityInput.min = 2;
+        quantityInput.value = Math.max(2, parseInt(quantityInput.value) || 2);
+        updateMinusButtonHandler(2);
+      } else {
+        quantityInput.min = 1;
+        updateMinusButtonHandler(1);
       }
     } else {
-      priceDivDesktop.textContent = "Varian tidak tersedia";
-      priceDivMobile.textContent = "Varian tidak tersedia";
-    }
-  
-    // 🟡 CEK VARIANT.TYPE DAN ATUR MINIMAL QTY JIKA DUOPLUS
-    const variantType = getVariantType(matchedVariant);
-    if (variantType === "DuoPlus") {
-      quantityInput.value = Math.max(2, parseInt(quantityInput.value) || 2);
-      quantityInput.min = 2;
-  
-      // Cegah pengurangan quantity di bawah 2
-      minusBtn?.addEventListener('click', () => {
-        if (parseInt(quantityInput.value) <= 2) {
-          quantityInput.value = 2;
-        }
-      });
-    } else {
+      if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak ditemukan";
+      if (priceDivMobile) priceDivMobile.textContent = "Varian tidak ditemukan";
       quantityInput.min = 1;
+      updateMinusButtonHandler(1);
     }
-  
-  } else {
-    priceDivDesktop.textContent = "Varian tidak ditemukan";
-    priceDivMobile.textContent = "Varian tidak ditemukan";
+
+    if (selectedVariantDisplay) {
+      const selected = selectedOptions.filter(v => v !== "").join(" - ");
+      selectedVariantDisplay.textContent = selected || "Choose Variant";
+    }
+
+    updateDropdownOptions();
+
+    if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
+      Currency.convertAll(shopCurrency, Currency.currentCurrency);
+    }
+
+    return matchedVariant;
   }
-  
-  if (selectedVariantDisplay) {
-    const selected = selectedOptions.filter(v => v !== "").join(" - ");
-    selectedVariantDisplay.textContent = selected || "Choose Variant";
-  }
-  
-  updateDropdownOptions();
-  
-  if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
-    Currency.convertAll(shopCurrency, Currency.currentCurrency);
-  }
-  
-  return matchedVariant;
-  }
-  
-  
+
   function adjustQuantity(delta) {
     const current = parseInt(quantityInput.value) || 1;
-    quantityInput.value = Math.max(1, current + delta);
+    quantityInput.value = Math.max(quantityInput.min, current + delta);
   }
-  
+
   minusBtn?.addEventListener('click', () => adjustQuantity(-1));
   plusBtn?.addEventListener('click', () => adjustQuantity(1));
-  
-  resetBtn.addEventListener('click', () => {
+
+  resetBtn?.addEventListener('click', () => {
     variantDropdowns.forEach(select => {
       select.selectedIndex = 0;
     });
+    quantityInput.min = 1;
     quantityInput.value = 1;
-    priceDivDesktop.innerHTML = defaultPriceHTML;
-    priceDivMobile.innerHTML = defaultPriceMobileHTML;
+    updateMinusButtonHandler(1);
+
+    if (priceDivDesktop) priceDivDesktop.innerHTML = defaultPriceHTML;
+    if (priceDivMobile) priceDivMobile.innerHTML = defaultPriceMobileHTML;
+
     if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Selected Variant";
     updateDropdownOptions();
-  
+
     if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
       Currency.convertAll(shopCurrency, Currency.currentCurrency);
     }
   });
-  
+
   function updateCartCount() {
     fetch('/cart.js')
       .then(response => response.json())
@@ -713,15 +748,14 @@
         console.error("Failed to update cart count:", error);
       });
   }
-  
-  
+
   function handleCartAction(action) {
   const variant = findVariant();
   const quantity = parseInt(quantityInput.value) || 1;
-  const matchedVariantData = variantsData.find(v => v.id === variant.id);
-const variantCoverage = matchedVariantData?.coverage || [];
 
-  
+  // **NEW** → Ambil coverage dari product metafield
+  const variantCoverage = window.productCoverage || [];
+
   if (!variant || !variant.available) {
     let hasEmpty = false;
     variantDropdowns.forEach(select => {
@@ -730,70 +764,59 @@ const variantCoverage = matchedVariantData?.coverage || [];
         hasEmpty = true;
       }
     });
-  
+
     if (hasEmpty) {
       const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
       if (firstEmpty) {
         firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
-  
+
     return;
   }
-  
-  // Cek jika produk memiliki metafield kategori "Insurance"
+
   const productCategory = "{{ product.metafields.product.category.value }}";
-  
+
   if (action === "buy" && productCategory === "Insurance") {
-  // Ambil tipe variant dari metafield
-const variantType = getVariantType(variant);
+    const variantType = getVariantType(variant);
 
-const matchedVariantData = window.variantsData.find(v => v.id === variant.id);
-const variantCoverage = matchedVariantData?.coverage || [];
-// Hapus data yang ada di sessionStorage terlebih dahulu
-sessionStorage.removeItem('ProductItems');
+    sessionStorage.removeItem('ProductItems');
 
-let ProductItems = [];
+    let ProductItems = [];
 
-const newItem = {
-  productTitle: "{{ product.title }}",
-  category: productCategory,
-  variantType: variantType,
-  variantId: variant.id,
-  variantTitle: variant.title,
-  quantity: quantity,
-  variantCoverage: variantCoverage
-};
+    const newItem = {
+      productTitle: "{{ product.title }}",
+      category: productCategory,
+      variantType: variantType,
+      variantId: variant.id,
+      variantTitle: variant.title,
+      quantity: quantity,
+      variantCoverage: variantCoverage
+    };
 
+    ProductItems.push(newItem);
 
-ProductItems.push(newItem);
+    sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
 
-sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-// console.log('Stored Cart Data:', ProductItems);
-
-  
-  // Redirect ke halaman form-insurance
-  window.location.href = "/pages/form-insurance";
-  return;
+    window.location.href = "/pages/form-insurance";
+    return;
   }
-  
-  
-  
+
   const payload = { id: variant.id, quantity: quantity };
   const popup = document.getElementById("variant-popup");
-  
+
   function showPopup(message) {
     const messageEl = document.getElementById("variant-popup-message");
     if (messageEl) {
       messageEl.textContent = message;
     }
-  
+
     popup.style.display = "block";
     setTimeout(() => {
       popup.style.display = "none";
     }, 2000);
   }
-  
+
   if (action === "buy") {
     fetch("/cart/clear.js", { method: "POST" }).then(() => {
       fetch("/cart/add.js", {
@@ -823,21 +846,16 @@ sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
       showPopup("Failed to add product");
     });
   }
-  }
-  
-  // // Tambahkan event listener ke tombol "Buy Now"
-  // buyNowButton?.addEventListener("click", () => handleCartAction("buy"));
-  
-  
-  // Fungsi untuk mendapatkan tipe variant
+}
+
+
   function getVariantType(variant) {
-  window.variantsData = [
+    window.variantsData = [
   {% for variant in product.variants %}
     {
       id: {{ variant.id }},
       title: "{{ variant.title | escape }}",
       type: {{ variant.metafields.variant.type | json }},
-      coverage: {{ variant.metafields.variant.coverage.value | json }},
       options: [
         {% for option in variant.options %}
           "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
@@ -847,42 +865,41 @@ sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
   {% endfor %}
 ];
 
-  
-  const matchedVariant = variantsData.find(v => v.id === variant.id);
-  if (matchedVariant && matchedVariant.type) {
-    if (Array.isArray(matchedVariant.type)) {
-      return matchedVariant.type.join(', ');
-    } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
-      return matchedVariant.type.value;
-    } else {
-      return matchedVariant.type;
+
+    const matchedVariant = variantsData.find(v => v.id === variant.id);
+    if (matchedVariant && matchedVariant.type) {
+      if (Array.isArray(matchedVariant.type)) {
+        return matchedVariant.type.join(', ');
+      } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
+        return matchedVariant.type.value;
+      } else {
+        return matchedVariant.type;
+      }
     }
+    return '';
   }
-  return '';
-  }
-  
+
   addToCartButton?.addEventListener("click", () => handleCartAction("add"));
   buyNowButton?.addEventListener("click", () => handleCartAction("buy"));
-  
+
   variantDropdowns.forEach(select => {
     select.addEventListener('change', findVariant);
   });
-  
-   // Scroll ke variant selector saat tombol "Selected Variant" ditekan (mobile)
-   selectedVariantDisplay?.addEventListener('click', () => {
+
+  selectedVariantDisplay?.addEventListener('click', () => {
     const variantWrapper = document.querySelector('.variant-option__wrapper');
     if (variantWrapper) {
       const rect = variantWrapper.getBoundingClientRect();
       const offsetTop = window.scrollY + rect.top;
-      const offsetMiddle = offsetTop - (window.innerHeight / 2) + (rect.height / 2) + 45; // sedikit ke atas
-  
+      const offsetMiddle = offsetTop - (window.innerHeight / 2) + (rect.height / 2) + 45;
+
       window.scrollTo({
         top: offsetMiddle,
         behavior: 'smooth'
       });
     }
   });
-  
-  // Initial update
+
   updateDropdownOptions();
+  updateMinusButtonHandler(1);
 </script>

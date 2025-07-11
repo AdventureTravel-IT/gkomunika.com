@@ -434,6 +434,16 @@
             Data is correct
           </label>
         {% endcomment %}
+        {% comment %}
+          <label for="check-data">
+            <input
+              type="checkbox"
+              id="check-data-global"
+              required
+            >
+            Data is correct
+          </label>
+        {% endcomment %}
 
         <label for="check-itinerary">
           <input
@@ -482,6 +492,7 @@
     // Tampilkan productTitle dan variantTitle dalam <pre>
     const sectionMap = {
       'form-individual': 'Individual',
+      'form-duoplus': 'Duo Plus',
       'form-duoplus': 'Duo Plus',
       'form-family': 'Family',
     };
@@ -648,6 +659,7 @@
 
     // Proses untuk variantType DuoPlus
     const duoplusProducts = insuranceProducts.filter((item) => item.variantType === 'Duo Plus');
+    const duoplusProducts = insuranceProducts.filter((item) => item.variantType === 'Duo Plus');
 
     duoplusProducts.forEach((product) => {
       const formTemplate = document.getElementById('form-insurance-template').innerHTML;
@@ -661,7 +673,7 @@
 
       duoplusContainer.appendChild(variantSection);
 
-      for (let i = 0; i < product.quantity; i++) {
+      for (let groupStart = 0; groupStart < product.quantity; groupStart += 10) {
         const formWrapper = document.createElement('div');
         formWrapper.classList.add('form-section--wrapper');
 
@@ -679,17 +691,24 @@
           const sectionTop = document.createElement('div');
           sectionTop.classList.add('form-insurance__section-top');
 
+        // ➡️ Perbaikan di sini:
+        // hanya buat section-top kalau kelipatan 10
+        if (i % 10 === 0) {
+          const sectionTop = document.createElement('div');
+          sectionTop.classList.add('form-insurance__section-top');
+
+          // header di setiap block
           // header di setiap block
           const sectionHeader = document.createElement('div');
           sectionHeader.classList.add('form-insurance__section-header');
 
-          const productTitle = document.createElement('p');
-          productTitle.classList.add('product-title');
-          productTitle.textContent = product.productTitle || '';
+        const productTitle = document.createElement('p');
+        productTitle.classList.add('product-title');
+        productTitle.textContent = product.productTitle || '';
 
-          const variantTitle = document.createElement('p');
-          variantTitle.classList.add('variant-title');
-          variantTitle.textContent = product.variantTitle || '';
+        const variantTitle = document.createElement('p');
+        variantTitle.classList.add('variant-title');
+        variantTitle.textContent = product.variantTitle || '';
 
           sectionHeader.appendChild(productTitle);
           sectionHeader.appendChild(variantTitle);
@@ -699,13 +718,25 @@
           const itineraryContainer = document.createElement('div');
           itineraryContainer.classList.add('form-itinerary-container');
           itineraryContainer.innerHTML = formItineraryTemplate;
+          // itinerary
+          const itineraryContainer = document.createElement('div');
+          itineraryContainer.classList.add('form-itinerary-container');
+          itineraryContainer.innerHTML = formItineraryTemplate;
 
+          if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
+            injectCountryOptions(itineraryContainer, product.variantCoverage);
+          }
           if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
             injectCountryOptions(itineraryContainer, product.variantCoverage);
           }
 
           sectionTop.appendChild(itineraryContainer);
+          sectionTop.appendChild(itineraryContainer);
 
+          // ➡️ same-insurance checkbox hanya di insured ke-1
+          if (i === 0 && product.quantity > 1) {
+            const sameCheckboxDiv = document.createElement('div');
+            sameCheckboxDiv.classList.add('form-insurance__same-checkbox');
           // ➡️ same-insurance checkbox hanya di insured ke-1
           if (i === 0 && product.quantity > 1) {
             const sameCheckboxDiv = document.createElement('div');
@@ -720,43 +751,52 @@
             sameCheckboxDiv.appendChild(labelEl);
             sectionTop.appendChild(sameCheckboxDiv);
           }
+            sameCheckboxDiv.appendChild(labelEl);
+            sectionTop.appendChild(sameCheckboxDiv);
+          }
 
           formElement.appendChild(sectionTop);
         }
+          formElement.appendChild(sectionTop);
+        }
 
-        // ------------------------
-        // SECTION BOTTOM
-        // ------------------------
-        const sectionBottom = document.createElement('div');
-        sectionBottom.classList.add('form-insurance__section-bottom');
+        // wrapper for all insureds in this batch
+        const groupFormsContainer = document.createElement('div');
+        groupFormsContainer.classList.add('group-forms-container');
 
-        // label
-        const labelDivWrapper = document.createElement('div');
-        labelDivWrapper.classList.add('form-insurance__label-wrapper');
+        // ➤ generate up to 10 forms
+        for (let i = groupStart; i < Math.min(groupStart + 10, product.quantity); i++) {
+          const sectionBottom = document.createElement('div');
+          sectionBottom.classList.add('form-insurance__section-bottom');
 
-        const labelTitleDiv = document.createElement('div');
-        labelTitleDiv.classList.add('form-insurance__label-title');
+          const labelDivWrapper = document.createElement('div');
+          labelDivWrapper.classList.add('form-insurance__label-wrapper');
 
-        const spanIndex = document.createElement('span');
-        spanIndex.textContent = getFormIndexText(i + 1);
-        spanIndex.classList.add('form-insurance__label-index');
+          const labelTitleDiv = document.createElement('div');
+          labelTitleDiv.classList.add('form-insurance__label-title');
 
-        const spanLabel = document.createElement('span');
-        spanLabel.textContent = i === 0 ? 'Insured (Policy Holder)' : 'Traveler';
+          const spanIndex = document.createElement('span');
+          spanIndex.textContent = getFormIndexText(i + 1);
+          spanIndex.classList.add('form-insurance__label-index');
 
-        labelTitleDiv.appendChild(spanIndex);
-        labelTitleDiv.appendChild(spanLabel);
-        labelDivWrapper.appendChild(labelTitleDiv);
+          const spanLabel = document.createElement('span');
+          spanLabel.textContent = i === 0 ? 'Insured (Policy Holder)' : 'Traveler';
 
-        sectionBottom.appendChild(labelDivWrapper);
+          labelTitleDiv.appendChild(spanIndex);
+          labelTitleDiv.appendChild(spanLabel);
+          labelDivWrapper.appendChild(labelTitleDiv);
 
-        // form
-        const formContainer = document.createElement('div');
-        formContainer.innerHTML = formTemplate;
-        sectionBottom.appendChild(formContainer);
+          sectionBottom.appendChild(labelDivWrapper);
 
-        formElement.appendChild(sectionBottom);
+          // form
+          const formContainer = document.createElement('div');
+          formContainer.innerHTML = formTemplate;
+          sectionBottom.appendChild(formContainer);
 
+          groupFormsContainer.appendChild(sectionBottom);
+        }
+
+        formElement.appendChild(groupFormsContainer);
         formWrapper.appendChild(formElement);
         variantSection.appendChild(formWrapper);
       }
@@ -1292,7 +1332,16 @@
       const startDate = sectionTopElement.querySelector('#start-date')?.value || '';
       const endDate = sectionTopElement.querySelector('#end-date')?.value || '';
       const destCountry = sectionTopElement.querySelector('.itinerary-country-dropdown')?.value || '';
+      const startDate = sectionTopElement.querySelector('#start-date')?.value || '';
+      const endDate = sectionTopElement.querySelector('#end-date')?.value || '';
+      const destCountry = sectionTopElement.querySelector('.itinerary-country-dropdown')?.value || '';
 
+      return {
+        startDate,
+        endDate,
+        destinationCountry: destCountry,
+      };
+    };
       return {
         startDate,
         endDate,
@@ -1303,12 +1352,25 @@
     const collectFormData = (formList, section, itineraryMapPerForm, groupIndex = null) => {
       return Array.from(formList).map((form, index) => {
         const data = new FormData(form);
+    const collectFormData = (formList, section, itineraryMapPerForm, groupIndex = null) => {
+      return Array.from(formList).map((form, index) => {
+        const data = new FormData(form);
 
+        const itinerary = itineraryMapPerForm?.[index] || { startDate: '', endDate: '', destinationCountry: '' };
         const itinerary = itineraryMapPerForm?.[index] || { startDate: '', endDate: '', destinationCountry: '' };
 
         let title = '';
         let relationshipValue = '';
+        let title = '';
+        let relationshipValue = '';
 
+        if (section === 'Individual') {
+          title = `Insured (Policy Holder) #${index + 1}`;
+        } else if (section === 'Duo Plus') {
+          title = index === 0 ? 'Insured (Policy Holder)' : 'Traveler';
+        } else if (section === 'Family') {
+          const selectedRelationship = form.querySelector('input[name="Relationship"]:checked');
+          relationshipValue = selectedRelationship ? selectedRelationship.value : '';
         if (section === 'Individual') {
           title = `Insured (Policy Holder) #${index + 1}`;
         } else if (section === 'Duo Plus') {
@@ -1326,7 +1388,39 @@
             title = relationshipValue ? `Traveler - ${relationshipValue}` : 'Traveler';
           }
         }
+          if (index === 0) {
+            title =
+              groupIndex !== null && groupIndex > 0
+                ? `Insured (Policy Holder) #${groupIndex + 1}`
+                : 'Insured (Policy Holder)';
+          } else {
+            title = relationshipValue ? `Traveler - ${relationshipValue}` : 'Traveler';
+          }
+        }
 
+        return {
+          groupIndex,
+          title,
+          salutation: data.get('Salutation'),
+          firstName: data.get('First Name'),
+          lastName: data.get('Last Name'),
+          placeOfBirth: data.get('Place Of Birth'),
+          day: data.get('Day'),
+          month: data.get('Month'),
+          year: data.get('Year'),
+          passportNumber: data.get('Passport Number'),
+          mobilePhone: data.get('Mobile Phone'),
+          email: data.get('Email'),
+          city: data.get('City'),
+          postalCode: data.get('Postal Code'),
+          address: data.get('Address'),
+          relationship: relationshipValue,
+          startDate: itinerary.startDate,
+          endDate: itinerary.endDate,
+          destinationCountry: itinerary.destinationCountry,
+        };
+      });
+    };
         return {
           groupIndex,
           title,
@@ -1409,10 +1503,75 @@
           if (globalItinerary.destinationCountry)
             globalLines.push(`Destination Country: ${globalItinerary.destinationCountry}`);
         }
+    /**
+     * Format all insured data into attribute string
+     *
+     * For Family:
+     * - itinerary printed ONCE per group
+     *
+     * For others:
+     * - itinerary printed per block if no global
+     */
+    const formatData = (dataArray, globalItinerary = null, section = null, itineraryPerGroup = []) => {
+      let result = '';
+
+      if (section === 'Family' && itineraryPerGroup?.length) {
+        let currentGroup = 0;
+        let currentIndex = 0;
+
+        while (currentIndex < dataArray.length) {
+          const groupItinerary = itineraryPerGroup[currentGroup] || {};
+          const groupLines = [];
+
+          if (groupItinerary.startDate) groupLines.push(`Start Date: ${groupItinerary.startDate}`);
+          if (groupItinerary.endDate) groupLines.push(`End Date: ${groupItinerary.endDate}`);
+          if (groupItinerary.destinationCountry)
+            groupLines.push(`Destination Country: ${groupItinerary.destinationCountry}`);
+
+          const groupForms = [];
+          while (currentIndex < dataArray.length && dataArray[currentIndex].groupIndex === currentGroup) {
+            const item = dataArray[currentIndex];
+            const lines = [];
+
+            lines.push(item.title);
+            lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
+            lines.push(
+              `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
+            );
+            if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
+            if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
+            if (item.email) lines.push(`Email: ${item.email}`);
+            if (item.city || item.postalCode)
+              lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
+            if (item.address) lines.push(`Address: ${item.address}`);
+
+            groupForms.push(lines.join('\n'));
+            currentIndex++;
+          }
+
+          result += `${groupLines.join('\n')}\n\n${groupForms.join('\n\n')}\n\n`;
+
+          currentGroup++;
+        }
+      } else {
+        let globalLines = [];
+        if (globalItinerary) {
+          if (globalItinerary.startDate) globalLines.push(`Start Date: ${globalItinerary.startDate}`);
+          if (globalItinerary.endDate) globalLines.push(`End Date: ${globalItinerary.endDate}`);
+          if (globalItinerary.destinationCountry)
+            globalLines.push(`Destination Country: ${globalItinerary.destinationCountry}`);
+        }
 
         const insuredBlocks = dataArray.map((item) => {
           const lines = [];
+        const insuredBlocks = dataArray.map((item) => {
+          const lines = [];
 
+          if (!globalItinerary) {
+            if (item.startDate) lines.push(`Start Date: ${item.startDate}`);
+            if (item.endDate) lines.push(`End Date: ${item.endDate}`);
+            if (item.destinationCountry) lines.push(`Destination Country: ${item.destinationCountry}`);
+          }
           if (!globalItinerary) {
             if (item.startDate) lines.push(`Start Date: ${item.startDate}`);
             if (item.endDate) lines.push(`End Date: ${item.endDate}`);
@@ -1430,23 +1589,51 @@
           if (item.city || item.postalCode)
             lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
           if (item.address) lines.push(`Address: ${item.address}`);
+          lines.push(item.title);
+          lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
+          lines.push(
+            `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
+          );
+          if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
+          if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
+          if (item.email) lines.push(`Email: ${item.email}`);
+          if (item.city || item.postalCode)
+            lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
+          if (item.address) lines.push(`Address: ${item.address}`);
 
+          return lines.join('\n');
+        });
           return lines.join('\n');
         });
 
         if (globalLines.length > 0) {
           result += globalLines.join('\n') + '\n\n';
         }
+        if (globalLines.length > 0) {
+          result += globalLines.join('\n') + '\n\n';
+        }
 
+        result += insuredBlocks.join('\n\n');
+      }
         result += insuredBlocks.join('\n\n');
       }
 
       return result.trim();
     };
+      return result.trim();
+    };
 
     const attributes = {};
     const groupedByVariant = {};
+    const attributes = {};
+    const groupedByVariant = {};
 
+    ProductItems.forEach((product) => {
+      if (!groupedByVariant[product.variantId]) {
+        groupedByVariant[product.variantId] = [];
+      }
+      groupedByVariant[product.variantId].push(product);
+    });
     ProductItems.forEach((product) => {
       if (!groupedByVariant[product.variantId]) {
         groupedByVariant[product.variantId] = [];
@@ -1458,7 +1645,17 @@
       const variantProducts = groupedByVariant[variantId];
       const section = variantProducts[0].variantType;
       const variantTitle = variantProducts[0].variantTitle || '';
+    for (const variantId in groupedByVariant) {
+      const variantProducts = groupedByVariant[variantId];
+      const section = variantProducts[0].variantType;
+      const variantTitle = variantProducts[0].variantTitle || '';
 
+      if (variantProducts[0].category === 'Insurance') {
+        const sectionSelector = getSectionSelector(section, variantId);
+
+        const wrappers = document.querySelectorAll(
+          `${sectionSelector} .form-insurance__section-wrapper[data-product-id="${variantId}"]`
+        );
       if (variantProducts[0].category === 'Insurance') {
         const sectionSelector = getSectionSelector(section, variantId);
 
@@ -1467,10 +1664,64 @@
         );
 
         if (!wrappers.length) continue;
+        if (!wrappers.length) continue;
 
         let sameInsuranceChecked = false;
         let globalItinerary = null;
+        let sameInsuranceChecked = false;
+        let globalItinerary = null;
 
+        if (variantProducts[0].quantity > 1) {
+          const checkbox = document.querySelector(`${sectionSelector} input[id^="sameInsuranceCheckbox-"]`);
+          if (checkbox && checkbox.checked) {
+            sameInsuranceChecked = true;
+            const firstWrapper = wrappers[0];
+            const sectionTop = firstWrapper.querySelector('.form-insurance__section-top');
+            globalItinerary = collectItineraryFromSectionTop(sectionTop);
+          }
+        }
+
+        if (section === 'Family') {
+          let allFamilyFormsData = [];
+          let itineraryPerGroup = [];
+
+          wrappers.forEach((wrapper, groupIndex) => {
+            let itinerary = { startDate: '', endDate: '', destinationCountry: '' };
+
+            if (sameInsuranceChecked && groupIndex > 0) {
+              itinerary = globalItinerary;
+            } else {
+              const sectionTop = wrapper.querySelector('.form-insurance__section-top');
+              itinerary = collectItineraryFromSectionTop(sectionTop);
+            }
+
+            itineraryPerGroup.push(itinerary);
+
+            const forms = wrapper.querySelectorAll('form.form-family');
+
+            const dataPerGroup = collectFormData(
+              forms,
+              section,
+              forms.length ? Array(forms.length).fill(itinerary) : [],
+              groupIndex
+            );
+
+            allFamilyFormsData = allFamilyFormsData.concat(dataPerGroup);
+          });
+
+          const attrKey = `Form ${section} - ${variantTitle}`;
+          attributes[attrKey] = formatData(allFamilyFormsData, null, section, itineraryPerGroup);
+          continue;
+        }
+
+        let itineraryMapPerForm = [];
+
+        if (!sameInsuranceChecked) {
+          wrappers.forEach((wrapper) => {
+            const sectionTop = wrapper.querySelector('.form-insurance__section-top');
+            itineraryMapPerForm.push(collectItineraryFromSectionTop(sectionTop));
+          });
+        }
         if (variantProducts[0].quantity > 1) {
           const checkbox = document.querySelector(`${sectionSelector} input[id^="sameInsuranceCheckbox-"]`);
           if (checkbox && checkbox.checked) {
@@ -1528,9 +1779,19 @@
         );
 
         console.log(`[Checkout] Found ${forms.length} forms for variantId ${variantId}`);
+        const forms = document.querySelectorAll(
+          `${sectionSelector} .form-insurance__section-wrapper[data-product-id="${variantId}"] form`
+        );
+
+        console.log(`[Checkout] Found ${forms.length} forms for variantId ${variantId}`);
 
         const data = collectFormData(forms, section, sameInsuranceChecked ? null : itineraryMapPerForm);
+        const data = collectFormData(forms, section, sameInsuranceChecked ? null : itineraryMapPerForm);
 
+        const attrKey = `Form ${section} - ${variantTitle}`;
+        attributes[attrKey] = formatData(data, sameInsuranceChecked ? globalItinerary : null);
+      }
+    }
         const attrKey = `Form ${section} - ${variantTitle}`;
         attributes[attrKey] = formatData(data, sameInsuranceChecked ? globalItinerary : null);
       }
@@ -1541,7 +1802,15 @@
       const variantTitle = product.variantTitle || '';
       const attrKey = `Form ${product.variantType} - ${variantTitle}`;
       const queryData = {};
+    if (ProductItems.length === 1) {
+      const product = ProductItems[0];
+      const variantTitle = product.variantTitle || '';
+      const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+      const queryData = {};
 
+      if (product.category === 'Insurance' && attributes[attrKey]) {
+        queryData[attrKey] = attributes[attrKey];
+      }
       if (product.category === 'Insurance' && attributes[attrKey]) {
         queryData[attrKey] = attributes[attrKey];
       }
@@ -1549,7 +1818,14 @@
       const queryParams = Object.entries(queryData)
         .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
         .join('&');
+      const queryParams = Object.entries(queryData)
+        .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
+        .join('&');
 
+      const checkoutUrl = `/cart/${product.variantId}:${product.quantity}?${queryParams}`;
+      window.location.href = checkoutUrl;
+      return;
+    }
       const checkoutUrl = `/cart/${product.variantId}:${product.quantity}?${queryParams}`;
       window.location.href = checkoutUrl;
       return;
@@ -1564,13 +1840,22 @@
       for (const product of ProductItems) {
         const variantTitle = product.variantTitle || '';
         const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+      for (const product of ProductItems) {
+        const variantTitle = product.variantTitle || '';
+        const attrKey = `Form ${product.variantType} - ${variantTitle}`;
 
+        let itemAttributes = {};
         let itemAttributes = {};
 
         if (product.category === 'Insurance' && attributes[attrKey]) {
           itemAttributes = { [attrKey]: attributes[attrKey] };
         }
 
+        console.log('🛒 Adding to cart:', {
+          id: product.variantId,
+          quantity: product.quantity,
+          attributes: itemAttributes,
+        });
         console.log('🛒 Adding to cart:', {
           id: product.variantId,
           quantity: product.quantity,
@@ -1587,7 +1872,23 @@
           }),
         });
       }
+        await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: product.variantId,
+            quantity: product.quantity,
+            attributes: itemAttributes,
+          }),
+        });
+      }
 
+      window.location.href = '/checkout';
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('There was an error during checkout. Please try again.');
+    }
+  }
       window.location.href = '/checkout';
     } catch (error) {
       console.error('Checkout error:', error);

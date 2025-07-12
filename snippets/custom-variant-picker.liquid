@@ -48,7 +48,7 @@
     input[type="number"] {
       -moz-appearance: textfield;
     }
-    
+
     .quantity-btn:disabled {
       cursor: not-allowed;
       opacity: 0.4;
@@ -258,6 +258,16 @@
   }
 {% endstyle %}
 
+{% if customer %}
+  <script>
+    var customerLoggedIn = true;
+  </script>
+{% else %}
+  <script>
+    var customerLoggedIn = false;
+  </script>
+{% endif %}
+
 <div id="custom-variant-selector">
   {% assign min_price = product.variants.first.price %}
   {% assign max_price = product.variants.first.price %}
@@ -373,6 +383,8 @@
     >
       <p>Add to Cart</p>
     </button>
+    {% if product.metafields.product.category.value == 'Insurance' %}
+    {% endif %}
     <button
       class="buy"
       type="button"
@@ -563,8 +575,6 @@
     {% endif %}
   );
 </script>
-
-
 
 <script>
   const productVariants = {{ product.variants | json }};
@@ -777,30 +787,36 @@
 
   const productCategory = "{{ product.metafields.product.category.value }}";
 
-  if (action === "buy" && productCategory === "Insurance") {
-    const variantType = getVariantType(variant);
+if (action === "buy" && productCategory === "Insurance") {
+  const variantType = getVariantType(variant);
 
-    sessionStorage.removeItem('ProductItems');
+  sessionStorage.removeItem('ProductItems');
 
-    let ProductItems = [];
+  let ProductItems = [];
 
-    const newItem = {
-      productTitle: "{{ product.title }}",
-      category: productCategory,
-      variantType: variantType,
-      variantId: variant.id,
-      variantTitle: variant.title,
-      quantity: quantity,
-      variantCoverage: variantCoverage
-    };
+  const newItem = {
+    productTitle: "{{ product.title }}",
+    category: productCategory,
+    variantType: variantType,
+    variantId: variant.id,
+    variantTitle: variant.title,
+    quantity: quantity,
+    variantCoverage: variantCoverage
+  };
 
-    ProductItems.push(newItem);
+  ProductItems.push(newItem);
 
-    sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+  sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
 
+  if (customerLoggedIn) {
     window.location.href = "/pages/form-insurance";
-    return;
+  } else {
+    window.location.href = "/account/login?return_url=/pages/form-insurance";
   }
+
+  return;
+}
+
 
   const payload = { id: variant.id, quantity: quantity };
   const popup = document.getElementById("variant-popup");

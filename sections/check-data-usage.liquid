@@ -293,11 +293,11 @@
       if (totalUsg >= 1024 * 1024 * 1024) {
         dailyUsageText = (totalUsg / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
       } else if (totalUsg >= 1024 * 1024) {
-        dailyUsageText = (totalUsg / (1024 * 1024)).toFixed(2) + ' MB';
+        dailyUsageText = (totalUsg / (1024 * 1024)).toFixed(2) + ' GB';
       } else if (totalUsg >= 1024) {
-        dailyUsageText = (totalUsg / 1024).toFixed(2) + ' KB';
+        dailyUsageText = (totalUsg / 1024).toFixed(2) + ' MB';
       } else {
-        dailyUsageText = totalUsg + ' Byte';
+        dailyUsageText = totalUsg + ' KB';
       }
       return dailyUsageText;
     }

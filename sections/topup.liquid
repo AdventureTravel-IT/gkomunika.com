@@ -21,11 +21,6 @@
   });
 </script>
 
-
-{% comment %}
-  Main Search section - simplified for Top-Up Plan only
-{% endcomment %}
-
 {% comment %} # STYLES SECTION {% endcomment %}
 {% style %}
   /* (Styles tetap sesuai file awalmu) */
@@ -291,8 +286,100 @@
         }
       });
     });
+
+    // ---------------------------
+    // FILTER LOGIC STARTS HERE
+    // ---------------------------
+
+    const vendorPrefixes = [
+      { prefix: '89859', vendor: 'AF' },
+      { prefix: '89862', vendor: 'AF' },
+      { prefix: '89810', vendor: 'TE' },
+      { prefix: '2210', vendor: 'BS' },
+      { prefix: '8981200', vendor: 'BE' }
+    ];
+
+    const vendorCategories = {
+      AF: 'Top_Up_B',
+      TE: 'Top_Up_C',
+      BS: 'Top_Up_A',
+      BE: 'Top_Up_A'
+    };
+
+    function findVendorFromICCID(iccid) {
+      let matchedVendor = null;
+      let longestMatchLength = 0;
+
+      vendorPrefixes.forEach(item => {
+        if (iccid.startsWith(item.prefix)) {
+          if (item.prefix.length > longestMatchLength) {
+            longestMatchLength = item.prefix.length;
+            matchedVendor = item.vendor;
+          }
+        }
+      });
+
+      return matchedVendor;
+    }
+
+    function showNotFoundMessage() {
+      const wrapper = document.getElementById('collection-top-up-plan');
+      if (wrapper) {
+        wrapper.innerHTML = `
+          <div class="main-search__error">
+            <p>Product Top Up Not found.</p>
+          </div>
+        `;
+      }
+    }
+
+    const iccid = sessionStorage.getItem('iccid');
+    console.log('ICCID:', iccid);
+
+    if (!iccid) {
+      console.log('ICCID tidak ditemukan di sessionStorage');
+      return;
+    }
+
+    const vendor = findVendorFromICCID(iccid);
+    console.log('Vendor ditemukan:', vendor);
+
+    if (!vendor) {
+      showNotFoundMessage();
+      return;
+    }
+
+    const desiredCategory = vendorCategories[vendor];
+    console.log('Desired Category:', desiredCategory);
+
+    let foundAnyProduct = false;
+
+    const productCards = document.querySelectorAll('.product-card-container');
+    productCards.forEach(card => {
+      const categoryEl = card.querySelector('p');
+      if (categoryEl) {
+        let category = null;
+        try {
+          category = JSON.parse(categoryEl.textContent.trim());
+        } catch (e) {
+          console.error('Failed parsing category JSON', e);
+        }
+
+        if (category === desiredCategory) {
+          card.style.display = '';
+          foundAnyProduct = true;
+        } else {
+          card.style.display = 'none';
+        }
+      }
+    });
+
+    if (!foundAnyProduct) {
+      showNotFoundMessage();
+    }
   });
 </script>
+
 
 {% comment %} # TEMPLATE SECTION {% endcomment %}
 <div class="main-search">
@@ -345,6 +432,12 @@
                     </div>
                   </div>
                 </a>
+
+                {% if product.metafields.product.category %}
+                  <p>{{ product.metafields.product.category.value | json }}</p> 
+                  {% else %}
+                  <p>error</p>
+                {% endif %}
 
                 <div class="product-card-content">
                   <div class="product-card-content-flip-front">

@@ -251,61 +251,52 @@
               </div>
             {%- else -%}
               <div class="cart__ctas" {{ block.shopify_attributes }}>
-  {% assign hasInsuranceProduct = false %}
-  
-  {% for item in cart.items %}
-    {% if item.product.metafields.product.category == 'Insurance' %}
-      {% assign hasInsuranceProduct = true %}
-    {% endif %}
-  {% endfor %}
+                {% assign hasInsuranceProduct = false %}
 
-  {% if hasInsuranceProduct %}
-    <!-- Display the "Insurance Checkout" button -->
-    <button
-      type="button"
-      id="insurance-checkout-button"
-      class="cart__checkout-button button"
-      {% if cart == empty %}
-        disabled
-      {% endif %}
-      form="cart"
-    >
-      {{ 'sections.cart.checkout' | t }}
-    </button>
-  {% else %}
-    <!-- Display the regular "Checkout" button -->
-    <button
-      type="submit"
-      id="checkout"
-      class="cart__checkout-button button"
-      name="checkout"
-      {% if cart == empty %}
-        disabled
-      {% endif %}
-      form="cart"
-    >
-      {{ 'sections.cart.checkout' | t }}
-    </button>
-  {% endif %}
-  {% comment %}
-                  {% for item in cart.items %}
-                    <div class="debug-product">
-                      <p>Product Title: {{ item.product.title }}</p>
-                      <p>Product Category: {{ item.product.metafields.product.category }}</p>
-                      <p>Variant Type: {{ item.variant.metafields.variant.type }}</p>
-                      <p>Variant Title: {{ item.variant.title }}</p>
-                      <p>Variant ID: {{ item.variant.id }}</p>
-                      <p>Quantity: {{ item.quantity }}</p>
-                      <p>Variant Coverage:
-                        {% if item.variant.metafields.variant.coverage != blank %}
-                          {{ item.variant.metafields.variant.coverage | join: ', ' }}
-                        {% else %}
-                          -
-                        {% endif %}
-                      </p>
-                    </div>
-                  {% endfor %}
-                {% endcomment %}
+                {% for item in cart.items %}
+                  {% if item.product.metafields.product.category == 'Insurance' %}
+                    {% assign hasInsuranceProduct = true %}
+                  {% endif %}
+                {% endfor %}
+
+                {% if hasInsuranceProduct %}
+                  <!-- Display the "Insurance Checkout" button -->
+                  {% if customer %}
+                    <button
+                      type="button"
+                      id="insurance-checkout-button"
+                      class="cart__checkout-button button"
+                      {% if cart == empty %}
+                        disabled
+                      {% endif %}
+                      form="cart"
+                    >
+                      {{ 'sections.cart.checkout' | t }}
+                    </button>
+                  {% else %}
+                    <button
+                      type="button"
+                      id="unlogin-checkout-button"
+                      class="cart__checkout-button button"
+                    >
+                      UN LOGIN
+                    </button>
+                  {% endif %}
+                {% else %}
+                  <!-- Display the regular "Checkout" button -->
+                  <button
+                    type="submit"
+                    id="checkout"
+                    class="cart__checkout-button button"
+                    name="checkout"
+                    {% if cart == empty %}
+                      disabled
+                    {% endif %}
+                    form="cart"
+                  >
+                    {{ 'sections.cart.checkout' | t }}
+                  </button>
+                {% endif %}
               </div>
 
               {%- if additional_checkout_buttons -%}
@@ -323,6 +314,39 @@
 </div>
 
 <script>
+  document.getElementById('unlogin-checkout-button')?.addEventListener('click', function () {
+    // Clear sessionStorage data if it exists
+    sessionStorage.removeItem('ProductItems'); // or sessionStorage.clear();
+
+    const ProductItems = [];
+
+    {% for item in cart.items %}
+      ProductItems.push({
+        productTitle: {{ item.product.title | json }},
+        category: {{ item.product.metafields.product.category.value | json }},
+        variantType: {{ item.variant.metafields.variant.type | json }},
+        variantTitle: {{ item.variant.title | json }},
+        variantId: {{ item.variant.id }},
+        quantity: {{ item.quantity }},
+        variantCoverage: {{ item.product.metafields.coverage.country.value | json }}
+      });
+    {% endfor %}
+
+    if (ProductItems.length === 0) {
+      alert('Cart is empty.');
+      return;
+    }
+
+    // Save all items in sessionStorage
+    sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+
+    // Redirect to login page with return_url
+    window.location.href = '/account/login?return_url=/pages/form-insurance';
+  });
+</script>
+
+
+<script>
   document.getElementById('insurance-checkout-button')?.addEventListener('click', function () {
     // Clear sessionStorage data if it exists
     sessionStorage.removeItem('ProductItems'); // or sessionStorage.clear(); to remove all session storage data
@@ -337,7 +361,7 @@
         variantTitle: {{ item.variant.title | json }},
         variantId: {{ item.variant.id }},
         quantity: {{ item.quantity }},
-        variantCoverage: {{ item.variant.metafields.variant.coverage.value | json }}
+        variantCoverage: {{ item.product.metafields.coverage.country.value | json }}
       });
     {% endfor %}
 

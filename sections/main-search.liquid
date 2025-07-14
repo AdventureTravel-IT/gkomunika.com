@@ -334,9 +334,7 @@
 <div class="main-search">
   <div class="main-search-container">
     {% assign search_term = search.terms | downcase | strip %}
-    {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection'
-      | split: ','
-    %}
+    {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection' | split: ',' %}
     {% assign found_any_product = false %}
     {% assign single_product_url = '' %}
     {% assign product_count = 0 %}
@@ -440,9 +438,6 @@
       {% assign product_output = '' %}
 
       {% if collection %}
-        {% assign insurance_products = '' %}
-        {% assign other_products = '' %}
-
         {% for product in collection.products %}
           {% assign product_alias = product.metafields.coverage.alias | downcase | strip %}
           {% assign product_alias_2 = product.metafields.coverage.alias_2 | downcase | strip %}
@@ -602,11 +597,7 @@
 </div>
 {% endcapture %}
 
-            {% if product_category == 'Insurance' %}
-              {% assign insurance_products = insurance_products | append: product_card %}
-            {% else %}
-              {% assign other_products = other_products | append: product_card %}
-            {% endif %}
+            {% assign product_output = product_output | append: product_card %}
           {% endif %}
         {% endfor %}
 
@@ -615,8 +606,7 @@
             <h1 class="main-search-collection title">{{ collection.title }}</h1>
             <div class="main-search-collection">
               <div class="product-card-wrapper" id="{{ collection_key }}">
-                {{ insurance_products }}
-                {{ other_products }}
+                {{ product_output }}
               </div>
             </div>
           </div>

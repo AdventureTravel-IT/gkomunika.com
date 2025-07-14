@@ -329,12 +329,12 @@
   <div id="variant-metafield-display" class="my-4"></div>
   <!-- Quantity -->
   <div class="quantity-wrapper" style="margin: 15px 0;">
-    <div>
+    <div {% if product.metafields.product.category.value == "Top_Up_A" or product.metafields.product.category.value == "Top_Up_B" or product.metafields.product.category.value == "Top_Up_C" %}hidden{% endif %}>
       <label
         class="variant-picker__label"
         for="quantity"
         style="display: block; margin-bottom: 4px;"
-        >Quantity:</label
+        >Quantity</label
       >
       <div class="quantity-input">
         <button
@@ -376,7 +376,19 @@
 
   <!-- Tombol cart dan buy -->
   <div class="variant-picker-btn">
-    <button
+    {% if product.metafields.product.category.value == 'Top_Up_A'
+        or product.metafields.product.category.value == 'Top_Up_B'
+        or product.metafields.product.category.value == 'Top_Up_C'
+      %}
+        <button
+          class="buy"
+          type="button"
+          id="buy-topup-button"
+        >
+          <p>Top Up</p>
+        </button>
+        {%  else %}
+        <button
       class="cart"
       type="button"
       id="add-to-cart"
@@ -392,6 +404,7 @@
     >
       <p>Buy Now</p>
     </button>
+      {% endif %}
   </div>
 </div>
 
@@ -418,7 +431,19 @@
       {%- endunless %}
     </div>
     <div class="variant-picker-btn__mobile-wrapper">
-      <button
+      {% if product.metafields.product.category.value == 'Top_Up_A'
+        or product.metafields.product.category.value == 'Top_Up_B'
+        or product.metafields.product.category.value == 'Top_Up_C'
+      %}
+        <button
+          class="buy"
+          type="button"
+          id="buy-topup-button"
+        >
+          <p>Buy Top Up</p>
+        </button>
+        {% else %}
+        <button
         class="cart"
         type="button"
         id="add-to-cart-mobile"
@@ -432,6 +457,7 @@
       >
         <p>Buy Now</p>
       </button>
+      {% endif %}
     </div>
   </div>
 </div>
@@ -862,6 +888,71 @@ if (action === "buy" && productCategory === "Insurance") {
       showPopup("Failed to add product");
     });
   }
+}
+
+ const buyTopUpDesktop = document.getElementById("buy-topup-button");
+  const buyTopUpMobile = document.getElementById("buy-topup-button-mobile");
+
+  buyTopUpDesktop?.addEventListener("click", handleBuyTopUp);
+  buyTopUpMobile?.addEventListener("click", handleBuyTopUp);
+
+  function handleBuyTopUp() {
+  const variant = findVariant();
+  // Force quantity to always be 1 for top up products
+  const quantity = 1; // Langsung set ke 1, abaikan input quantity
+  
+  const iccid = sessionStorage.getItem("iccid") || "";
+
+  if (!variant || !variant.available) {
+    let hasEmpty = false;
+    variantDropdowns.forEach(select => {
+      if (select.value === "") {
+        select.classList.add("variant-warning");
+        hasEmpty = true;
+      }
+    });
+
+    if (hasEmpty) {
+      const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
+      if (firstEmpty) {
+        firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+    return;
+  }
+
+  const payload = {
+    id: variant.id,
+    quantity: quantity, // Quantity selalu 1
+    attributes: {
+      iccid: iccid
+    }
+  };
+
+  fetch("/cart/clear.js", { method: "POST" }).then(() => {
+    fetch("/cart/add.js", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(() => {
+      window.location.href = "/checkout";
+    })
+    .catch(err => {
+      console.error("Failed to add top up product:", err);
+      const popup = document.getElementById("variant-popup");
+      const messageEl = document.getElementById("variant-popup-message");
+      if (popup && messageEl) {
+        messageEl.textContent = "Failed to buy top up.";
+        popup.style.display = "block";
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 2000);
+      }
+    });
+  });
 }
 
 

@@ -1,0 +1,130 @@
+{% style %}
+  .search-bar {
+    width: 100%;
+    background-color: var(--color-neutral);
+    border-radius: 15px;
+  }
+  .search__field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    width: 100%;
+  }
+  .search__input {
+    width: 100%;
+    padding: 20px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    color: var(--color-primary);
+    font-size: var(--font-large);
+  }
+  .search__input::placeholder {
+    color: var(--color-primary);
+    font-size: var(--font-large);
+  }
+  .search__button-submit {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 10px;
+    right: 5px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    background-color: var(--color-primary);
+  }
+  .search__button-reset {
+    position: absolute;
+    right: 60px;
+    border: none;
+    background: transparent;
+  }
+{% endstyle %}
+
+
+<div class="search-bar">
+  <form action="{{ routes.search_url }}" method="get" class="search-form" onsubmit="return false;">
+    <div class="search__field">
+      <input
+        class="search__input"
+        id="search-input-topup"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        oninput="filterCountries()"
+        placeholder="Search Your Destination"
+        aria-label="Search"
+      />
+
+      <button
+        type="reset"
+        class="search__button-reset{% if search.terms == blank %} hidden{% endif %}"
+        aria-label="{{ 'general.search.reset' | t }}"
+      >
+        <span class="svg-wrapper">
+          {{- 'icon-reset.svg' | inline_asset_content -}}
+        </span>
+      </button>
+
+      <button
+        type="submit"
+        class="search__button-submit"
+        aria-label="{{ 'general.search.search' | t }}"
+      >
+        <span>
+          {{- 'material-search.svg' | inline_asset_content -}}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function filterCountries() {
+    const input = document.getElementById("search-input-topup").value.trim().toLowerCase();
+    const productCards = document.querySelectorAll(".product-card-container");
+    const message = document.getElementById("no-results-message");
+    const title = document.querySelector(".main-search-collection.title");
+
+    if (input === "") {
+      // Reset → tampilkan semua produk + judul
+      productCards.forEach(card => {
+        card.style.display = "";
+      });
+      message.style.display = "none";
+      if (title) title.style.display = "";
+      return;
+    }
+
+    let foundAny = false;
+
+    productCards.forEach((card) => {
+      const country = (card.dataset.coverageCountry || "").toLowerCase();
+      const alias = (card.dataset.coverageAlias || "").toLowerCase();
+      const region = (card.dataset.coverageRegion || "").toLowerCase();
+
+      if (
+        country.includes(input) ||
+        alias.includes(input) ||
+        region.includes(input)
+      ) {
+        card.style.display = "";
+        foundAny = true;
+      } else {
+        card.style.display = "none";
+      }
+    });
+
+    if (!foundAny) {
+      message.style.display = "flex";
+      if (title) title.style.display = "none";
+    } else {
+      message.style.display = "none";
+      if (title) title.style.display = "";
+    }
+  }
+</script>

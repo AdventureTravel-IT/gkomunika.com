@@ -33,7 +33,9 @@
   }
 
   .invalid-popup__button button,
-  #invalid-popup__button-hide {
+  #invalid-popup__button-hide,
+  #btn-topup__contact-button,
+  #btn-topup__buy-button {
     width: 100%;
     padding: 15px;
     border-radius: 10px;
@@ -42,12 +44,14 @@
     font-size: var(--font-large);
   }
 
-  #invalid-popup__buy-button {
+  #invalid-popup__buy-button,
+  #btn-topup__buy-button {
     background-color: var(--color-secondary);
     color: var(--color-neutral);
   }
 
-  #invalid-popup__contact-button {
+  #invalid-popup__contact-button,
+  #btn-topup__contact-button {
     background-color: #25d366;
     color: var(--color-neutral);
   }
@@ -98,6 +102,12 @@
     padding: 20px 20%;
   }
 
+  .btn-topup-information {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
   .check-data-usage__esim-information,
   .check-data-usage__usage-content {
     background-color: var(--color-neutral);
@@ -106,6 +116,13 @@
     color: var(--color-primary);
     margin-top: 20px;
     font-size: var(--font-large);
+  }
+
+  .button-topup__usage-wrapper {
+    margin-top: 20px; 
+    font-size: var(--font-extra-large);
+    color: var(--color-primary);
+    text-align: center; 
   }
 
   .check-data-usage__esim-information {
@@ -244,10 +261,9 @@
   <div class="invalid-popup__content">
     <h2>ICCID Invalid</h2>
     <p>
-      Sorry, currently your sim card does not support top up via the website. You can top up by contacting our CS via
-      Whatsapp.
+      Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your phone settings.
     </p>
-    <p>If your device supports eSIM. You can buy an eSIM for your travel connectivity.</p>
+    <p>Please contact our WhatsApp Customer Service for more information</p>
     <div class="invalid-popup__button">
       <button id="invalid-popup__buy-button"><span>Buy eSIM</span></button>
       <button id="invalid-popup__contact-button"><span>Contact CS</span></button>
@@ -336,18 +352,14 @@
         </div>
         <div class="esim-information__wrapper">
           <p>Active Date</p>
-          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useSDate) : formatDateTime(itemData.planStartTime)} ${
-        itemData.timeZone || ''
-      }</span>
+          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useSDate) : formatDateTime(itemData.planStartTime)} ${itemData.timeZone || ''}</span>
         </div>
         <div class="esim-information__wrapper">
           <p>End Date</p>
-          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useEDate) : formatDateTime(itemData.planEndTime)} ${
-        itemData.timeZone || ''
-      }</span>
+          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useEDate) : formatDateTime(itemData.planEndTime)} ${itemData.timeZone || ''}</span>
         </div>
       </div>
-    `;
+      `;
     }
 
     function renderTotalUsage(countryUsageMap) {
@@ -376,7 +388,9 @@
           const country = vendor === 'AF' ? item.enus || '-' : item.country || '-';
           const date = vendor === 'AF' ? formatDate(item.usageDate) : formatDate(item.usedDate);
           const usage =
-            vendor === 'AF' ? formatBytes(Number(item.usage || 0)) : formatBytes(Number(item.usedAmount || 0));
+            vendor === 'AF'
+              ? formatBytes(Number(item.usage || 0))
+              : formatBytes(Number(item.usedAmount || 0));
 
           return `
           <div class="data-usage__wrapper">
@@ -387,6 +401,23 @@
         `;
         })
         .join('');
+    }
+
+    function attachTopUpButtonListeners() {
+      const btnTopUpBuyEsim = document.getElementById('btn-topup__buy-button');
+      const btnTopUpContactCs = document.getElementById('btn-topup__contact-button');
+
+      if (btnTopUpBuyEsim) {
+        btnTopUpBuyEsim.addEventListener('click', () => {
+          window.location.href = 'https://gkomunika.com/pages/all-destination';
+        });
+      }
+
+      if (btnTopUpContactCs) {
+        btnTopUpContactCs.addEventListener('click', () => {
+          window.location.href = 'https://wa.me/628986454071';
+        });
+      }
     }
 
     async function checkICCID() {
@@ -438,12 +469,27 @@
               totalUsedBytes += usage;
             }
 
+            let topUpBtnHtml = '';
+
+            if (vendor === 'BS' || vendor === 'BE') {
+              if (dataUsage.length) {
+                topUpBtnHtml = `<button id="top-up-plan" class="top-up-plan-btn">Top Up Plan</button>`;
+              }
+            } else {
+              topUpBtnHtml = `
+                <div class="button-topup__usage-wrapper">
+                  <span>Need more data or is your data running out? You can simply buy a new eSIM from our website. If you are using a SIM card, it may be eligible for top-up. Contact our CS for more information.</span>
+                  <div class="btn-topup-information">
+                    <button id="btn-topup__contact-button"><span>Contact CS</span></button>
+                    <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
+                  </div>
+                </div>
+              `;
+            }
+
             const esimHtml = renderEsimInfo(itemData, vendor);
             const totalUsageHtml = renderTotalUsage(countryUsageMap);
             const dataUsageHtml = renderDataUsage(dataUsage, vendor);
-            const topUpBtnHtml = dataUsage.length
-              ? `<button id="top-up-plan" class="top-up-plan-btn">Top Up Plan</button>`
-              : '';
 
             resultEl.innerHTML = `
               ${esimHtml}
@@ -464,6 +510,8 @@
                 ${topUpBtnHtml}
               </div>
             `;
+
+            attachTopUpButtonListeners();
             return;
           } else {
             resultEl.innerHTML = `<p style="color:red;">Error</p>`;
@@ -471,7 +519,6 @@
           }
         }
 
-        // Vendor lainnya
         if (data.status === 'rate_limited' || data.customCode === 429) {
           resultEl.innerHTML = `<p style="color:red;">${data.message || 'Rate limited'}</p>`;
           return;
@@ -495,12 +542,27 @@
           totalUsedBytes += usedAmount;
         }
 
+        let topUpBtnHtml = '';
+
+        if (vendor === 'BS' || vendor === 'BE') {
+          if (dataUsage.length) {
+            topUpBtnHtml = `<button id="top-up-plan" class="top-up-plan-btn">Top Up Plan</button>`;
+          }
+        } else {
+          topUpBtnHtml = `
+            <div style="margin-top:20px; font-size: var(--font-large); color: var(--color-primary); line-height: 1.5;">
+              <span>Need more data or is your data running out? You can simply buy a new eSIM from our website. If you are using a SIM card, it may be eligible for top-up. Contact our CS for more information.</span>
+              <div class="btn-topup-information">
+                <button id="btn-topup__contact-button"><span>Contact CS</span></button>
+                <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
+              </div>
+            </div>
+          `;
+        }
+
         const esimHtml = renderEsimInfo(itemData, vendor);
         const totalUsageHtml = renderTotalUsage(countryUsageMap);
         const dataUsageHtml = renderDataUsage(dataUsage, vendor);
-        const topUpBtnHtml = dataUsage.length
-          ? `<button id="top-up-plan" class="top-up-plan-btn">Top Up Plan</button>`
-          : '';
 
         resultEl.innerHTML = `
           ${esimHtml}
@@ -521,6 +583,8 @@
             ${topUpBtnHtml}
           </div>
         `;
+
+        attachTopUpButtonListeners();
       } catch (e) {
         console.error(e);
         resultEl.innerHTML = `<p style="color:red;">Connection error.</p>`;
@@ -540,21 +604,20 @@
     });
 
     document.addEventListener('click', (e) => {
-  if (e.target?.id === 'top-up-plan') {
-    const iccidInput = document.getElementById('iccid');
-    const iccid = iccidInput?.value?.trim();
+      if (e.target?.id === 'top-up-plan') {
+        const iccidInput = document.getElementById('iccid');
+        const iccid = iccidInput?.value?.trim();
 
-    if (iccid) {
-      sessionStorage.setItem('iccid', iccid);
-      console.log('ICCID berhasil disimpan ke sessionStorage:', iccid);
-    } else {
-      console.log('ICCID kosong, tidak disimpan ke sessionStorage.');
-    }
+        if (iccid) {
+          sessionStorage.setItem('iccid', iccid);
+          console.log('ICCID berhasil disimpan ke sessionStorage:', iccid);
+        } else {
+          console.log('ICCID kosong, tidak disimpan ke sessionStorage.');
+        }
 
-    window.location.href = 'https://gkomunika.com/pages/top-up';
-  }
-});
-
+        window.location.href = 'https://gkomunika.com/pages/top-up';
+      }
+    });
   });
 </script>
 

@@ -1,4 +1,12 @@
-<span id="iccid-display"></span>
+{% comment %} <span id="iccid-display"></span> {% endcomment %}
+
+{%  comment  %} wrapper untuk hasil filter pada saat input search {% endcomment %}
+<div class="product-card-wrapper">
+</div>
+
+<div id="no-results-message" class="main-search__error" style="display:none;">
+  <p>No products match your search.</p>
+</div>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -296,21 +304,21 @@
       { prefix: '89862', vendor: 'AF' },
       { prefix: '89810', vendor: 'TE' },
       { prefix: '2210', vendor: 'BS' },
-      { prefix: '8981200', vendor: 'BE' }
+      { prefix: '8981200', vendor: 'BE' },
     ];
 
     const vendorCategories = {
       AF: 'Top_Up_B',
       TE: 'Top_Up_C',
       BS: 'Top_Up_A',
-      BE: 'Top_Up_A'
+      BE: 'Top_Up_A',
     };
 
     function findVendorFromICCID(iccid) {
       let matchedVendor = null;
       let longestMatchLength = 0;
 
-      vendorPrefixes.forEach(item => {
+      vendorPrefixes.forEach((item) => {
         if (iccid.startsWith(item.prefix)) {
           if (item.prefix.length > longestMatchLength) {
             longestMatchLength = item.prefix.length;
@@ -325,11 +333,22 @@
     function showNotFoundMessage() {
       const wrapper = document.getElementById('collection-top-up-plan');
       if (wrapper) {
-        wrapper.innerHTML = `
-          <div class="main-search__error">
-            <p>Product Top Up Not found.</p>
-          </div>
+        wrapper.style.display = "none";
+      }
+
+      const message = document.getElementById('no-results-message');
+      if (message) {
+        message.innerHTML = `
+        <div style="display: flex; flex-direction: column; justify-content: center">
+          <p>No products found in Top-Up Plan.</p>
+          <a href="/pages/check-data-usage">
+            <button class="product-card-btn">
+              <p style="color: var(--color-neutral);">Back</p>
+            </button>
+          </a>
+          <div>
         `;
+        message.style.display = "flex";
       }
     }
 
@@ -338,6 +357,7 @@
 
     if (!iccid) {
       console.log('ICCID tidak ditemukan di sessionStorage');
+      showNotFoundMessage();
       return;
     }
 
@@ -355,22 +375,13 @@
     let foundAnyProduct = false;
 
     const productCards = document.querySelectorAll('.product-card-container');
-    productCards.forEach(card => {
-      const categoryEl = card.querySelector('p');
-      if (categoryEl) {
-        let category = null;
-        try {
-          category = JSON.parse(categoryEl.textContent.trim());
-        } catch (e) {
-          console.error('Failed parsing category JSON', e);
-        }
-
-        if (category === desiredCategory) {
-          card.style.display = '';
-          foundAnyProduct = true;
-        } else {
-          card.style.display = 'none';
-        }
+    productCards.forEach((card) => {
+      const category = card.dataset.category;
+      if (category === desiredCategory) {
+        card.style.display = '';
+        foundAnyProduct = true;
+      } else {
+        card.style.display = 'none';
       }
     });
 
@@ -407,22 +418,42 @@
                 {% endfor %}
               {% endif %}
 
-              <div class="product-card-container">
+              <div
+                class="product-card-container"
+                data-category="{{ product.metafields.product.category.value }}"
+                data-coverage-country="{{ product.metafields.coverage.country.value | join: ', ' }}"
+                data-coverage-alias="{{ product.metafields.coverage.alias.value | join: ', ' }}"
+                data-coverage-region="{{ product.metafields.coverage.region.value | join: ', ' }}"
+              >
                 <a class="product-url-link" href="{{ product.url }}">
                   <div class="product-card-country">
                     {% assign total_countries = product_countries.size %}
                     {% if total_countries == 1 %}
                       {% assign country_trimmed = product_countries.first | strip %}
                       {% assign country_filename = country_trimmed | replace: ' ', '-' | append: '.svg' %}
-                      <img class="product-card-icon-single-flag" src="{{ country_filename | file_url }}" alt="{{ country_trimmed }}" width="50" height="50">
+                      <img
+                        class="product-card-icon-single-flag"
+                        src="{{ country_filename | file_url }}"
+                        alt="{{ country_trimmed }}"
+                        width="50"
+                        height="50"
+                      >
                     {% elsif total_countries > 1 %}
                       <div class="product-card-multi-flag">
                         {% for country in product_countries limit: 3 %}
                           {% assign country_filename = country | replace: ' ', '-' | append: '.svg' %}
-                          <img class="product-card-icon-multi-flag" src="{{ country_filename | file_url }}" alt="{{ country }}" width="25" height="25">
+                          <img
+                            class="product-card-icon-multi-flag"
+                            src="{{ country_filename | file_url }}"
+                            alt="{{ country }}"
+                            width="25"
+                            height="25"
+                          >
                         {% endfor %}
                         {% if total_countries > 3 %}
-                          <div class="product-card-flag-count"><span>+{{ total_countries | minus: 3 }}</span></div>
+                          <div class="product-card-flag-count">
+                            <span>+{{ total_countries | minus: 3 }}</span>
+                          </div>
                         {% endif %}
                       </div>
                     {% endif %}
@@ -432,12 +463,6 @@
                     </div>
                   </div>
                 </a>
-
-                {% if product.metafields.product.category %}
-                  <p>{{ product.metafields.product.category.value | json }}</p> 
-                  {% else %}
-                  <p>error</p>
-                {% endif %}
 
                 <div class="product-card-content">
                   <div class="product-card-content-flip-front">
@@ -449,7 +474,9 @@
                         </div>
                         <div class="country-total-atribut-wrapper">
                           <div class="country-total-atribut">
-                            <button class="flipped-trigger"><span>{{ product_countries.size }} Countries</span></button>
+                            <button class="flipped-trigger">
+                              <span>{{ product_countries.size }} Countries</span>
+                            </button>
                           </div>
                           <div class="country-total-including-atribut">
                             {% if all_matched_countries != blank %}
@@ -503,7 +530,6 @@
                   </a>
                 </div>
               </div>
-
             {% endfor %}
           </div>
         </div>
@@ -521,7 +547,6 @@
     {% endif %}
   </div>
 </div>
-
 
 {% schema %}
 {

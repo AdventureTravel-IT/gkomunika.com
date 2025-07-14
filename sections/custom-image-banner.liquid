@@ -47,25 +47,43 @@
       {%- if search.terms != blank -%}
         <h2>Search Result for “{{ search.terms }}”</h2>
       {%- else -%}
-        <h2>All Destinations</h2>
+        <h2>{{ section.settings.heading_text }}</h2>
       {%- endif -%}
-      <span>Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries</span>
+      <span>{{ section.settings.subheading_text }}</span>
+
       <div class="banner-search__form">
+        {% if template.suffix == 'top-up' %}
+          {% render 'search-bar-topup' %}
+        {%  else %}
         {% render 'search-bar' %}
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
 
 {% schema %}
-  {
-    "name": "Banner Search",
-    "settings": [],
-    "presets": [
-      {
-        "name": "Banner-search",
-        "category": "Custom"
-      }
-    ]
-  }
+{
+  "name": "Banner Search",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading Text",
+      "default": "All Destinations"
+    },
+    {
+      "type": "text",
+      "id": "subheading_text",
+      "label": "Subheading Text",
+      "default": "Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Banner-search",
+      "category": "Custom"
+    }
+  ]
+}
 {% endschema %}

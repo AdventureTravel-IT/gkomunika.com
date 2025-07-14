@@ -1,122 +1,121 @@
 <style>
-  .quantity-input {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid var(--color-primary);
-    border-radius: 24px;
-    overflow: hidden;
-    width: fit-content;
-    padding: 5px;
-  }
+    .quantity-input {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--color-primary);
+      border-radius: 24px;
+      overflow: hidden;
+      width: fit-content;
+      padding: 5px;
+    }
 
-  .quantity-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
+    .quantity-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
 
-  .quantity-btn {
-    background-color: transparent;
-    border: none;
-    padding: 8px 12px;
-    font-size: 16px;
-    color: var(--color-primary);
-    cursor: pointer;
-    user-select: none;
-  }
+    .quantity-btn {
+      background-color: transparent;
+      border: none;
+      padding: 8px 12px;
+      font-size: 16px;
+      color: var(--color-primary);
+      cursor: pointer;
+      user-select: none;
+    }
 
-  .quantity-number {
-    width: 40px;
-    text-align: center;
-    border: none;
-    font-size: 16px;
-    outline: none;
-    color: var(--color-primary);
-  }
+    .quantity-number {
+      width: 40px;
+      text-align: center;
+      border: none;
+      font-size: 16px;
+      outline: none;
+      color: var(--color-primary);
+    }
 
-  .quantity-btn:disabled {
-    color: var(--color-primary);
-    cursor: not-allowed;
-  }
+    .quantity-btn:disabled {
+      color: var(--color-primary);
+      cursor: not-allowed;
+    }
 
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
 
-  input[type="number"] {
-    -moz-appearance: textfield;
-  }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
 
-  .quantity-btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.4;
-  }
+    .quantity-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
 
-  .disabled-option {
-    color: #bbb;
-  }
+    .disabled-option {
+      color: #bbb;
+    }
 
-  .variant-option__wrapper {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-  }
+    .variant-option__wrapper {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+    .variant-option {
+      display: flex;
 
-  .variant-option {
-    display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
 
-    flex-direction: column;
-    min-width: 0;
-  }
+    .variant-picker__label {
+      font-weight: bold;
+    }
 
-  .variant-picker__label {
-    font-weight: bold;
-  }
+    .variant-dropdown {
+      padding: 15px 35px 15px 15px;
+      border-radius: 15px;
+      border: 1px solid var(--color-primary);
+      font-size: var(--font-large);
+      color: var(--color-primary);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 15px;
+      background-color: var(--color-neutral);
+    }
 
-  .variant-dropdown {
-    padding: 15px 35px 15px 15px;
-    border-radius: 15px;
-    border: 1px solid var(--color-primary);
-    font-size: var(--font-large);
-    color: var(--color-primary);
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url('{{ ' icon-dropdown.svg' | asset_url }}');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 15px;
-    background-color: var(--color-neutral);
-  }
+    #reset-plan {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      gap: 7px;
+      width: auto;
+      padding: 8px 12px 8px 8px;
+      border-radius: 15px;
+      cursor: pointer;
+      color: var(--color-primary);
+      font-size: 14px;
+      font-weight: bold;
+      text-align: left;
+      background: transparent;
+      text-decoration: none;
+      background-color: var(--color-background-third);
+    }
 
-  #reset-plan {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    gap: 7px;
-    width: auto;
-    padding: 8px 12px 8px 8px;
-    border-radius: 15px;
-    cursor: pointer;
-    color: var(--color-primary);
-    font-size: 14px;
-    font-weight: bold;
-    text-align: left;
-    background: transparent;
-    text-decoration: none;
-    background-color: var(--color-background-third);
-  }
+    #reset-plan .reset-text {
+      line-height: 1;
+    }
 
-  #reset-plan .reset-text {
-    line-height: 1;
-  }
-
-  #reset-plan svg {
+    #reset-plan svg {
     vertical-align: middle;
     transition: transform 0.5s ease;
   }
@@ -127,81 +126,79 @@
 
 
 
-  .variant-picker-btn__mobile,
-  .variant-picker-btn {
-    display: flex;
-    gap: 15px;
-    width: 500px;
-  }
+    .variant-picker-btn__mobile,
+    .variant-picker-btn {
+      display: flex;
+      gap: 15px;
+      width: 500px;
+    }
 
-  .variant-picker-btn__mobile button,
-  .variant-picker-btn button {
-    width: 100%;
-    border-radius: 15px;
-    font-size: var(--font-large);
-    font-weight: bold;
-    color: var(--color-neutral);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-  }
-
-
-  .variant-picker-btn__mobile button:active,
-  .variant-picker-btn button:active {
-    transform: scale(0.96);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  .variant-picker-btn__mobile .cart,
-  .variant-picker-btn .cart {
-    border: 1px groove var(--secondary);
-    background-color: var(--color-secondary);
-  }
-
-  .variant-picker-btn__mobile .buy,
-  .variant-picker-btn .buy {
-    border: 1px groove var(--color-primary);
-    background-color: var(--color-primary);
-  }
-
-  .variant-picker-btn__mobile h2 {
-    font-size: 22px;
-    font-weight: normal;
-  }
-
-  #variant-price {
-    color: var(--color-secondary) !important;
-    margin-top: 7px;
-  }
-
-  .money,
-  .buckscc-money {
-    color: var(--color-secondary) !important;
-    font-size: var(--font-supper-large);
-    font-weight: bold;
-  }
+    .variant-picker-btn__mobile button,
+    .variant-picker-btn button {
+      width: 100%;
+      border-radius: 15px;
+      font-size: var(--font-large);
+      font-weight: bold;
+      color: var(--color-neutral);
+      transition: transform 0.3s ease
+      , box-shadow 0.3s ease;
+      cursor: pointer;
+    }
 
 
-  .variant-dropdown.variant-warning {
-    border-color: red;
-    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
-    position: relative;
-  }
+    .variant-picker-btn__mobile button:active,
+    .variant-picker-btn button:active {
+      transform: scale(0.96);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
 
-  .variant-dropdown.variant-warning::after {
-    content: "Please select this option";
-    position: absolute;
-    left: 10px;
-    top: 100%;
-    margin-top: 4px;
-    background: red;
-    color: white;
-    padding: 4px 8px;
-    font-size: 12px;
-    border-radius: 5px;
-    white-space: nowrap;
-    z-index: 1000;
-  }
+    .variant-picker-btn__mobile .cart,
+    .variant-picker-btn .cart {
+      border: 1px groove var(--secondary);
+      background-color: var(--color-secondary);
+    }
+
+    .variant-picker-btn__mobile .buy,
+    .variant-picker-btn .buy {
+      border: 1px groove var(--color-primary);
+      background-color: var(--color-primary);
+    }
+    .variant-picker-btn__mobile h2 {
+      font-size: 22px;
+      font-weight: normal;
+    }
+    #variant-price {
+      color: var(--color-secondary) !important;
+      margin-top: 7px;
+    }
+    .money,
+    .buckscc-money {
+      color: var(--color-secondary) !important;
+      font-size: var(--font-supper-large);
+      font-weight: bold;
+    }
+
+
+    .variant-dropdown.variant-warning {
+      border-color: red;
+      box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .variant-dropdown.variant-warning::after {
+      content: "Please select this option";
+      position: absolute;
+      left: 10px;
+      top: 100%;
+      margin-top: 4px;
+      background: red;
+      color: white;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 5px;
+      white-space: nowrap;
+      z-index: 1000;
+    }
 </style>
 
 {% style %}
@@ -251,21 +248,33 @@
 
     /*
 
-#selected-variant-display {
-font-size: var(--font-large);
-font-weight: 500;
-color: var(--color-secondary);
-border: 1px solid var(--color-border);
-}
+   #selected-variant-display { 
+   font-size: var(--font-large); 
+   font-weight: 500; 
+   color: var(--color-secondary); 
+   border: 1px solid var(--color-border); 
+   } 
 */
   }
 {% endstyle %}
+
+{% if customer %}
+  <script>
+    var customerLoggedIn = true;
+  </script>
+{% else %}
+  <script>
+    var customerLoggedIn = false;
+  </script>
+{% endif %}
 
 <div id="custom-variant-selector">
   {% assign min_price = product.variants.first.price %}
   {% assign max_price = product.variants.first.price %}
   {% for variant in product.variants %}
-    {% if variant.price < min_price %} {% assign min_price = variant.price %} {% endif %}
+    {% if variant.price < min_price %}
+      {% assign min_price = variant.price %}
+    {% endif %}
     {% if variant.price > max_price %}
       {% assign max_price = variant.price %}
     {% endif %}
@@ -277,15 +286,23 @@ border: 1px solid var(--color-border);
   <div style="display: flex; align-items: center;">
     <div
       class="
-        variant-option__wrapper {% if product.metafields.product.category.value == " Insurance" %} insurance-product {%
-        endif %}
+        variant-option__wrapper {% if product.metafields.product.category.value == "Insurance" %}
+          insurance-product
+        {% endif %}
       "
     >
       {% for option in product.options_with_values %}
-        <div class=" variant-option" data-option-index="{{ forloop.index0 }}">
+        <div class="variant-option" data-option-index="{{ forloop.index0 }}">
           <label class="variant-picker__label">{{ option.name }}</label>
           <select class="variant-dropdown" data-option-name="{{ option.name }}">
-            <option value="" disabled selected hidden>Choose Option</option>
+            <option
+              value=""
+              disabled
+              selected
+              hidden
+            >
+              Choose Option
+            </option>
             {% assign values_seen = '' %}
             {% for value in option.values %}
               {% unless values_seen contains value %}
@@ -312,35 +329,40 @@ border: 1px solid var(--color-border);
   <div id="variant-metafield-display" class="my-4"></div>
   <!-- Quantity -->
   <div class="quantity-wrapper" style="margin: 15px 0;">
-    {% unless product.metafields.product.category.value == 'Top_Up_A'
-      or product.metafields.product.category.value == 'Top_Up_B'
-      or product.metafields.product.category.value == 'Top_Up_C'
-    %}
-      <div>
-        <label class="variant-picker__label" for="quantity" style="display: block; margin-bottom: 4px;"
-          >Quantity:</label
+    <div {% if product.metafields.product.category.value == "Top_Up_A" or product.metafields.product.category.value == "Top_Up_B" or product.metafields.product.category.value == "Top_Up_C" %}hidden{% endif %}>
+      <label
+        class="variant-picker__label"
+        for="quantity"
+        style="display: block; margin-bottom: 4px;"
+        >Quantity</label
+      >
+      <div class="quantity-input">
+        <button
+          type="button"
+          class="quantity-btn"
+          id="quantity-decrease"
+          style="border-right: 1px solid var(--color-border);"
         >
-        <div class="quantity-input">
-          <button
-            type="button"
-            class="quantity-btn"
-            id="quantity-decrease"
-            style="border-right: 1px solid var(--color-border);"
-          >
-            <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
-          </button>
-          <input type="number" id="quantity" name="quantity" min="1" value="1" class="quantity-number">
-          <button
-            type="button"
-            class="quantity-btn"
-            id="quantity-increase"
-            style="border-left: 1px solid var(--color-border);"
-          >
-            <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
-          </button>
-        </div>
+          <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
+        </button>
+        <input
+          type="number"
+          id="quantity"
+          name="quantity"
+          min="1"
+          value="1"
+          class="quantity-number"
+        >
+        <button
+          type="button"
+          class="quantity-btn"
+          id="quantity-increase"
+          style="border-left: 1px solid var(--color-border);"
+        >
+          <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
+        </button>
       </div>
-    {% endunless %}
+    </div>
     {% if product.metafields.product.category.value == 'Insurance' %}
       <button id="reset-plan" type="button" style="margin-top: 30px;">
         {{- 'reset.svg' | inline_asset_content -}}
@@ -354,17 +376,35 @@ border: 1px solid var(--color-border);
 
   <!-- Tombol cart dan buy -->
   <div class="variant-picker-btn">
-    {% unless product.metafields.product.category.value == 'Top_Up_A'
-      or product.metafields.product.category.value == 'Top_Up_B'
-      or product.metafields.product.category.value == 'Top_Up_C'
-    %}
-    <button class="cart" type="button" id="add-to-cart">
+    {% if product.metafields.product.category.value == 'Top_Up_A'
+        or product.metafields.product.category.value == 'Top_Up_B'
+        or product.metafields.product.category.value == 'Top_Up_C'
+      %}
+        <button
+          class="buy"
+          type="button"
+          id="buy-topup-button"
+        >
+          <p>Top Up</p>
+        </button>
+        {%  else %}
+        <button
+      class="cart"
+      type="button"
+      id="add-to-cart"
+    >
       <p>Add to Cart</p>
     </button>
-    {% endunless %}
-    <button class="buy" type="button" id="buy-now-button">
+    {% if product.metafields.product.category.value == 'Insurance' %}
+    {% endif %}
+    <button
+      class="buy"
+      type="button"
+      id="buy-now-button"
+    >
       <p>Buy Now</p>
     </button>
+      {% endif %}
   </div>
 </div>
 
@@ -391,17 +431,42 @@ border: 1px solid var(--color-border);
       {%- endunless %}
     </div>
     <div class="variant-picker-btn__mobile-wrapper">
-      <button class="cart" type="button" id="add-to-cart-mobile">
+      {% if product.metafields.product.category.value == 'Top_Up_A'
+        or product.metafields.product.category.value == 'Top_Up_B'
+        or product.metafields.product.category.value == 'Top_Up_C'
+      %}
+        <button
+          class="buy"
+          type="button"
+          id="buy-topup-button"
+        >
+          <p>Buy Top Up</p>
+        </button>
+        {% else %}
+        <button
+        class="cart"
+        type="button"
+        id="add-to-cart-mobile"
+      >
         <p>Add to Cart</p>
       </button>
-      <button class="buy" type="button" id="buy-now-button-mobile">
+      <button
+        class="buy"
+        type="button"
+        id="buy-now-button-mobile"
+      >
         <p>Buy Now</p>
       </button>
+      {% endif %}
     </div>
   </div>
 </div>
 
-<div class="variant-picker-popup" id="variant-popup" style="display: none;">
+<div
+  class="variant-picker-popup"
+  id="variant-popup"
+  style="display: none;"
+>
   <span id="variant-popup-message"></span>
 </div>
 
@@ -439,43 +504,43 @@ border: 1px solid var(--color-border);
 </script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const variantDropdowns = document.querySelectorAll('.variant-dropdown');
-    const metafieldDisplay = document.getElementById('variant-metafield-display');
-
-    // Data semua variant dengan metafield variant.type
-    const variantsData = [
-      {% for variant in product.variants %}
+  document.addEventListener('DOMContentLoaded', function() {
+  const variantDropdowns = document.querySelectorAll('.variant-dropdown');
+  const metafieldDisplay = document.getElementById('variant-metafield-display');
+  
+  // Data semua variant dengan metafield variant.type
+  const variantsData = [
+  {% for variant in product.variants %}
     {
       id: {{ variant.id }},
-    title: "{{ variant.title | escape }}",
-    type: {{ variant.metafields.variant.type | json }},
-    coverage: {{ variant.metafields.variant.coverage.value | json }},
-    options: [
-    {% for option in variant.options %}
-  "{{ option | escape }}"{% unless forloop.last %}, {% endunless %}
-  {% endfor %}
+      title: "{{ variant.title | escape }}",
+      type: {{ variant.metafields.variant.type | json }},
+      coverage: {{ variant.metafields.variant.coverage.value | json }},
+      options: [
+        {% for option in variant.options %}
+          "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
+        {% endfor %}
       ]
-    }{% unless forloop.last %}, {% endunless %}
+    }{% unless forloop.last %},{% endunless %}
   {% endfor %}
 ];
 
-
+  
   // function updateMetafieldDisplay() {
   //   const selectedOptions = [];
   //   variantDropdowns.forEach(dropdown => {
   //     selectedOptions.push(dropdown.value);
   //   });
-
+    
   //   const matchedVariant = variantsData.find(variant => {
   //     return variant.options.every((option, index) => {
   //       return option === selectedOptions[index];
   //     });
   //   });
-
+    
   //   // Debugging: Lihat di console
   //   console.log('Variant yang cocok:', matchedVariant);
-
+    
   //   if (matchedVariant) {
   //     // Tampilkan metafield variant.type
   //     if (matchedVariant.type) {
@@ -513,11 +578,11 @@ border: 1px solid var(--color-border);
   //     metafieldDisplay.innerHTML = '';
   //   }
   // }
-
+  
   // variantDropdowns.forEach(dropdown => {
   //   dropdown.addEventListener('change', updateMetafieldDisplay);
   // });
-
+  
   // updateMetafieldDisplay();
   });
 </script>
@@ -525,15 +590,15 @@ border: 1px solid var(--color-border);
 <script>
   window.productCoverage = [].concat(
     {% if product.metafields.coverage.country.value %}
-  { { product.metafields.coverage.country.value | json } },
-  {% else %}
-  [],
+      {{ product.metafields.coverage.country.value | json }},
+    {% else %}
+      [],
     {% endif %}
-  {% if product.metafields.coverage.country_1.value %}
-  { { product.metafields.coverage.country_1.value | json } }
-  {% else %}
-  []
-  {% endif %}
+    {% if product.metafields.coverage.country_1.value %}
+      {{ product.metafields.coverage.country_1.value | json }}
+    {% else %}
+      []
+    {% endif %}
   );
 </script>
 
@@ -572,7 +637,7 @@ border: 1px solid var(--color-border);
       minusBtn.removeEventListener('click', currentMinusHandler);
     }
 
-    currentMinusHandler = function () {
+    currentMinusHandler = function() {
       if (parseInt(quantityInput.value) <= minQty) {
         quantityInput.value = minQty;
       }
@@ -721,139 +786,204 @@ border: 1px solid var(--color-border);
   }
 
   function handleCartAction(action) {
-    const variant = findVariant();
-    const quantity = parseInt(quantityInput.value) || 1;
+  const variant = findVariant();
+  const quantity = parseInt(quantityInput.value) || 1;
 
-    // **NEW** → Ambil coverage dari product metafield
-    const variantCoverage = window.productCoverage || [];
+  // **NEW** → Ambil coverage dari product metafield
+  const variantCoverage = window.productCoverage || [];
 
-    if (!variant || !variant.available) {
-      let hasEmpty = false;
-      variantDropdowns.forEach(select => {
-        if (select.value === "") {
-          select.classList.add("variant-warning");
-          hasEmpty = true;
-        }
-      });
-
-      if (hasEmpty) {
-        const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
-        if (firstEmpty) {
-          firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+  if (!variant || !variant.available) {
+    let hasEmpty = false;
+    variantDropdowns.forEach(select => {
+      if (select.value === "") {
+        select.classList.add("variant-warning");
+        hasEmpty = true;
       }
+    });
 
-      return;
-    }
-
-    const productCategory = "{{ product.metafields.product.category.value }}";
-
-    if (action === "buy" && productCategory === "Insurance") {
-      const variantType = getVariantType(variant);
-
-      sessionStorage.removeItem('ProductItems');
-
-      let ProductItems = [];
-
-      const newItem = {
-        productTitle: "{{ product.title }}",
-        category: productCategory,
-        variantType: variantType,
-        variantId: variant.id,
-        variantTitle: variant.title,
-        quantity: quantity,
-        variantCoverage: variantCoverage
-      };
-
-      ProductItems.push(newItem);
-
-      sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-
-      window.location.href = "/pages/form-insurance";
-      return;
-    }
-
-    const payload = { id: variant.id, quantity: quantity };
-    const popup = document.getElementById("variant-popup");
-
-    function showPopup(message) {
-      const messageEl = document.getElementById("variant-popup-message");
-      if (messageEl) {
-        messageEl.textContent = message;
+    if (hasEmpty) {
+      const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
+      if (firstEmpty) {
+        firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
       }
-
-      popup.style.display = "block";
-      setTimeout(() => {
-        popup.style.display = "none";
-      }, 2000);
     }
 
-    if (action === "buy") {
-      fetch("/cart/clear.js", { method: "POST" }).then(() => {
-        fetch("/cart/add.js", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }).then(() => {
-          const iccid = sessionStorage.getItem('iccid');
-
-          const productCategory = "{{ product.metafields.product.category.value }}";
-          const categoriesNeedICCID = ["Top_Up_A", "Top_Up_B", "Top_Up_C"];
-
-          if (categoriesNeedICCID.includes(productCategory) && iccid) {
-            // Set cart attribute iccid
-            fetch("/cart/update.js", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                attributes: {
-                  iccid: iccid
-                }
-              })
-            }).then(() => {
-              window.location.href = "/checkout";
-            }).catch((err) => {
-              console.error("Failed to update cart attribute:", err);
-              window.location.href = "/checkout";
-            });
-          } else {
-            window.location.href = "/checkout";
-          }
-        });
-      });
-    }
-
+    return;
   }
+
+  const productCategory = "{{ product.metafields.product.category.value }}";
+
+if (action === "buy" && productCategory === "Insurance") {
+  const variantType = getVariantType(variant);
+
+  sessionStorage.removeItem('ProductItems');
+
+  let ProductItems = [];
+
+  const newItem = {
+    productTitle: "{{ product.title }}",
+    category: productCategory,
+    variantType: variantType,
+    variantId: variant.id,
+    variantTitle: variant.title,
+    quantity: quantity,
+    variantCoverage: variantCoverage
+  };
+
+  ProductItems.push(newItem);
+
+  sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+
+  if (customerLoggedIn) {
+    window.location.href = "/pages/form-insurance";
+  } else {
+    window.location.href = "/account/login?return_url=/pages/form-insurance";
+  }
+
+  return;
+}
+
+
+  const payload = { id: variant.id, quantity: quantity };
+  const popup = document.getElementById("variant-popup");
+
+  function showPopup(message) {
+    const messageEl = document.getElementById("variant-popup-message");
+    if (messageEl) {
+      messageEl.textContent = message;
+    }
+
+    popup.style.display = "block";
+    setTimeout(() => {
+      popup.style.display = "none";
+    }, 2000);
+  }
+
+  if (action === "buy") {
+    fetch("/cart/clear.js", { method: "POST" }).then(() => {
+      fetch("/cart/add.js", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(() => {
+        window.location.href = "/checkout";
+      });
+    });
+  } else {
+    fetch("/cart/add.js", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(() => {
+      showPopup("Item successfully added to cart.");
+      updateCartCount();
+    })
+    .catch(err => {
+      console.error("Add to cart failed:", err);
+      showPopup("Failed to add product");
+    });
+  }
+}
+
+ const buyTopUpDesktop = document.getElementById("buy-topup-button");
+  const buyTopUpMobile = document.getElementById("buy-topup-button-mobile");
+
+  buyTopUpDesktop?.addEventListener("click", handleBuyTopUp);
+  buyTopUpMobile?.addEventListener("click", handleBuyTopUp);
+
+  function handleBuyTopUp() {
+  const variant = findVariant();
+  // Force quantity to always be 1 for top up products
+  const quantity = 1; // Langsung set ke 1, abaikan input quantity
+  
+  const iccid = sessionStorage.getItem("iccid") || "";
+
+  if (!variant || !variant.available) {
+    let hasEmpty = false;
+    variantDropdowns.forEach(select => {
+      if (select.value === "") {
+        select.classList.add("variant-warning");
+        hasEmpty = true;
+      }
+    });
+
+    if (hasEmpty) {
+      const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
+      if (firstEmpty) {
+        firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+    return;
+  }
+
+  const payload = {
+    id: variant.id,
+    quantity: quantity, // Quantity selalu 1
+    attributes: {
+      iccid: iccid
+    }
+  };
+
+  fetch("/cart/clear.js", { method: "POST" }).then(() => {
+    fetch("/cart/add.js", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(() => {
+      window.location.href = "/checkout";
+    })
+    .catch(err => {
+      console.error("Failed to add top up product:", err);
+      const popup = document.getElementById("variant-popup");
+      const messageEl = document.getElementById("variant-popup-message");
+      if (popup && messageEl) {
+        messageEl.textContent = "Failed to buy top up.";
+        popup.style.display = "block";
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 2000);
+      }
+    });
+  });
+}
 
 
   function getVariantType(variant) {
     window.variantsData = [
-      {% for variant in product.variants %}
-  {
-    id: { { variant.id } },
-    title: "{{ variant.title | escape }}",
-      type: { { variant.metafields.variant.type | json } },
-    options: [
-      {% for option in variant.options %}
-  "{{ option | escape }}"{% unless forloop.last %}, {% endunless %}
-  {% endfor %}
+  {% for variant in product.variants %}
+    {
+      id: {{ variant.id }},
+      title: "{{ variant.title | escape }}",
+      type: {{ variant.metafields.variant.type | json }},
+      options: [
+        {% for option in variant.options %}
+          "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
+        {% endfor %}
       ]
-    }{% unless forloop.last %}, {% endunless %}
+    }{% unless forloop.last %},{% endunless %}
   {% endfor %}
 ];
 
 
-  const matchedVariant = variantsData.find(v => v.id === variant.id);
-  if (matchedVariant && matchedVariant.type) {
-    if (Array.isArray(matchedVariant.type)) {
-      return matchedVariant.type.join(', ');
-    } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
-      return matchedVariant.type.value;
-    } else {
-      return matchedVariant.type;
+    const matchedVariant = variantsData.find(v => v.id === variant.id);
+    if (matchedVariant && matchedVariant.type) {
+      if (Array.isArray(matchedVariant.type)) {
+        return matchedVariant.type.join(', ');
+      } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
+        return matchedVariant.type.value;
+      } else {
+        return matchedVariant.type;
+      }
     }
-  }
-  return '';
+    return '';
   }
 
   addToCartButton?.addEventListener("click", () => handleCartAction("add"));

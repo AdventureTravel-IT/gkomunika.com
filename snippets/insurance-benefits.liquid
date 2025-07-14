@@ -222,39 +222,6 @@
             </tr>
           </thead>
           <tbody>
-            {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
-            {% if cancelation.basic or cancelation.executive or cancelation.premiere %}
-              <tr>
-                <td colspan="2">Trip Cancellation and Alteration</td>
-                {% if cancelation.basic %}
-                  <td
-                    {% if cancelation.executive == null and cancelation.premiere == null %}
-                      colspan="2"
-                    {% endif %}
-                  >
-                    {{ cancelation.basic }}
-                  </td>
-                {% endif %}
-                {% if cancelation.executive %}
-                  <td
-                    {% if cancelation.basic == null and cancelation.premiere == null %}
-                      colspan="2"
-                    {% endif %}
-                  >
-                    {{ cancelation.executive }}
-                  </td>
-                {% endif %}
-                {% if cancelation.premiere %}
-                  <td
-                    {% if cancelation.basic == null and cancelation.executive == null %}
-                      colspan="2"
-                    {% endif %}
-                  >
-                    {{ cancelation.premiere }}
-                  </td>
-                {% endif %}
-              </tr>
-            {% endif %}
 
             <!-- Medical & Other Emergency Expenses -->
             {% assign medical = package.medical_and_other_emergency_expenses %}
@@ -549,6 +516,41 @@
                   </tr>
                 {% endif %}
               {% endfor %}
+            {% endif %}
+
+
+            {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
+            {% if cancelation.basic or cancelation.executive or cancelation.premiere %}
+              <tr>
+                <td colspan="2">Trip Cancellation and Alteration</td>
+                {% if cancelation.basic %}
+                  <td
+                    {% if cancelation.executive == null and cancelation.premiere == null %}
+                      colspan="2"
+                    {% endif %}
+                  >
+                    {{ cancelation.basic }}
+                  </td>
+                {% endif %}
+                {% if cancelation.executive %}
+                  <td
+                    {% if cancelation.basic == null and cancelation.premiere == null %}
+                      colspan="2"
+                    {% endif %}
+                  >
+                    {{ cancelation.executive }}
+                  </td>
+                {% endif %}
+                {% if cancelation.premiere %}
+                  <td
+                    {% if cancelation.basic == null and cancelation.executive == null %}
+                      colspan="2"
+                    {% endif %}
+                  >
+                    {{ cancelation.premiere }}
+                  </td>
+                {% endif %}
+              </tr>
             {% endif %}
 
             <!-- Travel & Associated Expenses -->

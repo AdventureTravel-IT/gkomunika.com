@@ -536,10 +536,16 @@
       {% sections 'footer-group' %}
     {% endunless %}
 
-    {% if template.name != 'login' or template.name != 'register' %}
+    {% if template.name != 'login' and template.name != 'register' %}
       {% style %}
         body {
           padding-top: 50px;
+        }
+      {% endstyle %}
+    {% else %}
+      {% style %}
+        body {
+          padding-top: 0;
         }
       {% endstyle %}
     {% endif %}

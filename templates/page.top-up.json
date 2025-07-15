@@ -17,6 +17,14 @@
         "padding_bottom": 28
       }
     },
+    "custom_image_banner_WRGLVc": {
+      "type": "custom-image-banner",
+      "name": "Banner-search",
+      "settings": {
+        "heading_text": "Select Your Plan Data",
+        "subheading_text": "Need extra data during your travels? We got you covered! Top up your SIM Card right away on Global Komunika."
+      }
+    },
     "topup_yXeHGT": {
       "type": "topup",
       "name": "Section Top Up",
@@ -25,6 +33,7 @@
   },
   "order": [
     "main",
+    "custom_image_banner_WRGLVc",
     "topup_yXeHGT"
   ]
 }

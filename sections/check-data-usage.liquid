@@ -119,10 +119,10 @@
   }
 
   .button-topup__usage-wrapper {
-    margin-top: 20px; 
+    margin-top: 20px;
     font-size: var(--font-extra-large);
     color: var(--color-primary);
-    text-align: center; 
+    text-align: center;
   }
 
   .check-data-usage__esim-information {
@@ -261,9 +261,10 @@
   <div class="invalid-popup__content">
     <h2>ICCID Invalid</h2>
     <p>
-      Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your phone settings.
+      Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
+      phone settings.
     </p>
-    <p>Please contact our WhatsApp Customer Service for more information</p>
+    <p>Please contact our WhatsApp Customer Service for more information</p>
     <div class="invalid-popup__button">
       <button id="invalid-popup__buy-button"><span>Buy eSIM</span></button>
       <button id="invalid-popup__contact-button"><span>Contact CS</span></button>
@@ -352,11 +353,15 @@
         </div>
         <div class="esim-information__wrapper">
           <p>Active Date</p>
-          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useSDate) : formatDateTime(itemData.planStartTime)} ${itemData.timeZone || ''}</span>
+          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useSDate) : formatDateTime(itemData.planStartTime)} ${
+        itemData.timeZone || ''
+      }</span>
         </div>
         <div class="esim-information__wrapper">
           <p>End Date</p>
-          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useEDate) : formatDateTime(itemData.planEndTime)} ${itemData.timeZone || ''}</span>
+          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useEDate) : formatDateTime(itemData.planEndTime)} ${
+        itemData.timeZone || ''
+      }</span>
         </div>
       </div>
       `;
@@ -388,9 +393,7 @@
           const country = vendor === 'AF' ? item.enus || '-' : item.country || '-';
           const date = vendor === 'AF' ? formatDate(item.usageDate) : formatDate(item.usedDate);
           const usage =
-            vendor === 'AF'
-              ? formatBytes(Number(item.usage || 0))
-              : formatBytes(Number(item.usedAmount || 0));
+            vendor === 'AF' ? formatBytes(Number(item.usage || 0)) : formatBytes(Number(item.usedAmount || 0));
 
           return `
           <div class="data-usage__wrapper">
@@ -450,12 +453,13 @@
         const contentType = response.headers.get('Content-Type') || '';
         const data = contentType.includes('application/json') ? await response.json() : {};
 
-        if (vendor === 'AF') {
-          if (data.status === 'error') {
-            resultEl.innerHTML = `<p style="color:red;">${data.message || 'Unknown error'}</p>`;
-            return;
-          }
+        // Jika status error atau tidak ada order ditemukan, langsung tampilkan pop-up invalid
+        if (data.status === 'error' || data.message === 'Order not found') {
+          showInvalidPopup();
+          return;
+        }
 
+        if (vendor === 'AF') {
           if (data.success && data.data) {
             const itemData = data.data;
             const dataUsage = itemData.itemList || [];
@@ -477,14 +481,14 @@
               }
             } else {
               topUpBtnHtml = `
-                <div class="button-topup__usage-wrapper">
-                  <span>Need more data or is your data running out? You can simply buy a new eSIM from our website. If you are using a SIM card, it may be eligible for top-up. Contact our CS for more information.</span>
-                  <div class="btn-topup-information">
-                    <button id="btn-topup__contact-button"><span>Contact CS</span></button>
-                    <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
-                  </div>
-                </div>
-              `;
+            <div class="button-topup__usage-wrapper">
+              <span>Need more data or is your data running out? You can simply buy a new eSIM from our website. If you are using a SIM card, it may be eligible for top-up. Contact our CS for more information.</span>
+              <div class="btn-topup-information">
+                <button id="btn-topup__contact-button"><span>Contact CS</span></button>
+                <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
+              </div>
+            </div>
+          `;
             }
 
             const esimHtml = renderEsimInfo(itemData, vendor);
@@ -492,24 +496,24 @@
             const dataUsageHtml = renderDataUsage(dataUsage, vendor);
 
             resultEl.innerHTML = `
-              ${esimHtml}
-              <div class="check-data-usage__usage-content">
-                <div style="text-align: center;">
-                  <h2>Data Usage</h2>
-                </div>
-                <div class="check-data-usage__total-usage">
-                  <div style="display: flex; justify-content: space-between;">
-                    <h3>Total Usage:</h3>
-                    <span style="font-weight: bold;">${formatBytes(Number(itemData.totalUsage || 0))}</span>
-                  </div>
-                  ${totalUsageHtml}
-                </div>
-                <div class="check-data-usage__data-usage">
-                  ${dataUsageHtml}
-                </div>
-                ${topUpBtnHtml}
+          ${esimHtml}
+          <div class="check-data-usage__usage-content">
+            <div style="text-align: center;">
+              <h2>Data Usage</h2>
+            </div>
+            <div class="check-data-usage__total-usage">
+              <div style="display: flex; justify-content: space-between;">
+                <h3>Total Usage:</h3>
+                <span style="font-weight: bold;">${formatBytes(Number(itemData.totalUsage || 0))}</span>
               </div>
-            `;
+              ${totalUsageHtml}
+            </div>
+            <div class="check-data-usage__data-usage">
+              ${dataUsageHtml}
+            </div>
+            ${topUpBtnHtml}
+          </div>
+        `;
 
             attachTopUpButtonListeners();
             return;
@@ -550,14 +554,14 @@
           }
         } else {
           topUpBtnHtml = `
-            <div style="margin-top:20px; font-size: var(--font-large); color: var(--color-primary); line-height: 1.5;">
-              <span>Need more data or is your data running out? You can simply buy a new eSIM from our website. If you are using a SIM card, it may be eligible for top-up. Contact our CS for more information.</span>
-              <div class="btn-topup-information">
-                <button id="btn-topup__contact-button"><span>Contact CS</span></button>
-                <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
-              </div>
-            </div>
-          `;
+        <div style="margin-top:20px; font-size: var(--font-large); color: var(--color-primary); line-height: 1.5;">
+          <span>Need more data or is your data running out? You can simply buy a new eSIM from our website. If you are using a SIM card, it may be eligible for top-up. Contact our CS for more information.</span>
+          <div class="btn-topup-information">
+            <button id="btn-topup__contact-button"><span>Contact CS</span></button>
+            <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
+          </div>
+        </div>
+      `;
         }
 
         const esimHtml = renderEsimInfo(itemData, vendor);
@@ -565,24 +569,24 @@
         const dataUsageHtml = renderDataUsage(dataUsage, vendor);
 
         resultEl.innerHTML = `
-          ${esimHtml}
-          <div class="check-data-usage__usage-content">
-            <div style="text-align: center;">
-              <h2>Data Usage</h2>
-            </div>
-            <div class="check-data-usage__total-usage">
-              <div style="display: flex; justify-content: space-between;">
-                <h3>Total Usage:</h3>
-                <span style="font-weight: bold;">${formatBytes(totalUsedBytes)}</span>
-              </div>
-              ${totalUsageHtml}
-            </div>
-            <div class="check-data-usage__data-usage">
-              ${dataUsageHtml}
-            </div>
-            ${topUpBtnHtml}
+      ${esimHtml}
+      <div class="check-data-usage__usage-content">
+        <div style="text-align: center;">
+          <h2>Data Usage</h2>
+        </div>
+        <div class="check-data-usage__total-usage">
+          <div style="display: flex; justify-content: space-between;">
+            <h3>Total Usage:</h3>
+            <span style="font-weight: bold;">${formatBytes(totalUsedBytes)}</span>
           </div>
-        `;
+          ${totalUsageHtml}
+        </div>
+        <div class="check-data-usage__data-usage">
+          ${dataUsageHtml}
+        </div>
+        ${topUpBtnHtml}
+      </div>
+    `;
 
         attachTopUpButtonListeners();
       } catch (e) {

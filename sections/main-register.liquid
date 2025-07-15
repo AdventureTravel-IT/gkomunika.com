@@ -112,239 +112,6 @@
   });
 </script>
 
-<div class="login">
-  <div class="MainLogin-container">
-    <!-- Bagian Logo -->
-    <section class="MainLogin-logo">
-      {% if section.settings.logo != blank %}
-        <img
-          class="footer__logo"
-          src="{{ section.settings.logo | img_url: 'master' }}"
-          width="auto"
-          height="80"
-          alt="Site Logo"
-        >
-      {% endif %}
-    </section>
-
-    <!-- Tab Login/Register -->
-    <section class="MainLogin-Tabs" id="MainLogin-Tabs">
-      <a class="MainLogin-TabButton {% if request.path == '/account/login' %}active{% endif %}" href="/account/login"
-        >Login</a
-      >
-      <a
-        class="MainLogin-TabButton {% if request.path == '/account/register' %}active{% endif %}"
-        href="/account/register"
-        >Register</a
-      >
-    </section>
-
-    <!-- Form Section -->
-    <section class="MainLogin-form">
-      {% if request.path == '/account/login' %}
-        <!-- Form Login -->
-        <div class="FormLogin active" id="FormLogin">
-          {%- form 'customer_login', novalidate: 'novalidate', return_to: '/' -%}
-            {% if form.errors %}
-              <div class="form-error-message">Incorrect email or password. Please try again !!!</div>
-            {% endif %}
-
-            <div class="field-auth">
-              <input
-                type="email"
-                name="customer[email]"
-                id="Login-Email"
-                placeholder="Email"
-                value="{{ form.email }}"
-                required
-                {% if form.errors %}
-                  aria-invalid="true"
-                {% endif %}
-              >
-              <span class="field-error-message" id="LoginEmailError"></span>
-            </div>
-
-            <div class="field-auth">
-              <input
-                type="password"
-                name="customer[password]"
-                id="Login-Password"
-                placeholder="Password"
-                required
-                {% if form.errors %}
-                  aria-invalid="true"
-                {% endif %}
-              >
-              <span class="field-error-message" id="LoginPasswordError"></span>
-            </div>
-
-            <div class="WrapperButton-form">
-              <a href="javascript:void(0)" class="link-recover" onclick="showRecoveryForm()">Forgot Password?</a>
-              <button class="button-form" id="login-button" type="submit">Log In</button>
-            </div>
-          {%- endform -%}
-        </div>
-
-        <!-- Form Recovery -->
-        <div class="FormRecover" id="FormRecovery">{% render 'form-recovery' %}</div>
-      {% elsif request.path == '/account/register' %}
-        <!-- Form Register -->
-        <div class="FormRegister active" id="FormRegister">
-          {%- form 'create_customer', novalidate: 'novalidate', class: 'customer-register-form' -%}
-            {% if form.errors %}
-              <div class="form-error-message">
-                {% for field in form.errors %}
-                  {{ form.errors.messages[field] }}
-                {% endfor %}
-              </div>
-            {% endif %}
-
-            <div class="wrapper-field">
-              <div class="field-auth">
-                <input
-                  type="text"
-                  name="customer[first_name]"
-                  id="Register-FirstName"
-                  placeholder="First Name"
-                  required
-                  minlength="2"
-                  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
-                >
-              </div>
-
-              <div class="field-auth">
-                <input
-                  type="text"
-                  name="customer[last_name]"
-                  id="Register-LastName"
-                  placeholder="Last Name"
-                  minlength="2"
-                  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
-                >
-              </div>
-            </div>
-
-            <div class="field-auth">
-              <input
-                type="email"
-                name="customer[email]"
-                id="RegisterForm-email"
-                placeholder="Email"
-                required
-                value="{{ form.email }}"
-                onblur="validateEmail(this)"
-                {% if form.errors contains 'email' %}
-                  aria-invalid="true"
-                {% endif %}
-              >
-              <span class="email-error-message">Invalid email format</span>
-            </div>
-
-            <div class="field-auth">
-              <input
-                type="password"
-                name="customer[password]"
-                id="RegisterForm-password"
-                placeholder="Password"
-                required
-                minlength="8"
-                autocomplete="current-password"
-              >
-            </div>
-
-            <div class="field-auth terms-checkbox">
-              <input
-                type="checkbox"
-                id="terms-checkbox"
-                name="terms"
-                required
-              >
-              <label for="terms-checkbox">
-                I agree <a href="/pages/terms-of-use" target="_blank">Terms & Conditions</a>
-              </label>
-            </div>
-
-            <div class="WrapperButton-form">
-              <button class="button-form" id="register-button" type="submit" disabled>Register</button>
-            </div>
-
-            <div class="custom-auth-divider">
-              <span>OR LOGIN WITH</span>
-            </div>
-
-            <div class="oxi-social-login" style="margin-top: 15px"></div>
-          {%- endform -%}
-        </div>
-      {% endif %}
-    </section>
-  </div>
-</div>
-
-<script>
-  function showRecoveryForm() {
-    document.querySelectorAll('.MainLogin-form > div').forEach((form) => {
-      form.classList.remove('active');
-    });
-    document.getElementById('FormRecovery').classList.add('active');
-    document.querySelector('.MainLogin-Tabs').style.display = 'none';
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    // Validasi sebelum submit untuk login form
-    const loginForm = document.querySelector('#FormLogin form');
-    if (loginForm) {
-      loginForm.addEventListener('submit', function (e) {
-        const email = document.getElementById('Login-Email');
-        const password = document.getElementById('Login-Password');
-
-        if (!email.value || !password.value) {
-          e.preventDefault();
-          if (!email.value) {
-            document.getElementById('LoginEmailError').textContent = 'Email is required.';
-          }
-          if (!password.value) {
-            document.getElementById('LoginPasswordError').textContent = 'Password is required.';
-          }
-        }
-      });
-    }
-
-    // Validasi sebelum submit untuk register form
-    const registerForm = document.querySelector('.customer-register-form');
-    if (registerForm) {
-      registerForm.addEventListener('submit', function (e) {
-        const emailValid = validateEmail(document.getElementById('RegisterForm-email'));
-        const termsChecked = document.getElementById('terms-checkbox').checked;
-        const firstName = document.getElementById('Register-FirstName');
-        const lastName = document.getElementById('Register-LastName');
-        const password = document.getElementById('RegisterForm-password');
-
-        if (!emailValid || !termsChecked || !firstName.value || !lastName.value || !password.value) {
-          e.preventDefault();
-          if (!emailValid) {
-            document.querySelector('.email-error-message').style.display = 'block';
-          }
-          if (!termsChecked) {
-            alert('Please accept the terms and conditions.');
-          }
-        }
-      });
-
-      // Atur tombol Register berdasarkan checkbox terms
-      const termsCheckbox = document.getElementById('terms-checkbox');
-      const registerButton = document.getElementById('register-button');
-      registerButton.disabled = !termsCheckbox.checked;
-      termsCheckbox.addEventListener('change', function () {
-        registerButton.disabled = !this.checked;
-      });
-    }
-  });
-
-  function validateEmail(input) {
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return pattern.test(input.value);
-  }
-</script>
 
 <style>
   .field-error-message {
@@ -597,6 +364,236 @@
     }
   }
 </style>
+
+
+<div class="login">
+  <div class="MainLogin-container">
+    <!-- Bagian Logo -->
+    <section class="MainLogin-logo">
+      {% if section.settings.logo != blank %}
+        <img
+          class="footer__logo"
+          src="{{ section.settings.logo | img_url: 'master' }}"
+          width="auto"
+          height="80"
+          alt="Site Logo"
+        >
+      {% endif %}
+    </section>
+
+    <!-- Tab Login/Register -->
+    <section class="MainLogin-Tabs" id="MainLogin-Tabs">
+      <a class="MainLogin-TabButton {% if request.path == '/account/login' %}active{% endif %}" href="/account/login">Login</a>
+      <a class="MainLogin-TabButton {% if request.path contains '/account/register' %}active{% endif %}" href="/account/register">Register</a>
+    </section>
+
+    <!-- Form Section -->
+    <section class="MainLogin-form">
+      {% if request.path == '/account/login' %}
+        <!-- Form Login -->
+        <div class="FormLogin active" id="FormLogin">
+          {%- form 'customer_login', novalidate: 'novalidate', return_to: '/' -%}
+            {% if form.errors %}
+              <div class="form-error-message">Incorrect email or password. Please try again !!!</div>
+            {% endif %}
+
+            <div class="field-auth">
+              <input
+                type="email"
+                name="customer[email]"
+                id="Login-Email"
+                placeholder="Email"
+                value="{{ form.email }}"
+                required
+                {% if form.errors %}
+                  aria-invalid="true"
+                {% endif %}
+              >
+              <span class="field-error-message" id="LoginEmailError"></span>
+            </div>
+
+            <div class="field-auth">
+              <input
+                type="password"
+                name="customer[password]"
+                id="Login-Password"
+                placeholder="Password"
+                required
+                {% if form.errors %}
+                  aria-invalid="true"
+                {% endif %}
+              >
+              <span class="field-error-message" id="LoginPasswordError"></span>
+            </div>
+
+            <div class="WrapperButton-form">
+              <a href="javascript:void(0)" class="link-recover" onclick="showRecoveryForm()">Forgot Password?</a>
+              <button class="button-form" id="login-button" type="submit">Log In</button>
+            </div>
+          {%- endform -%}
+        </div>
+
+        <!-- Form Recovery -->
+        <div class="FormRecover" id="FormRecovery">{% render 'form-recovery' %}</div>
+      {% elsif request.path contains '/account/register' %}
+        <!-- Form Register -->
+        <div class="FormRegister active" id="FormRegister">
+          {%- form 'create_customer', novalidate: 'novalidate', class: 'customer-register-form' -%}
+            {% if form.errors %}
+              <div class="form-error-message">
+                {% for field in form.errors %}
+                  {{ form.errors.messages[field] }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="wrapper-field">
+              <div class="field-auth">
+                <input
+                  type="text"
+                  name="customer[first_name]"
+                  id="Register-FirstName"
+                  placeholder="First Name"
+                  required
+                  minlength="2"
+                  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
+                >
+              </div>
+
+              <div class="field-auth">
+                <input
+                  type="text"
+                  name="customer[last_name]"
+                  id="Register-LastName"
+                  placeholder="Last Name"
+                  minlength="2"
+                  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
+                >
+              </div>
+            </div>
+
+            <div class="field-auth">
+              <input
+                type="email"
+                name="customer[email]"
+                id="RegisterForm-email"
+                placeholder="Email"
+                required
+                value="{{ form.email }}"
+                onblur="validateEmail(this)"
+                {% if form.errors contains 'email' %}
+                  aria-invalid="true"
+                {% endif %}
+              >
+              <span class="email-error-message">Invalid email format</span>
+            </div>
+
+            <div class="field-auth">
+              <input
+                type="password"
+                name="customer[password]"
+                id="RegisterForm-password"
+                placeholder="Password"
+                required
+                minlength="8"
+                autocomplete="current-password"
+              >
+            </div>
+
+            <div class="field-auth terms-checkbox">
+              <input
+                type="checkbox"
+                id="terms-checkbox"
+                name="terms"
+                required
+              >
+              <label for="terms-checkbox">
+                I agree <a href="/pages/terms-of-use" target="_blank">Terms & Conditions</a>
+              </label>
+            </div>
+
+            <div class="WrapperButton-form">
+              <button class="button-form" id="register-button" type="submit" disabled>Register</button>
+            </div>
+
+            <div class="custom-auth-divider">
+              <span>OR LOGIN WITH</span>
+            </div>
+
+            <div class="oxi-social-login" style="margin-top: 15px"></div>
+          {%- endform -%}
+        </div>
+      {% endif %}
+    </section>
+  </div>
+</div>
+
+
+<script>
+  function showRecoveryForm() {
+    document.querySelectorAll('.MainLogin-form > div').forEach((form) => {
+      form.classList.remove('active');
+    });
+    document.getElementById('FormRecovery').classList.add('active');
+    document.querySelector('.MainLogin-Tabs').style.display = 'none';
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Validasi sebelum submit untuk login form
+    const loginForm = document.querySelector('#FormLogin form');
+    if (loginForm) {
+      loginForm.addEventListener('submit', function (e) {
+        const email = document.getElementById('Login-Email');
+        const password = document.getElementById('Login-Password');
+
+        if (!email.value || !password.value) {
+          e.preventDefault();
+          if (!email.value) {
+            document.getElementById('LoginEmailError').textContent = 'Email is required.';
+          }
+          if (!password.value) {
+            document.getElementById('LoginPasswordError').textContent = 'Password is required.';
+          }
+        }
+      });
+    }
+
+    // Validasi sebelum submit untuk register form
+    const registerForm = document.querySelector('.customer-register-form');
+    if (registerForm) {
+      registerForm.addEventListener('submit', function (e) {
+        const emailValid = validateEmail(document.getElementById('RegisterForm-email'));
+        const termsChecked = document.getElementById('terms-checkbox').checked;
+        const firstName = document.getElementById('Register-FirstName');
+        const lastName = document.getElementById('Register-LastName');
+        const password = document.getElementById('RegisterForm-password');
+
+        if (!emailValid || !termsChecked || !firstName.value || !lastName.value || !password.value) {
+          e.preventDefault();
+          if (!emailValid) {
+            document.querySelector('.email-error-message').style.display = 'block';
+          }
+          if (!termsChecked) {
+            alert('Please accept the terms and conditions.');
+          }
+        }
+      });
+
+      // Atur tombol Register berdasarkan checkbox terms
+      const termsCheckbox = document.getElementById('terms-checkbox');
+      const registerButton = document.getElementById('register-button');
+      registerButton.disabled = !termsCheckbox.checked;
+      termsCheckbox.addEventListener('change', function () {
+        registerButton.disabled = !this.checked;
+      });
+    }
+  });
+
+  function validateEmail(input) {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return pattern.test(input.value);
+  }
+</script>
 
 {% schema %}
 {

@@ -342,7 +342,7 @@
 
             <div class="WrapperButton-form">
               <a href="javascript:void(0)" class="link-recover" onclick="showRecoveryForm()">Forgot Password?</a>
-              <button class="button-form" id="login-button" type="submit">Log In</button>
+              <button class="button-form" id="login-button" type="submit">Log</button>
             </div>
 
             <div class="custom-auth-divider">
@@ -416,7 +416,6 @@
                 placeholder="Password"
                 required
                 minlength="8"
-                oninput="validatePasswordStrength(this)"
               >
               <span class="password-strength-message"></span>
             </div>
@@ -526,15 +525,6 @@
   function validateEmail(input) {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(input.value);
-  }
-
-  function validatePasswordStrength(input) {
-    const message = input.nextElementSibling;
-    if (input.value.length >= 8) {
-      message.textContent = 'Password strength: good';
-    } else {
-      message.textContent = 'Password too short';
-    }
   }
 </script>
 

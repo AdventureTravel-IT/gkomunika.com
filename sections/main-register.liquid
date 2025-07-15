@@ -1,3 +1,117 @@
+<div id="popup-member" class="popup-member">
+  <div class="popup-content">
+    <h2>Selamat Datang di<br>Global Komunika!</h2>
+    <p><strong>Sign up menggunakan akun google</strong> atau secara manual dengan <strong>email yang sama</strong> seperti yang terdaftar di gkomunika.id.</p>
+    <p>Setelah mendaftar, kamu akan langsung mendapatkan <strong>poin rewards</strong> yang bisa ditukarkan dengan <strong>diskon menarik.</strong></p>
+    <button id="popup-ok" class="button-form">Close</button>
+  </div>
+</div>
+
+{% style %}
+  /* Style for the popup */
+  .popup-member {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  .popup-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    width: 480px;
+    min-height: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--box-shadow);
+    color: var(--color-primary);
+  }
+
+  .popup-content h2 {
+    font-size: 38px;
+    font-weight: bold;
+    color: var(--color-primary);
+    margin: 0;
+    line-height: 1;
+    margin-bottom: 10px; 
+  }
+
+  .popup-content p {
+    font-size: 20px;
+    margin: 10px;
+    line-height: 1.3;
+  }
+
+  .button-form {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #005496;
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+
+  .button-form:hover {
+    background-color: #003d6a;
+  }
+  
+@media (max-width: 426px) {
+  .popup-member {
+    padding: 0 24px;
+  }
+  .popup-content {
+    padding: 20px 15px;
+  }
+  .popup-content h2 {
+    font-size: 33px;
+  }
+}
+{% endstyle %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function getUrlParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    if (getUrlParameter('member') === 'migrasi') {
+      const popup = document.getElementById('popup-member');
+      const okBtn = document.getElementById('popup-ok');
+
+      popup.style.display = 'flex';
+
+      // Close dengan tombol
+      okBtn.addEventListener('click', function () {
+        popup.style.display = 'none';
+      });
+
+      // Close ketika klik di luar konten
+      popup.addEventListener('click', function(e) {
+        if (e.target === popup) {
+          popup.style.display = 'none';
+        }
+      });
+
+      // Close dengan ESC key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          popup.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>
+
 <div class="login">
   <div class="MainLogin-container">
     <!-- Bagian Logo -->
@@ -15,8 +129,14 @@
 
     <!-- Tab Login/Register -->
     <section class="MainLogin-Tabs" id="MainLogin-Tabs">
-      <a class="MainLogin-TabButton {% if request.path == '/account/login' %}active{% endif %}" href="/account/login">Login</a>
-      <a class="MainLogin-TabButton {% if request.path == '/account/register' %}active{% endif %}" href="/account/register">Register</a>
+      <a class="MainLogin-TabButton {% if request.path == '/account/login' %}active{% endif %}" href="/account/login"
+        >Login</a
+      >
+      <a
+        class="MainLogin-TabButton {% if request.path == '/account/register' %}active{% endif %}"
+        href="/account/register"
+        >Register</a
+      >
     </section>
 
     <!-- Form Section -->
@@ -128,9 +248,8 @@
                 placeholder="Password"
                 required
                 minlength="8"
-                oninput="validatePasswordStrength(this)"
+                autocomplete="current-password"
               >
-              <span class="password-strength-message"></span>
             </div>
 
             <div class="field-auth terms-checkbox">
@@ -152,9 +271,8 @@
             <div class="custom-auth-divider">
               <span>OR LOGIN WITH</span>
             </div>
-            
-            <div class="oxi-social-login" style="margin-top: 15px">
-            </div>
+
+            <div class="oxi-social-login" style="margin-top: 15px"></div>
           {%- endform -%}
         </div>
       {% endif %}
@@ -164,18 +282,18 @@
 
 <script>
   function showRecoveryForm() {
-    document.querySelectorAll('.MainLogin-form > div').forEach(form => {
+    document.querySelectorAll('.MainLogin-form > div').forEach((form) => {
       form.classList.remove('active');
     });
     document.getElementById('FormRecovery').classList.add('active');
     document.querySelector('.MainLogin-Tabs').style.display = 'none';
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     // Validasi sebelum submit untuk login form
     const loginForm = document.querySelector('#FormLogin form');
     if (loginForm) {
-      loginForm.addEventListener('submit', function(e) {
+      loginForm.addEventListener('submit', function (e) {
         const email = document.getElementById('Login-Email');
         const password = document.getElementById('Login-Password');
 
@@ -194,7 +312,7 @@
     // Validasi sebelum submit untuk register form
     const registerForm = document.querySelector('.customer-register-form');
     if (registerForm) {
-      registerForm.addEventListener('submit', function(e) {
+      registerForm.addEventListener('submit', function (e) {
         const emailValid = validateEmail(document.getElementById('RegisterForm-email'));
         const termsChecked = document.getElementById('terms-checkbox').checked;
         const firstName = document.getElementById('Register-FirstName');
@@ -226,15 +344,6 @@
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(input.value);
   }
-
-  function validatePasswordStrength(input) {
-    const message = input.nextElementSibling;
-    if (input.value.length >= 8) {
-      message.textContent = "Password strength: good";
-    } else {
-      message.textContent = "Password too short";
-    }
-  }
 </script>
 
 <style>
@@ -264,7 +373,7 @@
   }
   .custom-auth-divider::before,
   .custom-auth-divider::after {
-    content: "";
+    content: '';
     flex: 1;
     border-bottom: 1px solid #005496; /* Warna biru seperti teks */
     margin: 0 10px;
@@ -275,183 +384,181 @@
   }
 </style>
 
-
-
 <style>
-    .login {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 auto;
-      max-width: 1920px;
-      height: 100vh;
-    }
+  .login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 1920px;
+    height: 100vh;
+  }
 
-    .MainLogin-container {
-      width: 350px;
-      height: auto;
-      padding: 10px;
-    }
+  .MainLogin-container {
+    width: 350px;
+    height: auto;
+    padding: 10px;
+  }
 
-    .MainLogin-logo {
-      display: flex;
-      justify-content: center;
-      padding: 15px;
-    }
+  .MainLogin-logo {
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+  }
 
-    .MainLogin-Tabs {
-      display: flex;
-      width: 100%;
-      height: auto;
-    }
+  .MainLogin-Tabs {
+    display: flex;
+    width: 100%;
+    height: auto;
+  }
 
-    .MainLogin-TabButton {
-      flex: 1;
-      padding: 15px;
-      background: transparent;
-      color: var(--color-primary);
-      border: none;
-      outline: none;
-      cursor: pointer;
-      font-size: var(--font-large);
-      font-weight: bold;
-      transition: background-color 0.2s ease;
-      border-radius: 15px 15px 0 0;
-      text-align: center;
-      text-decoration: none;
-    }
+  .MainLogin-TabButton {
+    flex: 1;
+    padding: 15px;
+    background: transparent;
+    color: var(--color-primary);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: var(--font-large);
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+    text-decoration: none;
+  }
 
-    .MainLogin-TabButton.active {
-      background-color: var(--color-neutral);
-    }
+  .MainLogin-TabButton.active {
+    background-color: var(--color-neutral);
+  }
 
-    .MainLogin-form {
-      display: flex;
-      padding: 20px;
-      background-color: var(--color-neutral);
-      border-radius: 15px 0 15px 15px;
-      transition: border-radius 0.3s ease;
-    }
+  .MainLogin-form {
+    display: flex;
+    padding: 20px;
+    background-color: var(--color-neutral);
+    border-radius: 15px 0 15px 15px;
+    transition: border-radius 0.3s ease;
+  }
 
-    .MainLogin-TabButton[onclick="showForm('register')"].active ~ .MainLogin-form,
-    .MainLogin-form.register-active {
-      border-radius: 15px 0 15px 15px !important;
-    }
+  .MainLogin-TabButton[onclick="showForm('register')"].active ~ .MainLogin-form,
+  .MainLogin-form.register-active {
+    border-radius: 15px 0 15px 15px !important;
+  }
 
-    .FormLogin,
-    .FormRegister,
-    .FormRecover {
-      display: none;
-      width: 100%;
-    }
+  .FormLogin,
+  .FormRegister,
+  .FormRecover {
+    display: none;
+    width: 100%;
+  }
 
-    .FormLogin.active,
-    .FormRegister.active,
-    .FormRecover.active {
-      display: block;
-    }
+  .FormLogin.active,
+  .FormRegister.active,
+  .FormRecover.active {
+    display: block;
+  }
 
-    .wrapper-field {
-      display: flex;
-      gap: 10px;
-    }
+  .wrapper-field {
+    display: flex;
+    gap: 10px;
+  }
 
-    .field-auth {
-      margin-bottom: 15px;
-      color: var(--color-primary);
-    }
+  .field-auth {
+    margin-bottom: 15px;
+    color: var(--color-primary);
+  }
 
-    .field-auth input {
-      display: flex;
-      width: 100%;
-      padding: 15px;
-      color: var(--color-primary);
-      background-color: var(--color-background-secondary);
-      border: none;
-      outline: none;
-      border-radius: 10px;
-      font-size: var(--font-large);
-    }
+  .field-auth input {
+    display: flex;
+    width: 100%;
+    padding: 15px;
+    color: var(--color-primary);
+    background-color: var(--color-background-secondary);
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    font-size: var(--font-large);
+  }
 
-    .field-auth input.invalid,
-    .field-auth input[aria-invalid="true"] {
-      border: 1px solid red !important;
-    }
+  .field-auth input.invalid,
+  .field-auth input[aria-invalid='true'] {
+    border: 1px solid red !important;
+  }
 
-    .field-auth input::placeholder {
-      color: var(--color-primary);
-    }
+  .field-auth input::placeholder {
+    color: var(--color-primary);
+  }
 
-    .WrapperButton-form {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      justify-content: left;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-    }
+  .WrapperButton-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
 
-    .WrapperButton-form a {
-      min-width: 0;
-      color: var(--color-primary);
-      margin-bottom: 15px;
-      text-align: left;
-    }
+  .WrapperButton-form a {
+    min-width: 0;
+    color: var(--color-primary);
+    margin-bottom: 15px;
+    text-align: left;
+  }
 
-    .button-form {
-      padding: 15px;
-      border-radius: 10px;
-      background-color: var(--color-primary);
-      border: none;
-      cursor: pointer;
-      color: var(--color-neutral);
-      font-size: var(--font-large);
-      font-weight: bold;
-    }
+  .button-form {
+    padding: 15px;
+    border-radius: 10px;
+    background-color: var(--color-primary);
+    border: none;
+    cursor: pointer;
+    color: var(--color-neutral);
+    font-size: var(--font-large);
+    font-weight: bold;
+  }
 
-    .form-error-message {
-      background: #ffebee;
-      padding: 10px 15px;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      font-size: 14px;
-      color: red;
-      text-align: center;
-    }
+  .form-error-message {
+    background: #ffebee;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: red;
+    text-align: center;
+  }
 
-    .email-error-message {
-      color: red;
-      font-size: 12px;
-      margin-top: 5px;
-      display: none;
-    }
+  .email-error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+  }
 
-    .password-strength-message {
-      font-size: 12px;
-      margin-top: 5px;
-    }
+  .password-strength-message {
+    font-size: 12px;
+    margin-top: 5px;
+  }
 
-    .terms-checkbox {
-      display: flex;
-      align-items: center;
-      margin: 15px 0;
-      font-size: 12px;
-    }
+  .terms-checkbox {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 12px;
+  }
 
-    .terms-checkbox input {
-      width: auto !important;
-      margin-right: 10px;
-    }
+  .terms-checkbox input {
+    width: auto !important;
+    margin-right: 10px;
+  }
 
-    .terms-checkbox a {
-      color: var(--color-primary);
-    }
-    .button-form:disabled {
-      background-color: #ccc;
-      color: #666;
-      cursor: not-allowed;
-    }
-    .field-error-message {
+  .terms-checkbox a {
+    color: var(--color-primary);
+  }
+  .button-form:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+  }
+  .field-error-message {
     color: red;
     font-size: 12px;
     margin-top: 5px;
@@ -464,14 +571,14 @@
     transition: background-color 9999s ease-in-out 0s;
     caret-color: var(--color-primary);
   }
-  
+
   .field-auth input:autofill {
     color: var(--color-neutral);
   }
 
   .button-form:active {
     transform: scale(0.96);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .button-form-icon {
@@ -479,16 +586,16 @@
     align-items: center;
     margin-bottom: 10px;
   }
-  
+
   .button-form-icon svg {
     transform: rotate(180deg);
   }
 
-    @media (max-width: 768px) {
-      .MainLogin-container {
-        padding: 0 24px;
-      }
+  @media (max-width: 768px) {
+    .MainLogin-container {
+      padding: 0 24px;
     }
+  }
 </style>
 
 {% schema %}

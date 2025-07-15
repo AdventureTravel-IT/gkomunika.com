@@ -1,4 +1,90 @@
+<!-- Modal Pop-up -->
+<div id="dataIncompleteModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <p>Please fill out all required fields to continue.</p>
+    <span class="close-btn" id="closeModalBtn">×</span>
+  </div>
+</div>
+
+<style>
+  /* Gaya border merah untuk field yang belum diisi */
+  input:invalid,
+  select:invalid,
+  textarea:invalid {
+    border: 2px solid red;
+  }
+
+  input:focus:invalid,
+  select:focus:invalid,
+  textarea:focus:invalid {
+    outline: none;
+    box-shadow: 0 0 5px red;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--color-neutra);
+    background-color: rgba(0, 0, 0, 0.4);
+
+    /* Tambahan ini yang penting */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
+
+  .modal-content {
+    background-color: var(--color-neutral);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid var(--color-border);
+    min-width: 350px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    color: var(--color-primary);
+    font-size: var(--font-large);
+    transform: translate(-50%, -50%);
+  }
+
+  .close-btn {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    height: 100%;
+    margin-left: 15px;;
+  }
+
+  .close-btn:hover,
+  .close-btn:focus {
+    color: var(--color-primary);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  @media (max-width: 425px) {
+
+  }
+</style>
+
 {% style %}
+  label::after {
+    content: var(--label-info, '');
+    font-size: 1.4em;
+    font-weight: normal;
+    color: var(--label-info-color);
+  }
+  .form-insurance__field:has([required]) {
+    --label-info: '*';
+    --label-info-color: red;
+  }
   .form-insurance__container {
     max-width: 1920px;
     margin: 0 auto;
@@ -335,7 +421,7 @@
       <div class="form-insurance__field">
         <label for="additional-email">Additional Email</label>
         <input type="email" id="additional-email" name="Additional Email" aria-label="Additional Email"
-          placeholder="Additional Email" required>
+          placeholder="Additional Email">
       </div>
     </div>
 
@@ -441,7 +527,7 @@
             id="check-itinerary-global"
             required
           >
-          I understand that the data submitted is final and cannot be changed after submission.
+          I understand that the data submitted is final and cannot be changed after submission.
         </label>
       </div>
 
@@ -1270,6 +1356,21 @@
     return `#form-${section?.toLowerCase()}`;
   }
 
+  function showModalRequiredField() {
+    const modal = document.getElementById('dataIncompleteModal');
+    if (modal) {
+      modal.style.display = 'block'; // Menampilkan modal
+    }
+  }
+
+  // Menutup modal saat tombol close ditekan
+  document.getElementById('closeModalBtn')?.addEventListener('click', function () {
+    const modal = document.getElementById('dataIncompleteModal');
+    if (modal) {
+      modal.style.display = 'none'; // Menutup modal
+    }
+  });
+
   async function handleCheckout() {
     const isItineraryChecked = document.getElementById('check-itinerary-global').checked;
 
@@ -1283,6 +1384,24 @@
 
     if (insuranceItems.length === 0) {
       alert('No insurance product selected.');
+      return;
+    }
+
+    const requiredFields = [...document.querySelectorAll('.form-insurance [required]')];
+    let allRequiredFieldsFilled = true;
+
+    // Cek setiap field required
+    requiredFields.forEach((field) => {
+      if (field.value.trim() === '') {
+        field.style.border = '2px solid red'; // Menambahkan border merah
+        allRequiredFieldsFilled = false;
+      } else {
+        field.style.border = ''; // Menghapus border merah jika field sudah diisi
+      }
+    });
+
+    if (!allRequiredFieldsFilled) {
+      showModalRequiredField(); // Menampilkan modal pop-up jika ada field yang kosong
       return;
     }
 

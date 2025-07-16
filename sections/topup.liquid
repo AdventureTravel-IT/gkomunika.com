@@ -478,11 +478,6 @@
                               <span>{{ product_countries.size }} Countries</span>
                             </button>
                           </div>
-                          <div class="country-total-including-atribut">
-                            {% if all_matched_countries != blank %}
-                              <p>Including {{ all_matched_countries | strip | replace: ',', ' ' }}</p>
-                            {% endif %}
-                          </div>
                         </div>
                       </div>
                     {% endif %}

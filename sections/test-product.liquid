@@ -330,6 +330,7 @@
                     {% endif %}
                   </div>
                 {% endif %}
+          {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
                 <div class="main-search__product">
         {% if product_category == "Insurance" %}
           <span class="main-search__product-type">Insurance</span>

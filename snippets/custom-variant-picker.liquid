@@ -328,7 +328,7 @@
 
   <div id="variant-metafield-display" class="my-4"></div>
   <!-- Quantity -->
-  <div class="quantity-wrapper" style="margin: 15px 0;">
+  <div class="quantity-wrapper" {% if product.metafields.product.category.value == "Top_Up_A" or product.metafields.product.category.value == "Top_Up_B" or product.metafields.product.category.value == "Top_Up_C" %}style="margin: 15px 0 5px;"{% else %}style="margin: 15px 0;"{% endif %}>
     <div {% if product.metafields.product.category.value == "Top_Up_A" or product.metafields.product.category.value == "Top_Up_B" or product.metafields.product.category.value == "Top_Up_C" %}hidden{% endif %}>
       <label
         class="variant-picker__label"
@@ -373,6 +373,8 @@
       </button>
     {% endif %}
   </div>
+
+  <div style="max-height: 200px; overflow-y: auto; margin-bottom: 25px;">{{ product.description }}</div>
 
   <!-- Tombol cart dan buy -->
   <div class="variant-picker-btn">

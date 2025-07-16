@@ -1766,20 +1766,6 @@
         </thead>
         <tbody>
 
-          {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
-          {% if cancelation.basic or cancelation.executive or cancelation.premiere %}
-            <tr>
-              <td>Trip Cancellation and Alteration</td>
-              {% if full_columns %}
-                <td>{{ cancelation.basic }}</td>
-                <td>{{ cancelation.executive }}</td>
-                <td>{{ cancelation.premiere }}</td>
-              {% else %}
-                <td colspan="2">{{ cancelation.basic }}</td>
-              {% endif %}
-            </tr>
-          {% endif %}
-
           <tr class="highlight-row">
             <td colspan="2"><b>Medical & Other Emergency Expenses</b></td>
           </tr>
@@ -1971,6 +1957,20 @@
               </tr>
             {% endif %}
           {% endfor %}
+          
+          {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
+          {% if cancelation.basic or cancelation.executive or cancelation.premiere %}
+            <tr>
+              <td style="font-weight: bold;">Trip Cancellation and Alteration</td>
+              {% if full_columns %}
+                <td>{{ cancelation.basic }}</td>
+                <td>{{ cancelation.executive }}</td>
+                <td>{{ cancelation.premiere }}</td>
+              {% else %}
+                <td colspan="2">{{ cancelation.basic }}</td>
+              {% endif %}
+            </tr>
+          {% endif %}
 
           <tr class="highlight-row">
             <td colspan="2"><b>Baggage & Personal Belongings Cover</b></td>

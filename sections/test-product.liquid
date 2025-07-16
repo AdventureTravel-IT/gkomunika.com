@@ -331,17 +331,15 @@
                   </div>
                 {% endif %}
                 <div class="main-search__product">
-                  {% assign handles = "esim,simcard" | split: "," %}
-                  {% for handle in handles %}
-                    {% assign sim_card = shop.metaobjects['shopify--sim-card-type'][handle] %}
-                    {% if sim_card %}
-                      {% if sim_card.label %}
-                        <span>SIM Type: {{ sim_card.label }}</span>
-                      {% endif %}
-                    {% endif %}
-                  {% endfor %}
-                  <h1>{{ product.title }}</h1>
-                </div>
+        {% if product_category == "Insurance" %}
+          <span class="main-search__product-type">Insurance</span>
+        {% else %}
+          <span class="main-search__product-type" {% if product_category == "SIM_Card" %}style="background-color: var(--color-secondary);" {% endif %}>
+            SIM Type: {{ product_category | replace: '_', ' ' }}
+          </span>
+        {% endif %}
+        <h1>{{ product.title }}</h1>
+      </div>
               </div>
             </a>
 

@@ -1,1 +1,52 @@
-testing
+{% style %}
+  .insurance-addon__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--color-primary);
+  }
+
+  .insurance-addon__header h2 {
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 26px;
+  }
+  .insurance-addon__header button {
+    border: none;
+    background: none;
+    text-decoration: underline;
+    font-size: var(--font-extra-large);
+    color: var(--color-primary);
+    cursor: pointer;
+  }
+{% endstyle %}
+
+<div class="variant-option__addon">
+  <label for="variant-addon" class="variant-option__addon-label">Add On (Optional)</label>
+  <select>
+    <option
+      value=""
+      disabled
+      selected
+      hidden
+    >
+      Select Add On
+    </option>
+  </select>
+</div>
+
+{% assign ProductAddon = product.metafields.product['insurance-addon'].value %}
+
+<div class="insurance-addon__wrapper">
+  <h2>Choose Add-ons</h2>
+
+  {% for addon_product in ProductAddon %}
+    <h2>Coverage</h2>
+    {% for variant in addon_product.variants %}
+      <p>Variant Title: {{ variant.title }}</p>
+      <p>Variant Price: {{ variant.price | money_with_currency }}</p>
+    {% endfor %}
+  {% endfor %}
+
+  <button id="close-popup__choose-addon">Cancel</button>
+</div>

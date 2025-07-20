@@ -446,26 +446,26 @@
                               {{ 'products.product.price.regular_price' | t }}
                             </dt>
                             <dd>
-                              <s class="cart-item__old-price price price--end">
+                              <s class="cart-item__old-price price price-- money">
                                 {{ item.original_line_price | money }}
                               </s>
                             </dd>
                             <dt class="visually-hidden">
                               {{ 'products.product.price.sale_price' | t }}
                             </dt>
-                            <dd class="price price--end">
+                            <dd class="price price--end money">
                               {{ item.final_line_price | money }}
                             </dd>
                           </dl>
                         {%- else -%}
-                          <span class="price price--end">
+                          <span class="price price--end money">
                             {{ item.original_line_price | money }}
                           </span>
                         {%- endif -%}
 
                         {%- if item.variant.available and item.unit_price_measurement -%}
                           <div class="unit-price caption">
-                            <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
+                            <span class="visually-hidden money">{{ 'products.product.price.unit_price' | t }}</span>
                             {{ item.unit_price | money }}
                             <span>/</span>
                             <span class="visually-hidden"
@@ -544,9 +544,16 @@
             }
 
             const subtotalEl = document.querySelector('.cart__footer .totals__subtotal-value');
-            if (subtotalEl) {
-              subtotalEl.textContent = formatMoney(cart.total_price);
-            }
+if (subtotalEl) {
+  subtotalEl.textContent = formatMoney(cart.total_price);
+}
+
+// Update total (estimated total) in footer
+const totalValueEl = document.querySelector('.totals__total-value');
+if (totalValueEl) {
+  totalValueEl.textContent = formatMoney(cart.total_price);
+}
+
           })
           .catch((error) => {
             console.error('Gagal update cart:', error);

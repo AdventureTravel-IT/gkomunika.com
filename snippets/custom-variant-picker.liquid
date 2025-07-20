@@ -361,6 +361,7 @@
 
     <!-- Menampilkan variant title yang dipilih -->
     <div id="selected-variant-title" data-variant-title="">
+      <span>ADDON</span>
     </div>
 
     <button id="close-popup__choose-addon">Cancel</button>
@@ -772,6 +773,9 @@
     }
 
     function matchInsuranceVariant(mainVariant) {
+      const quantityInput = document.getElementById('quantity');
+const currentQuantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+
   const insuranceVariants = document.querySelectorAll('.insurance-addon__wrapper [data-title]');
   const matchedInsuranceList = [];
 
@@ -837,12 +841,18 @@
       }
 
       matchedInsuranceList.push({
-        title: displayTitle,
-        addonType: addonType,
-        price: el.dataset.price,
-        id: el.dataset.variantId,
-        benefits: benefits
-      });
+  title: displayTitle,
+  addonType: addonType,
+  price: el.dataset.price,
+  id: el.dataset.variantId,
+  option1: el.dataset.option1,
+  option2: el.dataset.option2,
+  option3: el.dataset.option3,
+  quantity: currentQuantity,
+  benefits: benefits
+});
+
+
     }
   });
 
@@ -863,8 +873,17 @@
             <div style="min-width: 90px;">
               <strong>${item.price}</strong>
             </div>
-            <div>
-              <input type="checkbox" data-id="${item.id}">
+            <div class="addon-checkbox">
+              <input 
+  type="checkbox" 
+  data-id="${item.id}" 
+  data-variant-title="${item.title}" 
+  data-option1="${item.option1}" 
+  data-option2="${item.option2}" 
+  data-option3="${item.option3}"
+  data-quantity="${item.quantity}"
+>
+
               <span>Select</span>
             </div>
           </div>
@@ -880,9 +899,11 @@
 
 
     function adjustQuantity(delta) {
-      const current = parseInt(quantityInput.value) || 1;
-      quantityInput.value = Math.max(quantityInput.min, current + delta);
-    }
+  const current = parseInt(quantityInput.value) || 1;
+  quantityInput.value = Math.max(quantityInput.min, current + delta);
+  findVariant(); // 🟢 tambahkan ini agar semua update ulang (termasuk addon)
+}
+
 
     minusBtn?.addEventListener('click', () => adjustQuantity(-1));
     plusBtn?.addEventListener('click', () => adjustQuantity(1));

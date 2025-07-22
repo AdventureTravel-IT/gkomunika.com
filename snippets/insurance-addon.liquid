@@ -1,52 +1,296 @@
 {% style %}
-  .insurance-addon__header {
+  .popup-addon-product {
+    background: var(--color-neutral);
+    margin: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 70vh;
+    overflow-y: auto;
+    border-radius: 15px;
+    padding: 0 20px 20px;
+    width: 50%;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .popup-addon-product h2 {
+    position: sticky;
+    top: 0;
+    background-color: var(--color-neutral);
+    z-index: 9;
+    padding: 10px 0;
+  }
+  .popup-addon-product::-webkit-scrollbar {
+    display: none;
+  }
+  body.no-scroll {
+    overflow: hidden;
+  }
+  .popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+  }
+  #addon-button {
+    width: 50%;
+    padding: 15px 35px 15px 15px;
+    text-align: left;
+    border-radius: 15px;
+    border: 1px solid var(--color-primary);
+    font-size: var(--font-large);
+    color: var(--color-primary);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
+    background-color: var(--color-neutral);
+  }
+  .insurance-addon__wrapper {
+    margin-top: 10px;
+  }
+  .insurance-addon__wrapper label {
+    font-size: var(--font-large);
+    font-weight: bold;
+  }
+  .insurance-product__addon {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+  .insurance-product__addon-name,
+  .insurance-product__addon-price {
+    flex: 1;
+    flex-shrink: 1;
+    color: var(--color-primary) !important;
+  }
+  .insurance-product__addon-name h3 {
+    margin: 0;
+    line-height: 1.5;
+    font-size: var(--font-supper-large);
     color: var(--color-primary);
   }
-
-  .insurance-addon__header h2 {
-    color: var(--color-primary);
-    font-weight: bold;
-    font-size: 26px;
+  .insurance-product__addon-price {
+    font-size: var(--font-large);
+    display: flex;
+    justify-content: center;
   }
-  .insurance-addon__header button {
+  .insurance-product__addon-name ol {
+    margin: 0;
+  }
+  .addon-checkbox {
+    display: flex;
+    align-items: center;
+  }
+  #close-popup__choose-addon {
+    margin-top: 20px;
+    border-radius: 15px;
+    width: 200px;
+    color: var(--color-neutral);
+    background-color: var(--color-secondary);
+    padding: 15px;
+    right: 0;
     border: none;
-    background: none;
-    text-decoration: underline;
-    font-size: var(--font-extra-large);
-    color: var(--color-primary);
+    font-size: var(--font-large);
     cursor: pointer;
   }
+  .selected-options-group {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--color-border);
+    margin-bottom: 10px;
+  }
+  .option-label {
+    font-weight: bold;
+  }
+  .option-label,
+  .option-value {
+    font-size: var(--font-extra-large);
+  }
+  .insurance-product__addon:not(:last-child) {
+    border-bottom: 1px solid var(--color-border);
+  }
+  @media (max-width: 768px) {
+    .popup-addon-product {
+      width: 80%;
+      transform: translate(-50%, -70%);
+    }
+    #addon-button {
+      width: 100%;
+    }
+  }
+  @media (max-width: 426px) {
+    .popup-addon-product {
+      width: 95%;
+    }
+  }
 {% endstyle %}
-
-<div class="variant-option__addon">
-  <label for="variant-addon" class="variant-option__addon-label">Add On (Optional)</label>
-  <select>
-    <option
-      value=""
-      disabled
-      selected
-      hidden
-    >
-      Select Add On
-    </option>
-  </select>
-</div>
 
 {% assign ProductAddon = product.metafields.product['insurance-addon'].value %}
 
 <div class="insurance-addon__wrapper">
-  <h2>Choose Add-ons</h2>
+  <label>Add On (Optional)</label>
 
+  {% comment %} Covid Add-ons {% endcomment %}
   {% for addon_product in ProductAddon %}
-    <h2>Coverage</h2>
-    {% for variant in addon_product.variants %}
-      <p>Variant Title: {{ variant.title }}</p>
-      <p>Variant Price: {{ variant.price | money_with_currency }}</p>
-    {% endfor %}
+    {% if addon_product.metafields.insurance['addon-type'].value == 'Covid' %}
+      {% for variant in addon_product.variants %}
+        <div
+          data-title="{{ variant.title }}"
+          data-option1="{{ variant.option1 }}"
+          data-option2="{{ variant.option2 }}"
+          data-option3="{{ variant.option3 }}"
+          data-addon-type="{{ addon_product.metafields.insurance['addon-type'].value }}"
+          data-variant-id="{{ variant.id }}"
+          data-price="{{ variant.price | money_with_currency }}"
+        >
+          <!-- Optional: {{ variant.title }} - {{ variant.price | money }} -->
+        </div>
+      {% endfor %}
+    {% endif %}
   {% endfor %}
 
-  <button id="close-popup__choose-addon">Cancel</button>
+  {% comment %} General Add-ons {% endcomment %}
+  {% for addon_product in ProductAddon %}
+    {% if addon_product.metafields.insurance['addon-type'].value == 'General' %}
+      {% for variant in addon_product.variants %}
+        <div
+          data-title="{{ variant.title }}"
+          data-option1="{{ variant.option1 }}"
+          data-option2="{{ variant.option2 }}"
+          data-option3="{{ variant.option3 }}"
+          data-addon-type="{{ addon_product.metafields.insurance['addon-type'].value }}"
+          data-variant-id="{{ variant.id }}"
+          data-price="{{ variant.price | money_with_currency }}"
+        >
+          <!-- Optional: {{ variant.title }} - {{ variant.price | money }} -->
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+
+  <!-- Wrapper Dropdown -->
+  <div class="addon-selector">
+    <button type="button" id="addon-button">Choose Option</button>
+    <p id="addon-error-msg" style="display: none; color: red; font-size: 14px; margin-top: 4px;">
+      Please select variant option
+    </p>
+  </div>
+
+  <!-- Overlay + Popup -->
+  <div id="addon-popup-overlay" class="popup-overlay" style="display: none;">
+    <section class="popup-addon-product">
+      <div class="popup-addon__variant">
+        <h2>{{ product.title }}</h2>
+        <div class="selected-options-group">
+          <div class="option-box">
+            <div class="option-label">Age</div>
+            <div class="option-value" id="display-option1">-</div>
+          </div>
+          <div class="option-box">
+            <div class="option-label">Insurance Plan</div>
+            <div class="option-value" id="display-option2">-</div>
+          </div>
+          <div class="option-box">
+            <div class="option-label">Duration of Travel</div>
+            <div class="option-value" id="display-option3">-</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="selected-variant-title" data-variant-title="">
+        <!-- Checkbox addon akan dimasukkan secara dinamis oleh script Anda yang sudah ada -->
+      </div>
+      <div style="display: flex; justify-content: flex-end;">
+        <button id="close-popup__choose-addon">Close</button>
+      </div>
+    </section>
+  </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const addonSelectorDiv = document.querySelector('.addon-selector');
+    const addonButton = document.getElementById('addon-button');
+    const errorMsg = document.getElementById('addon-error-msg');
+    const overlay = document.getElementById('addon-popup-overlay');
+    const popupSection = overlay?.querySelector('.popup-addon-product');
+    const closeBtn = document.getElementById('close-popup__choose-addon');
+    const variantDropdowns = document.querySelectorAll('.variant-dropdown');
+
+    // Fungsi: update error message
+    function updateAddonSelectorState() {
+      const allSelected = Array.from(variantDropdowns).every((select) => select.value !== '');
+      if (allSelected) {
+        errorMsg.style.display = 'none';
+      }
+    }
+
+    // Fungsi: update teks tombol dari addon tercentang
+    function updateAddonPreviewInButton() {
+      const addonCheckboxes = document.querySelectorAll('.addon-checkbox input[type="checkbox"]');
+      const selectedTitles = Array.from(addonCheckboxes)
+        .filter((cb) => cb.checked)
+        .map((cb) => cb.dataset.variantTitle);
+
+      let previewText = 'Choose Option';
+      if (selectedTitles.length > 0) {
+        previewText = selectedTitles.join(', ');
+        if (previewText.length > 50) {
+          previewText = previewText.slice(0, 47) + '...';
+        }
+      }
+
+      if (addonButton) {
+        addonButton.textContent = previewText;
+      }
+    }
+
+    // Event: buka popup saat tombol diklik
+    addonButton?.addEventListener('click', function () {
+      const allSelected = Array.from(variantDropdowns).every((select) => select.value !== '');
+
+      if (!allSelected) {
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      overlay.style.display = 'block';
+      document.body.classList.add('no-scroll');
+      updateAddonPreviewInButton();
+    });
+
+    // Event: sembunyikan error saat variant berubah
+    variantDropdowns.forEach((select) => {
+      select.addEventListener('change', updateAddonSelectorState);
+    });
+
+    // Event: klik luar popup = tutup
+    overlay?.addEventListener('click', function (e) {
+      if (e.target === overlay) {
+        overlay.style.display = 'none';
+        document.body.classList.remove('no-scroll');
+      }
+    });
+
+    // Event: tombol cancel
+    closeBtn?.addEventListener('click', function () {
+      overlay.style.display = 'none';
+      document.body.classList.remove('no-scroll');
+    });
+
+    // Event: centang addon = update preview
+    document.addEventListener('change', function (e) {
+      if (e.target.matches('.addon-checkbox input[type="checkbox"]')) {
+        updateAddonPreviewInButton();
+      }
+    });
+  });
+</script>

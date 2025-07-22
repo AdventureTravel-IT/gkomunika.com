@@ -174,11 +174,14 @@
     .money,
     .buckscc-money {
       color: var(--color-secondary) !important;
-      font-size: var(--font-supper-large);
       font-weight: bold;
     }
-
-
+    #variant-price-desktop {
+      font-size: 22px; 
+    }
+    #variant-price-mobile {
+      font-size: 20px;
+    }
     .variant-dropdown.variant-warning {
       border-color: red;
       box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
@@ -246,6 +249,12 @@
       vertical-align: middle;
     }
   }
+  @media (max-width: 426px) {
+  .addon-checkbox span {
+    display: none;
+  }
+}
+
 {% endstyle %}
 
 {% if customer %}
@@ -316,56 +325,7 @@
     </div>
   </div>
 
-  {% assign ProductAddon = product.metafields.product['insurance-addon'].value %}
-
-  <div class="insurance-addon__wrapper">
-    <h2>Choose Add-ons</h2>
-
-    {% comment %} Covid Add-ons {% endcomment %}
-    {% for addon_product in ProductAddon %}
-      {% if addon_product.metafields.insurance['addon-type'].value == 'Covid' %}
-        {% for variant in addon_product.variants %}
-          <div
-            data-title="{{ variant.title }}"
-            data-option1="{{ variant.option1 }}"
-            data-option2="{{ variant.option2 }}"
-            data-option3="{{ variant.option3 }}"
-            data-addon-type="{{ addon_product.metafields.insurance['addon-type'].value }}"
-            data-variant-id="{{ variant.id }}"
-            data-price="{{ variant.price | money_with_currency }}"
-          >
-            <!-- Optional: {{ variant.title }} - {{ variant.price | money }} -->
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
-
-    {% comment %} General Add-ons {% endcomment %}
-    {% for addon_product in ProductAddon %}
-      {% if addon_product.metafields.insurance['addon-type'].value == 'General' %}
-        {% for variant in addon_product.variants %}
-          <div
-            data-title="{{ variant.title }}"
-            data-option1="{{ variant.option1 }}"
-            data-option2="{{ variant.option2 }}"
-            data-option3="{{ variant.option3 }}"
-            data-addon-type="{{ addon_product.metafields.insurance['addon-type'].value }}"
-            data-variant-id="{{ variant.id }}"
-            data-price="{{ variant.price | money_with_currency }}"
-          >
-            <!-- Optional: {{ variant.title }} - {{ variant.price | money }} -->
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
-
-    <!-- Menampilkan variant title yang dipilih -->
-    <div id="selected-variant-title" data-variant-title="">
-      <span>ADDON</span>
-    </div>
-
-    <button id="close-popup__choose-addon">Cancel</button>
-  </div>
+{% render 'insurance-addon' %}
 
   <!-- Quantity -->
   <div
@@ -470,7 +430,7 @@
 <!-- Harga varian tersembunyi -->
 <div id="variant-prices" style="display: none;">
   {% for variant in product.variants %}
-    <span class="money" data-variant-id="{{ variant.id }}">
+    <span class="money price" data-variant-id="{{ variant.id }}">
       {{ variant.price | money_with_currency }}
     </span>
   {% endfor %}
@@ -483,7 +443,7 @@
     <h2>{{ product.title }}</h2>
     <span id="selected-variant-display">Selected Variant</span>
 
-    <div id="variant-price-mobile" class="money">
+    <div id="variant-price-mobile" class="money price">
       {{ min_price_formatted -}}
       {%- unless min_price == max_price %}
         - {{ max_price_formatted -}}
@@ -711,66 +671,99 @@
     }
 
     function findVariant() {
-      const selectedOptions = getSelectedOptions();
+  const selectedOptions = getSelectedOptions();
 
-      if (selectedOptions.includes("")) {
-        if (priceDivDesktop) priceDivDesktop.innerHTML = defaultPriceHTML;
-        if (priceDivMobile) priceDivMobile.innerHTML = defaultPriceMobileHTML;
-        if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Pilih varian";
-        updateDropdownOptions();
-        updateVariantTitle(); // Update variant title saat memilih opsi baru
-        updateMinusButtonHandler(1);
-        return null;
+  const popupVariantTitleEl = document.getElementById('popup-variant-title');
+  const popupVariantOptionsEl = document.getElementById('popup-variant-options');
+  const option1El = document.getElementById('display-option1');
+  const option2El = document.getElementById('display-option2');
+  const option3El = document.getElementById('display-option3');
+
+  if (selectedOptions.includes("")) {
+    if (priceDivDesktop) priceDivDesktop.innerHTML = defaultPriceHTML;
+    if (priceDivMobile) priceDivMobile.innerHTML = defaultPriceMobileHTML;
+    if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Pilih varian";
+
+    // Clear display elements
+    if (popupVariantTitleEl) popupVariantTitleEl.textContent = "";
+    if (popupVariantOptionsEl) popupVariantOptionsEl.textContent = "";
+
+    if (option1El) option1El.textContent = "-";
+    if (option2El) option2El.textContent = "-";
+    if (option3El) option3El.textContent = "-";
+
+    updateDropdownOptions();
+    updateVariantTitle();
+    updateMinusButtonHandler(1);
+    return null;
+  }
+
+  const matchedVariant = productVariants.find(variant =>
+    variant.options.every((opt, index) => opt === selectedOptions[index])
+  );
+
+  if (matchedVariant) {
+    if (matchedVariant.available) {
+      const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
+      if (moneySpan) {
+        if (priceDivDesktop) priceDivDesktop.innerHTML = moneySpan.outerHTML;
+        if (priceDivMobile) priceDivMobile.innerHTML = moneySpan.outerHTML;
       }
-
-      const matchedVariant = productVariants.find(variant =>
-        variant.options.every((opt, index) => opt === selectedOptions[index])
-      );
-
-      if (matchedVariant) {
-        if (matchedVariant.available) {
-          const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
-          if (moneySpan) {
-            if (priceDivDesktop) priceDivDesktop.innerHTML = moneySpan.outerHTML;
-            if (priceDivMobile) priceDivMobile.innerHTML = moneySpan.outerHTML;
-          }
-        } else {
-          if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak tersedia";
-          if (priceDivMobile) priceDivMobile.textContent = "Varian tidak tersedia";
-        }
-
-        const variantType = getVariantType(matchedVariant);
-
-        if (variantType === "Duo Plus") {
-          quantityInput.min = 2;
-          quantityInput.value = Math.max(2, parseInt(quantityInput.value) || 2);
-          updateMinusButtonHandler(2);
-        } else {
-          quantityInput.min = 1;
-          updateMinusButtonHandler(1);
-        }
-      } else {
-        if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak ditemukan";
-        if (priceDivMobile) priceDivMobile.textContent = "Varian tidak ditemukan";
-        quantityInput.min = 1;
-        updateMinusButtonHandler(1);
-      }
-
-      if (selectedVariantDisplay) {
-        const selected = selectedOptions.filter(v => v !== "").join(" - ");
-        selectedVariantDisplay.textContent = selected || "Choose Variant";
-      }
-
-      updateDropdownOptions();
-      updateVariantTitle();
-      matchInsuranceVariant(matchedVariant);  // Update variant title saat menemukan varian yang cocok
-
-      if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
-        Currency.convertAll(shopCurrency, Currency.currentCurrency);
-      }
-
-      return matchedVariant;
+    } else {
+      if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak tersedia";
+      if (priceDivMobile) priceDivMobile.textContent = "Varian tidak tersedia";
     }
+
+    const variantType = getVariantType(matchedVariant);
+
+    if (variantType === "Duo Plus") {
+      quantityInput.min = 2;
+      quantityInput.value = Math.max(2, parseInt(quantityInput.value) || 2);
+      updateMinusButtonHandler(2);
+    } else {
+      quantityInput.min = 1;
+      updateMinusButtonHandler(1);
+    }
+
+    // ✅ Update tampilkan variant title & option di popup
+    if (popupVariantTitleEl) popupVariantTitleEl.textContent = matchedVariant.title;
+    if (popupVariantOptionsEl) popupVariantOptionsEl.textContent = matchedVariant.options.join(" / ");
+
+    // ✅ Update dropdown-style option displays
+    if (option1El) option1El.textContent = matchedVariant.options[0] || "-";
+    if (option2El) option2El.textContent = matchedVariant.options[1] || "-";
+    if (option3El) option3El.textContent = matchedVariant.options[2] || "-";
+
+  } else {
+    if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak ditemukan";
+    if (priceDivMobile) priceDivMobile.textContent = "Varian tidak ditemukan";
+    quantityInput.min = 1;
+    updateMinusButtonHandler(1);
+
+    // Clear variant display
+    if (popupVariantTitleEl) popupVariantTitleEl.textContent = "";
+    if (popupVariantOptionsEl) popupVariantOptionsEl.textContent = "";
+
+    if (option1El) option1El.textContent = "-";
+    if (option2El) option2El.textContent = "-";
+    if (option3El) option3El.textContent = "-";
+  }
+
+  if (selectedVariantDisplay) {
+    const selected = selectedOptions.filter(v => v !== "").join(" - ");
+    selectedVariantDisplay.textContent = selected || "Choose Variant";
+  }
+
+  updateDropdownOptions();
+  updateVariantTitle();
+  matchInsuranceVariant(matchedVariant);
+
+  if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
+    Currency.convertAll(shopCurrency, Currency.currentCurrency);
+  }
+
+  return matchedVariant;
+}
 
     function matchInsuranceVariant(mainVariant) {
       const quantityInput = document.getElementById('quantity');
@@ -863,14 +856,14 @@ const currentQuantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
       const rows = matchedInsuranceList.map(item => {
         const benefitList = item.benefits.map(benefit => `<li>${benefit}</li>`).join('');
         return `
-          <div style="display: flex; gap: 15px; justify-content: space-between; width: 100%; align-items: flex-start; border-bottom: 1px solid #ccc; padding: 10px 0;">
-            <div>
-              <h2>${item.title}</h2>
-              <ol type="a" style="margin: 5px 0; padding-left: 20px;">
+          <div class="insurance-product__addon">
+            <div class="insurance-product__addon-name">
+              <h3>${item.title}</h3>
+              <ol type="a">
                 ${benefitList}
               </ol>
             </div>
-            <div style="min-width: 90px;">
+            <div class="insurance-product__addon-price">
               <strong>${item.price}</strong>
             </div>
             <div class="addon-checkbox">
@@ -883,7 +876,6 @@ const currentQuantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
   data-option3="${item.option3}"
   data-quantity="${item.quantity}"
 >
-
               <span>Select</span>
             </div>
           </div>
@@ -974,21 +966,30 @@ const currentQuantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
 
         sessionStorage.removeItem('ProductItems');
 
-        let ProductItems = [];
+const selectedAddons = JSON.parse(sessionStorage.getItem('SelectedAddons') || '[]');
 
-        const newItem = {
-          productTitle: "{{ product.title }}",
-          category: productCategory,
-          variantType: variantType,
-          variantId: variant.id,
-          variantTitle: variant.title,
-          quantity: quantity,
-          variantCoverage: variantCoverage
-        };
+const newItem = {
+  productTitle: "{{ product.title }}",
+  category: productCategory,
+  variantType: variantType,
+  variantId: variant.id,
+  variantTitle: variant.title,
+  quantity: quantity,
+  variantCoverage: variantCoverage,
+  addonItems: selectedAddons.map(addon => ({
+    productTitle: addon.variantTitle,
+    variantId: addon.id,
+    variantTitle: addon.variantTitle,
+    quantity: addon.quantity,
+    option1: addon.option1,
+    option2: addon.option2,
+    option3: addon.option3
+  }))
+};
 
-        ProductItems.push(newItem);
+const ProductItems = [newItem];
 
-        sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
 
         if (customerLoggedIn) {
           window.location.href = "/pages/form-insurance";
@@ -1144,4 +1145,31 @@ const currentQuantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
 
     updateDropdownOptions();
     updateMinusButtonHandler(1);
+        // 🟢 Simpan addon yang dipilih ke sessionStorage
+    function updateAddonSessionStorage() {
+      const addonCheckboxes = document.querySelectorAll('.addon-checkbox input[type="checkbox"]');
+      const selectedAddons = [];
+
+      addonCheckboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          selectedAddons.push({
+            id: checkbox.dataset.id,
+            variantTitle: checkbox.dataset.variantTitle,
+            option1: checkbox.dataset.option1,
+            option2: checkbox.dataset.option2,
+            option3: checkbox.dataset.option3,
+            quantity: parseInt(checkbox.dataset.quantity || '1'),
+          });
+        }
+      });
+
+      sessionStorage.setItem('SelectedAddons', JSON.stringify(selectedAddons));
+    }
+
+    // 🟢 Update sessionStorage setiap kali checkbox diubah
+    document.addEventListener('change', function (e) {
+      if (e.target.matches('.addon-checkbox input[type="checkbox"]')) {
+        updateAddonSessionStorage();
+      }
+    });
 </script>

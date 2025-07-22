@@ -324,8 +324,14 @@
       {% endif %}
     </div>
   </div>
-
+{% unless product.metafields.product.category.value == 'Top_Up_A'
+      or product.metafields.product.category.value == 'Top_Up_B'
+      or product.metafields.product.category.value == 'Top_Up_C'
+      or product.metafields.product.category.value == 'eSIM'
+      or product.metafields.product.category.value == 'SIM_Card'
+    %}
 {% render 'insurance-addon' %}
+{% endunless %}
 
   <!-- Quantity -->
   <div

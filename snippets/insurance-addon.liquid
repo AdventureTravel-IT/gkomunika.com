@@ -107,34 +107,40 @@
     text-align: center;
     align-items: center;
     color: var(--color-secondary);
+    font-weight: bold;
   }
-  @media (max-width: 768px) {
-    .popup-addon-product {
-      width: 90%;
-      max-height: 85vh;
-    }
+  #addon-button.error {
+  border-color: red !important;
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .popup-addon-product {
+    width: 90%;
+    max-height: 85vh;
   }
-  @media (max-width: 426px) {
-    .insurance__product-addon {
-      margin-top: 10px;
-    }
-    .insurance_product-addon_title-wrapper {
-      display: flex;
-      flex-direction: column;
-      font-size: 20px;
-      line-height: 1.3;
-    }
-    .insurance_product-addon_price {
-      line-height: 1.3;
-      font-size: 20px;
-    }
-    .popup-addon__variant-title {
-      font-size: 26px;
-    }
-    #addon-button {
-      width: 100%;
-    }
+}
+@media (max-width: 426px) {
+  .insurance__product-addon {
+    margin-top: 10px;
   }
+  .insurance_product-addon_title-wrapper {
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    line-height: 1.3;
+  }
+  .insurance_product-addon_price {
+    line-height: 1.3;
+    font-size: 20px;
+  }
+  .popup-addon__variant-title {
+    font-size: 26px;
+  }
+  #addon-button {
+    width: 100%;
+  }
+}
 {% endstyle %}
 
 {% assign ProductAddon = product.metafields.product['insurance-addon'].value %}
@@ -155,7 +161,6 @@
           data-variant-id="{{ variant.id }}"
           data-price="{{ variant.price | money_with_currency }}"
         >
-          <!-- Optional: {{ variant.title }} - {{ variant.price | money }} -->
         </div>
       {% endfor %}
     {% endif %}
@@ -174,7 +179,6 @@
           data-variant-id="{{ variant.id }}"
           data-price="{{ variant.price | money_with_currency }}"
         >
-          <!-- Optional: {{ variant.title }} - {{ variant.price | money }} -->
         </div>
       {% endfor %}
     {% endif %}
@@ -184,7 +188,7 @@
   <div class="addon-selector">
     <button type="button" id="addon-button">Choose Option</button>
     <p id="addon-error-msg" style="display: none; color: red; font-size: 14px; margin-top: 4px;">
-      Please select variant option
+      Please select variant options
     </p>
   </div>
 
@@ -257,17 +261,27 @@
 
       if (!allSelected) {
         errorMsg.style.display = 'block';
+        addonButton.classList.add('error'); // ✅ Tambahkan garis merah
         return;
       }
 
       overlay.style.display = 'block';
       document.body.classList.add('no-scroll');
+      addonButton.classList.remove('error'); // ✅ Bersihkan garis merah saat valid
       updateAddonPreviewInButton();
     });
 
     // Event: sembunyikan error saat variant berubah
     variantDropdowns.forEach((select) => {
-      select.addEventListener('change', updateAddonSelectorState);
+      select.addEventListener('change', () => {
+        updateAddonSelectorState();
+
+        const allSelectedNow = Array.from(variantDropdowns).every((s) => s.value !== '');
+        if (allSelectedNow) {
+          addonButton.classList.remove('error'); // ✅ Hapus border merah saat valid
+          errorMsg.style.display = 'none';
+        }
+      });
     });
 
     // Event: klik luar popup = tutup

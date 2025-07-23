@@ -6,20 +6,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-height: 70vh;
+    max-height: 90vh;
     overflow-y: auto;
     border-radius: 15px;
-    padding: 0 20px 20px;
+    padding: 25px;
     width: 50%;
     scrollbar-width: none;
     -ms-overflow-style: none;
-  }
-  .popup-addon-product h2 {
-    position: sticky;
-    top: 0;
-    background-color: var(--color-neutral);
-    z-index: 9;
-    padding: 10px 0;
   }
   .popup-addon-product::-webkit-scrollbar {
     display: none;
@@ -52,87 +45,94 @@
     background-size: 15px;
     background-color: var(--color-neutral);
     white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .insurance-addon__wrapper {
-    margin-top: 10px;
-  }
-  .insurance-addon__wrapper label {
-    font-size: var(--font-large);
-    font-weight: bold;
-  }
-  .insurance-product__addon {
-    width: 100%;
+  .selected-option__title {
+    color: var(--color-primary);
     display: flex;
-    justify-content: space-between;
     align-items: center;
   }
-  .insurance-product__addon-name,
-  .insurance-product__addon-price {
-    flex: 1;
-    flex-shrink: 1;
-    color: var(--color-primary) !important;
+  .popup-addon__variant-title {
+    font-size: 26px;
   }
-  .insurance-product__addon-name h3 {
-    margin: 0;
-    line-height: 1.5;
-    font-size: var(--font-supper-large);
-    color: var(--color-primary);
-  }
-  .insurance-product__addon-price {
-    font-size: var(--font-large);
+  .insurance_product-addon_header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
   }
-  .insurance-product__addon-name ol {
-    margin: 0;
+  .insurance_product-addon_title-wrapper {
+    flex: 4;
+    display: flex;
+    justify-content: space-between;
   }
   .addon-checkbox {
     display: flex;
+    justify-content: flex-end;
     align-items: center;
+    flex: 2;
+    color: var(--color-primary);
   }
-  #close-popup__choose-addon {
-    margin-top: 20px;
-    border-radius: 15px;
-    width: 200px;
-    color: var(--color-neutral);
-    background-color: var(--color-secondary);
-    padding: 15px;
-    right: 0;
-    border: none;
+  .addon-checkbox span {
+    margin-bottom: 3px;
     font-size: var(--font-large);
-    cursor: pointer;
   }
-  .selected-options-group {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 2px solid var(--color-border);
-    margin-bottom: 10px;
-  }
-  .option-label {
+  .insurance_product-addon_title {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--color-primary);
+    font-size: 22px;
     font-weight: bold;
   }
-  .option-label,
-  .option-value {
+  .insurance_product-addon_price {
     font-size: var(--font-extra-large);
+    color: var(--color-secondary);
+    font-weight: bold;
   }
-  .insurance-product__addon:not(:last-child) {
-    border-bottom: 1px solid var(--color-border);
+  #close-popup__choose-addon {
+    border: none;
+    border-radius: 15px;
+    padding: 15px 50px;
+    background-color: var(--color-secondary);
+    color: var(--color-neutral);
+    font-size: var(--font-large);
+    margin-top: 10px;
+  }
+  .selected-option__title {
+    font-size: var(--font-extra-large);
+    font-weight: bold;
+  }
+  .option-box {
+    display: flex;
+    gap: 3px;
+    text-align: center;
+    align-items: center;
+    color: var(--color-secondary);
   }
   @media (max-width: 768px) {
     .popup-addon-product {
-      width: 80%;
-      transform: translate(-50%, -70%);
-    }
-    #addon-button {
-      width: 100%;
+      width: 90%;
+      max-height: 85vh;
     }
   }
   @media (max-width: 426px) {
-    .popup-addon-product {
-      width: 95%;
+    .insurance__product-addon {
+      margin-top: 10px;
+    }
+    .insurance_product-addon_title-wrapper {
+      display: flex;
+      flex-direction: column;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+    .insurance_product-addon_price {
+      line-height: 1.3;
+      font-size: 20px;
+    }
+    .popup-addon__variant-title {
+      font-size: 26px;
+    }
+    #addon-button {
+      width: 100%;
     }
   }
 {% endstyle %}
@@ -192,19 +192,13 @@ text-overflow: ellipsis;
   <div id="addon-popup-overlay" class="popup-overlay" style="display: none;">
     <section class="popup-addon-product">
       <div class="popup-addon__variant">
-        <h2>{{ product.title }}</h2>
+        <h2 class="popup-addon__variant-title">{{ product.title }}</h2>
         <div class="selected-options-group">
+          <span class="selected-option__title">Insurance Plan:</span>
           <div class="option-box">
-            <div class="option-label">Age</div>
-            <div class="option-value" id="display-option1">-</div>
-          </div>
-          <div class="option-box">
-            <div class="option-label">Insurance Plan</div>
-            <div class="option-value" id="display-option2">-</div>
-          </div>
-          <div class="option-box">
-            <div class="option-label">Duration of Travel</div>
-            <div class="option-value" id="display-option3">-</div>
+            <span class="option-value" id="display-option1">-</span><span>|</span>
+            <span class="option-value" id="display-option2">-</span><span>|</span>
+            <span class="option-value" id="display-option3">-</span>
           </div>
         </div>
       </div>

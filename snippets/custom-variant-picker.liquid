@@ -72,6 +72,7 @@
 
     .variant-picker__label {
       font-weight: bold;
+      color: var(--color-primary);
     }
 
     .variant-dropdown {
@@ -202,6 +203,16 @@
       white-space: nowrap;
       z-index: 1000;
     }
+    .insurance-addon__wrapper {
+      margin-top: 10px;
+    }
+    .insurance-addon__wrapper label{
+      font-weight: bold;
+      color: var(--color-primary);
+    }
+    #selected-variant-display {
+      color: var(--color-primary);
+    }
 </style>
 
 {% style %}
@@ -227,7 +238,7 @@
       bottom: 0;
       width: 100%;
 
-      z-index: 999;
+      z-index: 888;
     }
     .variant-picker-btn__mobile-wrapper {
       display: flex;
@@ -249,12 +260,6 @@
       vertical-align: middle;
     }
   }
-  @media (max-width: 426px) {
-  .addon-checkbox span {
-    display: none;
-  }
-}
-
 {% endstyle %}
 
 {% if customer %}
@@ -446,7 +451,7 @@
 <div class="variant-picker-btn__mobile">
   <div id="bucks-mobile" style="margin-left: 11px;"></div>
   <div style="padding: 20px 24px; background-color: var(--color-neutral);">
-    <h2>{{ product.title }}</h2>
+    <h2 style="font-weight: bold;">{{ product.title }}</h2>
     <span id="selected-variant-display">Selected Variant</span>
 
     <div id="variant-price-mobile" class="money price">
@@ -512,6 +517,21 @@
     text-align: center;
   }
 {% endstyle %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const scrollTarget = document.querySelector('.variant-option__wrapper'); // Bagian variant selector
+    const scrollTrigger = document.getElementById('selected-variant-display'); // Elemen yang diklik
+
+    if (scrollTrigger && scrollTarget) {
+      scrollTrigger.style.cursor = 'pointer'; // opsional: bikin kelihatan bisa diklik
+      scrollTrigger.addEventListener('click', function () {
+        scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  });
+</script>
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -862,29 +882,32 @@ const currentQuantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
       const rows = matchedInsuranceList.map(item => {
         const benefitList = item.benefits.map(benefit => `<li>${benefit}</li>`).join('');
         return `
-          <div class="insurance-product__addon">
-            <div class="insurance-product__addon-name">
-              <h3>${item.title}</h3>
-              <ol type="a">
-                ${benefitList}
-              </ol>
-            </div>
-            <div class="insurance-product__addon-price">
-              <strong>${item.price}</strong>
+        <div class="insurance__product-addon">
+          <div class="insurance_product-addon_header">
+            <div class="insurance_product-addon_title-wrapper"> 
+              <h1 class="insurance_product-addon_title">${item.title}</h1>
+              <span class="insurance_product-addon_price">${item.price}</span>
             </div>
             <div class="addon-checkbox">
               <input 
-  type="checkbox" 
-  data-id="${item.id}" 
-  data-variant-title="${item.title}" 
-  data-option1="${item.option1}" 
-  data-option2="${item.option2}" 
-  data-option3="${item.option3}"
-  data-quantity="${item.quantity}"
->
-              <span>Select</span>
+                type="checkbox" 
+                data-id="${item.id}" 
+                data-variant-title="${item.title}" 
+                data-option1="${item.option1}" 
+                data-option2="${item.option2}" 
+                data-option3="${item.option3}"
+                data-quantity="${item.quantity}"
+              >
+              <span>select</span>
+            </div>
             </div>
           </div>
+          <div class="insurance_product-addon_list-benefits">
+            <ul>
+                ${benefitList}
+            </ul>
+          </div>
+        </div>
         `;
       }).join('');
 

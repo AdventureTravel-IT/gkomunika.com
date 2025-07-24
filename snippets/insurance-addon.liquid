@@ -72,9 +72,11 @@
     flex: 2;
     color: var(--color-primary);
   }
-  .addon-checkbox span {
-    margin-bottom: 3px;
+  .addon-checkbox > label {
+    display: flex;
+    align-items: center;
     font-size: var(--font-large);
+    cursor: pointer;
   }
   .insurance_product-addon_title {
     margin: 0;
@@ -96,6 +98,7 @@
     color: var(--color-neutral);
     font-size: var(--font-large);
     margin-top: 10px;
+    cursor: pointer;
   }
   .selected-option__title {
     font-size: var(--font-extra-large);
@@ -110,10 +113,9 @@
     font-weight: bold;
   }
   #addon-button.error {
-  border-color: red !important;
-  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
-}
-
+    border-color: red !important;
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
+  }
 @media (max-width: 768px) {
   .popup-addon-product {
     width: 90%;
@@ -146,7 +148,7 @@
 {% assign ProductAddon = product.metafields.product['insurance-addon'].value %}
 
 <div class="insurance-addon__wrapper">
-  <label>Add On (Optional)</label>
+  <label class="insurance-addon__label">Add On (Optional)</label>
 
   {% comment %} Covid Add-ons {% endcomment %}
   {% for addon_product in ProductAddon %}

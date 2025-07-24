@@ -10,6 +10,10 @@
 </div>
 
 <style>
+  #checkout-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
   /* Gaya border merah untuk field yang belum diisi */
   input:invalid,
   select:invalid,
@@ -152,6 +156,7 @@
     width: 130px;
     transition: transform 0.3s ease
     , box-shadow 0.3s ease;
+    cursor: pointer;
   }
   .form-insurance__checkout-button {
     background-color: var(--color-primary);
@@ -1425,10 +1430,24 @@
     });
   
     async function handleCheckout() {
+      const checkoutButton = document.getElementById('checkout-button');
+
+      // ✅ Cek apakah tombol sudah disabled
+      if (checkoutButton.disabled) {
+        return; // Jika sudah disabled, hentikan
+      }
+
+      // ✅ Nonaktifkan tombol & ubah teks
+      checkoutButton.disabled = true;
+      checkoutButton.textContent = 'Processing...';
+
       const isItineraryChecked = document.getElementById('check-itinerary-global').checked;
   
       if (!isItineraryChecked) {
         alert('You must confirm that the flight itinerary is the same.');
+        // ✅ Aktifkan kembali tombol jika gagal
+        checkoutButton.disabled = false;
+        checkoutButton.textContent = 'Checkout';
         return;
       }
   
@@ -1781,6 +1800,9 @@ window.location.href = checkoutUrl;
       } catch (error) {
         console.error('Checkout error:', error);
         alert('There was an error during checkout. Please try again.');
+        // ✅ Aktifkan kembali tombol jika error
+        checkoutButton.disabled = false;
+        checkoutButton.textContent = 'Checkout';
       }
     }
 </script>

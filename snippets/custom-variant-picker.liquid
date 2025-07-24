@@ -202,7 +202,7 @@
   .insurance-addon__wrapper {
     margin-top: 10px;
   }
-  .insurance-addon__wrapper label{
+  .insurance-addon__label {
     font-weight: bold;
     color: var(--color-primary);
   }
@@ -684,6 +684,21 @@
     });
   }
 
+  function resetAddons() {
+    // Hapus centang di semua checkbox addon
+    const addonCheckboxes = document.querySelectorAll('.addon-checkbox input[type="checkbox"]');
+    addonCheckboxes.forEach(cb => cb.checked = false);
+
+    // Reset tombol addon ke default text
+    const addonButton = document.getElementById('addon-button');
+    if (addonButton) {
+      addonButton.textContent = 'Choose Option';
+    }
+
+    // Hapus dari sessionStorage
+    sessionStorage.removeItem('SelectedAddons');
+  }
+
   function findVariant() {
     const selectedOptions = getSelectedOptions();
 
@@ -875,16 +890,20 @@
               <span class="insurance_product-addon_price">${item.price}</span>
             </div>
             <div class="addon-checkbox">
-              <input 
-                type="checkbox" 
-                data-id="${item.id}" 
-                data-variant-title="${item.title}" 
-                data-option1="${item.option1}" 
-                data-option2="${item.option2}" 
-                data-option3="${item.option3}"
-                data-quantity="${item.quantity}"
-              >
-              <span>select</span>
+              <label>
+                <input 
+                  type="checkbox" 
+                  data-id="${item.id}" 
+                  data-variant-title="${item.title}" 
+                  data-option1="${item.option1}" 
+                  data-option2="${item.option2}" 
+                  data-option3="${item.option3}"
+                  data-quantity="${item.quantity}"
+                >
+                <span>select</span>
+              </label>
+            </div>
+
             </div>
             </div>
           </div>
@@ -927,6 +946,7 @@
     if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Selected Variant";
     updateDropdownOptions();
     updateVariantTitle(); // Reset variant title saat reset
+    resetAddons();
 
     if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
       Currency.convertAll(shopCurrency, Currency.currentCurrency);
@@ -1181,6 +1201,7 @@ const payload = {
         }
 
         findVariant();
+        resetAddons();
       });
     });
 

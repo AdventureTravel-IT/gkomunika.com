@@ -1745,34 +1745,39 @@
           headers: { 'Content-Type': 'application/json' },
         });
   
-        for (const product of ProductItems) {
-          const variantTitle = product.variantTitle || '';
-          const attrKey = `Form ${product.variantType} - ${variantTitle}`;
-  
-          let itemAttributes = {};
-  
-          if (product.category === 'Insurance' && attributes[attrKey]) {
-            itemAttributes = { [attrKey]: attributes[attrKey] };
-          }
-  
-          console.log('🛒 Adding to cart:', {
-            id: product.variantId,
-            quantity: product.quantity,
-            attributes: itemAttributes,
-          });
-  
-          await fetch('/cart/add.js', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id: product.variantId,
-              quantity: product.quantity,
-              attributes: itemAttributes,
-            }),
-          });
-        }
-  
-        window.location.href = '/checkout';
+        // ✅ Multi-product (lebih dari 1 ProductItems)
+const cartItems = [];
+const queryParts = [];
+
+for (const product of ProductItems) {
+  // Tambahkan main product
+  cartItems.push(`${product.variantId}:${product.quantity}`);
+
+  // Tambahkan atribut jika ada
+  const variantTitle = product.variantTitle || '';
+  const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+
+  if (product.category === 'Insurance' && attributes[attrKey]) {
+    queryParts.push(`attributes[${encodeURIComponent(attrKey)}]=${encodeURIComponent(attributes[attrKey])}`);
+  }
+
+  // ✅ Jika ada addonItems → tambahkan juga
+  if (Array.isArray(product.addonItems)) {
+    for (const addon of product.addonItems) {
+      if (addon.variantId && addon.quantity) {
+        cartItems.push(`${addon.variantId}:${addon.quantity}`);
+      }
+    }
+  }
+}
+
+// Gabungkan ke checkout URL
+const queryString = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
+const checkoutUrl = `/cart/${cartItems.join(',')}${queryString}`;
+
+// Redirect ke checkout
+window.location.href = checkoutUrl;
+
       } catch (error) {
         console.error('Checkout error:', error);
         alert('There was an error during checkout. Please try again.');

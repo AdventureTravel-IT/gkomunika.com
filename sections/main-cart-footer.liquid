@@ -313,71 +313,60 @@
   </div>
 </div>
 
+
 <script>
+  function decodeHtmlEntities(str) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = str;
+    return txt.value;
+  }
+
+  function buildProductItems() {
+    const items = [];
+    {% for item in cart.items %}
+      items.push({
+        productTitle: {{ item.product.title | json }},
+        category: {{ item.product.metafields.product.category.value | json }},
+        variantType: {{ item.variant.metafields.variant.type | json }},
+        variantTitle: {{ item.variant.title | json }},
+        variantId: {{ item.variant.id }},
+        quantity: {{ item.quantity }},
+        variantCoverage: {{ item.product.metafields.coverage.country.value | json }},
+        addonItems: (() => {
+          try {
+            const raw = {{ item.properties["Addon Details"] | json }};
+            if (!raw) return [];
+            const decoded = decodeHtmlEntities(raw); // Ubah &quot; → "
+            return JSON.parse(decoded);
+          } catch (e) {
+            console.error("Failed to parse addonItems:", e);
+            return [];
+          }
+        })()
+      });
+    {% endfor %}
+    return items;
+  }
+
+  function saveAndRedirect(items, redirectUrl) {
+    if (items.length === 0) {
+      alert('Cart is empty.');
+      return;
+    }
+    sessionStorage.setItem('ProductItems', JSON.stringify(items));
+    window.location.href = redirectUrl;
+  }
+
   document.getElementById('unlogin-checkout-button')?.addEventListener('click', function () {
-    // Clear sessionStorage data if it exists
-    sessionStorage.removeItem('ProductItems'); // or sessionStorage.clear();
-
-    const ProductItems = [];
-
-    {% for item in cart.items %}
-      ProductItems.push({
-        productTitle: {{ item.product.title | json }},
-        category: {{ item.product.metafields.product.category.value | json }},
-        variantType: {{ item.variant.metafields.variant.type | json }},
-        variantTitle: {{ item.variant.title | json }},
-        variantId: {{ item.variant.id }},
-        quantity: {{ item.quantity }},
-        variantCoverage: {{ item.product.metafields.coverage.country.value | json }}
-      });
-    {% endfor %}
-
-    if (ProductItems.length === 0) {
-      alert('Cart is empty.');
-      return;
-    }
-
-    // Save all items in sessionStorage
-    sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-
-    // Redirect to login page with return_url
-    window.location.href = '/account/login?return_url=/pages/form-insurance';
+    sessionStorage.removeItem('ProductItems');
+    const items = buildProductItems();
+    saveAndRedirect(items, '/account/login?return_url=/pages/form-insurance');
   });
-</script>
 
-
-<script>
   document.getElementById('insurance-checkout-button')?.addEventListener('click', function () {
-    // Clear sessionStorage data if it exists
-    sessionStorage.removeItem('ProductItems'); // or sessionStorage.clear(); to remove all session storage data
-
-    const ProductItems = [];
-
-    {% for item in cart.items %}
-      ProductItems.push({
-        productTitle: {{ item.product.title | json }},
-        category: {{ item.product.metafields.product.category.value | json }},
-        variantType: {{ item.variant.metafields.variant.type | json }},
-        variantTitle: {{ item.variant.title | json }},
-        variantId: {{ item.variant.id }},
-        quantity: {{ item.quantity }},
-        variantCoverage: {{ item.product.metafields.coverage.country.value | json }}
-      });
-    {% endfor %}
-
-    if (ProductItems.length === 0) {
-      alert('Cart is empty.');
-      return;
-    }
-
-    // Save all items in sessionStorage
-    sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-
-    // Debug
-    console.log("Stored ProductItems:", ProductItems);
-
-    // Redirect to form-insurance
-    window.location.href = '/pages/form-insurance';
+    sessionStorage.removeItem('ProductItems');
+    const items = buildProductItems();
+    saveAndRedirect(items, '/pages/form-insurance');
   });
 </script>
 

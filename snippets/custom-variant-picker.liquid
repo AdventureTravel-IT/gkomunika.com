@@ -997,8 +997,8 @@
         option1: addon.option1,
         option2: addon.option2,
         option3: addon.option3
-      }))
-    };
+    }))
+  };
   
   const ProductItems = [newItem];
   sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
@@ -1012,7 +1012,29 @@
         return;
       }
 
-      const payload = { id: variant.id, quantity: quantity };
+const selectedAddons = JSON.parse(sessionStorage.getItem('SelectedAddons') || '[]');
+
+const addonDetails = selectedAddons.map(addon => ({
+  title: addon.variantTitle,
+  productTitle: addon.productTitle || '',
+  variantId: addon.id,
+  quantity: addon.quantity,
+  option1: addon.option1 || '',
+  option2: addon.option2 || '',
+  option3: addon.option3 || '',
+  price: addon.price || ''
+}));
+
+const properties = {
+  "Addon Details": JSON.stringify(addonDetails) // ✅ kirim dalam format JSON
+};
+
+const payload = {
+  id: variant.id,
+  quantity: quantity,
+  properties: properties
+};
+
       const popup = document.getElementById("variant-popup");
 
       function showPopup(message) {
@@ -1167,24 +1189,28 @@
     updateMinusButtonHandler(1);
         // 🟢 Simpan addon yang dipilih ke sessionStorage
     function updateAddonSessionStorage() {
-      const addonCheckboxes = document.querySelectorAll('.addon-checkbox input[type="checkbox"]');
-      const selectedAddons = [];
+  const addonCheckboxes = document.querySelectorAll('.addon-checkbox input[type="checkbox"]');
+  const selectedAddons = [];
 
-      addonCheckboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-          selectedAddons.push({
-            id: checkbox.dataset.id,
-            variantTitle: checkbox.dataset.variantTitle,
-            option1: checkbox.dataset.option1,
-            option2: checkbox.dataset.option2,
-            option3: checkbox.dataset.option3,
-            quantity: parseInt(checkbox.dataset.quantity || '1'),
-          });
-        }
+  addonCheckboxes.forEach(checkbox => {
+    if (checkbox.checked) {
+      selectedAddons.push({
+        id: checkbox.dataset.id,
+        productTitle: "{{ product.title }}", // Ambil nama produk utama
+        variantTitle: checkbox.dataset.variantTitle,
+        option1: checkbox.dataset.option1,
+        option2: checkbox.dataset.option2,
+        option3: checkbox.dataset.option3,
+        quantity: parseInt(checkbox.dataset.quantity || '1'),
+        price: checkbox.closest('.insurance__product-addon')
+          ?.querySelector('.insurance_product-addon_price')?.textContent || ''
       });
-
-      sessionStorage.setItem('SelectedAddons', JSON.stringify(selectedAddons));
     }
+  });
+
+  sessionStorage.setItem('SelectedAddons', JSON.stringify(selectedAddons));
+}
+
 
     // 🟢 Update sessionStorage setiap kali checkbox diubah
     document.addEventListener('change', function (e) {

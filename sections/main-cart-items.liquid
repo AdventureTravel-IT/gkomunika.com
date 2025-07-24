@@ -10,6 +10,10 @@
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
   }
+  .addon-details {
+    white-space: nowrap;
+  }
+
 
   @media screen and (min-width: 750px) {
     .section-{{ section.id }}-padding {
@@ -172,22 +176,19 @@
                           {%- for property in item.properties -%}
                             {%- assign property_first_char = property.first | slice: 0 -%}
                             {%- if property.last != blank and property_first_char != '_' -%}
-                              <div class="product-option">
-                                <dt>{{ property.first }}:</dt>
-                                <dd>
-                                  {%- if property.last contains '/uploads/' -%}
-                                    <a
-                                      href="{{ property.last }}"
-                                      class="link"
-                                      target="_blank"
-                                    >
-                                      {{ property.last | split: '/' | last }}
-                                    </a>
-                                  {%- else -%}
-                                    {{ property.last }}
-                                  {%- endif -%}
-                                </dd>
-                              </div>
+                              {%- if property.first == "Addon Details" -%}
+                                <div class="product-option addon-details" data-addon-json='{{ property.last | escape }}'>
+                                  <dt>Add On:</dt>
+                                  <dd>
+                                    <span class="addon-list"></span>
+                                  </dd>
+                                </div>
+                              {%- else -%}
+                                <div class="product-option">
+                                  <dt>{{ property.first }}:</dt>
+                                  <dd>{{ property.last }}</dd>
+                                </div>
+                              {%- endif -%}
                             {%- endif -%}
                           {%- endfor -%}
                         </dl>
@@ -508,6 +509,24 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.addon-details').forEach(function (el) {
+    const rawJson = el.getAttribute('data-addon-json');
+    try {
+      const addons = JSON.parse(rawJson);
+      const container = el.querySelector('.addon-list');
+
+      // Gabungkan title dengan koma
+      const titles = addons.map(addon => addon.title).join(', ');
+      container.textContent = titles;
+    } catch (e) {
+      console.error('Invalid Addon JSON', e);
+    }
+  });
+});
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
     const formatMoney = (cents) => {
       return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -544,15 +563,15 @@
             }
 
             const subtotalEl = document.querySelector('.cart__footer .totals__subtotal-value');
-if (subtotalEl) {
-  subtotalEl.textContent = formatMoney(cart.total_price);
-}
+            if (subtotalEl) {
+              subtotalEl.textContent = formatMoney(cart.total_price);
+            }
 
-// Update total (estimated total) in footer
-const totalValueEl = document.querySelector('.totals__total-value');
-if (totalValueEl) {
-  totalValueEl.textContent = formatMoney(cart.total_price);
-}
+            // Update total (estimated total) in footer
+            const totalValueEl = document.querySelector('.totals__total-value');
+            if (totalValueEl) {
+              totalValueEl.textContent = formatMoney(cart.total_price);
+            }
 
           })
           .catch((error) => {

@@ -236,6 +236,7 @@
     }
   }
 {% endstyle %}
+
 <div class="check-data-usage__container">
   <div class="check-data-usage__wrapper">
     <div class="check-data-usage__header">
@@ -306,105 +307,95 @@
       invalidPopup.style.display = 'none';
     }
 
-    function formatBytes(totalUsg) {
-      let dailyUsageText = '-';
-      if (totalUsg >= 1024 * 1024 * 1024) {
-        dailyUsageText = (totalUsg / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
-      } else if (totalUsg >= 1024 * 1024) {
-        dailyUsageText = (totalUsg / (1024 * 1024)).toFixed(2) + ' GB';
-      } else if (totalUsg >= 1024) {
-        dailyUsageText = (totalUsg / 1024).toFixed(2) + ' MB';
-      } else {
-        dailyUsageText = totalUsg + ' KB';
-      }
-      return dailyUsageText;
-    }
-
+    // ✅ Format Tanggal
     function formatDate(dateStr) {
-      if (!dateStr || dateStr.length !== 8) return dateStr || '-';
-      const year = dateStr.slice(0, 4);
-      const month = dateStr.slice(4, 6);
-      const day = dateStr.slice(6, 8);
-      return `${day}/${month}/${year}`;
+      if (!dateStr || dateStr.length !== 8) return dateStr;
+      return `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6)}`;
     }
 
-    function formatDateTime(dateTimeStr) {
-      if (!dateTimeStr) return '-';
-      const parts = dateTimeStr.split(' ')[0];
-      const [year, month, day] = parts.split('-') || [];
-      return year && month && day ? `${day}/${month}/${year}` : dateTimeStr;
+    // ✅ Fungsi Konversi Data Usage
+    function formatDataUsage(value, vendor) {
+      value = Number(value) || 0; // pastikan selalu number
+      const KB = 1024;
+      const MB = 1024 * KB;
+      const GB = 1024 * MB;
+
+      if (vendor === 'BE' || vendor === 'BS') {
+        // value dalam KB
+        if (value >= MB) {
+          return (value / MB).toFixed(2) + ' GB';
+        } else if (value >= KB) {
+          return (value / KB).toFixed(2) + ' MB';
+        } else {
+          return value.toFixed(2) + ' KB';
+        }
+      }
+
+      // Vendor AF & TE → value dalam Bytes
+      if (value >= GB) {
+        return (value / GB).toFixed(2) + ' GB';
+      } else if (value >= MB) {
+        return (value / MB).toFixed(2) + ' MB';
+      } else {
+        return (value / KB).toFixed(2) + ' KB';
+      }
     }
 
-    function formatEpochMillis(millis) {
-      if (!millis) return '-';
-      const date = new Date(Number(millis));
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      return `${day}/${month}/${year}`;
-    }
-
+    // ✅ Render SIM Info
     function renderEsimInfo(itemData, vendor) {
       return `
-      <div class="check-data-usage__esim-information">
-        <h3>SIM Card Information</h3>
-        <div class="esim-information__wrapper">
-          <p>Your Bundle</p>
-          <span>${itemData.skuName || itemData.product_name || '-'}</span>
+        <div class="check-data-usage__esim-information">
+          <h3>SIM Card Information</h3>
+          <div class="esim-information__wrapper">
+            <p>Your Bundle</p>
+            <span>${itemData.skuName || itemData.product_name || '-'}</span>
+          </div>
+          <div class="esim-information__wrapper">
+            <p>Active Date</p>
+            <span>${vendor === 'AF' ? itemData.useSDate : itemData.planStartTime}</span>
+          </div>
+          <div class="esim-information__wrapper">
+            <p>End Date</p>
+            <span>${vendor === 'AF' ? itemData.useEDate : itemData.planEndTime}</span>
+          </div>
         </div>
-        <div class="esim-information__wrapper">
-          <p>Active Date</p>
-          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useSDate) : formatDateTime(itemData.planStartTime)} ${
-        itemData.timeZone || ''
-      }</span>
-        </div>
-        <div class="esim-information__wrapper">
-          <p>End Date</p>
-          <span>${vendor === 'AF' ? formatEpochMillis(itemData.useEDate) : formatDateTime(itemData.planEndTime)} ${
-        itemData.timeZone || ''
-      }</span>
-        </div>
-      </div>
       `;
     }
 
-    function renderTotalUsage(countryUsageMap) {
+    // ✅ Render Total Usage per Country
+    function renderTotalUsage(countryUsageMap, vendor) {
       if (Object.keys(countryUsageMap).length === 0) {
-        return '<div>no data usage yet.</div>';
+        return '<div>No data usage yet.</div>';
       }
       return Object.entries(countryUsageMap)
-        .map(
-          ([country, totalBytes]) => `
-        <div class="total-data-usage__wrapper">
-          <p>${country}</p>
-          <p>${formatBytes(totalBytes)}</p>
-        </div>
-      `
-        )
+        .map(([country, totalBytes]) => `
+          <div class="total-data-usage__wrapper">
+            <p>${country}</p>
+            <p>${formatDataUsage(totalBytes, vendor)}</p>
+          </div>
+        `)
         .join('');
     }
 
+    // ✅ Render Data Usage Detail
     function renderDataUsage(dataUsage, vendor) {
       if (!dataUsage?.length) {
-        return '<p>no data usage yet.</p>';
+        return '<p>No data usage yet.</p>';
       }
 
-      return dataUsage
-        .map((item) => {
-          const country = vendor === 'AF' ? item.enus || '-' : item.country || '-';
-          const date = vendor === 'AF' ? formatDate(item.usageDate) : formatDate(item.usedDate);
-          const usage =
-            vendor === 'AF' ? formatBytes(Number(item.usage || 0)) : formatBytes(Number(item.usedAmount || 0));
+      return dataUsage.map((item) => {
+        const country = vendor === 'AF' ? (item.enus || '-') : (item.country || '-');
+        const date = vendor === 'AF' ? item.usageDate : item.usedDate;
+        const usage = vendor === 'AF' ? Number(item.usage || 0) : Number(item.usedAmount || 0);
 
-          return `
+        return `
           <div class="data-usage__wrapper">
             <p>${country}</p>
-            <p>${date}</p>
-            <p>${usage}</p>
+            <p>${formatDate(date)}</p>
+            <p>${formatDataUsage(usage, vendor)}</p>
           </div>
         `;
-        })
-        .join('');
+      }).join('');
     }
 
     function attachTopUpButtonListeners() {
@@ -454,18 +445,31 @@
         const contentType = response.headers.get('Content-Type') || '';
         const data = contentType.includes('application/json') ? await response.json() : {};
 
-        // Jika status error atau tidak ada order ditemukan, langsung tampilkan pop-up invalid
         if (data.status === 'error' || data.message === 'Order not found') {
           showInvalidPopup();
           return;
         }
+
+        let esimHtml = '';
+        let dataUsageHtml = '';
+        let totalUsageHtml = '';
+        let totalUsedBytes = 0;
+
+        let topUpBtnHtml = `
+          <div class="button-topup__usage-wrapper">
+            <span>Need more data? Buy eSIM from our website.</span>
+            <div class="btn-topup-information">
+              <button id="btn-topup__contact-button"><span>Contact CS</span></button>
+              <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
+            </div>
+          </div>
+        `;
 
         if (vendor === 'AF') {
           if (data.success && data.data) {
             const itemData = data.data;
             const dataUsage = itemData.itemList || [];
             const countryUsageMap = {};
-            let totalUsedBytes = 0;
 
             for (const item of dataUsage) {
               const country = item.enus || '-';
@@ -474,120 +478,67 @@
               totalUsedBytes += usage;
             }
 
-            let topUpBtnHtml = '';
-
-            if (vendor === 'BS' || vendor === 'BE') {
-              if (dataUsage.length) {
-                topUpBtnHtml = `<button id="top-up-plan" class="top-up-plan-btn">Top Up Plan</button>`;
-              }
-            } else {
-              topUpBtnHtml = `
-            <div class="button-topup__usage-wrapper">
-              <span>Need more data or is your data running out? You can simply buy a new eSIM from our website. If you are using a SIM card, it may be eligible for top-up. Contact our CS for more information.</span>
-              <div class="btn-topup-information">
-                <button id="btn-topup__contact-button"><span>Contact CS</span></button>
-                <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
-              </div>
-            </div>
-          `;
-            }
-
-            const esimHtml = renderEsimInfo(itemData, vendor);
-            const totalUsageHtml = renderTotalUsage(countryUsageMap);
-            const dataUsageHtml = renderDataUsage(dataUsage, vendor);
+            esimHtml = renderEsimInfo(itemData, vendor);
+            dataUsageHtml = renderDataUsage(dataUsage, vendor);
+            totalUsageHtml = renderTotalUsage(countryUsageMap, vendor);
 
             resultEl.innerHTML = `
-          ${esimHtml}
-          <div class="check-data-usage__usage-content">
-            <div style="text-align: center;">
-              <h2>Data Usage</h2>
-            </div>
-            <div class="check-data-usage__total-usage">
-              <div style="display: flex; justify-content: space-between;">
-                <h3>Total Usage:</h3>
-                <span style="font-weight: bold;">${formatBytes(Number(itemData.totalUsage || 0))}</span>
+              ${esimHtml}
+              <div class="check-data-usage__usage-content">
+                <div style="text-align: center;"><h2>Data Usage</h2></div>
+                <div class="check-data-usage__total-usage">
+                  <div style="display: flex; justify-content: space-between;">
+                    <h3>Total Usage:</h3>
+                    <span style="font-weight: bold;">${formatDataUsage(totalUsedBytes, vendor)}</span>
+                  </div>
+                  ${totalUsageHtml}
+                </div>
+                <div class="check-data-usage__data-usage">
+                  ${dataUsageHtml}
+                </div>
+                ${topUpBtnHtml}
               </div>
-              ${totalUsageHtml}
-            </div>
-            <div class="check-data-usage__data-usage">
-              ${dataUsageHtml}
-            </div>
-            ${topUpBtnHtml}
-          </div>
-        `;
-
-            attachTopUpButtonListeners();
-            return;
-          } else {
-            resultEl.innerHTML = `<p style="color:red;">Error</p>`;
-            return;
-          }
-        }
-
-        if (data.status === 'rate_limited' || data.customCode === 429) {
-          resultEl.innerHTML = `<p style="color:red;">${data.message || 'Rate limited'}</p>`;
-          return;
-        }
-
-        const itemData = data?.tradeData?.subOrderList?.[0];
-        const dataUsage = itemData?.usageInfoList || [];
-
-        if (data.tradeCode !== '1000' || !itemData) {
-          showInvalidPopup();
-          return;
-        }
-
-        const countryUsageMap = {};
-        let totalUsedBytes = 0;
-
-        for (const item of dataUsage) {
-          const country = item.country || '-';
-          const usedAmount = Number(item.usedAmount) || 0;
-          countryUsageMap[country] = (countryUsageMap[country] || 0) + usedAmount;
-          totalUsedBytes += usedAmount;
-        }
-
-        let topUpBtnHtml = '';
-
-        if (vendor === 'BS' || vendor === 'BE') {
-          if (dataUsage.length) {
-            topUpBtnHtml = `<button id="top-up-plan" class="top-up-plan-btn">Top Up Plan</button>`;
+            `;
           }
         } else {
-          topUpBtnHtml = `
-        <div style="margin-top:20px; font-size: var(--font-large); color: var(--color-primary); line-height: 1.5;">
-          <span>Need more data or is your data running out? You can simply buy a new eSIM from our website. If you are using a SIM card, it may be eligible for top-up. Contact our CS for more information.</span>
-          <div class="btn-topup-information">
-            <button id="btn-topup__contact-button"><span>Contact CS</span></button>
-            <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
-          </div>
-        </div>
-      `;
+          const itemData = data?.tradeData?.subOrderList?.[0];
+          const dataUsage = itemData?.usageInfoList || [];
+          const countryUsageMap = {};
+
+          if (data.tradeCode !== '1000' || !itemData) {
+            showInvalidPopup();
+            return;
+          }
+
+          for (const item of dataUsage) {
+            const country = item.country || '-';
+            const usedAmount = Number(item.usedAmount || 0);
+            countryUsageMap[country] = (countryUsageMap[country] || 0) + usedAmount;
+            totalUsedBytes += usedAmount;
+          }
+
+          esimHtml = renderEsimInfo(itemData, vendor);
+          dataUsageHtml = renderDataUsage(dataUsage, vendor);
+          totalUsageHtml = renderTotalUsage(countryUsageMap, vendor);
+
+          resultEl.innerHTML = `
+            ${esimHtml}
+            <div class="check-data-usage__usage-content">
+              <div style="text-align: center;"><h2>Data Usage</h2></div>
+              <div class="check-data-usage__total-usage">
+                <div style="display: flex; justify-content: space-between;">
+                  <h3>Total Usage:</h3>
+                  <span style="font-weight: bold;">${formatDataUsage(totalUsedBytes, vendor)}</span>
+                </div>
+                ${totalUsageHtml}
+              </div>
+              <div class="check-data-usage__data-usage">
+                ${dataUsageHtml}
+              </div>
+              ${topUpBtnHtml}
+            </div>
+          `;
         }
-
-        const esimHtml = renderEsimInfo(itemData, vendor);
-        const totalUsageHtml = renderTotalUsage(countryUsageMap);
-        const dataUsageHtml = renderDataUsage(dataUsage, vendor);
-
-        resultEl.innerHTML = `
-      ${esimHtml}
-      <div class="check-data-usage__usage-content">
-        <div style="text-align: center;">
-          <h2>Data Usage</h2>
-        </div>
-        <div class="check-data-usage__total-usage">
-          <div style="display: flex; justify-content: space-between;">
-            <h3>Total Usage:</h3>
-            <span style="font-weight: bold;">${formatBytes(totalUsedBytes)}</span>
-          </div>
-          ${totalUsageHtml}
-        </div>
-        <div class="check-data-usage__data-usage">
-          ${dataUsageHtml}
-        </div>
-        ${topUpBtnHtml}
-      </div>
-    `;
 
         attachTopUpButtonListeners();
       } catch (e) {
@@ -615,9 +566,6 @@
 
         if (iccid) {
           sessionStorage.setItem('iccid', iccid);
-          console.log('ICCID berhasil disimpan ke sessionStorage:', iccid);
-        } else {
-          console.log('ICCID kosong, tidak disimpan ke sessionStorage.');
         }
 
         window.location.href = 'https://gkomunika.com/pages/top-up';

@@ -4,35 +4,36 @@
         margin: 0 auto;
     }
     .product-category__wrapper {
-        padding: 20px 10%;
+        padding: 30px 10% 0;
     }
     .product-category__content {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        display: flex;
         gap: 15px;
     }
     .product-category__items {
-        flex: 1;
-        padding: 15px;
-        width: 100%;
-        height: 100px;
+        padding: 10px;
         border-radius: 15px;
-        background-color: var(--color-neutral);
+        background-color: var(--color-primary);
         border: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
     }
     .product-category__items span {
-        color: var(--color-primary);
-        font-size: var(--font-supper-large);
+        color: var(--color-neutral);
+        font-size: var(--font-extra-large);
         font-weight: bold;
+        text-align: left;
     }
 {% endstyle %}
 
 <section class="product-category__container">
     <div class="product-category__wrapper">
         <div class="product-category__content">
-            <button class="product-category__items"><span>eSIM</span></button>
-            <button class="product-category__items"><span>SIM Card</span></button>
-            <button class="product-category__items"><span>Insurance</span></button>
+            <button class="product-category__items">{{- 'qrcode-category.svg' | inline_asset_content -}}<span>eSIM</span></button>
+            <button class="product-category__items">{{- 'simcard-category.svg' | inline_asset_content -}}<span>SIM<br>Card</span></button>
+            <button class="product-category__items">{{- 'insurance-category.svg' | inline_asset_content -}}<span>Insurance</span></button>
         </div>
     </div>
 </section>

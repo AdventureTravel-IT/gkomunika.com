@@ -7,6 +7,16 @@
     <meta name="theme-color" content="">
     <link rel="canonical" href="{{ canonical_url }}">
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-24YQ410KN2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-24YQ410KN2');
+    </script>
+
     {{ 'critical.css' | asset_url | stylesheet_tag }}
 
     {% if template == 'product' %}

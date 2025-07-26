@@ -1,527 +1,58 @@
-{% style %}
-  .pages-container {
-    max-width: 1920px;
-    margin: 0 auto;
+{{ 'section-main-page.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
   }
 
-  .pages-wrapper {
-    display: flex;
-    flex-wrap: nowrap;
-    padding: 50px 10% 10%;
-    gap: 50px;
-  }
-
-  /* Style Summary */
-  .pages-summary {
-    width: 100%;
-    flex-shrink: 0;
-    position: sticky;
-    top: 20px;
-    align-self: flex-start;
-    height: fit-content;
-  }
-
-  .page-summary__wrapper {
-    margin: 0;
-    padding: 0;
-  }
-
-  #summary {
-    /* list-style-type: none; */
-    margin-left: 17px;
-    color: var(--color-primary);
-  }
-
-  #summary li {
-    margin-top: 10px;
-  }
-
-  #summary li a {
-    color: var(--color-primary);
-    font-size: var(--font-large);
-    transition: transform 0.3s;
-    text-decoration: none;
-  }
-  #summary li a.active {
-    color: var(--color-secondary);
-  }
-  #summary li a:hover {
-    color: var(--color-secondary);
-  }
-
-
-  /* Style Content */
-  .pages-content {
-
-
-    flex: 2;
-    min-width: 0;
-  }
-  .pages-content__latest {
-    display: flex;
-    gap: 20px;
-    margin-top: 50px;
-  }
-
-  .pages-content__prev-container,
-  .pages-content__next-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .pages-content__prev,
-  .pages-content__next {
-    flex: 1;
-    background-color: var(--color-neutral);
-    border-radius: 15px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-  }
-
-
-  .pages-content__next-container h2 {
-    text-align: right;
-  }
-
-  .pages-content__title {
-    font-size: var(--font-supper-large);
-    color: var(--color-primary);
-    margin: 10px 0;
-    line-height: 1.5;
-  }
-
-  .pages-content__prev img,
-  .pages-content__next img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    aspect-ratio: 3 / 2;
-    border-radius: 10px;
-    border: 1px solid var(--color-border);
-  }
-
-  .pages-content__prev a,
-  .pages-content__next a {
-    text-decoration: none;
-  }
-
-  .page-content__title {
-    color: var(--color-primary);
-    font-weight: bold;
-    margin-top: 0;
-  }
-
-  .pages-content__wrapper {
-    background-color: var(--color-neutral);
-    padding: 15px 30px;
-    border-radius: 15px;
-  }
-
-  .page-content__wrapper {
-    color: var(--color-primary);
-  }
-
-  .page-content__wrapper h2 {
-    color: var(--color-primary);
-    font-weight: bold;
-  }
-  .page-content__wrapper h3 {
-    color: var(--color-primary);
-    font-weight: bold;
-  }
-
-  .page-content__wrapper img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 15px;
-  }
-
-  /* Style Product */
-  .pages-product {
-    width: 1200px;
-    display: flex;
-    gap: 50px;
-    flex-direction: column;
-    position: sticky;
-    top: 20px;
-    align-self: flex-start;
-    height: fit-content;
-    flex-shrink: 0;
-  }
-
-  .pages-related__product {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .pages-product__image {
-    display: flex;
-    align-items: center;
-  }
-
-  .pages-product__image img {
-    border-radius: 10px;
-    border: 1px solid var(--color-border);
-  }
-
-  .pages-product__link {
-    text-decoration: none;
-  }
-
-  .pages-product__wrapper {
-    background-color: var(--color-neutral);
-    border-radius: 10px;
-    padding: 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    transition: transform 0.3s ease;
-  }
-
-  .pages-product__wrapper:hover {
-    box-shadow: var(--box-shadow);
-    transform: translateY(-5px);
-  }
-
-  .pages-product__info p {
-    margin: 0;
-    line-height: 1.2;
-  }
-
-  .pages-product__title {
-    color: var(--color-primary);
-  }
-
-  .pages-product__price {
-    color: var(--color-secondary);
-  }
-
-  .pages-title {
-    color: var(--color-primary);
-    font-size: 22px;
-    font-weight: bold;
-    margin: 0;
-  }
-
-  /* Style Pages Article */
-  .pages-article {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .pages-article__title {
-    margin: 0;
-    font-size: var(--font-supper-large);
-    color: var(--color-primary);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: var(--font-extra-large);
-    font-weight: bold;
-  }
-
-  .pages-article__wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .related-article {
-    background-color: var(--color-neutral);
-    border-radius: 15px;
-    transition: transform 0.3s ease;
-  }
-
-  .related-article:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--box-shadow);
-  }
-
-  .related-article a {
-    padding: 10px;
-    display: flex;
-    gap: 10px;
-    text-decoration: none;
-  }
-
-  .related-article img {
-    width: auto;
-    height: 70px;
-    aspect-ratio: 3 / 2;
-    border-radius: 15px;
-    border: 1px solid var(--color-border);
-  }
-
-  .pages-article__date {
-    margin: 0;
-    line-height: 1.5;
-    color: var(--color-secondary);
-  }
-
-  /* Responsive Layout */
-  @media (max-width: 1024px) {
-    .pages-wrapper {
-      flex-direction: column;
-    }
-
-    .pages-summary,
-    .pages-content,
-    .pages-article {
-      width: 100%;
-      position: static;
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
-  @media (max-width: 426px) {
-    .pages-wrapper {
-      flex-direction: column;
-      padding: 20px 24px 24px;
-    }
-    .pages-content__latest {
-      display: flex;
-      flex-direction: column;
-    }
-    .pages-content__next-container h2 {
-      text-align: left;
-    }
-    .pages-summary {
-      display: none;
-    }
-  }
-{% endstyle %}
+{%- endstyle -%}
 
-
-<div class="pages-container">
-  <div class="pages-wrapper">
-
-    <section class="pages-content">
-      <div class="pages-content__wrapper">
-        <h1 class="page-content__title">{{ page.title | escape }}</h1>
-        <div class="page-content__wrapper">{{ page.content }}</div>
-      </div>
-      <div class="pages-content__latest">
-
-        {% if page.metafields.prev.pages %}
-          <div class="pages-content__prev-container">
-            <h2 class="pages-content__title">Previous Article</h2>
-            <div class="pages-content__prev">
-              {% for related_page in page.metafields.prev.pages.value %}
-                <a href="{{ related_page.url }}">
-                  {% assign first_image = related_page.content | split: '<img' | last | split: 'src="' | last | split: '"' | first %}
-                  {% if first_image contains 'http' %}
-                    <img src="{{ first_image }}" alt="{{ related_page.title }}">
-                  {% endif %}
-                  <div>
-                    <h3 class="pages-article__title" title="{{ related_page.title }}">{{ related_page.title }}</h3>
-                    <p class="pages-article__date">{{ related_page.published_at | date: '%d %B %Y' }}</p>
-                  </div>
-                </a>
-              {% endfor %}
-            </div>
-          </div>
-        {% endif %}
-
-        {% if page.metafields.next.pages %}
-          <div class="pages-content__next-container">
-            <h2 class="pages-content__title">Next Article</h2>
-            <div class="pages-content__next">
-              {% for related_page in page.metafields.next.pages.value %}
-                <a href="{{ related_page.url }}">
-                  {% assign first_image = related_page.content | split: '<img' | last | split: 'src="' | last | split: '"' | first %}
-                  {% if first_image contains 'http' %}
-                    <img src="{{ first_image }}" alt="{{ related_page.title }}">
-                  {% endif %}
-                  <div>
-                    <h3 class="pages-article__title" title="{{ related_page.title }}">{{ related_page.title }}</h3>
-                    <p class="pages-article__date">{{ related_page.published_at | date: '%d %B %Y' }}</p>
-                  </div>
-                </a>
-              {% endfor %}
-            </div>
-          </div>
-        {% endif %}
-
-      </div>
-
-    </section>
-
-
-    <section class="pages-article">
-      {% if page.metafields.latest.article %}
-        <h2 class="pages-title">Related Articles</h2>
-        <div class="pages-article__wrapper">
-          {% for related_page in page.metafields.latest.article.value %}
-            <div class="related-article">
-              <a href="{{ related_page.url }}">
-                {% assign content = related_page.content | strip_html %}
-                {% assign first_image = related_page.content | split: '<img' | last | split: 'src="' | last | split: '"' | first %}
-                {% if first_image contains 'http' %}
-                  <img src="{{ first_image }}" alt="{{ related_page.title }}">
-                {% endif %}
-                <div>
-                  <h3 class="pages-article__title" title="{{ page.title }}">{{ related_page.title }}</h3>
-                  <h3 class="pages-article__date">{{ page.published_at | date: '%d %B %Y' }}</h3>
-                </div>
-              </a>
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-
-      <section class="pages-summary">
-        <h2 class="pages-title">Article Summary</h2>
-        <ul class="page-summary__wrapper">
-          <li id="summary"></li>
-        </ul>
-      </section>
-
-    </section>
-
-
-  {% comment %} <section class="pages-product">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          {% assign related_product = page.metafields.related.product %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          {% assign country = product.metafields.coverage.country.value %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          {% assign recomendation_product = page.metafields.recomendation.product %}
-                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="pages-related__product">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <h2>Related Products</h2>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            {% if related_product %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              {% for related_product in related_product.value %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                {% assign country = related_product.metafields.coverage.country.value.first %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="pages-product__link" href="{{ related_product.url }}">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div class="pages-product__wrapper">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="pages-product__image">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {% if country %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {% endif %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="pages-product__info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <p class="pages-product__title">{{ related_product.title }}</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <p class="pages-product__price">Start From {{ related_product.price | money_with_currency }}</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              {% endfor %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            {% endif %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </div>
-                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="pages-related__product">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <h2>Recommendation Products</h2>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            {% if page.metafields.recomendation.product %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              {% assign collection = page.metafields.recomendation.product.value %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              {% assign products = collection.products %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              {% for product in products limit: 5 %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                {% assign country = product.metafields.coverage.country.value.first %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="pages-product__link" href="{{ product.url }}">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div class="pages-product__wrapper">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="pages-product__image">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {% if country %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {% endif %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="pages-product__info">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <p class="pages-product__title">{{ product.title }}</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <p class="pages-product__price">Start From {{ product.price | money_with_currency }}</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              {% endfor %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            {% endif %}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </div>
-                                                                                                                                                                                                                                                              </section> {% endcomment %}
+<div class="page-width page-width--narrow section-{{ section.id }}-padding">
+  <h1 class="main-page-title page-title h0{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+    {{ page.title | escape }}
+  </h1>
+  <div class="rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    {{ page.content }}
   </div>
 </div>
 
-<script>
-   document.addEventListener('DOMContentLoaded', () => {
-  const headings = document.querySelectorAll('.page-content__wrapper h2');
-  const summary = document.getElementById('summary');
-  const summarySection = document.querySelector('.pages-summary');
-  
-  // Buat TOC
-  headings.forEach((heading, i) => {
-    const id = `section-${i}`;
-    heading.id = id;
-    summary.innerHTML += `<li><a href="#${id}">${heading.textContent}</a></li>`;
-  });
-  
-  // Jika tidak ada list item (summary kosong), sembunyikan section summary
-  if (summary.children.length === 0) {
-    summarySection.style.display = 'none';
-  }
-  
-  const links = summary.querySelectorAll('a');
-  
-  links.forEach((link) => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      links.forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-      document.querySelector(link.getAttribute('href')).scrollIntoView({
-        behavior: 'smooth'
-      });
-    });
-  });
-  
-  // Scroll observer untuk update TOC aktif
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px 0px -60% 0px',
-    threshold: 0
-  };
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const id = entry.target.id;
-      const tocLink = summary.querySelector(`a[href="#${id}"]`);
-  
-      if (entry.isIntersecting) {
-        links.forEach(l => l.classList.remove('active'));
-        if (tocLink) tocLink.classList.add('active');
-      }
-    });
-  }, observerOptions);
-  
-  headings.forEach((heading) => observer.observe(heading));
-  });
-</script>
-
-
 {% schema %}
-  {
-    "name": "t:sections.main-page.name",
-    "tag": "section",
-    "class": "section",
-    "settings": [
-      {
-        "type": "header",
-        "content": "t:sections.all.padding.section_padding_heading"
-      }, {
-        "type": "range",
-        "id": "padding_top",
-        "min": 0,
-        "max": 100,
-        "step": 4,
-        "unit": "px",
-        "label": "t:sections.all.padding.padding_top",
-        "default": 36
-      }, {
-        "type": "range",
-        "id": "padding_bottom",
-        "min": 0,
-        "max": 100,
-        "step": 4,
-        "unit": "px",
-        "label": "t:sections.all.padding.padding_bottom",
-        "default": 36
-      }
-    ]
-  }
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
 {% endschema %}

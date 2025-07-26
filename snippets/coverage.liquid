@@ -170,7 +170,7 @@
           width="50"
           height="50"
           loading="lazy">
-        <h3>{{ formatted_country }}</h3>
+        <h3>{{ formatted_country |  replace: '_',' '  }}</h3>
       </li>
     </div>
   {% endfor %}

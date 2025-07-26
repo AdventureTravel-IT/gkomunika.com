@@ -54,8 +54,10 @@
       <div class="banner-search__form">
         {% if template.suffix == 'top-up' %}
           {% render 'search-bar-topup' %}
-        {%  else %}
-        {% render 'search-bar' %}
+        {% elsif template.suffix == 'product-category' %}
+          {% render 'search-bar-category' %}
+        {% else %}
+          {% render 'search-bar' %}
         {% endif %}
       </div>
     </div>

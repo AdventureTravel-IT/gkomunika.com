@@ -249,6 +249,9 @@
     font-size: var(--font-supper-large);
     color: var(--color-primary);
   }
+  .main-search-container { opacity: 0; transition: opacity 0.3s ease; }
+  body.loaded .main-search-container { opacity: 1; }
+
   @media (max-width: 1600px) {
     .product-card-wrapper {
       grid-template-columns: repeat(3, 1fr);
@@ -276,138 +279,105 @@
 
 {% comment %} # JAVASCRIPT SECTION {% endcomment %}
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Flip card functionality (existing)
-    document.querySelectorAll('.flipped-trigger').forEach(function (button) {
-      button.addEventListener('click', function (event) {
-        event.stopPropagation();
-        let card = this.closest('.product-card-container');
-        card.classList.toggle('flipped');
-      });
-    });
-    document.addEventListener('click', function (event) {
-      document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
-        if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
-          card.classList.remove('flipped');
-        }
-      });
-    });
-
-    // SIM Type Filter buttons
-    const filterButtonsContainer = document.querySelector('.sim-filter-buttons');
-    if (!filterButtonsContainer) return;
-
-    const buttons = filterButtonsContainer.querySelectorAll('button');
-    const collectionWrappers = document.querySelectorAll('.main-search-collection-wrapper');
-
-    buttons.forEach((button) => {
-      button.addEventListener('click', () => {
-        buttons.forEach((btn) => btn.classList.remove('active'));
-        button.classList.add('active');
-
-        const filter = button.getAttribute('data-filter');
-
-        // Show/hide products
-        document.querySelectorAll('.product-card-container').forEach((productCard) => {
-          if (filter === 'all') {
-            productCard.style.display = 'flex';
-          } else {
-            if (productCard.classList.contains('sim-type-' + filter)) {
-              productCard.style.display = 'flex';
-            } else {
-              productCard.style.display = 'none';
-            }
-          }
-        });
-
-        // Show/hide collection wrappers based on visible products inside them
-        collectionWrappers.forEach((wrapper) => {
-          const products = wrapper.querySelectorAll('.product-card-container');
-          const anyVisible = Array.from(products).some((p) => p.style.display !== 'none');
-          wrapper.style.display = anyVisible ? 'block' : 'none';
-        });
-      });
+document.addEventListener('DOMContentLoaded', function () {
+  /*** Flip Card Functionality ***/
+  document.querySelectorAll('.flipped-trigger').forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      event.stopPropagation();
+      let card = this.closest('.product-card-container');
+      card.classList.toggle('flipped');
     });
   });
+
+  document.addEventListener('click', function (event) {
+    document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
+      if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
+        card.classList.remove('flipped');
+      }
+    });
+  });
+
+  /*** SIM Type Filter Buttons with URL Param Handling ***/
+  const params = new URLSearchParams(window.location.search);
+  const simTypeParam = params.get('sim_type'); // contoh: esim, sim-card, insurance
+
+  const filterButtonsContainer = document.querySelector('.sim-filter-buttons');
+  const buttons = filterButtonsContainer ? filterButtonsContainer.querySelectorAll('button') : [];
+  const productCards = document.querySelectorAll('.product-card-container');
+
+  // Fungsi untuk filter produk
+  function filterProducts(activeFilter) {
+    productCards.forEach(card => {
+      const cardSimType = card.className.match(/sim-type-([^\s]+)/);
+      const cardType = cardSimType ? cardSimType[1] : '';
+
+      if (activeFilter === 'all' || activeFilter === cardType) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // Tentukan filter awal
+  let activeFilter = 'all';
+  if (simTypeParam) {
+    // Normalisasi param: lowercase & ganti spasi/underscore jadi dash
+    activeFilter = simTypeParam.toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
+  }
+
+  // Set tombol active sesuai param
+  buttons.forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-filter') === activeFilter) {
+      btn.classList.add('active');
+    }
+  });
+
+  // Jalankan filter pertama kali
+  filterProducts(activeFilter);
+  document.body.classList.add('loaded');
+
+  // Klik tombol manual untuk ganti filter
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      const selectedFilter = button.getAttribute('data-filter');
+      filterProducts(selectedFilter);
+    });
+  });
+});
 </script>
+
 
 {% comment %} # TEMPLATE SECTION {% endcomment %}
 <div class="main-search">
   <div class="main-search-container">
-    {% assign search_term = search.terms | downcase | strip %}
-    {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection' | split: ',' %}
+    {% assign collections_to_check = 'single-country,multi-country' | split: ',' %}
     {% assign found_any_product = false %}
-    {% assign single_product_url = '' %}
-    {% assign product_count = 0 %}
-
-    {%- comment -%} Loop pertama: kumpulkan semua tipe SIM unik dari produk hasil pencarian {%- endcomment -%}
     {% assign sim_types = '' %}
 
+    {%- comment -%} Loop pertama: kumpulkan semua tipe SIM unik {%- endcomment -%}
     {% for collection_key in collections_to_check %}
-      {% assign collection = collections[section.settings[collection_key]] %}
+      {% assign collection = collections[collection_key] %}
       {% if collection %}
         {% for product in collection.products %}
-          {% assign product_alias = product.metafields.coverage.alias | downcase | strip %}
-          {% assign product_alias_2 = product.metafields.coverage.alias_2 | downcase | strip %}
-          {% assign product_title = product.title | downcase | strip %}
-          {% assign product_countries = product.metafields.coverage.country.value %}
-          {% assign product_countries_2 = product.metafields.coverage.country_2.value %}
           {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-          {% assign matched_countries = '' %}
-          {% assign matched_countries_2 = '' %}
-
-          {% assign match_region = false %}
-          {% assign product_regions = product.metafields.coverage.region.value %}
-          {% if product_regions %}
-            {% for region in product_regions %}
-              {% assign region_clean = region | downcase | strip %}
-              {% if region_clean == search_term %}
-                {% assign match_region = true %}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-
-          {% if collection_key == 'global_country_collection' or collection_key == 'multi_country_collection' %}
-            {% for country in product_countries %}
-              {% assign country_downcase = country | downcase | strip %}
-              {% if country_downcase contains search_term %}
-                {% assign matched_countries = matched_countries | append: country | append: ', ' %}
-              {% endif %}
-            {% endfor %}
-            {% if product_countries_2 %}
-              {% for country2 in product_countries_2 %}
-                {% assign country2_downcase = country2 | downcase | strip %}
-                {% if country2_downcase contains search_term %}
-                  {% assign matched_countries_2 = matched_countries_2 | append: country2 | append: ', ' %}
-                {% endif %}
-              {% endfor %}
-            {% endif %}
-          {% endif %}
-
-          {% if product_alias contains search_term
-            or product_alias_2 contains search_term
-            or product_title contains search_term
-            or matched_countries != ''
-            or matched_countries_2 != ''
-            or match_region
-          %}
-            {% assign found_any_product = true %}
-            {% unless sim_types contains product_category %}
-              {% assign sim_types = sim_types | append: product_category | append: ',' %}
-            {% endunless %}
-          {% endif %}
+          {% unless sim_types contains product_category %}
+            {% assign sim_types = sim_types | append: product_category | append: ',' %}
+          {% endunless %}
         {% endfor %}
       {% endif %}
     {% endfor %}
 
     {% assign sim_types_array = sim_types | split: ',' %}
+    {% assign sim_types_array_sorted = sim_types_array | sort %}
 
     {%- comment -%} Render filter buttons {%- endcomment -%}
     <div class="sim-filter-buttons">
       <button class="filter-btn active" data-filter="all">All</button>
-
-      {% assign sim_types_array_sorted = sim_types_array | sort %}
-
       {% for sim_type in sim_types_array_sorted %}
         {% assign sim_type_trim = sim_type | strip %}
         {% if sim_type_trim != '' and sim_type_trim != 'Undefined' %}
@@ -422,7 +392,6 @@
         {% endif %}
       {% endfor %}
 
-      <!-- Now add the "Insurance" button at the end -->
       {% for sim_type in sim_types_array_sorted %}
         {% if sim_type == 'Insurance' %}
           <button class="filter-btn" data-filter="{{ sim_type | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
@@ -432,67 +401,35 @@
       {% endfor %}
     </div>
 
-    {%- comment -%} Loop kedua: render produk dan heading collection hanya jika ada produk {%- endcomment -%}
+    {%- comment -%} Render produk dari collection hardcode {%- endcomment -%}
     {% for collection_key in collections_to_check %}
-      {% assign collection = collections[section.settings[collection_key]] %}
-      {% assign found_product = false %}
-      {% assign product_output = '' %}
-
+      {% assign collection = collections[collection_key] %}
       {% if collection %}
+        {% assign product_output = '' %}
         {% for product in collection.products %}
-          {% assign product_alias = product.metafields.coverage.alias | downcase | strip %}
-          {% assign product_alias_2 = product.metafields.coverage.alias_2 | downcase | strip %}
-          {% assign product_title = product.title | downcase | strip %}
-          {% assign product_countries = product.metafields.coverage.country.value %}
-          {% assign product_countries_2 = product.metafields.coverage.country_2.value %}
+          {% assign found_any_product = true %}
           {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-          {% assign matched_countries = '' %}
-          {% assign matched_countries_2 = '' %}
+          {% assign product_countries = product.metafields.coverage.country.value %}
 
-          {% assign match_region = false %}
-          {% assign product_regions = product.metafields.coverage.region.value %}
-          {% if product_regions %}
-            {% for region in product_regions %}
-              {% assign region_clean = region | downcase | strip %}
-              {% if region_clean == search_term %}
-                {% assign match_region = true %}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
+          {% capture product_card %}
+{% assign search_keys = product.metafields.search.key.value %}
+{% assign country_name = '' %}
+{% assign alias_string = '' %}
 
-          {% if collection_key == 'global_country_collection' or collection_key == 'multi_country_collection' %}
-            {% for country in product_countries %}
-              {% assign country_downcase = country | downcase | strip %}
-              {% if country_downcase contains search_term %}
-                {% assign matched_countries = matched_countries | append: country | append: ', ' %}
-              {% endif %}
-            {% endfor %}
-            {% if product_countries_2 %}
-              {% for country2 in product_countries_2 %}
-                {% assign country2_downcase = country2 | downcase | strip %}
-                {% if country2_downcase contains search_term %}
-                  {% assign matched_countries_2 = matched_countries_2 | append: country2 | append: ', ' %}
-                {% endif %}
-              {% endfor %}
-            {% endif %}
-          {% endif %}
+{% if search_keys != blank %}
+  {% for search_key in search_keys %}
+    {% assign country_name = country_name | append: search_key.country.value | append: ',' %}
+    {% if search_key.alias.value %}
+      {% assign alias_clean = search_key.alias.value | join: ',' %}
+      {% assign alias_string = alias_string | append: alias_clean | append: ',' %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
-          {% if product_alias contains search_term
-            or product_alias_2 contains search_term
-            or product_title contains search_term
-            or matched_countries != ''
-            or matched_countries_2 != ''
-            or match_region
-          %}
-            {% assign found_product = true %}
-            {% assign found_any_product = true %}
-            {% assign product_count = product_count | plus: 1 %}
-            {% assign single_product_url = product.url %}
+<div class="product-card-container sim-type-{{ product_category | replace: '_', ' ' | downcase | replace: ' ', '-' }}"
+     data-country="{{ country_name | strip | downcase }}"
+     data-alias="{{ alias_string | strip | downcase }}">
 
-            {% assign all_matched_countries = matched_countries | append: matched_countries_2 %}
-
-            {% capture product_card %}
-<div class="product-card-container sim-type-{{ product_category | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
   <a class="product-url-link" href="{{ product.url }}">
     <div class="product-card-country">
       {% assign total_countries = product_countries.size %}
@@ -598,12 +535,10 @@
   </div>
 </div>
 {% endcapture %}
-
-            {% assign product_output = product_output | append: product_card %}
-          {% endif %}
+          {% assign product_output = product_output | append: product_card %}
         {% endfor %}
 
-        {% if found_product %}
+        {% if product_output != '' %}
           <div class="main-search-collection-wrapper" id="collection-{{ collection_key }}">
             <h1 class="main-search-collection title">{{ collection.title }}</h1>
             <div class="main-search-collection">
@@ -618,56 +553,21 @@
 
     {% unless found_any_product %}
       <div class="main-search__error">
-        <p>No products found for "{{ search.terms }}"</p>
+        <p>No products found.</p>
       </div>
     {% endunless %}
-
-    {% if product_count == 1 %}
-      <script>
-        window.location.href = '{{ single_product_url }}';
-      </script>
-    {% endif %}
   </div>
 </div>
 
-{% comment %} # SCHEMA SECTION {% endcomment %}
 {% schema %}
-{
-  "name": "Main Search",
-  "settings": [
-    {
-      "type": "text",
-      "label": "Single Country Title",
-      "id": "title_single",
-      "default": "Single Country"
-    },
-    {
-      "type": "collection",
-      "label": "Single Country Collection",
-      "id": "single_country_collection"
-    },
-    {
-      "type": "text",
-      "label": "Multi Country Title",
-      "id": "title_multi",
-      "default": "Multi Country"
-    },
-    {
-      "type": "collection",
-      "label": "Multi Country Collection",
-      "id": "multi_country_collection"
-    },
-    {
-      "type": "text",
-      "label": "Global Country Title",
-      "id": "title_global",
-      "default": "Global Country"
-    },
-    {
-      "type": "collection",
-      "label": "Global Country Collection",
-      "id": "global_country_collection"
-    }
-  ]
-}
+  {
+    "name": "Product Category Pages",
+    "settings": [],
+    "presets": [
+      {
+        "name": "Product Category Pages",
+        "category": "Custom"
+      }
+    ]
+  }
 {% endschema %}

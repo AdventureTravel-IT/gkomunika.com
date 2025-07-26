@@ -84,47 +84,42 @@
 </div>
 
 <script>
-  function filterCountries() {
-    const input = document.getElementById("search-input-category").value.trim().toLowerCase();
-    const productCards = document.querySelectorAll(".product-card-container");
-    const message = document.getElementById("no-results-message");
-    const title = document.querySelector(".main-search-collection.title");
+function filterCountries() {
+  const keyword = document.getElementById('search-input-category').value.toLowerCase().trim();
+  const simActiveBtn = document.querySelector('.sim-filter-buttons button.active');
+  const simFilter = simActiveBtn ? simActiveBtn.getAttribute('data-filter') : 'all';
 
-    if (input === "") {
-      // Reset → tampilkan semua produk + judul
-      productCards.forEach(card => {
-        card.style.display = "";
-      });
-      message.style.display = "none";
-      if (title) title.style.display = "";
-      return;
-    }
+  const productCards = document.querySelectorAll('.product-card-container');
+  const collectionWrappers = document.querySelectorAll('.main-search-collection-wrapper');
 
-    let foundAny = false;
+  productCards.forEach(card => {
+    const countryData = card.getAttribute('data-country') || '';
+    const aliasData = card.getAttribute('data-alias') || '';
 
-    productCards.forEach((card) => {
-      const country = (card.dataset.coverageCountry || "").toLowerCase();
-      const alias = (card.dataset.coverageAlias || "").toLowerCase();
-      const region = (card.dataset.coverageRegion || "").toLowerCase();
+    let matchKeyword = false;
 
-      if (
-        country.includes(input) ||
-        alias.includes(input) ||
-        region.includes(input)
-      ) {
-        card.style.display = "";
-        foundAny = true;
-      } else {
-        card.style.display = "none";
-      }
-    });
-
-    if (!foundAny) {
-      message.style.display = "flex";
-      if (title) title.style.display = "none";
+    if (!keyword) {
+      matchKeyword = true; // Jika keyword kosong, match semua
     } else {
-      message.style.display = "none";
-      if (title) title.style.display = "";
+      if (countryData.includes(keyword) || aliasData.includes(keyword)) {
+        matchKeyword = true;
+      }
     }
-  }
+
+    let matchSim = (simFilter === 'all') || card.classList.contains('sim-type-' + simFilter);
+
+    if (matchKeyword && matchSim) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  // Update visibility collection wrapper
+  collectionWrappers.forEach(wrapper => {
+    const products = wrapper.querySelectorAll('.product-card-container');
+    const anyVisible = Array.from(products).some(p => p.style.display !== 'none');
+    wrapper.style.display = anyVisible ? 'block' : 'none';
+  });
+}
 </script>

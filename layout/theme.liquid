@@ -9,13 +9,22 @@
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-24YQ410KN2"></script>
-    <script src="https://www.googletagmanager.com/gtag/js?id=G-N6XWQBS7NY"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N6XWQBS7NY"></script>
+
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
       gtag('config', 'G-24YQ410KN2');
+    </script>
+    
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-N6XWQBS7NY');
     </script>
 
     {{ 'critical.css' | asset_url | stylesheet_tag }}

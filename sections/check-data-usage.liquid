@@ -119,6 +119,9 @@
   }
 
   .button-topup__usage-wrapper {
+    padding: 15px;
+    border-radius: 15px;
+    background-color: var(--color-neutral);
     margin-top: 20px;
     font-size: var(--font-extra-large);
     color: var(--color-primary);
@@ -170,7 +173,6 @@
   }
 
   .check-data-usage__total-usage {
-    border-bottom: 3px solid var(--color-border);
     margin-bottom: 15px;
   }
 
@@ -362,6 +364,22 @@
       `;
     }
 
+    function renderTopUpButton() {
+      return `<button id="top-up-plan" class="top-up-plan-btn">Top Up</button>`;
+    }
+
+    function renderBuyEsimButtons() {
+      return `
+        <div class="button-topup__usage-wrapper">
+          <span>Need more data? Buy eSIM from our website.</span>
+          <div class="btn-topup-information">
+            <button id="btn-topup__contact-button"><span>Contact CS</span></button>
+            <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
+          </div>
+        </div>
+      `;
+    }
+
     // ✅ Render Total Usage per Country
     function renderTotalUsage(countryUsageMap, vendor) {
       if (Object.keys(countryUsageMap).length === 0) {
@@ -455,16 +473,7 @@
         let totalUsageHtml = '';
         let totalUsedBytes = 0;
 
-        let topUpBtnHtml = `
-          <div class="button-topup__usage-wrapper">
-            <span>Need more data? Buy eSIM from our website.</span>
-            <div class="btn-topup-information">
-              <button id="btn-topup__contact-button"><span>Contact CS</span></button>
-              <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
-            </div>
-          </div>
-        `;
-
+        // ✅ Vendor AF
         if (vendor === 'AF') {
           if (data.success && data.data) {
             const itemData = data.data;
@@ -482,6 +491,11 @@
             dataUsageHtml = renderDataUsage(dataUsage, vendor);
             totalUsageHtml = renderTotalUsage(countryUsageMap, vendor);
 
+            const buttonHtml =
+              dataUsage.length > 0 || itemData.useSDate || itemData.useEDate
+                ? renderTopUpButton()
+                : renderBuyEsimButtons();
+
             resultEl.innerHTML = `
               ${esimHtml}
               <div class="check-data-usage__usage-content">
@@ -496,17 +510,101 @@
                 <div class="check-data-usage__data-usage">
                   ${dataUsageHtml}
                 </div>
-                ${topUpBtnHtml}
+                ${buttonHtml}
               </div>
             `;
+          } else {
+            resultEl.innerHTML = renderBuyEsimButtons();
           }
-        } else {
+        }
+
+        // ✅ Vendor TE
+        else if (vendor === 'TE') {
+          if (data.code !== '0000' || !data.data) {
+            showInvalidPopup();
+            return;
+          }
+
+          const detail = data.data.detail || {};
+          const usage = data.data.usage || {};
+          const productName = data.data.product_name || '-';
+
+          function formatTEData(value) {
+            if (value === 'unlimited') return 'Unlimited';
+            const val = parseFloat(value) || 0;
+            if (val >= 1024) {
+              return (val / 1024).toFixed(2) + ' GB';
+            } else {
+              return val.toFixed(2) + ' MB';
+            }
+          }
+
+          const esimHtml = `
+            <div class="check-data-usage__esim-information">
+              <h3>SIM Card Information</h3>
+              <div class="esim-information__wrapper">
+                <p>Your Bundle</p>
+                <span>${productName}</span>
+              </div>
+              <div class="esim-information__wrapper">
+                <p>Device</p>
+                <span>${detail.installDevice || '-'}</span>
+              </div>
+              <div class="esim-information__wrapper">
+                <p>Installed On</p>
+                <span>${detail.installTime || '-'}</span>
+              </div>
+              <div class="esim-information__wrapper">
+                <p>Status</p>
+                <span>${detail.state || '-'}</span>
+              </div>
+            </div>
+          `;
+
+          const dataUsageHtml = `
+            <div class="check-data-usage__usage-content">
+              <div style="text-align: center;"><h2>Data Usage</h2></div>
+              <div class="check-data-usage__total-usage">
+                <div style="display: flex; justify-content: space-between;">
+                  <h3>Total:</h3>
+                  <span style="font-weight: bold;">${formatTEData(usage.dataTotal)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <h3>Used:</h3>
+                  <span style="font-weight: bold;">${formatTEData(usage.dataUsage)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <h3>Remaining:</h3>
+                  <span style="font-weight: bold;">${formatTEData(usage.dataResidual)}</span>
+                </div>
+              </div>
+            </div>
+          `;
+
+          const buttonHtml =
+            detail.state === 'Enable'
+              ? renderTopUpButton()
+              : renderBuyEsimButtons();
+
+          resultEl.innerHTML = `
+            ${esimHtml}
+            ${dataUsageHtml}
+            ${buttonHtml}
+          `;
+
+          attachTopUpButtonListeners();
+          return;
+        }
+
+        // ✅ Vendor BE / BS
+        else {
           const itemData = data?.tradeData?.subOrderList?.[0];
           const dataUsage = itemData?.usageInfoList || [];
           const countryUsageMap = {};
 
           if (data.tradeCode !== '1000' || !itemData) {
-            showInvalidPopup();
+            resultEl.innerHTML = renderBuyEsimButtons();
+            attachTopUpButtonListeners();
             return;
           }
 
@@ -520,6 +618,11 @@
           esimHtml = renderEsimInfo(itemData, vendor);
           dataUsageHtml = renderDataUsage(dataUsage, vendor);
           totalUsageHtml = renderTotalUsage(countryUsageMap, vendor);
+
+          const buttonHtml =
+            dataUsage.length > 0 || itemData.planStatus !== '0'
+              ? renderTopUpButton()
+              : renderBuyEsimButtons();
 
           resultEl.innerHTML = `
             ${esimHtml}
@@ -535,7 +638,7 @@
               <div class="check-data-usage__data-usage">
                 ${dataUsageHtml}
               </div>
-              ${topUpBtnHtml}
+              ${buttonHtml}
             </div>
           `;
         }
@@ -561,14 +664,11 @@
 
     document.addEventListener('click', (e) => {
       if (e.target?.id === 'top-up-plan') {
-        const iccidInput = document.getElementById('iccid');
-        const iccid = iccidInput?.value?.trim();
-
-        if (iccid) {
-          sessionStorage.setItem('iccid', iccid);
+        const iccidValue = document.getElementById('iccid')?.value?.trim();
+        if (iccidValue) {
+          sessionStorage.setItem('iccid', iccidValue);
         }
-
-        window.location.href = 'https://gkomunika.com/pages/top-up';
+        window.location.href = '/pages/top-up';
       }
     });
   });

@@ -9,6 +9,14 @@
  */
 {
   "sections": {
+    "custom_image_banner_bXkiFH": {
+      "type": "custom-image-banner",
+      "name": "Banner-search",
+      "settings": {
+        "heading_text": "All Destinations",
+        "subheading_text": "Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries"
+      }
+    },
     "main": {
       "type": "main-page",
       "disabled": true,
@@ -17,17 +25,15 @@
         "padding_bottom": 28
       }
     },
-    "custom_image_banner_bXkiFH": {
-      "type": "custom-image-banner",
-      "name": "Banner-search",
-      "settings": {
-        "heading_text": "All Destinations",
-        "subheading_text": "Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries"
-      }
+    "product_category_pages_AKaqTj": {
+      "type": "product-category-pages",
+      "name": "Product Category Pages",
+      "settings": {}
     }
   },
   "order": [
     "custom_image_banner_bXkiFH",
-    "main"
+    "main",
+    "product_category_pages_AKaqTj"
   ]
 }

@@ -46,6 +46,12 @@
         "image": "shopify://shop_images/option_2_2.webp"
       }
     },
+    "product_category_button_UVfQzJ": {
+      "type": "product-category-button",
+      "disabled": true,
+      "name": "Product Category Button",
+      "settings": {}
+    },
     "popular_countries_AmdMjK": {
       "type": "popular-countries",
       "custom_css": [
@@ -208,11 +214,6 @@
         "review_paragraph": "",
         "benefits_title": "Benefits"
       }
-    },
-    "product_category_button_UVfQzJ": {
-      "type": "product-category-button",
-      "name": "Product Category Button",
-      "settings": {}
     }
   },
   "order": [

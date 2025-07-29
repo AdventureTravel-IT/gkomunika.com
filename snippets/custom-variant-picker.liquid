@@ -209,6 +209,49 @@
   #selected-variant-display {
     color: var(--color-primary);
   }
+  .tooltip-label {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+    margin-left: 6px;
+  }
+  .tooltip-label .tooltip-text {
+    visibility: hidden;
+    width: 350px;
+    background-color: #333;
+    color: var(--color-neutral);
+    text-align: left;
+    padding: 8px 10px;
+    border-radius: 6px;
+    position: absolute;
+    left: 50%;           /* Posisikan horizontal di tengah elemen */
+    top: 100%;           /* Posisikan tepat di bawah elemen */
+    margin-top: 8px;     /* Jarak antara elemen & tooltip */
+    transform: translateX(-50%); /* Pusatkan secara horizontal */
+    white-space: normal;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 10;
+    font-size: 14px;
+  }
+
+  .tooltip-label .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: -6px; /* Panah di atas tooltip */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+  }
+
+
+  .tooltip-label:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+
 {% endstyle %}
 
 {% style %}
@@ -286,7 +329,18 @@
     <div class="variant-option__wrapper {% if product.metafields.product.category.value == "Insurance" %}insurance-product{% endif %}">
       {% for option in product.options_with_values %}
         <div class="variant-option" data-option-index="{{ forloop.index0 }}">
-          <label class="variant-picker__label">{{ option.name }}</label>
+          <label class="variant-picker__label">
+            {{ option.name }}
+            {% if forloop.index0 == 1 and product.metafields.product.category.value == 'eSIM' or product.metafields.product.category.value == 'SIM_Card' %}
+              <span class="tooltip-label">
+                {{ 'icon-info.svg' | inline_asset_content }}
+                <span class="tooltip-text">
+                    <li> Unlimited Data: Speeds may be reduced to 128 kbps after reaching the Fair Usage Policy (FUP) limit, and will automatically return to normal the next day.</li>
+                    <li> Big Data: Data can be used at any time during the active period with no daily usage limits. When the data runs out, the internet will stop.</li>
+                  </span>
+              </span>
+            {% endif %}
+          </label>
           <select class="variant-dropdown" data-option-name="{{ option.name }}">
             <option
               value=""

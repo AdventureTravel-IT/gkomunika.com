@@ -191,15 +191,19 @@
     flex-direction: column;
     gap: 7px;
   }
-  .product-card-content-flip-back {
+   .product-card-content-flip-back {
     position: absolute;
     top: 0;
     left: 0;
-    overflow-y: auto;
+    overflow-y: hidden;
     background: var(--color-neutral);
     text-align: center;
     cursor: pointer;
     transform: rotateY(180deg);
+  }
+
+  .product-card-container.flipped .product-card-content-flip-back {
+    overflow-y: auto; /* aktifkan scroll hanya ketika flipped */
   }
   .country-total-atribut-wrapper {
     max-width: 125px;

@@ -218,8 +218,8 @@
   .tooltip-label .tooltip-text {
     visibility: hidden;
     width: 350px;
-    background-color: #333;
-    color: var(--color-neutral);
+    background-color: var(--color-background-third);
+    color: var(--color-primary);
     text-align: left;
     padding: 8px 10px;
     border-radius: 6px;
@@ -238,12 +238,12 @@
   .tooltip-label .tooltip-text::after {
     content: "";
     position: absolute;
-    top: -6px; /* Panah di atas tooltip */
+    top: -10px; /* Panah di atas tooltip */
     left: 50%;
     transform: translateX(-50%);
     border-width: 6px;
     border-style: solid;
-    border-color: transparent transparent #333 transparent;
+    border-color: transparent transparent var(--color-background-third) transparent;
   }
 
 
@@ -324,6 +324,19 @@
 
   {% assign min_price_formatted = min_price | money_with_currency %}
   {% assign max_price_formatted = max_price | money_with_currency %}
+
+  <div id="variant-warning-message" 
+     style="color:var(--color-primary); 
+            font-size: 14px; 
+            margin-bottom:10px; 
+            display:none; 
+            background-color: var(--color-background-third); 
+            border-radius: 15px; 
+            padding: 10px; 
+            width: fit-content; 
+            display: none; 
+            max-width: 100%;">
+  </div>
 
   <div style="display: flex; align-items: center;">
     <div class="variant-option__wrapper {% if product.metafields.product.category.value == "Insurance" %}insurance-product{% endif %}">
@@ -487,7 +500,7 @@
 <!-- Harga varian tersembunyi -->
 <div id="variant-prices" style="display: none;">
   {% for variant in product.variants %}
-    <span class="money price" data-variant-id="{{ variant.id }}">
+    <span class="money price" data-variant-id="{{ variant.id }}" data-price="{{ variant.price }}">
       {{ variant.price | money_with_currency }}
     </span>
   {% endfor %}
@@ -563,6 +576,7 @@
     text-align: center;
   }
 {% endstyle %}
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -736,7 +750,45 @@
         select.selectedIndex = 0;
       }
     });
+
+    // ✅ Tentukan pesan sesuai kondisi
+    const warningMessage = document.getElementById('variant-warning-message');
+    if (!warningMessage) return;
+
+    let message = '';
+    const firstSelect = variantDropdowns[0];
+    const secondSelect = variantDropdowns[1];
+
+    const firstSelected = firstSelect.value !== "";
+    const secondSelected = secondSelect.value !== "";
+
+    // Jika user pilih Days (selector pertama), tapi Data Plan ada yang disable
+    if (firstSelected && !secondSelected) {
+      const anyDisabled = Array.from(secondSelect.options).some(opt => opt.disabled && opt.value !== "");
+      if (anyDisabled) {
+        message = "Greyed-out options mean that plan isn't available on the selected day.";
+      }
+    }
+
+    // Jika user pilih Data Plan (selector kedua), tapi Days ada yang disable
+    if (secondSelected && !firstSelected) {
+      const anyDisabled = Array.from(firstSelect.options).some(opt => opt.disabled && opt.value !== "");
+      if (anyDisabled) {
+        message = "Greyed-out options mean that day isn’t available for the selected plan.";
+      }
+    }
+
+    // Jika kedua selector sudah dipilih, hilangkan pesan
+    if (firstSelected && secondSelected) {
+      message = "";
+    }
+
+    // Update tampilan
+    warningMessage.textContent = message;
+    warningMessage.style.display = message ? 'block' : 'none';
   }
+
+
 
   function findVariant() {
     const selectedOptions = getSelectedOptions();
@@ -773,10 +825,16 @@
     if (matchedVariant) {
       if (matchedVariant.available) {
         const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
-        if (moneySpan) {
-          if (priceDivDesktop) priceDivDesktop.innerHTML = moneySpan.outerHTML;
-          if (priceDivMobile) priceDivMobile.innerHTML = moneySpan.outerHTML;
-        }
+       if (moneySpan) {
+  if (priceDivDesktop) priceDivDesktop.innerHTML = ''; 
+  if (priceDivMobile) priceDivMobile.innerHTML = '';
+
+  const quantity = parseInt(quantityInput.value) || 1;
+  updateUSDPrice(matchedVariant.price, quantity);
+  updateIDRPrice(matchedVariant.price, quantity);
+}
+
+
       } else {
         if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak tersedia";
         if (priceDivMobile) priceDivMobile.textContent = "Varian tidak tersedia";
@@ -832,6 +890,154 @@
 
     return matchedVariant;
   }
+
+let cachedUSDRate = null; // Simpan kurs agar tidak fetch berkali-kali
+
+async function getExchangeRate() {
+  if (cachedUSDRate) return cachedUSDRate; // Jika sudah ada, pakai yang lama
+  try {
+    const response = await fetch('https://api.exchangerate-api.com/v4/latest/IDR');
+    const data = await response.json();
+    cachedUSDRate = data.rates.USD;
+    return cachedUSDRate;
+  } catch (error) {
+    console.error('Gagal ambil kurs USD:', error);
+    cachedUSDRate = 0.000066; // fallback
+    return cachedUSDRate;
+  }
+}
+
+function convertIDRtoUSDInstant(idrAmount) {
+  const rate = cachedUSDRate || 0.000066; // Gunakan cache kalau ada
+  return (idrAmount * rate).toFixed(2);
+}
+
+async function updateUSDPrice(variantPrice, quantity) {
+  const totalIDR = (variantPrice / 100) * quantity;
+
+  // ✅ Hitung langsung tanpa nunggu fetch
+  const usdPriceInstant = convertIDRtoUSDInstant(totalIDR);
+
+  let usdElementDesktop = document.getElementById('usd-price-desktop');
+  let usdElementMobile = document.getElementById('usd-price-mobile');
+
+  if (!usdElementDesktop) {
+    const desktopContainer = document.getElementById('variant-price-desktop');
+    usdElementDesktop = document.createElement('div');
+    usdElementDesktop.id = 'usd-price-desktop';
+    usdElementDesktop.className = 'money';
+    desktopContainer.appendChild(usdElementDesktop);
+  }
+  usdElementDesktop.textContent = `$${usdPriceInstant}`;
+
+  if (!usdElementMobile) {
+    const mobileContainer = document.getElementById('variant-price-mobile');
+    usdElementMobile = document.createElement('div');
+    usdElementMobile.id = 'usd-price-mobile';
+    mobileContainer.appendChild(usdElementMobile);
+  }
+  usdElementMobile.textContent = `USD $${usdPriceInstant}`;
+
+  toggleCurrencyDisplay();
+
+  // ✅ Ambil kurs terbaru di background (sekali saja)
+  if (!cachedUSDRate) {
+    const rate = await getExchangeRate();
+    const usdPriceFinal = (totalIDR * rate).toFixed(2);
+    usdElementDesktop.textContent = `$${usdPriceFinal}`;
+    usdElementMobile.textContent = `USD $${usdPriceFinal}`;
+  }
+}
+
+function updateIDRPrice(variantPrice, quantity) {
+  const totalIDR = (variantPrice / 100) * quantity; // Shopify pakai cent
+  const formattedIDR = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR'
+  }).format(totalIDR);
+
+  let idrElementDesktop = document.getElementById('idr-price-desktop');
+  let idrElementMobile = document.getElementById('idr-price-mobile');
+
+  if (!idrElementDesktop) {
+    const desktopContainer = document.getElementById('variant-price-desktop');
+    idrElementDesktop = document.createElement('div');
+    idrElementDesktop.id = 'idr-price-desktop';
+    idrElementDesktop.className = 'money';
+    desktopContainer.appendChild(idrElementDesktop);
+  }
+  idrElementDesktop.textContent = formattedIDR;
+
+  if (!idrElementMobile) {
+    const mobileContainer = document.getElementById('variant-price-mobile');
+    idrElementMobile = document.createElement('div');
+    idrElementMobile.className = 'money';
+    idrElementMobile.id = 'idr-price-mobile';
+    mobileContainer.appendChild(idrElementMobile);
+  }
+  idrElementMobile.textContent = formattedIDR;
+
+  // ✅ Panggil toggle setelah update
+  toggleCurrencyDisplay();
+}
+
+function toggleCurrencyDisplay() {
+  let userCurrency = sessionStorage.getItem('buckscc_customer_currency');
+  if (userCurrency) {
+    userCurrency = userCurrency.replace(/"/g, ''); // Bersihkan tanda kutip
+  }
+
+  const idrPriceDesktop = document.getElementById('idr-price-desktop');
+  const usdPriceDesktop = document.getElementById('usd-price-desktop');
+  const idrPriceMobile = document.getElementById('idr-price-mobile');
+  const usdPriceMobile = document.getElementById('usd-price-mobile');
+
+  console.log("toggleCurrencyDisplay → Currency:", userCurrency);
+
+  if (userCurrency === 'USD') {
+    if (idrPriceDesktop) idrPriceDesktop.style.display = 'none';
+    if (usdPriceDesktop) usdPriceDesktop.style.display = 'block';
+    if (idrPriceMobile) idrPriceMobile.style.display = 'none';
+    if (usdPriceMobile) usdPriceMobile.style.display = 'block';
+  } else {
+    // Default atau IDR
+    if (idrPriceDesktop) idrPriceDesktop.style.display = 'block';
+    if (usdPriceDesktop) usdPriceDesktop.style.display = 'none';
+    if (idrPriceMobile) idrPriceMobile.style.display = 'block';
+    if (usdPriceMobile) usdPriceMobile.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  toggleCurrencyDisplay();
+});
+
+
+let lastCurrency = sessionStorage.getItem('buckscc_customer_currency');
+
+// Jalankan pengecekan setiap 500ms (bisa dioptimasi)
+setInterval(() => {
+  const currentCurrency = sessionStorage.getItem('buckscc_customer_currency');
+  if (currentCurrency !== lastCurrency) {
+    lastCurrency = currentCurrency;
+    console.log("Currency berubah →", currentCurrency);
+    handleCurrencyChange();
+  }
+}, 500);
+
+function handleCurrencyChange() {
+  const variant = findVariant();
+  if (variant) {
+    const quantity = parseInt(document.getElementById('quantity').value) || 1;
+    updateUSDPrice(variant.price, quantity);
+    updateIDRPrice(variant.price, quantity);
+    toggleCurrencyDisplay();
+  } else {
+    toggleCurrencyDisplay();
+  }
+}
+
+
 
   function matchInsuranceVariant(mainVariant) {
     const quantityInput = document.getElementById('quantity');
@@ -961,11 +1167,26 @@
   function adjustQuantity(delta) {
     const current = parseInt(quantityInput.value) || 1;
     quantityInput.value = Math.max(quantityInput.min, current + delta);
-    findVariant(); // 🟢 tambahkan ini agar semua update ulang (termasuk addon)
+    findVariant(); // Sudah memanggil updateUSDPrice()
   }
+
 
   minusBtn?.addEventListener('click', () => adjustQuantity(-1));
   plusBtn?.addEventListener('click', () => adjustQuantity(1));
+
+  minusBtn?.addEventListener('click', () => adjustQuantity(-1));
+  plusBtn?.addEventListener('click', () => adjustQuantity(1));
+
+  // ✅ Perubahan manual qty update harga
+  // ✅ Update USD price saat quantity diketik manual (tanpa kedip)
+quantityInput?.addEventListener('input', () => {
+  const variant = findVariant();
+  if (variant) {
+    updateUSDPrice(variant.price, parseInt(quantityInput.value) || 1);
+    updateIDRPrice(variant.price, parseInt(quantityInput.value) || 1);
+  }
+});
+
 
   resetBtn?.addEventListener('click', () => {
     variantDropdowns.forEach(select => {

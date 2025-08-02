@@ -246,7 +246,6 @@
     border-color: transparent transparent var(--color-background-third) transparent;
   }
 
-
   .tooltip-label:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
@@ -258,6 +257,7 @@
   .variant-picker-btn__mobile {
     display: none;
   }
+  
   @media (max-width: 1440px) {
     .variant-picker-btn__mobile,
     .variant-picker-btn {
@@ -718,77 +718,133 @@
   }
 
   function updateDropdownOptions() {
-    const selectedOptions = getSelectedOptions();
+  const selectedOptions = getSelectedOptions();
 
-    variantDropdowns.forEach((select, index) => {
-      Array.from(select.options).forEach(option => {
-        if (option.value === "") {
-          option.disabled = false;
-          option.classList.remove('disabled-option');
-          return;
-        }
+  variantDropdowns.forEach((select, index) => {
+    Array.from(select.options).forEach(option => {
+      if (option.value === "") {
+        option.disabled = false;
+        option.classList.remove('disabled-option');
+        return;
+      }
 
-        const testOptions = [...selectedOptions];
-        testOptions[index] = option.value;
+      const testOptions = [...selectedOptions];
+      testOptions[index] = option.value;
 
-        const match = productVariants.some(variant =>
-          variant.options.every((opt, i) =>
-            testOptions[i] === "" || testOptions[i] === opt
-          )
-        );
+      const match = productVariants.some(variant =>
+        variant.options.every((opt, i) =>
+          testOptions[i] === "" || testOptions[i] === opt
+        )
+      );
 
-        if (!match) {
-          option.disabled = true;
-          option.classList.add('disabled-option');
-        } else {
-          option.disabled = false;
-          option.classList.remove('disabled-option');
-        }
-      });
-
-      if (select.options[select.selectedIndex]?.disabled) {
-        select.selectedIndex = 0;
+      if (!match) {
+        option.disabled = true;
+        option.classList.add('disabled-option');
+      } else {
+        option.disabled = false;
+        option.classList.remove('disabled-option');
       }
     });
 
-    // ✅ Tentukan pesan sesuai kondisi
+    if (select.options[select.selectedIndex]?.disabled) {
+      select.selectedIndex = 0;
+    }
+  });
+
+  // ✅ Hapus logic warning otomatis, kita pindahkan ke event click
+  setupWarningLogic();
+}
+
+  let firstSelectWarned = false;
+  let secondSelectWarned = false;
+
+  function setupWarningLogic() {
     const warningMessage = document.getElementById('variant-warning-message');
-    if (!warningMessage) return;
+    const firstSelect = variantDropdowns[0]; // Days
+    const secondSelect = variantDropdowns[1]; // Data Plan
+    const resetBtn = document.getElementById('reset-plan'); // Tombol reset
 
-    let message = '';
-    const firstSelect = variantDropdowns[0];
-    const secondSelect = variantDropdowns[1];
+    if (!warningMessage || !firstSelect || !secondSelect) return;
 
-    const firstSelected = firstSelect.value !== "";
-    const secondSelected = secondSelect.value !== "";
+    // Fungsi untuk tampilkan warning
+    let popupTimeout; // simpan timer agar bisa di-clear kalau user close manual
 
-    // Jika user pilih Days (selector pertama), tapi Data Plan ada yang disable
-    if (firstSelected && !secondSelected) {
-      const anyDisabled = Array.from(secondSelect.options).some(opt => opt.disabled && opt.value !== "");
-      if (anyDisabled) {
-        message = "Greyed-out options mean that plan isn't available on the selected day.";
-      }
-    }
-
-    // Jika user pilih Data Plan (selector kedua), tapi Days ada yang disable
-    if (secondSelected && !firstSelected) {
-      const anyDisabled = Array.from(firstSelect.options).some(opt => opt.disabled && opt.value !== "");
-      if (anyDisabled) {
-        message = "Greyed-out options mean that day isn’t available for the selected plan.";
-      }
-    }
-
-    // Jika kedua selector sudah dipilih, hilangkan pesan
-    if (firstSelected && secondSelected) {
-      message = "";
-    }
-
-    // Update tampilan
+  function showWarning(message) {
+  // Tampilkan warning di elemen utama
     warningMessage.textContent = message;
-    warningMessage.style.display = message ? 'block' : 'none';
+    warningMessage.style.display = 'block';
+  }
+
+  function hideWarning() {
+    // Sembunyikan warning
+    warningMessage.style.display = 'none';
   }
 
 
+    // Event: klik Data Plan
+    secondSelect.addEventListener('click', () => {
+      if (secondSelectWarned) return; // Sudah tampilkan warning sebelumnya
+
+      const firstSelected = firstSelect.value !== "";
+      const secondSelected = secondSelect.value !== "";
+
+      if (firstSelected && !secondSelected) {
+        const anyDisabled = Array.from(secondSelect.options).some(opt => opt.disabled && opt.value !== "");
+        if (anyDisabled) {
+          showWarning("Greyed-out options mean that plan isn't available on the selected day.");
+          secondSelectWarned = true; // Tandai sudah tampilkan
+        } else {
+          hideWarning();
+        }
+      } else {
+        hideWarning();
+      }
+    });
+
+    // Event: klik Days
+    firstSelect.addEventListener('click', () => {
+      if (firstSelectWarned) return; // Sudah tampilkan warning sebelumnya
+
+      const firstSelected = firstSelect.value !== "";
+      const secondSelected = secondSelect.value !== "";
+
+      if (secondSelected && !firstSelected) {
+        const anyDisabled = Array.from(firstSelect.options).some(opt => opt.disabled && opt.value !== "");
+        if (anyDisabled) {
+          showWarning("Greyed-out options mean that day isn’t available for the selected plan.");
+          firstSelectWarned = true; // Tandai sudah tampilkan
+        } else {
+          hideWarning();
+        }
+      } else {
+        hideWarning();
+      }
+    });
+
+
+    // Jika kedua dropdown sudah terisi, sembunyikan warning saat ada perubahan
+    [firstSelect, secondSelect].forEach(select => {
+      select.addEventListener('change', () => {
+        if (firstSelect.value === "" || secondSelect.value === "") {
+          // Jika ada yang kosong lagi → reset flags
+          firstSelectWarned = false;
+          secondSelectWarned = false;
+        } else {
+          hideWarning();
+        }
+      });
+    });
+
+
+    // ✅ Event: Klik tombol reset → warning hilang
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        hideWarning();
+        firstSelectWarned = false;
+        secondSelectWarned = false;
+      });
+    }
+  }
 
   function findVariant() {
     const selectedOptions = getSelectedOptions();

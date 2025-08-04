@@ -12,9 +12,21 @@
     "pf-dc797130": {
       "type": "pf-dc797130",
       "settings": {}
+    },
+    "page_brMLJT": {
+      "type": "page",
+      "name": "t:sections.page.presets.name",
+      "settings": {
+        "page": "best-esim-indonesia-for-tourist-global-komunika",
+        "heading_size": "h1",
+        "color_scheme": "",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
     }
   },
   "order": [
-    "pf-dc797130"
+    "pf-dc797130",
+    "page_brMLJT"
   ]
 }

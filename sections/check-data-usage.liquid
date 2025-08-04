@@ -276,6 +276,28 @@
   </div>
 </div>
 
+<div class="iccid-popup" id="iccid-popup" style="display:none;">
+  <div class="invalid-popup__content">
+    <h2>Enter ICCID</h2>
+    <p>Please input your ICCID to continue to Top Up</p>
+    <input type="number" id="popup-iccid" placeholder="Input ICCID Number" style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);">
+    <button id="iccid-popup-submit" style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;">Continue</button>
+    <button id="iccid-popup-cancel" style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;">Cancel</button>
+  </div>
+</div>
+
+{% assign collection = collections['top-up-plan'] %}
+<script>
+  // Membuat array kategori berdasarkan produk yang ada di collection
+  const productCategories = [
+    {% for product in collection.products %}
+      {% if product.metafields.product.category %}
+        "{{ product.metafields.product.category.value }}",
+      {% endif %}
+    {% endfor %}
+  ];
+</script>
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const iccidInput = document.getElementById('iccid');
@@ -289,12 +311,12 @@
     let lastSubmit = 0;
 
     const prefixVendorMap = [
-      { prefix: '89859', vendor: 'AF' },
-      { prefix: '89862', vendor: 'AF' },
-      { prefix: '89810', vendor: 'TE' },
-      { prefix: '2210', vendor: 'BS' },
-      { prefix: '8981200', vendor: 'BE' },
-      { prefix: '89852', vendor: 'BE' },
+      { prefix: '89859', vendor: 'AF'}, //category: 'Top_Up_B' // AE
+      { prefix: '89862', vendor: 'AF'}, //category: 'Top_Up_B' // AS
+      { prefix: '89810', vendor: 'TE'}, //category: 'Top_Up_C' // TE
+      { prefix: '2210', vendor: 'BS'}, //category: 'Top_Up_A' // BS
+      { prefix: '8981200', vendor: 'BE'}, //category: 'Top_Up_A' // BE
+      { prefix: '89852', vendor: 'BE'}, //category: 'Top_Up_A' // BE
     ];
 
     function detectVendor(iccid) {

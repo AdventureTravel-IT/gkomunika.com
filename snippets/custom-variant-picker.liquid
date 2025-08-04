@@ -250,7 +250,18 @@
     visibility: visible;
     opacity: 1;
   }
-
+  .iccid-popup {
+    position: fixed;
+    width: 400px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-neutral);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    z-index: 9999;
+  }
 {% endstyle %}
 
 {% style %}
@@ -296,6 +307,11 @@
     }
     #reset-plan svg {
       vertical-align: middle;
+    }
+  }
+  @media (max-width: 426px) {
+    .iccid-popup {
+      width: 90%;
     }
   }
 {% endstyle %}
@@ -1398,8 +1414,7 @@ quantityInput?.addEventListener('input', () => {
     function handleBuyTopUp() {
       const variant = findVariant();
       const quantity = 1;
-
-      const iccid = sessionStorage.getItem("iccid") || "";
+      let iccid = sessionStorage.getItem("iccid");
 
       if (!variant || !variant.available) {
         let hasEmpty = false;
@@ -1419,6 +1434,17 @@ quantityInput?.addEventListener('input', () => {
         return;
       }
 
+      // ✅ Validasi ICCID
+      if (!iccid || iccid.trim() === "") {
+        showICCIDPopup();
+        return;
+      }
+
+      proceedToCheckout(iccid, variant, quantity);
+    }
+
+    // ✅ Fungsi untuk memproses ke checkout
+    function proceedToCheckout(iccid, variant, quantity) {
       const payload = {
         id: variant.id,
         quantity: quantity,
@@ -1440,18 +1466,61 @@ quantityInput?.addEventListener('input', () => {
         })
         .catch(err => {
           console.error("Failed to add top up product:", err);
-          const popup = document.getElementById("variant-popup");
-          const messageEl = document.getElementById("variant-popup-message");
-          if (popup && messageEl) {
-            messageEl.textContent = "Failed to buy top up.";
-            popup.style.display = "block";
-            setTimeout(() => {
-              popup.style.display = "none";
-            }, 2000);
-          }
+          showPopupMessage("Failed to buy top up.");
         });
       });
     }
+
+    
+    // ✅ Popup Input ICCID
+    function showICCIDPopup() {
+      // Cek apakah popup sudah ada
+      let popup = document.getElementById("iccid-popup");
+      if (!popup) {
+        popup = document.createElement("div");
+        popup.id = "iccid-popup";
+        popup.classList.add("iccid-popup");
+        popup.innerHTML = `
+        <style>
+        #iccid-input::placeholder {
+          color: var(--color-primary);
+        }
+        </style>
+          <h3 style="margin: 0; line-height: 1.3; font-size: var(--font-extra-large); font-weight: bold; color: var(--color-primary);">Enter Your ICCID</h3>
+          <input type="text" id="iccid-input" placeholder="Input ICCID Number" style="width: 100%; padding: 15px 10px; border-radius: 10px; outline: none; border: 1px solid var(--color-primary); background-color: var(--color-background); margin: 10px 0;">
+          <div style="display: flex; justify-content: flex-end;">
+            <button id="iccid-submit" style="padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; background-color: var(--color-primary); color: var(--color-neutral); font-size: var(--font-large);">Next</button>
+          </div>
+        `;
+        document.body.appendChild(popup);
+
+        document.getElementById("iccid-submit").addEventListener("click", () => {
+          const iccidValue = document.getElementById("iccid-input").value.trim();
+          if (iccidValue) {
+            sessionStorage.setItem("iccid", iccidValue);
+            popup.remove();
+            const variant = findVariant();
+            const quantity = 1;
+            proceedToCheckout(iccidValue, variant, quantity);
+          } else {
+            alert("Please enter ICCID");
+          }
+        });
+      }
+    }
+
+    function showPopupMessage(message) {
+      const popup = document.getElementById("variant-popup");
+      const messageEl = document.getElementById("variant-popup-message");
+      if (popup && messageEl) {
+        messageEl.textContent = message;
+        popup.style.display = "block";
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 2000);
+      }
+    }
+
 
     function getVariantType(variant) {
       window.variantsData = [

@@ -288,7 +288,6 @@
 
 {% assign collection = collections['top-up-plan'] %}
 <script>
-  // Membuat array kategori berdasarkan produk yang ada di collection
   const productCategories = [
     {% for product in collection.products %}
       {% if product.metafields.product.category %}
@@ -318,6 +317,13 @@
       { prefix: '8981200', vendor: 'BE'}, //category: 'Top_Up_A' // BE
       { prefix: '89852', vendor: 'BE'}, //category: 'Top_Up_A' // BE
     ];
+
+    const vendorCategoryMap = {
+      'AF': 'Top_Up_B', // AE & AS
+      'BE': 'Top_Up_A', // BE
+      'BS': 'Top_Up_A', // BS
+      'TE': 'Top_Up_C', // TE
+    };
 
     function detectVendor(iccid) {
       return prefixVendorMap.find((item) => iccid.startsWith(item.prefix))?.vendor || null;
@@ -513,10 +519,13 @@
             dataUsageHtml = renderDataUsage(dataUsage, vendor);
             totalUsageHtml = renderTotalUsage(countryUsageMap, vendor);
 
-            const buttonHtml =
-              dataUsage.length > 0 || itemData.useSDate || itemData.useEDate
-                ? renderTopUpButton()
-                : renderBuyEsimButtons();
+            const categoryNeeded = vendorCategoryMap[vendor];
+            const hasCategory = productCategories.includes(categoryNeeded);
+
+            const buttonHtml = hasCategory
+              ? renderTopUpButton()
+              : renderBuyEsimButtons();
+
 
             resultEl.innerHTML = `
               ${esimHtml}
@@ -603,10 +612,12 @@
             </div>
           `;
 
-          const buttonHtml =
-            detail.state === 'Enable'
-              ? renderTopUpButton()
-              : renderBuyEsimButtons();
+          const categoryNeeded = vendorCategoryMap[vendor];
+          const hasCategory = productCategories.includes(categoryNeeded);
+
+          const buttonHtml = hasCategory
+            ? renderTopUpButton()
+            : renderBuyEsimButtons();
 
           resultEl.innerHTML = `
             ${esimHtml}
@@ -640,11 +651,12 @@
           esimHtml = renderEsimInfo(itemData, vendor);
           dataUsageHtml = renderDataUsage(dataUsage, vendor);
           totalUsageHtml = renderTotalUsage(countryUsageMap, vendor);
+          const categoryNeeded = vendorCategoryMap[vendor];
+          const hasCategory = productCategories.includes(categoryNeeded);
 
-          const buttonHtml =
-            dataUsage.length > 0 || itemData.planStatus !== '0'
-              ? renderTopUpButton()
-              : renderBuyEsimButtons();
+          const buttonHtml = hasCategory
+            ? renderTopUpButton()
+            : renderBuyEsimButtons();
 
           resultEl.innerHTML = `
             ${esimHtml}

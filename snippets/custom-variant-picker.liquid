@@ -403,14 +403,10 @@
     </div>
   </div>
 
-  {% unless product.metafields.product.category.value == 'Top_Up_A'
-    or product.metafields.product.category.value == 'Top_Up_B'
-    or product.metafields.product.category.value == 'Top_Up_C'
-    or product.metafields.product.category.value == 'eSIM'
-    or product.metafields.product.category.value == 'SIM_Card'
-  %}
+  {% if product.metafields.product.category.value == 'Insurance' %}
     {% render 'insurance-addon' %}
-  {% endunless %}
+    {% else %}
+  {% endif %}
 
   <!-- Quantity -->
   <div
@@ -1242,9 +1238,6 @@ function handleCurrencyChange() {
     findVariant(); // Sudah memanggil updateUSDPrice()
   }
 
-
-  minusBtn?.addEventListener('click', () => adjustQuantity(-1));
-  plusBtn?.addEventListener('click', () => adjustQuantity(1));
 
   minusBtn?.addEventListener('click', () => adjustQuantity(-1));
   plusBtn?.addEventListener('click', () => adjustQuantity(1));

@@ -206,6 +206,9 @@
 
 /* === Responsive (Mobile) === */
 @media screen and (max-width: 768px) {
+  .main-product-header-left {
+    max-width: 100%;
+  }
   .main-product__content-container {
     display: flex;
     flex-direction: column;

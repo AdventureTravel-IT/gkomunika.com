@@ -31,7 +31,7 @@
       margin: 20px 0 0;
     }
   }
-  @media (max-width: 425px) {
+  @media (max-width: 426px) {
     .banner-search__wrapper {
       padding: 20px 24px;
     }
@@ -54,8 +54,10 @@
       <div class="banner-search__form">
         {% if template.suffix == 'top-up' %}
           {% render 'search-bar-topup' %}
-        {%  else %}
-        {% render 'search-bar' %}
+        {% elsif template.suffix == 'product-category' %}
+          {% render 'search-bar-category' %}
+        {% else %}
+          {% render 'search-bar' %}
         {% endif %}
       </div>
     </div>

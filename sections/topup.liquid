@@ -64,8 +64,9 @@
   }
   .product-card-container {
     display: flex;
+    gap: 10px;
     flex-direction: column;
-    padding: 20px 15px 15px;
+    padding: 15px;
     background-color: white;
     border-radius: 25px;
     box-shadow: var(--box-shadow);
@@ -120,7 +121,6 @@
   .product-url-link {
     text-decoration: none;
     color: var(--color-primary);
-    min-height: 85px;
   }
   .product-card-field-icons {
     display: flex;
@@ -142,7 +142,7 @@
     justify-content: space-between;
     align-items: center;
     border-top: 1px ridge;
-    padding: 10px 0;
+    padding: 5px 0;
   }
   img.field-icon {
     width: 30px;
@@ -191,15 +191,19 @@
     flex-direction: column;
     gap: 7px;
   }
-  .product-card-content-flip-back {
+   .product-card-content-flip-back {
     position: absolute;
     top: 0;
     left: 0;
-    overflow-y: auto;
+    overflow-y: hidden;
     background: var(--color-neutral);
     text-align: center;
     cursor: pointer;
     transform: rotateY(180deg);
+  }
+
+  .product-card-container.flipped .product-card-content-flip-back {
+    overflow-y: auto; /* aktifkan scroll hanya ketika flipped */
   }
   .country-total-atribut-wrapper {
     max-width: 125px;
@@ -272,6 +276,9 @@
   @media (max-width: 426px) {
     .product-card-wrapper {
       grid-template-columns: repeat(1, 1fr);
+    }
+    .main-search-container {
+      padding: 20px 24px;
     }
   }
 {% endstyle %}

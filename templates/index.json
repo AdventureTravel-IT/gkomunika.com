@@ -46,10 +46,15 @@
         "image": "shopify://shop_images/option_2_2.webp"
       }
     },
+    "product_category_button_UVfQzJ": {
+      "type": "product-category-button",
+      "name": "Product Category Button",
+      "settings": {}
+    },
     "popular_countries_AmdMjK": {
       "type": "popular-countries",
       "custom_css": [
-        "@media (max-width: 426px) {.tab-content a:nth-child(n + 5) {display: none;}}"
+        "@media (max-width: 426px) {.tab-content a:nth-child(n + 5) {display: none; }}"
       ],
       "settings": {
         "display_mode": "option_1",
@@ -212,6 +217,7 @@
   },
   "order": [
     "image_banner_9QEdGw",
+    "product_category_button_UVfQzJ",
     "popular_countries_AmdMjK",
     "how_to_use_qA8rPU"
   ]

@@ -771,18 +771,27 @@
   let secondSelectWarned = false;
 
   function setupWarningLogic() {
-    const warningMessage = document.getElementById('variant-warning-message');
-    const firstSelect = variantDropdowns[0]; // Days
-    const secondSelect = variantDropdowns[1]; // Data Plan
-    const resetBtn = document.getElementById('reset-plan'); // Tombol reset
+  const warningMessage = document.getElementById('variant-warning-message');
+  const firstSelect = variantDropdowns[0]; // Days
+  const secondSelect = variantDropdowns[1]; // Data Plan
+  const resetBtn = document.getElementById('reset-plan'); // Tombol reset
 
-    if (!warningMessage || !firstSelect || !secondSelect) return;
+  if (!warningMessage || !firstSelect || !secondSelect) return;
 
-    // Fungsi untuk tampilkan warning
-    let popupTimeout; // simpan timer agar bisa di-clear kalau user close manual
+  // Fungsi untuk tampilkan warning
+  let popupTimeout; // simpan timer agar bisa di-clear kalau user close manual
+
+  function getWarningText() {
+    const isID =
+      location.hostname.includes('gkomunika.com') &&
+      location.pathname === '/id/products/esim-saudi-arabia';
+    return isID
+      ? 'Opsi abu-abu artinya kombinasi hari/kuota tidak tersedia. Klik Reset, lalu pilih hari/kuota yang diinginkan lebih dulu.'
+      : 'Greyed-out means the day/plan combo’s unavailable. Click Reset, then pick your preferred day/plan first.';
+  }
 
   function showWarning(message) {
-  // Tampilkan warning di elemen utama
+    // Tampilkan warning di elemen utama
     warningMessage.textContent = message;
     warningMessage.style.display = 'block';
   }
@@ -792,71 +801,70 @@
     warningMessage.style.display = 'none';
   }
 
+  // Event: klik Data Plan (dropdown kedua)
+  secondSelect.addEventListener('click', () => {
+    if (secondSelectWarned) return; // Sudah tampilkan warning sebelumnya
 
-    // Event: klik Data Plan
-    secondSelect.addEventListener('click', () => {
-      if (secondSelectWarned) return; // Sudah tampilkan warning sebelumnya
+    const firstSelected = firstSelect.value !== "";
+    const secondSelected = secondSelect.value !== "";
 
-      const firstSelected = firstSelect.value !== "";
-      const secondSelected = secondSelect.value !== "";
-
-      if (firstSelected && !secondSelected) {
-        const anyDisabled = Array.from(secondSelect.options).some(opt => opt.disabled && opt.value !== "");
-        if (anyDisabled) {
-          showWarning("Greyed-out options mean that plan isn't available on the selected day.");
-          secondSelectWarned = true; // Tandai sudah tampilkan
-        } else {
-          hideWarning();
-        }
+    if (firstSelected && !secondSelected) {
+      const anyDisabled = Array.from(secondSelect.options).some(opt => opt.disabled && opt.value !== "");
+      if (anyDisabled) {
+        showWarning(getWarningText());
+        secondSelectWarned = true; // Tandai sudah tampilkan
       } else {
         hideWarning();
       }
-    });
+    } else {
+      hideWarning();
+    }
+  });
 
-    // Event: klik Days
-    firstSelect.addEventListener('click', () => {
-      if (firstSelectWarned) return; // Sudah tampilkan warning sebelumnya
+  // Event: klik Days (dropdown pertama)
+  firstSelect.addEventListener('click', () => {
+    if (firstSelectWarned) return; // Sudah tampilkan warning sebelumnya
 
-      const firstSelected = firstSelect.value !== "";
-      const secondSelected = secondSelect.value !== "";
+    const firstSelected = firstSelect.value !== "";
+    const secondSelected = secondSelect.value !== "";
 
-      if (secondSelected && !firstSelected) {
-        const anyDisabled = Array.from(firstSelect.options).some(opt => opt.disabled && opt.value !== "");
-        if (anyDisabled) {
-          showWarning("Greyed-out options mean that day isn’t available for the selected plan.");
-          firstSelectWarned = true; // Tandai sudah tampilkan
-        } else {
-          hideWarning();
-        }
+    if (secondSelected && !firstSelected) {
+      const anyDisabled = Array.from(firstSelect.options).some(opt => opt.disabled && opt.value !== "");
+      if (anyDisabled) {
+        // Pakai pesan yang sama (disesuaikan bahasa via URL)
+        showWarning(getWarningText());
+        firstSelectWarned = true; // Tandai sudah tampilkan
       } else {
         hideWarning();
       }
-    });
+    } else {
+      hideWarning();
+    }
+  });
 
-
-    // Jika kedua dropdown sudah terisi, sembunyikan warning saat ada perubahan
-    [firstSelect, secondSelect].forEach(select => {
-      select.addEventListener('change', () => {
-        if (firstSelect.value === "" || secondSelect.value === "") {
-          // Jika ada yang kosong lagi → reset flags
-          firstSelectWarned = false;
-          secondSelectWarned = false;
-        } else {
-          hideWarning();
-        }
-      });
-    });
-
-
-    // ✅ Event: Klik tombol reset → warning hilang
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        hideWarning();
+  // Jika kedua dropdown sudah terisi, sembunyikan warning saat ada perubahan
+  [firstSelect, secondSelect].forEach(select => {
+    select.addEventListener('change', () => {
+      if (firstSelect.value === "" || secondSelect.value === "") {
+        // Jika ada yang kosong lagi → reset flags
         firstSelectWarned = false;
         secondSelectWarned = false;
-      });
-    }
+      } else {
+        hideWarning();
+      }
+    });
+  });
+
+  // Klik tombol reset → warning hilang & reset flags
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      hideWarning();
+      firstSelectWarned = false;
+      secondSelectWarned = false;
+    });
   }
+}
+
 
   function findVariant() {
     const selectedOptions = getSelectedOptions();

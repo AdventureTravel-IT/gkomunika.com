@@ -6,26 +6,44 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-height: 90vh;
-    overflow-y: auto;
-    border-radius: 15px;
-    padding: 25px;
+    height: 70vh;
     width: 50%;
+    border-radius: 15px;
+    /* Layout kolom agar footer tetap di bawah */
+    display: flex;
+    flex-direction: column;
+    /* Jangan scroll di container utama */
+    overflow: hidden;
+  }
+
+  /* Area konten yang bisa scroll */
+  .popup-content {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  .popup-addon-product::-webkit-scrollbar {
-    display: none;
+  .popup-content::-webkit-scrollbar { display: none; }
+
+  /* Footer fixed di dalam popup */
+  .popup-footer {
+    padding: 12px 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: var(--color-neutral);
   }
-  body.no-scroll {
-    overflow: hidden;
-  }
+
+  body.no-scroll { overflow: hidden; }
+
   .popup-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.4);
     z-index: 999;
   }
+
   #addon-button {
     width: 50%;
     padding: 15px 35px 15px 15px;
@@ -48,23 +66,20 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   .selected-option__title {
     color: var(--color-primary);
     display: flex;
     align-items: center;
+    font-size: var(--font-extra-large);
+    font-weight: bold;
   }
-  .popup-addon__variant-title {
-    font-size: 26px;
-  }
-  .insurance_product-addon_header {
-    display: flex;
-    justify-content: space-between;
-  }
-  .insurance_product-addon_title-wrapper {
-    flex: 4;
-    display: flex;
-    justify-content: space-between;
-  }
+
+  .popup-addon__variant-title { font-size: 26px; }
+
+  .insurance_product-addon_header { display: flex; justify-content: space-between; }
+  .insurance_product-addon_title-wrapper { flex: 4; display: flex; justify-content: space-between; }
+
   .addon-checkbox {
     display: flex;
     justify-content: flex-end;
@@ -72,10 +87,8 @@
     flex: 2;
     color: var(--color-primary);
   }
-  .addon-checkbox span {
-    margin-bottom: 3px;
-    font-size: var(--font-large);
-  }
+  .addon-checkbox span { margin-bottom: 3px; font-size: var(--font-large); }
+
   .insurance_product-addon_title {
     margin: 0;
     line-height: 1.5;
@@ -88,19 +101,16 @@
     color: var(--color-secondary);
     font-weight: bold;
   }
+
   #close-popup__choose-addon {
     border: none;
     border-radius: 15px;
-    padding: 15px 50px;
+    padding: 12px 28px;
     background-color: var(--color-secondary);
     color: var(--color-neutral);
     font-size: var(--font-large);
-    margin-top: 10px;
   }
-  .selected-option__title {
-    font-size: var(--font-extra-large);
-    font-weight: bold;
-  }
+
   .option-box {
     display: flex;
     gap: 3px;
@@ -109,38 +119,30 @@
     color: var(--color-secondary);
     font-weight: bold;
   }
-  #addon-button.error {
-  border-color: red !important;
-  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
-}
 
-@media (max-width: 768px) {
-  .popup-addon-product {
-    width: 90%;
-    max-height: 85vh;
+  #addon-button.error {
+    border-color: red !important;
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
   }
-}
-@media (max-width: 426px) {
-  .insurance__product-addon {
-    margin-top: 10px;
+
+  @media (max-width: 768px) {
+    .popup-addon-product {
+      width: 90%;
+      max-height: 85vh;
+    }
   }
-  .insurance_product-addon_title-wrapper {
-    display: flex;
-    flex-direction: column;
-    font-size: 20px;
-    line-height: 1.3;
+  @media (max-width: 426px) {
+    .insurance__product-addon { margin-top: 10px; }
+    .insurance_product-addon_title-wrapper {
+      display: flex;
+      flex-direction: column;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+    .insurance_product-addon_price { line-height: 1.3; font-size: 20px; }
+    .popup-addon__variant-title { font-size: 26px; }
+    #addon-button { width: 100%; }
   }
-  .insurance_product-addon_price {
-    line-height: 1.3;
-    font-size: 20px;
-  }
-  .popup-addon__variant-title {
-    font-size: 26px;
-  }
-  #addon-button {
-    width: 100%;
-  }
-}
 {% endstyle %}
 
 {% assign ProductAddon = product.metafields.product['insurance-addon'].value %}
@@ -160,8 +162,7 @@
           data-addon-type="{{ addon_product.metafields.insurance['addon-type'].value }}"
           data-variant-id="{{ variant.id }}"
           data-price="{{ variant.price | money_with_currency }}"
-        >
-        </div>
+        ></div>
       {% endfor %}
     {% endif %}
   {% endfor %}
@@ -178,8 +179,7 @@
           data-addon-type="{{ addon_product.metafields.insurance['addon-type'].value }}"
           data-variant-id="{{ variant.id }}"
           data-price="{{ variant.price | money_with_currency }}"
-        >
-        </div>
+        ></div>
       {% endfor %}
     {% endif %}
   {% endfor %}
@@ -195,22 +195,27 @@
   <!-- Overlay + Popup -->
   <div id="addon-popup-overlay" class="popup-overlay" style="display: none;">
     <section class="popup-addon-product">
-      <div class="popup-addon__variant">
-        <h2 class="popup-addon__variant-title">{{ product.title }}</h2>
-        <div class="selected-options-group">
-          <span class="selected-option__title">Insurance Plan:</span>
-          <div class="option-box">
-            <span class="option-value" id="display-option1">-</span><span>|</span>
-            <span class="option-value" id="display-option2">-</span><span>|</span>
-            <span class="option-value" id="display-option3">-</span>
+      <!-- KONTEN SCROLL -->
+      <div class="popup-content">
+        <div class="popup-addon__variant">
+          <h2 class="popup-addon__variant-title">{{ product.title }}</h2>
+          <div class="selected-options-group">
+            <span class="selected-option__title">Insurance Plan:</span>
+            <div class="option-box">
+              <span class="option-value" id="display-option1">-</span><span>|</span>
+              <span class="option-value" id="display-option2">-</span><span>|</span>
+              <span class="option-value" id="display-option3">-</span>
+            </div>
           </div>
+        </div>
+
+        <div id="selected-variant-title" data-variant-title="">
+          <!-- Checkbox addon akan dimasukkan secara dinamis oleh script Anda yang sudah ada -->
         </div>
       </div>
 
-      <div id="selected-variant-title" data-variant-title="">
-        <!-- Checkbox addon akan dimasukkan secara dinamis oleh script Anda yang sudah ada -->
-      </div>
-      <div style="display: flex; justify-content: flex-end;">
+      <!-- FOOTER FIXED DI DALAM POPUP -->
+      <div class="popup-footer">
         <button id="close-popup__choose-addon">Close</button>
       </div>
     </section>
@@ -219,23 +224,17 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const addonSelectorDiv = document.querySelector('.addon-selector');
     const addonButton = document.getElementById('addon-button');
     const errorMsg = document.getElementById('addon-error-msg');
     const overlay = document.getElementById('addon-popup-overlay');
-    const popupSection = overlay?.querySelector('.popup-addon-product');
     const closeBtn = document.getElementById('close-popup__choose-addon');
     const variantDropdowns = document.querySelectorAll('.variant-dropdown');
 
-    // Fungsi: update error message
     function updateAddonSelectorState() {
       const allSelected = Array.from(variantDropdowns).every((select) => select.value !== '');
-      if (allSelected) {
-        errorMsg.style.display = 'none';
-      }
+      if (allSelected) errorMsg.style.display = 'none';
     }
 
-    // Fungsi: update teks tombol dari addon tercentang
     function updateAddonPreviewInButton() {
       const addonCheckboxes = document.querySelectorAll('.addon-checkbox input[type="checkbox"]');
       const selectedTitles = Array.from(addonCheckboxes)
@@ -245,46 +244,35 @@
       let previewText = 'Choose Option';
       if (selectedTitles.length > 0) {
         previewText = selectedTitles.join(', ');
-        if (previewText.length > 50) {
-          previewText = previewText.slice(0, 47) + '...';
-        }
+        if (previewText.length > 50) previewText = previewText.slice(0, 47) + '...';
       }
-
-      if (addonButton) {
-        addonButton.textContent = previewText;
-      }
+      if (addonButton) addonButton.textContent = previewText;
     }
 
-    // Event: buka popup saat tombol diklik
     addonButton?.addEventListener('click', function () {
       const allSelected = Array.from(variantDropdowns).every((select) => select.value !== '');
-
       if (!allSelected) {
         errorMsg.style.display = 'block';
-        addonButton.classList.add('error'); // ✅ Tambahkan garis merah
+        addonButton.classList.add('error');
         return;
       }
-
       overlay.style.display = 'block';
       document.body.classList.add('no-scroll');
-      addonButton.classList.remove('error'); // ✅ Bersihkan garis merah saat valid
+      addonButton.classList.remove('error');
       updateAddonPreviewInButton();
     });
 
-    // Event: sembunyikan error saat variant berubah
     variantDropdowns.forEach((select) => {
       select.addEventListener('change', () => {
         updateAddonSelectorState();
-
         const allSelectedNow = Array.from(variantDropdowns).every((s) => s.value !== '');
         if (allSelectedNow) {
-          addonButton.classList.remove('error'); // ✅ Hapus border merah saat valid
+          addonButton.classList.remove('error');
           errorMsg.style.display = 'none';
         }
       });
     });
 
-    // Event: klik luar popup = tutup
     overlay?.addEventListener('click', function (e) {
       if (e.target === overlay) {
         overlay.style.display = 'none';
@@ -292,13 +280,11 @@
       }
     });
 
-    // Event: tombol cancel
     closeBtn?.addEventListener('click', function () {
       overlay.style.display = 'none';
       document.body.classList.remove('no-scroll');
     });
 
-    // Event: centang addon = update preview
     document.addEventListener('change', function (e) {
       if (e.target.matches('.addon-checkbox input[type="checkbox"]')) {
         updateAddonPreviewInButton();

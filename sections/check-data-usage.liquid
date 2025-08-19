@@ -371,26 +371,77 @@
       }
     }
 
+    function formatEpochMsUTC(ms) {
+      const n = Number(ms);
+      if (!Number.isFinite(n)) return ms;
+      const d = new Date(n);
+      if (isNaN(d)) return ms;
+
+      const dd = String(d.getUTCDate()).padStart(2, '0');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const MMM = months[d.getUTCMonth()];
+      const yyyy = d.getUTCFullYear();
+      const hh = String(d.getUTCHours()).padStart(2, '0');
+      const mm = String(d.getUTCMinutes()).padStart(2, '0');
+      const ss = String(d.getUTCSeconds()).padStart(2, '0');
+
+      // Contoh output: "06 Aug 2025 07:16:00 UTC"
+      return `${dd} ${MMM} ${yyyy} ${hh}:${mm}:${ss} UTC`;
+    }
+
+    function formatDateSmart(raw) {
+      if (raw == null || raw === '') return '-';
+      const s = String(raw).trim();
+
+      // 13-digit timestamp (ms)
+      if (/^\d{13}$/.test(s)) return formatEpochMsUTC(s);
+
+      // 10-digit timestamp (s)
+      if (/^\d{10}$/.test(s)) return formatEpochMsUTC(Number(s) * 1000);
+
+      // YYYYMMDD
+      if (/^\d{8}$/.test(s))
+        return `${s.slice(6,8)} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Number(s.slice(4,6))-1]} ${s.slice(0,4)} 00:00:00 UTC`;
+
+      // ISO/format lain → tampilkan tanggalnya (UTC) jika valid
+      const d = new Date(s);
+      if (!isNaN(d)) return formatEpochMsUTC(d.getTime());
+
+      return s; // fallback apa adanya
+    }
+
+
     // ✅ Render SIM Info
     function renderEsimInfo(itemData, vendor) {
+      const bundle = itemData.skuName || itemData.product_name || '-';
+
+      // ambil raw value sesuai vendor
+      const startRaw = vendor === 'AF' ? itemData.useSDate : itemData.planStartTime;
+      const endRaw   = vendor === 'AF' ? itemData.useEDate : itemData.planEndTime;
+
+      // formatkan (akan otomatis konversi 13-digit ms seperti contoh gambar)
+      const startFmt = formatDateSmart(startRaw);
+      const endFmt   = formatDateSmart(endRaw);
+
       return `
         <div class="check-data-usage__esim-information">
           <h3>SIM Card Information</h3>
           <div class="esim-information__wrapper">
             <p>Your Bundle</p>
-            <span>${itemData.skuName || itemData.product_name || '-'}</span>
+            <span>${bundle}</span>
           </div>
           <div class="esim-information__wrapper">
             <p>Active Date</p>
-            <span>${vendor === 'AF' ? itemData.useSDate : itemData.planStartTime}</span>
+            <span>${startFmt}</span>
           </div>
           <div class="esim-information__wrapper">
             <p>End Date</p>
-            <span>${vendor === 'AF' ? itemData.useEDate : itemData.planEndTime}</span>
+            <span>${endFmt}</span>
           </div>
         </div>
       `;
     }
+
 
     function renderTopUpButton() {
       return `<button id="top-up-plan" class="top-up-plan-btn">Top Up</button>`;

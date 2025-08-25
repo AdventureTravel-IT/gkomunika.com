@@ -153,7 +153,7 @@
     {% for order in customer.orders %}
       {% assign has_insurance_category = false %}
       {% for item in order.line_items %}
-        {% if item.product.metafields.product.category == "Insurance" %}
+        {% if item.product.metafields.product.category == "Insurance" or item.product.metafields.product.category == "SIM_Card" or item.product.metafields.product.category == "Top_Up_A" or item.product.metafields.product.category == "Top_Up_B" or item.product.metafields.product.category == "Top_Up_C"  %}
           {% assign has_insurance_category = true %}
           {% break %}
         {% endif %}

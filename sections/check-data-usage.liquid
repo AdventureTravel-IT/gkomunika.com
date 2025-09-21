@@ -706,8 +706,8 @@
           const hasCategory = productCategories.includes(categoryNeeded);
 
           const buttonHtml = hasCategory
-            ? renderTopUpButton()
-            : renderBuyEsimButtons();
+            ? renderBuyEsimButtons()
+            : renderTopUpButton();
 
           resultEl.innerHTML = `
             ${esimHtml}

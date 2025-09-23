@@ -93,9 +93,9 @@
       width: 20%;
     }
     .insurance-table__scroll table.single-column-mode th:first-child,
-  .insurance-table__scroll table.single-column-mode td:first-child {
-    width: 10%;
-  }
+    .insurance-table__scroll table.single-column-mode td:first-child {
+      width: 10%;
+    }
   }
 </style>
 
@@ -222,7 +222,6 @@
             </tr>
           </thead>
           <tbody>
-
             <!-- Medical & Other Emergency Expenses -->
             {% assign medical = package.medical_and_other_emergency_expenses %}
             {% assign medical_row_count = 0 %}
@@ -276,31 +275,66 @@
                   <tr>
                     <th rowspan="{{ medical_row_count }}">Medical & Other Emergency Expenses</th>
                     <td>Medical Expenses</td>
+
                     {% if item.basic %}
                       <td
                         {% if item.executive == null and item.premiere == null %}
                           colspan="2"
                         {% endif %}
                       >
-                        {{ item.basic }}
+                        {% assign basic_list = item.basic | split: ';' %}
+                        <ul style="padding-left: 15px;">
+                          {% for basic_item in basic_list %}
+                            <li>{{ basic_item | strip }}</li>
+
+                            {% if forloop.first %}
+                              <p style="color: #00ADEE; margin: 0;">
+                                (minimum of €30.000 is required for applying Schengen visa)
+                              </p>
+                            {% endif %}
+                          {% endfor %}
+                        </ul>
                       </td>
                     {% endif %}
+
                     {% if item.executive %}
                       <td
                         {% if item.basic == null and item.premiere == null %}
                           colspan="2"
                         {% endif %}
                       >
-                        {{ item.executive }}
+                        {% assign executive_list = item.executive | split: ';' %}
+                        <ul style="padding-left: 15px;">
+                          {% for executive_item in executive_list %}
+                            <li>{{ executive_item | strip }}</li>
+
+                            {% if forloop.first %}
+                              <p style="color: #00ADEE; margin: 0;">
+                                (minimum of €30.000 is required for applying Schengen visa)
+                              </p>
+                            {% endif %}
+                          {% endfor %}
+                        </ul>
                       </td>
                     {% endif %}
+
                     {% if item.premiere %}
                       <td
                         {% if item.basic == null and item.executive == null %}
                           colspan="2"
                         {% endif %}
                       >
-                        {{ item.premiere }}
+                        {% assign premiere_list = item.premiere | split: ';' %}
+                        <ul style="padding-left: 15px;">
+                          {% for premiere_item in premiere_list %}
+                            <li>{{ premiere_item | strip }}</li>
+                            {% if forloop.index == 2 %}
+                              <p style="color: #00ADEE; margin: 0;">
+                                (minimum of €30.000 is required for applying Schengen visa)
+                              </p>
+                            {% endif %}
+                          {% endfor %}
+                        </ul>
                       </td>
                     {% endif %}
                   </tr>
@@ -517,7 +551,6 @@
                 {% endif %}
               {% endfor %}
             {% endif %}
-
 
             {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
             {% if cancelation.basic or cancelation.executive or cancelation.premiere %}
@@ -1739,10 +1772,10 @@
       {% assign has_column3 = benefits_plan.column3 %}
       {% if has_column2 or has_column3 %}
         {% assign full_columns = true %}
-        {% assign table_class = "" %}
+        {% assign table_class = '' %}
       {% else %}
         {% assign full_columns = false %}
-        {% assign table_class = "single-column-mode" %}
+        {% assign table_class = 'single-column-mode' %}
       {% endif %}
 
       <table class="{{ table_class }}" style="z-index: 1">
@@ -1750,7 +1783,11 @@
           <tr>
             <th>Benefits</th>
             {% if benefits_plan.column1 %}
-              <th {% unless full_columns %} colspan="2" {% endunless %}>
+              <th
+                {% unless full_columns %}
+                  colspan="2"
+                {% endunless %}
+              >
                 {{ benefits_plan.column1 }}
               </th>
             {% endif %}
@@ -1765,7 +1802,6 @@
           </tr>
         </thead>
         <tbody>
-
           <tr class="highlight-row">
             <td colspan="2"><b>Medical & Other Emergency Expenses</b></td>
           </tr>
@@ -1957,7 +1993,7 @@
               </tr>
             {% endif %}
           {% endfor %}
-          
+
           {% assign cancelation = package.trip_cancellation_and_alteration[0] %}
           {% if cancelation.basic or cancelation.executive or cancelation.premiere %}
             <tr>
@@ -2295,7 +2331,6 @@
               </tr>
             {% endif %}
           {% endfor %}
-
         </tbody>
       </table>
     {% endfor %}

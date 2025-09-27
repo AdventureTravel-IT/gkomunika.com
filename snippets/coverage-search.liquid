@@ -13,129 +13,75 @@
       >
     </div>
   </form>
-  <div id="search-recommendation" class="search-recommendation" style="display: none;">
-    <button
-      id="recommend-button"
-      class="recommend-button"
-      onclick="submitSearch()"
-    >
-      <span id="recommend-text" class="recommend-text"></span>
-      <span class="svg-wrapper">
-        {{- 'icon-search.svg' | inline_asset_content -}}
-      </span>
-    </button>
-  </div>
+  <div id="search-empty" class="search-empty" style="display:none;" role="status" aria-live="polite">
+  country not found
+</div>
+
 </div>
 
 <script>
 const searchInput = document.getElementById('search-input');
-const recommendation = document.getElementById('search-recommendation');
+const emptyMsg = document.getElementById('search-empty');
+
+// subsequence match supaya "chn" tetap cocok "china"
+function isSubsequence(q, t) {
+  q = (q || '').toLowerCase();
+  t = (t || '').toLowerCase();
+  let i = 0;
+  for (const ch of t) if (ch === q[i]) i++;
+  return q.length > 0 && i === q.length;
+}
+
+function matches(haystack, needle) {
+  if (!needle) return true; // input kosong = tampilkan semua
+  haystack = (haystack || '').toLowerCase();
+  needle = (needle || '').toLowerCase();
+  return haystack.includes(needle) || isSubsequence(needle, haystack);
+}
 
 function filterCountries() {
-  const input = searchInput.value.toLowerCase();
-  const items = document.getElementsByClassName('coverage');
-  let found = false;
+  const input = (searchInput.value || '').trim().toLowerCase();
+  const items = document.querySelectorAll('#coverage-container .coverage-item');
+  let found = 0;
 
-  for (let item of items) {
-    const country = item.getAttribute('data-country') || '';
-    if (country.includes(input)) {
-      item.style.display = 'block';
-      found = true;
-    } else {
-      item.style.display = 'none';
-    }
-  }
+  items.forEach(item => {
+    const byAttr = (item.getAttribute('data-country') || '').toLowerCase();
+    const byRaw  = (item.getAttribute('data-country-raw') || '').toLowerCase();
+    const byText = (item.textContent || '').toLowerCase();
+    const hay = `${byAttr} ${byRaw} ${byText}`.replace(/_/g, ' ');
 
-  const recommendText = document.getElementById('recommend-text');
+    const show = matches(hay, input);
+    item.style.display = show ? '' : 'none';
+    if (show) found++;
+  });
 
-  if (!found && input.trim() !== '') {
-    recommendText.innerHTML = `Search "<strong>${input}</strong>"`;
-    recommendation.style.display = 'block';
-
-    // Ubah border-radius dan hapus border-bottom saat aktif
-    searchInput.style.borderRadius = '15px 15px 0 0';
-    searchInput.style.borderBottom = 'none';
+  // tampilkan pesan jika ada input & tidak ada hasil
+  if (input && found === 0) {
+    emptyMsg.style.display = 'block';
   } else {
-    recommendation.style.display = 'none';
-
-    // Kembalikan border-radius dan border-bottom ke semula
-    searchInput.style.borderRadius = '15px';
-    searchInput.style.borderBottom = '1px solid var(--color-primary)';
+    emptyMsg.style.display = 'none';
   }
 }
 
-function submitSearch() {
-  const searchTerm = searchInput.value.trim();
-  if (searchTerm) {
-    const searchUrl = `{{ routes.search_url }}?q=${encodeURIComponent(searchTerm)}`;
-    window.location.href = searchUrl;
-  }
-}
+// ekspos ke global supaya dipanggil ulang saat coverage re-render
+window.filterCountries = filterCountries;
 </script>
 
-{% style %}
-  input[type="search"]::-webkit-search-cancel-button {
-      display: none;
-  }
-  .search-container,
-  .search-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
+<style>
+  input[type="search"]::-webkit-search-cancel-button { display: none; }
+  .search-container, .search-form { display:flex; flex-direction:column; align-items:center; width:100%; }
+  .search-box { position:relative; width:100%; height:60px; }
+  .search-fields { width:100%; height:100%; padding:0 10px; font-size:16px; border:1px solid var(--color-primary); border-radius:15px; outline:none; color:var(--color-primary); }
+  .search-fields:focus { border-color:var(--color-primary); color:var(--color-primary); font-size:var(--font-large); }
+  .search-fields::placeholder { color:var(--color-primary); }
 
-  .search-box {
-    position: relative;
-    width: 100%;
-    height: 60px;
+  .search-empty {
+    width:100%;
+    margin-top:8px;
+    padding:10px;
+    border:1px dashed var(--color-primary);
+    border-radius:8px;
+    color:var(--color-primary);
+    background:transparent;
   }
-
-  .search-fields {
-    width: 100%;
-    height: 100%;
-    padding: 0 10px;
-    font-size: 16px;
-    border: 1px solid var(--color-primary);
-    border-radius: 15px;
-    outline: none;
-    color: var(--color-primary);
-  }
-
-  .search-fields:focus {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-    font-size: var(--font-large);
-  }
-
-  .search-fields::placeholder {
-    color: var(--color-primary);
-  }
-
-  .search-recommendation {
-    width: 100%;
-  }
-
-  .recommend-button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    border-radius: 0 0 15px 15px;
-    border: 1px solid var(--color-primary);
-    background: transparent;
-    background-color: var(--color-background);
-    cursor: pointer;
-  }
-
-  .recommend-text {
-    padding: 10px;
-    color: var(--color-primary);
-    letter-spacing: 1px;
-  }
-
-  .svg-wrapper {
-    display: flex;
-    align-items: center;
-  }
-{% endstyle %}
+</style>

@@ -192,9 +192,9 @@
     <span>Insurance Package</span>
   </div>
 
-  {% assign json = product.metafields.insurance.package.value %}
-  {% assign plans = json.benefits_plan %}
-  {% assign packages = json.insurance_package %}
+{% assign json = product.metafields.insurance.package.value %}
+{% assign plans = json.benefits_plan %}
+{% assign packages = json.insurance_package %}
 
 <div class="insurance-table__main">
   <div>
@@ -202,138 +202,60 @@
       <thead style="background-color: var(--color-neutral);">
         <tr>
           <th colspan="2">Benefits</th>
-          {% for insurance_package in plans %}
-            <th>{{ insurance_package }}</th>
-          {% endfor %}
+          {% for plan in plans %}<th>{{ plan }}</th>{% endfor %}
         </tr>
       </thead>
 
       <tbody>
-        {% for items in packages %}
-          {%- comment -%} total baris untuk kategori (items.name) {%- endcomment -%}
+        {% for cat in packages %}
           {% assign total_rows = 0 %}
-          {% for sb in items.sub_benefits %}
+          {% for sb in cat.sub_benefits %}
             {% assign cnt = sb.items | size %}
             {% if cnt == 0 %}{% assign cnt = 1 %}{% endif %}
             {% assign total_rows = total_rows | plus: cnt %}
           {% endfor %}
 
-          {% for sub_benefit in items.sub_benefits %}
-            {% assign sb_count = sub_benefit.items | size %}
+          {% for sb in cat.sub_benefits %}
+            {% assign sb_count = sb.items | size %}
             {% if sb_count == 0 %}{% assign sb_count = 1 %}{% endif %}
+            {% assign sb_last = sb_count | minus: 1 %}
 
-            {% if forloop.first %}
+            {% for i in (0..sb_last) %}
+              {% assign it = sb.items[i] %}
               <tr>
-                <th rowspan="{{ total_rows }}">{{ items.name }}</th>
-                <th rowspan="{{ sb_count }}">{{ sub_benefit.name }}</th>
+                {% if forloop.parentloop.first and forloop.first %}
+                  <th rowspan="{{ total_rows }}">{{ cat.name }}</th>
+                {% endif %}
+                {% if forloop.first %}
+                  <th rowspan="{{ sb_count }}">{{ sb.name }}</th>
+                {% endif %}
 
-                {% if sub_benefit.items.size > 0 %}
-                  {% assign first_item = sub_benefit.items[0] %}
-                  <td>{{ first_item.name }}</td>
-                  {% for plan in plans %}
-                    {% if forloop.index0 < first_item.benefits.size %}
-                      {% assign benefit = first_item.benefits[forloop.index0] %}
-                      {% assign benefit_value = benefit | remove: "," | plus: 0 %}
-
-                      {% if sub_benefit.name == "Medical Expenses" %}
-                        {% if first_item.name == "Age 65 and below" or first_item.name == "Age 65-75" or first_item.name == "Age 76 and over" %}
-                          {% if benefit_value > 590000000 %}
-                            {% assign benefit = benefit | append: " <span style='color: var(--color-secondary);'>(minimum of €30,000 is required for applying Schengen visa)</span>" %}
-                          {% endif %}
-                        {% endif %}
+                {% if it %}
+                  {% for _ in plans %}
+                    {% assign b = it.benefits[forloop.index0] %}
+                    {% if b %}
+                      {% assign bv = b | remove: "," | plus: 0 %}
+                      {% if sb.name == "Medical Expenses" and bv > 590000000 %}
+                        <td>{{ b }} <span style="color: var(--color-secondary);">(minimum of €30,000 is required for applying Schengen visa)</span></td>
+                      {% else %}
+                        <td>{{ b }}</td>
                       {% endif %}
-                      <td>{{ benefit }}</td>
+                    {% else %}
+                      <td>-</td>
                     {% endif %}
                   {% endfor %}
                 {% else %}
-                  <td></td>
-                  {% for plan in plans %}
-                    <td>2</td>
-                  {% endfor %}
+                  {% for _ in plans %}<td>-</td>{% endfor %}
                 {% endif %}
               </tr>
-
-              {% if sub_benefit.items.size > 1 %}
-                {% for v in sub_benefit.items offset: 1 %}
-                  <tr>
-                    <td>{{ v.name }}</td>
-                    {% for plan in plans %}
-                      {% if forloop.index0 < v.benefits.size %}
-                        {% assign benefit = v.benefits[forloop.index0] %}
-                        {% assign benefit_value = benefit | remove: "," | plus: 0 %}
-
-                        {% if sub_benefit.name == "Medical Expenses" %}
-                          {% if v.name == "Age 65 and below" or v.name == "Age 65-75" or v.name == "Age 76 and over" %}
-                            {% if benefit_value > 590000000 %}
-                              {% assign benefit = benefit | append: " <span style='color: var(--color-secondary);'>(minimum of €30,000 is required for applying Schengen visa)</span>" %}
-                            {% endif %}
-                          {% endif %}
-                        {% endif %}
-                        <td>{{ benefit }}</td>
-                      {% endif %}
-                    {% endfor %}
-                  </tr>
-                {% endfor %}
-              {% endif %}
-            {% else %}
-              <tr>
-                <th rowspan="{{ sb_count }}">{{ sub_benefit.name }}</th>
-
-                {% if sub_benefit.items.size > 0 %}
-                  {% assign first_item = sub_benefit.items[0] %}
-                  <td>{{ first_item.name }}</td>
-                  {% for plan in plans %}
-                    {% if forloop.index0 < first_item.benefits.size %}
-                      {% assign benefit = first_item.benefits[forloop.index0] %}
-                      {% assign benefit_value = benefit | remove: "," | plus: 0 %}
-
-                      {% if sub_benefit.name == "Medical Expenses" %}
-                        {% if first_item.name == "Age 65 and below" or first_item.name == "Age 65-75" or first_item.name == "Age 76 and over" %}
-                          {% if benefit_value > 590000000 %}
-                            {% assign benefit = benefit | append: " <span style='color: var(--color-secondary);'>(minimum of €30,000 is required for applying Schengen visa)</span>" %}
-                          {% endif %}
-                        {% endif %}
-                      {% endif %}
-                      <td>{{ benefit }}</td>
-                    {% endif %}
-                  {% endfor %}
-                {% else %}
-                  <td></td>
-                  {% for plan in plans %}
-                    <td>5</td>
-                  {% endfor %}
-                {% endif %}
-              </tr>
-
-              {% if sub_benefit.items.size > 1 %}
-                {% for v in sub_benefit.items offset: 1 %}
-                  <tr>
-                    <td>{{ v.name }}</td>
-                    {% for plan in plans %}
-                      {% if forloop.index0 < v.benefits.size %}
-                        {% assign benefit = v.benefits[forloop.index0] %}
-                        {% assign benefit_value = benefit | remove: "," | plus: 0 %}
-
-                        {% if sub_benefit.name == "Medical Expenses" %}
-                          {% if v.name == "Age 65 and below" or v.name == "Age 65-75" or v.name == "Age 76 and over" %}
-                            {% if benefit_value > 590000000 %}
-                              {% assign benefit = benefit | append: " <span style='color: var(--color-secondary);'>(minimum of €30,000 is required for applying Schengen visa)</span>" %}
-                            {% endif %}
-                          {% endif %}
-                        {% endif %}
-                        <td>{{ benefit }}</td>
-                      {% endif %}
-                    {% endfor %}
-                  </tr>
-                {% endfor %}
-              {% endif %}
-            {% endif %}
+            {% endfor %}
           {% endfor %}
         {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
+
   
 {% comment %} section for mobile {% endcomment %}
 <section>

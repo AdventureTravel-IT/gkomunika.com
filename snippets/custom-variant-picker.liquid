@@ -644,18 +644,40 @@
 </script>
 
 <script>
-  window.productCoverage = [].concat(
+  // Fungsi untuk membersihkan nama negara (replace _ dengan spasi)
+  function cleanCoverageData(coverageArray) {
+    if (!coverageArray || !Array.isArray(coverageArray)) return [];
+    
+    return coverageArray.map(country => {
+      if (typeof country === 'string') {
+        // Replace semua underscore dengan spasi
+        return country.replace(/_/g, ' ');
+      }
+      return country;
+    });
+  }
+
+  // Data coverage mentah
+  const rawCoverage = [].concat(
     {% if product.metafields.coverage.country.value %}
       {{ product.metafields.coverage.country.value | json }},
     {% else %}
       [],
     {% endif %}
     {% if product.metafields.coverage.country_1.value %}
-      {{ product.metafields.coverage.country_1.value | json }}
+      {{ product.metafields.coverage.country_1.value | json }},
+    {% else %}
+      [],
+    {% endif %}
+    {% if product.metafields.coverage.country_2.value %}
+      {{ product.metafields.coverage.country_2.value | json }}
     {% else %}
       []
     {% endif %}
   );
+
+  // Simpan data yang sudah dibersihkan
+  window.productCoverage = cleanCoverageData(rawCoverage);
 </script>
 
 <script>

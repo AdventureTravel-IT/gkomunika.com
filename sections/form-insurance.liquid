@@ -509,23 +509,23 @@
     <div class="form-insurance__wrapper">
       <div class="form-insurance__field">
         <div style="display: flex; gap: 5px;">
-        <label for="start-date">Start Date</label>
-         <span class="tooltip-label">
-        {{- 'icon-info.svg' | inline_asset_content -}}
-        <span class="tooltip-text">Start Date is the day you leave your house to begin your trip.</span>
-      </span>
-      </div>
-        <input type="date" id="start-date" name="Start Date" required>
+          <label for="start-date">Start Date</label>
+          <span class="tooltip-label">
+            {{- 'icon-info.svg' | inline_asset_content -}}
+            <span class="tooltip-text">Start Date is the day you leave your house to begin your trip.</span>
+          </span>
+        </div>
+        <input type="date" id="start-date" name="Start Date" min="{{ "now" | date: "%Y-%m-%d" }}" required>
       </div>
       <div class="form-insurance__field">
         <div style="display: flex; gap: 5px;">
-        <label for="end-date">End Date</label>
-        <span  class="tooltip-label">
-          {{- 'icon-info.svg' | inline_asset_content -}}
-          <span class="tooltip-text">End Date is the day you arrive back home after the trip.</span>
-        </span>
+          <label for="end-date">End Date</label>
+          <span class="tooltip-label">
+            {{- 'icon-info.svg' | inline_asset_content -}}
+            <span class="tooltip-text">End Date is the day you arrive back home after the trip.</span>
+          </span>
         </div>
-        <input type="date" id="end-date" name="End Date" required>
+        <input type="date" id="end-date" name="End Date" min="{{ "now" | date: "%Y-%m-%d" }}" required>
       </div>
       <div class="form-insurance__field">
         <label for="country-destination">Destination Country</label>
@@ -1293,6 +1293,86 @@
 </script>
 
 <script>
+  // Fungsi untuk validasi date
+function validateDates() {
+  const today = new Date().toISOString().split('T')[0];
+  const startDateInputs = document.querySelectorAll('input[name="Start Date"]');
+  const endDateInputs = document.querySelectorAll('input[name="End Date"]');
+  let isValid = true;
+
+  // Set minimum date untuk semua input start date
+  startDateInputs.forEach(input => {
+    input.min = today;
+    
+    if (input.value && input.value < today) {
+      input.style.border = '2px solid red';
+      isValid = false;
+    } else if (input.value) {
+      input.style.border = '';
+    }
+  });
+
+  // Set minimum date untuk semua input end date
+  endDateInputs.forEach(input => {
+    input.min = today;
+    
+    if (input.value && input.value < today) {
+      input.style.border = '2px solid red';
+      isValid = false;
+    } else if (input.value) {
+      input.style.border = '';
+    }
+
+    // Validasi: end date tidak boleh kurang dari start date
+    const startDateInput = input.closest('.form-insurance__wrapper')?.querySelector('input[name="Start Date"]');
+    if (startDateInput?.value && input.value && input.value < startDateInput.value) {
+      input.style.border = '2px solid red';
+      isValid = false;
+      alert('End Date cannot be earlier than Start Date');
+    }
+  });
+
+  return isValid;
+}
+
+// Fungsi untuk update minimum end date berdasarkan start date
+function setupDateValidation() {
+  document.addEventListener('change', function(e) {
+    if (e.target.name === 'Start Date') {
+      const startDate = e.target.value;
+      const wrapper = e.target.closest('.form-insurance__wrapper');
+      const endDateInput = wrapper?.querySelector('input[name="End Date"]');
+      
+      if (endDateInput && startDate) {
+        endDateInput.min = startDate;
+        
+        // Jika end date sudah ada dan kurang dari start date yang baru, reset
+        if (endDateInput.value && endDateInput.value < startDate) {
+          endDateInput.value = '';
+          endDateInput.style.border = '2px solid red';
+        }
+      }
+    }
+  });
+}
+
+// Panggil setup saat DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+  setupDateValidation();
+  
+  // Juga panggil saat form dynamically ditambahkan
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.addedNodes.length) {
+        setupDateValidation();
+        validateDates();
+      }
+    });
+  });
+  
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+
     function customizeInsuranceForms() {
       // --- INDIVIDUAL SECTION ---
       const individualForms = document.querySelectorAll('#form-individual form');
@@ -1431,6 +1511,13 @@
         alert('You must confirm that the flight itinerary is the same.');
         return;
       }
+
+        // ✅ Tambahkan validasi date di sini
+      if (!validateDates()) {
+        alert('Please check your dates. Start date and end date cannot be in the past, and end date cannot be earlier than start date.');
+        return;
+      }
+
   
       const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems')) || [];
       const insuranceItems = ProductItems.filter((p) => p.category === 'Insurance');

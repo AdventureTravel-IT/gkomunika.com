@@ -48,6 +48,7 @@
     },
     "product_category_button_UVfQzJ": {
       "type": "product-category-button",
+      "disabled": true,
       "name": "Product Category Button",
       "settings": {}
     },

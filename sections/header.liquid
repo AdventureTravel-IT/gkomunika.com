@@ -6,7 +6,8 @@
           <button
             class="menu-toggle"
             onclick="toggleMenu()"
-            aria-label="Open Menu">
+            aria-label="Open Menu"
+          >
             <div class="animated-icon" id="menu-icon">
               <span></span>
               <span></span>
@@ -22,7 +23,8 @@
               width="120px"
               height="40px"
               alt="Site Logo"
-              loading="eager">
+              loading="eager"
+            >
           </a>
         {% endif %}
       </div>
@@ -31,29 +33,43 @@
         <section class="header__content-menu">
           {% assign menu_handle = settings.selected_menu | default: 'main-menu' %}
           {% if linklists[menu_handle] %}
+            {%- comment -%} URL dinamis untuk /pages/product-category {%- endcomment -%}
+            {% if pages['product-category'] %}
+              {% assign product_category_url = pages['product-category'].url %}
+            {% else %}
+              {% assign product_category_url = routes.root_url | append: '/pages/product-category' %}
+            {% endif %}
+
             {% for link in linklists[menu_handle].links %}
               {% assign is_active = false %}
               {% if link.url == request.path or request.path == '/' and link.url == '/' %}
                 {% assign is_active = true %}
               {% endif %}
-              <a class="header-content__menu-link" href="{{ link.url }}">
+
+              {% assign dest_url = link.url %}
+              {% assign t = link.title | strip | handleize %}
+
+              {% if t == 'esim-instant' %}
+                {% assign dest_url = product_category_url | append: '?sim_type=esim' %}
+              {% elsif t == 'sim-card' %}
+                {% assign dest_url = product_category_url | append: '?sim_type=sim-card' %}
+              {% elsif t == 'insurance' %}
+                {% assign dest_url = product_category_url | append: '?sim_type=insurance' %}
+              {% endif %}
+
+              <a class="header-content__menu-link{% if is_active %} is-active{% endif %}" href="{{ dest_url }}">
                 {{ link.title }}
               </a>
-
             {% endfor %}
-
           {% endif %}
         </section>
 
         <section class="header__content-addOn">
           <div id="bucks-floating-desktop"></div>
           <localization-form>
-            {%- form 'localization'
-              , id: 'FooterLanguageForm'
-              , class: 'localization-form' -%}
+            {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
               <div>
-                {%- render 'language-localization'
-                  , localPosition: 'FooterLanguage' -%}
+                {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
               </div>
             {%- endform -%}
           </localization-form>
@@ -62,14 +78,16 @@
           <a
             href="/cart"
             class="cart-link"
-            aria-label="Shopping Cart">
+            aria-label="Shopping Cart"
+          >
             <img
               class="header-content-icon"
               src="{{ 'cart.svg' | asset_url }}"
               width="27px"
               height="27px"
               alt="Cart Icon"
-              loading="eager">
+              loading="eager"
+            >
             <span id="cart-count" class="cart-count"></span>
           </a>
 
@@ -80,7 +98,8 @@
               width="27px"
               height="27px"
               alt="Profile Icon"
-              loading="eager">
+              loading="eager"
+            >
           </a>
         </section>
       </div>
@@ -89,10 +108,27 @@
     <div id="sidebar-menu" class="sidebar-menu">
       {% assign menu_handle = settings.selected_menu | default: 'main-menu' %}
       {% if linklists[menu_handle] %}
+        {% if pages['product-category'] %}
+          {% assign product_category_url = pages['product-category'].url %}
+        {% else %}
+          {% assign product_category_url = routes.root_url | append: '/pages/product-category' %}
+        {% endif %}
+
         <ul>
           {% for link in linklists[menu_handle].links %}
+            {% assign dest_url = link.url %}
+            {% assign t = link.title | strip | handleize %}
+
+            {% if t == 'esim-instant' %}
+              {% assign dest_url = product_category_url | append: '?sim_type=esim' %}
+            {% elsif t == 'sim-card' %}
+              {% assign dest_url = product_category_url | append: '?sim_type=sim-card' %}
+            {% elsif t == 'insurance' or t == 'insurancec' %}
+              {% assign dest_url = product_category_url | append: '?sim_type=insurance' %}
+            {% endif %}
+
             <li>
-              <a href="{{ link.url }}">{{ link.title }}</a>
+              <a href="{{ dest_url }}">{{ link.title }}</a>
             </li>
           {% endfor %}
         </ul>
@@ -100,12 +136,9 @@
       <div style="display: flex; align-items: center; padding: 0 24px;">
         <div id="bucks-mobile"></div>
         <localization-form>
-          {%- form 'localization'
-            , id: 'FooterLanguageForm'
-            , class: 'localization-form' -%}
+          {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
             <div>
-              {%- render 'language-localization'
-                , localPosition: 'FooterLanguage' -%}
+              {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
             </div>
           {%- endform -%}
         </localization-form>
@@ -115,18 +148,19 @@
 {% endunless %}
 
 {% schema %}
-  {
-    "name": "Header Settings",
-    "settings": [
-      {
-        "type": "link_list",
-        "id": "selected_menu",
-        "label": "Menu"
-      }, {
-        "type": "image_picker",
-        "id": "logo",
-        "label": "Logo"
-      }
-    ]
-  }
+{
+  "name": "Header Settings",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "selected_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    }
+  ]
+}
 {% endschema %}

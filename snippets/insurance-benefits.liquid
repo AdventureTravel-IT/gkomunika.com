@@ -63,7 +63,8 @@
     border: 1px solid var(--color-border);
   }
   .insurance-table__title.desktop {
-    display: block;
+    display: flex;
+    align-items: center;
   }
   .insurance-table__title.mobile {
     display: none;
@@ -83,7 +84,8 @@
       display: none;
     }
     .insurance-table__title.mobile {
-      display: block;
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -182,12 +184,12 @@
   /* Variabel lebar kolom */
   :root {
     --mobile-first-col: clamp(140px, 36vw, 220px);
-    --mobile-col:       clamp(140px, 40vw, 240px);
+    --mobile-col: clamp(140px, 40vw, 240px);
   }
   @media (max-width: 426px) {
     :root {
       --mobile-first-col: clamp(120px, 44vw, 180px);
-      --mobile-col:       clamp(120px, 48vw, 200px);
+      --mobile-col: clamp(120px, 48vw, 200px);
     }
   }
 
@@ -226,7 +228,7 @@
     top: 0;
     z-index: 4;
     background: var(--color-neutral);
-    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
   .insurance-table__scroll td:first-child,
   .insurance-table__scroll th:first-child {
@@ -235,10 +237,12 @@
     background: var(--color-neutral);
     z-index: 2;
     border-right: 1px solid var(--color-border);
-    box-shadow: 6px 0 8px -6px rgba(0,0,0,.08);
+    box-shadow: 6px 0 8px -6px rgba(0, 0, 0, 0.08);
     background-clip: padding-box;
   }
-  .insurance-table__scroll thead th:first-child { z-index: 5; }
+  .insurance-table__scroll thead th:first-child {
+    z-index: 5;
+  }
 
   /* Border tunggal (hindari dobel) */
   .insurance-table__scroll th,
@@ -265,27 +269,62 @@
     word-break: break-word;
   }
 
-  /* Highlight row kategori */
+  /* Highlight row kategori (base) */
   .insurance-table__scroll tr.highlight-row td {
-    background: var(--color-background-third) !important;
-    font-weight: 600;
+    background: var(--color-primary);
     white-space: normal;
     padding-top: 12px;
     padding-bottom: 12px;
+    color: var(--color-neutral);
+    font-size: var(--font-large);
     border-top: 2px solid var(--color-border) !important;
   }
 
   /* Zebra rows (tidak ganggu kolom pertama & highlight) */
   .insurance-table__scroll tbody tr:nth-child(even):not(.highlight-row) td:not(:first-child) {
-    background: color-mix(in srgb, var(--color-neutral) 92%, #000 8%);
+    background: #DBF5FF;
   }
 </style>
 <!-- ===== END MOBILE UX BOOST ===== -->
 
+<!-- ===== FIXES: Sticky highlight + 2-line clamp ===== -->
+<style>
+  /* fallback; akan dioverride via JS */
+  .insurance-table__scroll table {
+    --highlight-top: 44px;
+  }
+
+  /* bikin baris kategori nempel di bawah thead sticky */
+  .insurance-table__scroll tr.highlight-row td {
+    position: sticky;
+    top: var(--highlight-top);
+    left: 0;         /* tetap terlihat saat scroll horizontal */
+    right: 0;
+    z-index: 3;      /* di bawah thead (4/5), di atas sel biasa (2) */
+    background-clip: padding-box;
+  }
+
+  /* batasi judul kategori maksimal 2 baris */
+  .insurance-table__scroll tr.highlight-row td > b {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.25;
+    max-height: calc(1em * 1.25 * 2);
+  }
+</style>
+<!-- ===== END FIXES ===== -->
+
 <!-- ===== Shared value/note styling (desktop & mobile) ===== -->
 <style>
   .insurance-table__main .ins-val,
-  .insurance-table__scroll .ins-val { display: inline; }
+  .insurance-table__scroll .ins-val {
+    display: inline;
+  }
 
   .insurance-table__main .ins-note,
   .insurance-table__scroll .ins-note {
@@ -294,7 +333,7 @@
     font-size: 12px;
     line-height: 1.2;
     color: var(--color-secondary);
-    opacity: .9;
+    opacity: 0.9;
     margin-top: 2px;
   }
   .benefits-list {
@@ -309,13 +348,32 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    /* Expand panel (desktop) */
     const container = document.querySelector('.insurance-table__container');
-    const button = container.querySelector('.insurance-table__expand-button');
+    if (container) {
+      const button = container.querySelector('.insurance-table__expand-button');
+      if (button) {
+        button.addEventListener('click', function () {
+          container.classList.add('insurance-table__container--expanded');
+          button.style.display = 'none';
+        });
+      }
+    }
 
-    button.addEventListener('click', function () {
-      container.classList.add('insurance-table__container--expanded');
-      button.style.display = 'none';
-    });
+    /* Hitung tinggi thead untuk offset sticky highlight row */
+    const tables = document.querySelectorAll('.insurance-table__scroll table');
+
+    function setHighlightOffset() {
+      tables.forEach(table => {
+        const thead = table.tHead;
+        if (!thead) return;
+        const headH = thead.getBoundingClientRect().height || 0;
+        table.style.setProperty('--highlight-top', headH + 'px');
+      });
+    }
+
+    setHighlightOffset();
+    window.addEventListener('resize', setHighlightOffset, { passive: true });
   });
 </script>
 
@@ -419,7 +477,9 @@
       <tbody>
         {% for cat in packages %}
           <tr class="highlight-row">
-            <td colspan="{{ plan_count | plus: 1 }}"><b>{{ cat.name }}</b></td>
+            <td colspan="{{ plan_count | plus: 1 }}">
+              <b>{{ cat.name }}</b>
+            </td>
           </tr>
 
           {% for sb in cat.sub_benefits %}
@@ -431,15 +491,15 @@
                   {% assign bv = b | remove: ',' | plus: 0 %}
                   <td>
                     {% if b contains '|' %}
-                        <ul class="benefits-list">
-                          {% assign benefit_items = b | split: '|' %}
-                          {% for item in benefit_items %}
-                            <li>{{ item | strip }}</li>
-                          {% endfor %}
-                        </ul>
-                      {% else %}
-                        <span class="ins-val">{{ b }}</span>
-                      {% endif %}
+                      <ul class="benefits-list">
+                        {% assign benefit_items = b | split: '|' %}
+                        {% for item in benefit_items %}
+                          <li>{{ item | strip }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      <span class="ins-val">{{ b }}</span>
+                    {% endif %}
                     {% if sb.name == 'Medical Expenses' and bv > 590000000 %}
                       <span class="ins-note">(minimum of €30,000 is required for applying Schengen visa)</span>
                     {% endif %}

@@ -14,7 +14,7 @@
     </div>
   </form>
   <div id="search-empty" class="search-empty" style="display:none;" role="status" aria-live="polite">
-  country not found
+  Country not found.
 </div>
 
 </div>
@@ -23,49 +23,98 @@
 const searchInput = document.getElementById('search-input');
 const emptyMsg = document.getElementById('search-empty');
 
-// subsequence match supaya "chn" tetap cocok "china"
+// Normalisasi teks: lowercase, hilangin aksen, underscore -> spasi
+function norm(s = '') {
+  return s
+    .toLowerCase()
+    .replace(/_/g,' ')
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '');
+}
+
+// subsequence ketat: dipakai HANYA utk query konsonan (mis. "chn")
 function isSubsequence(q, t) {
-  q = (q || '').toLowerCase();
-  t = (t || '').toLowerCase();
   let i = 0;
   for (const ch of t) if (ch === q[i]) i++;
   return q.length > 0 && i === q.length;
 }
 
-function matches(haystack, needle) {
-  if (!needle) return true; // input kosong = tampilkan semua
-  haystack = (haystack || '').toLowerCase();
-  needle = (needle || '').toLowerCase();
-  return haystack.includes(needle) || isSubsequence(needle, haystack);
+function isConsonantOnly(s) {
+  return /^[^aeiou\s]+$/i.test(s); // tidak mengandung a e i o u
+}
+
+function tokenStartsWith(hay, needle) {
+  const tokens = hay.split(/[^a-z]+/); // pecah per non-huruf
+  return tokens.some(tok => tok.startsWith(needle));
+}
+
+function matchScore(haystackRaw, needleRaw) {
+  if (!needleRaw) return 1; // kosong = tampilkan semua
+
+  const hay = norm(haystackRaw);
+  const q   = norm(needleRaw);
+
+  if (!q) return 0;
+
+  // Skor prioritas: exact > prefix kata > judul mengandung > subsequence (konsonan-only)
+  if (hay === q) return 100;
+
+  if (tokenStartsWith(hay, q)) return 90;
+
+  if (hay.includes(q)) return 70;
+
+  if (q.length >= 3 && isConsonantOnly(q) && isSubsequence(q, hay)) return 40;
+
+  return 0;
 }
 
 function filterCountries() {
-  const input = (searchInput.value || '').trim().toLowerCase();
-  const items = document.querySelectorAll('#coverage-container .coverage-item');
+  const input = (searchInput.value || '').trim();
+  const items = Array.from(document.querySelectorAll('#coverage-container .coverage-item'));
   let found = 0;
 
-  items.forEach(item => {
-    const byAttr = (item.getAttribute('data-country') || '').toLowerCase();
-    const byRaw  = (item.getAttribute('data-country-raw') || '').toLowerCase();
-    const byText = (item.textContent || '').toLowerCase();
-    const hay = `${byAttr} ${byRaw} ${byText}`.replace(/_/g, ' ');
+  // Hitung skor per item
+  const scored = items.map(item => {
+    const byAttr = item.getAttribute('data-country') || '';
+    const byRaw  = item.getAttribute('data-country-raw') || '';
+    const byText = item.textContent || '';
+    const hay = `${byAttr} ${byRaw} ${byText}`;
 
-    const show = matches(hay, input);
+    const score = matchScore(hay, input);
+    item.dataset.score = String(score);
+    return { item, score };
+  });
+
+  // Tampilkan/sembunyikan
+  scored.forEach(({ item, score }) => {
+    const show = score > 0 || (input === '');
     item.style.display = show ? '' : 'none';
     if (show) found++;
   });
 
-  // tampilkan pesan jika ada input & tidak ada hasil
-  if (input && found === 0) {
-    emptyMsg.style.display = 'block';
-  } else {
-    emptyMsg.style.display = 'none';
-  }
+  // Urutkan DOM berdasarkan skor (desc) lalu alfabet
+  const container = document.getElementById('coverage-container');
+  const visible = scored
+    .filter(({ item }) => item.style.display !== 'none')
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      // tie-break: urut alfabet by text
+      const at = (a.item.textContent || '').trim().toLowerCase();
+      const bt = (b.item.textContent || '').trim().toLowerCase();
+      return at.localeCompare(bt);
+    });
+
+  // Re-append urutan baru (yang visible saja; hidden dibiarkan di posisi lama)
+  visible.forEach(({ item }) => container.appendChild(item));
+
+  // pesan kosong
+  emptyMsg.style.display = (input && found === 0) ? 'block' : 'none';
 }
 
-// ekspos ke global supaya dipanggil ulang saat coverage re-render
+// ekspos ke global supaya bisa dipanggil ulang
 window.filterCountries = filterCountries;
 </script>
+
 
 <style>
   input[type="search"]::-webkit-search-cancel-button { display: none; }

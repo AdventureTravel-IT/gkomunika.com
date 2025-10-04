@@ -198,7 +198,16 @@
                           {{- field_key | append: '.svg' | inline_asset_content -}}
                         </div>
                         <div class="mp-content-text">
-                          <p class="title">{{ title | upcase }}</p>
+                          {% assign t = title | replace: '-', ' ' | replace: '_', ' ' | strip %}
+{% assign words = t | split: ' ' %}
+{% capture title_case %}
+  {% for w in words %}
+    {% if w != '' %}{{ w | capitalize }}{% unless forloop.last %} {% endunless %}{% endif %}
+  {% endfor %}
+{% endcapture %}
+
+<p class="title">{{ title_case }}</p>
+
                           {% if metafield.value %}
                             {% for v in metafield.value %}
                               <li style="margin-left: 20px; list-style-type: disc;">{{ v }}</li>

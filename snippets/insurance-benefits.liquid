@@ -280,9 +280,9 @@
     border-top: 2px solid var(--color-border) !important;
   }
 
-  /* Zebra rows (tidak ganggu kolom pertama & highlight) */
-  .insurance-table__scroll tbody tr:nth-child(even):not(.highlight-row) td:not(:first-child) {
-    background: #DBF5FF;
+  /* zebra hanya untuk baris konten, bukan highlight & bukan sentinel */
+  .insurance-table__scroll tbody tr:nth-child(even of :not(.highlight-row, .unstick-sentinel)) > :is(td, th) {
+    background: #dbf5ff;
   }
 </style>
 <!-- ===== END MOBILE UX BOOST ===== -->
@@ -294,13 +294,13 @@
     --highlight-top: 44px;
   }
 
-  /* bikin baris kategori nempel di bawah thead sticky */
+  /* Secara default sticky, tapi nanti dibatasi via .active/.unstuck */
   .insurance-table__scroll tr.highlight-row td {
     position: sticky;
     top: var(--highlight-top);
-    left: 0;         /* tetap terlihat saat scroll horizontal */
+    left: 0;
     right: 0;
-    z-index: 3;      /* di bawah thead (4/5), di atas sel biasa (2) */
+    z-index: 3;
     background-clip: padding-box;
   }
 
@@ -315,6 +315,15 @@
     word-break: break-word;
     line-height: 1.25;
     max-height: calc(1em * 1.25 * 2);
+  }
+
+  /* ===== Override: hanya .active yang boleh sticky ===== */
+  .insurance-table__scroll tr.highlight-row:not(.active) td,
+  .insurance-table__scroll tr.highlight-row.unstuck td,
+  .insurance-table__scroll tr.highlight-row.active.unstuck td {
+    position: static !important;
+    z-index: auto !important;
+    box-shadow: none !important;
   }
 </style>
 <!-- ===== END FIXES ===== -->
@@ -360,20 +369,170 @@
       }
     }
 
-    /* Hitung tinggi thead untuk offset sticky highlight row */
+    /* ===== Hitung tinggi thead untuk offset sticky highlight row ===== */
     const tables = document.querySelectorAll('.insurance-table__scroll table');
 
     function setHighlightOffset() {
-      tables.forEach(table => {
+      tables.forEach((table) => {
         const thead = table.tHead;
         if (!thead) return;
         const headH = thead.getBoundingClientRect().height || 0;
         table.style.setProperty('--highlight-top', headH + 'px');
       });
     }
-
     setHighlightOffset();
     window.addEventListener('resize', setHighlightOffset, { passive: true });
+
+    /* ===== Sentinel + Active Sticky Manager (mobile table) ===== */
+    const scroller = document.querySelector('.insurance-table__scroll');
+    if (!scroller) return;
+
+    tables.forEach((table) => {
+      const thead = table.tHead;
+      const tbody = table.tBodies && table.tBodies[0];
+      if (!thead || !tbody) return;
+
+      let topOffset =
+        parseFloat(getComputedStyle(table).getPropertyValue('--highlight-top')) ||
+        thead.getBoundingClientRect().height ||
+        0;
+
+      // --- 1) Sisipkan sentinel setelah 2 sub-benefit per kategori ---
+      const allRows = Array.from(tbody.rows || []);
+      for (let i = 0; i < allRows.length; i++) {
+        const row = allRows[i];
+        if (!row.classList.contains('highlight-row')) continue;
+
+        const sub1 = allRows[i + 1];
+        const sub2 = allRows[i + 2];
+        const isSub1 = sub1 && !sub1.classList.contains('highlight-row');
+        const isSub2 = sub2 && !sub2.classList.contains('highlight-row');
+
+        if (isSub1 && isSub2) {
+          const afterSub2 = allRows[i + 3];
+          const alreadyHas = afterSub2 && afterSub2.classList && afterSub2.classList.contains('unstick-sentinel');
+          if (!alreadyHas) {
+            const sentinel = document.createElement('tr');
+            sentinel.className = 'unstick-sentinel';
+            const td = document.createElement('td');
+            td.colSpan = table.tHead.rows[0]?.cells.length || 1;
+            td.style.padding = '0';
+            td.style.border = '0';
+            td.style.height = '0';
+            const probe = document.createElement('div');
+            probe.style.height = '1px';
+            probe.style.width = '1px';
+            probe.style.pointerEvents = 'none';
+            td.appendChild(probe);
+            sentinel.appendChild(td);
+            sub2.insertAdjacentElement('afterend', sentinel);
+          }
+        }
+      }
+
+      // --- 2) Observer: ketika sentinel sejajar ambang atas, lepas sticky (unstuck) ---
+      let observer = null;
+      function attachObserver() {
+        if (observer) observer.disconnect();
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              const sentinelTr = entry.target.closest('tr.unstick-sentinel');
+              if (!sentinelTr) return;
+
+              // cari highlight-row di atas sentinel
+              let prev = sentinelTr.previousElementSibling;
+              while (prev && !prev.classList.contains('highlight-row')) {
+                prev = prev.previousElementSibling;
+              }
+              const highlightRow = prev;
+              if (!highlightRow) return;
+
+              if (entry.isIntersecting) {
+                highlightRow.classList.add('unstuck');
+              } else {
+                highlightRow.classList.remove('unstuck');
+              }
+            });
+            // setiap ada perubahan, evaluasi ulang siapa yang active
+            applyActive();
+          },
+          {
+            root: scroller,
+            rootMargin: `-${topOffset}px 0px 0px 0px`,
+            threshold: 0,
+          }
+        );
+
+        table.querySelectorAll('tr.unstick-sentinel > td > div').forEach((probe) => {
+          observer.observe(probe);
+        });
+      }
+      attachObserver();
+
+      // --- 3) Active Sticky Manager: hanya satu .highlight-row yang .active ---
+      const highlightRows = Array.from(tbody.querySelectorAll('tr.highlight-row'));
+
+      function computeActiveRow() {
+        const scrollerBox = scroller.getBoundingClientRect();
+        let active = null;
+        for (const row of highlightRows) {
+          const rowBox = row.getBoundingClientRect();
+          const distanceTop = rowBox.top - scrollerBox.top;
+          if (distanceTop <= topOffset) {
+            active = row; // kandidat terbaru yang melewati garis sticky
+          } else {
+            break;
+          }
+        }
+        return active;
+      }
+
+      function applyActive() {
+        const activeRow = computeActiveRow();
+        highlightRows.forEach((row) => row.classList.remove('active'));
+
+        if (activeRow) {
+          if (activeRow.classList.contains('unstuck')) {
+            const idx = highlightRows.indexOf(activeRow);
+            const prev = idx > 0 ? highlightRows[idx - 1] : null;
+            if (prev && !prev.classList.contains('unstuck')) {
+              prev.classList.add('active');
+            }
+          } else {
+            activeRow.classList.add('active');
+          }
+        }
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          applyActive();
+          ticking = false;
+        });
+      }
+
+      function onResize() {
+        const newTop =
+          parseFloat(getComputedStyle(table).getPropertyValue('--highlight-top')) ||
+          thead.getBoundingClientRect().height ||
+          0;
+        if (newTop !== topOffset) {
+          topOffset = newTop;
+          attachObserver(); // rootMargin berubah
+        }
+        applyActive();
+      }
+
+      scroller.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onResize, { passive: true });
+
+      // Inisialisasi pertama
+      applyActive();
+    });
   });
 </script>
 
@@ -477,7 +636,7 @@
       <tbody>
         {% for cat in packages %}
           <tr class="highlight-row">
-            <td colspan="{{ plan_count | plus: 1 }}">
+            <td colspan="2">
               <b>{{ cat.name }}</b>
             </td>
           </tr>

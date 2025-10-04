@@ -36,11 +36,13 @@
   data-section="{{ section.id }}"
   data-product-id="{{ product.id }}"
   data-update-url="true"
-  data-url="{{ product.url }}">
+  data-url="{{ product.url }}"
+>
   <div
     id="cart-popup"
     class="cart-popup"
-    style="display: none;">
+    style="display: none;"
+  >
     <div class="cart-popup-content">
       <p id="popup-product-title">Success add to cart</p>
     </div>
@@ -56,14 +58,17 @@
           id="mainImage"
           src="{{ product.featured_image | img_url: 'master' }}"
           alt="{{ product.title | escape }}"
-          width=""
-          loading="lazy">
+          width="auto"
+          height="auto"
+          loading="lazy"
+        >
         <div class="main-product-sub-images-wrapper">
           <button
             class="scroll-btn left"
             style="transform: rotate(180deg);"
             onclick="scrollSubImages(-1)"
-            aria-label="Scroll left">
+            aria-label="Scroll left"
+          >
             {{- 'icon-arrow-back.svg' | inline_asset_content -}}
           </button>
           <div class="main-product-sub-images">
@@ -72,14 +77,18 @@
                 class="sub-image"
                 src="{{ image | img_url: 'master' }}"
                 alt="Sub Image {{ forloop.index }}"
+                width="auto"
+                height="auto"
                 data-src="{{ image | img_url: 'large' }}"
-                loading="lazy">
+                loading="lazy"
+              >
             {% endfor %}
           </div>
           <button
             class="scroll-btn right"
             onclick="scrollSubImages(1)"
-            aria-label="Scroll right">
+            aria-label="Scroll right"
+          >
             {{- 'icon-arrow-back.svg' | inline_asset_content -}}
           </button>
         </div>
@@ -91,16 +100,22 @@
           <h2 class="product-title">{{ product.title }}</h2>
         {% endif %}
         <div style="display: flex; align-items: center">
-        {%- for block in section.blocks -%}
-          {%- case block.type -%}
-            {%- when '@app' -%}
-              {% render block -%}
-              {%- if product-sold %}
-                <ul style="padding: 0 0 0 10  px; display: flex;
-                align-items: center;"><li style="padding: 0; font-size: 0.875em;">{{ product-sold.value }} sold</li></ul>
-              {% endif %}
-          {%- endcase -%}
-        {%- endfor -%}
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when '@app' -%}
+                {% render block -%}
+                {%- if product-sold %}
+                  <ul
+                    style="
+                      padding: 0 0 0 10  px; display: flex;
+                      align-items: center;
+                    "
+                  >
+                    <li style="padding: 0; font-size: 0.875em;">{{ product-sold.value }} sold</li>
+                  </ul>
+                {% endif %}
+            {%- endcase -%}
+          {%- endfor -%}
         </div>
 
         {% assign min_price = product.variants.first.price %}
@@ -116,12 +131,13 @@
         {% assign max_price_formatted = max_price | money_with_currency %}
         <!-- Harga untuk desktop -->
         <div id="variant-price-desktop" class="money">
-          {{ min_price_formatted }}{% unless min_price == max_price %}
-            - {{ max_price_formatted }}{% endunless %}
+          {{ min_price_formatted -}}
+          {%- unless min_price == max_price %}
+            - {{ max_price_formatted -}}
+          {%- endunless %}
         </div>
         <div class="main-product-variant-picker">
-          {% render 'custom-variant-picker'
-            , product: product %}
+          {% render 'custom-variant-picker', product: product %}
         </div>
       </div>
     </div>
@@ -182,7 +198,16 @@
                           {{- field_key | append: '.svg' | inline_asset_content -}}
                         </div>
                         <div class="mp-content-text">
-                          <p class="title">{{ title }}</p>
+                          {% assign t = title | replace: '-', ' ' | replace: '_', ' ' | strip %}
+{% assign words = t | split: ' ' %}
+{% capture title_case %}
+  {% for w in words %}
+    {% if w != '' %}{{ w | capitalize }}{% unless forloop.last %} {% endunless %}{% endif %}
+  {% endfor %}
+{% endcapture %}
+
+<p class="title">{{ title_case }}</p>
+
                           {% if metafield.value %}
                             {% for v in metafield.value %}
                               <li style="margin-left: 20px; list-style-type: disc;">{{ v }}</li>
@@ -226,18 +251,18 @@
 </product-info>
 
 {% schema %}
-  {
-    "name": "Main Product",
-    "settings": [],
-    "blocks": [
-      {
-        "type": "@app"
-      }
-    ],
-    "presets": [
-      {
-        "name": "Main Product"
-      }
-    ]
-  }
+{
+  "name": "Main Product",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main Product"
+    }
+  ]
+}
 {% endschema %}

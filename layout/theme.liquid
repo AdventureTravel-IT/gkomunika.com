@@ -420,7 +420,8 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
-  {% include 'pagefly-app-header' %}</head>
+    {% include 'pagefly-app-header' %}
+  </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
     {% comment %}
@@ -539,7 +540,12 @@
     {% if template.name != 'login' and template.name != 'register' %}
       {% style %}
         body {
-          padding-top: 50px;
+          margin-top: 80px;
+        }
+        @media (max-width: 768px) {
+          body {
+            margin-top: 45px;
+          }
         }
       {% endstyle %}
     {% else %}

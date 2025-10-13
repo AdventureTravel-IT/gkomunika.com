@@ -1,4 +1,4 @@
-/* HEADER STYLE */
+/* HEADER STYLE  */
 .cart-link {
   position: relative;
 }
@@ -29,16 +29,13 @@
   background-color: var(--color-neutral);
   max-width: 1920px;
   margin: 0 auto;
+  max-height: 80px;
 }
 
-/* .header__container {
-    max-width: 1920px;
-    margin: 0 auto;
-  } */
 .header__wrapper {
   display: flex;
   justify-content: space-between;
-  padding: 0 10%;
+  padding: 0 24px;
   align-items: center;
 }
 
@@ -78,7 +75,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  height: 50px;
+  height: auto;
 }
 
 .header__content-menu {

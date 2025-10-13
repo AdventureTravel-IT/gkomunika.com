@@ -1,12 +1,11 @@
 {%- comment -%}
   Renders the language picker for the localization form
-
   Accepts:
   - localPosition: pass in the position in which the form is coming up to create specific IDs
 {%- endcomment -%}
 
 <script>
-  document.querySelectorAll('.disclosure__button').forEach(button => {
+  document.querySelectorAll('.disclosure__button').forEach((button) => {
     button.addEventListener('click', () => {
       const expanded = button.getAttribute('aria-expanded') === 'true';
       button.setAttribute('aria-expanded', String(!expanded));
@@ -14,23 +13,27 @@
   });
 </script>
 
-
 <div class="disclosure">
   <button
     type="button"
     class="disclosure__button localization-form__select localization-selector link link--text caption-large"
     aria-expanded="false"
     aria-controls="{{ localPosition }}List"
-    aria-describedby="{{ localPosition }}Label">
-    <span>{{ localization.language.endonym_name | capitalize }}</span>
+    aria-describedby="{{ localPosition }}Label"
+  >
+    {%- assign current_code = localization.language.iso_code | split: '-' | first | upcase -%}
+    <span>{{ current_code }}</span>
     {{ 'icon-caret.svg' | inline_asset_content }}
   </button>
+
   <div class="disclosure__list-wrapper language-selector" hidden>
     <ul
       id="{{ localPosition }}List"
       role="list"
-      class="disclosure__list list-unstyled">
+      class="disclosure__list list-unstyled"
+    >
       {%- for language in localization.available_languages -%}
+        {%- assign option_code = language.iso_code | split: '-' | first | upcase -%}
         <li class="disclosure__item" tabindex="-1">
           <a
             class="link link--text disclosure__link caption-large focus-inset"
@@ -38,25 +41,27 @@
             hreflang="{{ language.iso_code }}"
             lang="{{ language.iso_code }}"
             {% if language.iso_code == localization.language.iso_code %}
-            aria-current="true"
+              aria-current="true"
             {% endif %}
-            data-value="{{ language.iso_code }}">
+            data-value="{{ language.iso_code }}"
+          >
             <span
               {% if language.iso_code != localization.language.iso_code %}
-              class="visibility-hidden"
-              {% endif %}>
+                class="visibility-hidden"
+              {% endif %}
+            >
               {{- 'icon-checkmark.svg' | inline_asset_content -}}
             </span>
-            <span>
-              {{ language.endonym_name | capitalize }}
-            </span>
+            <span>{{ option_code }}</span>
           </a>
         </li>
       {%- endfor -%}
     </ul>
   </div>
 </div>
+
 <input
   type="hidden"
   name="locale_code"
-  value="{{ localization.language.iso_code }}">
+  value="{{ localization.language.iso_code }}"
+>

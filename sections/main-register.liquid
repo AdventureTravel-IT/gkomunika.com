@@ -1,8 +1,17 @@
 <div id="popup-member" class="popup-member">
   <div class="popup-content">
-    <h2>Selamat Datang di<br>Global Komunika!</h2>
-    <p><strong>Sign up menggunakan akun google</strong> atau secara manual dengan <strong>email yang sama</strong> seperti yang terdaftar di gkomunika.id.</p>
-    <p>Setelah mendaftar, kamu akan langsung mendapatkan <strong>poin rewards</strong> yang bisa ditukarkan dengan <strong>diskon menarik.</strong></p>
+    <h2>
+      Selamat Datang di<br>
+      Global Komunika!
+    </h2>
+    <p>
+      <strong>Sign up menggunakan akun google</strong> atau secara manual dengan
+      <strong>email yang sama</strong> seperti yang terdaftar di gkomunika.id.
+    </p>
+    <p>
+      Setelah mendaftar, kamu akan langsung mendapatkan <strong>poin rewards</strong> yang bisa ditukarkan dengan
+      <strong>diskon menarik.</strong>
+    </p>
     <button id="popup-ok" class="button-form">Close</button>
   </div>
 </div>
@@ -41,7 +50,7 @@
     color: var(--color-primary);
     margin: 0;
     line-height: 1;
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
   }
 
   .popup-content p {
@@ -63,18 +72,18 @@
   .button-form:hover {
     background-color: #003d6a;
   }
-  
-@media (max-width: 426px) {
-  .popup-member {
-    padding: 0 24px;
+
+  @media (max-width: 426px) {
+    .popup-member {
+      padding: 0 24px;
+    }
+    .popup-content {
+      padding: 20px 15px;
+    }
+    .popup-content h2 {
+      font-size: 33px;
+    }
   }
-  .popup-content {
-    padding: 20px 15px;
-  }
-  .popup-content h2 {
-    font-size: 33px;
-  }
-}
 {% endstyle %}
 
 <script>
@@ -96,14 +105,14 @@
       });
 
       // Close ketika klik di luar konten
-      popup.addEventListener('click', function(e) {
+      popup.addEventListener('click', function (e) {
         if (e.target === popup) {
           popup.style.display = 'none';
         }
       });
 
       // Close dengan ESC key
-      document.addEventListener('keydown', function(e) {
+      document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
           popup.style.display = 'none';
         }
@@ -364,7 +373,6 @@
   }
 </style>
 
-
 <div class="login">
   <div class="MainLogin-container">
     <!-- Bagian Logo -->
@@ -382,8 +390,14 @@
 
     <!-- Tab Login/Register -->
     <section class="MainLogin-Tabs" id="MainLogin-Tabs">
-      <a class="MainLogin-TabButton {% if request.path == '/account/login' %}active{% endif %}" href="/account/login">Login</a>
-      <a class="MainLogin-TabButton {% if request.path contains '/account/register' %}active{% endif %}" href="/account/register">Register</a>
+      <a class="MainLogin-TabButton {% if request.path == '/account/login' %}active{% endif %}" href="/account/login"
+        >Login</a
+      >
+      <a
+        class="MainLogin-TabButton {% if request.path contains '/account/register' %}active{% endif %}"
+        href="/account/register"
+        >Register</a
+      >
     </section>
 
     <!-- Form Section -->
@@ -512,11 +526,11 @@
             </div>
 
             <div class="WrapperButton-form">
-              <button class="button-form" id="register-button" type="submit" disabled>Register</button>
+              <button class="button-form" id="register-button" type="submit" disabled>Sign Up</button>
             </div>
 
             <div class="custom-auth-divider">
-              <span>OR LOGIN WITH</span>
+              <span>OR LOGIN DIRECTLY</span>
             </div>
 
             <div class="oxi-social-login" style="margin-top: 15px"></div>
@@ -526,7 +540,6 @@
     </section>
   </div>
 </div>
-
 
 <script>
   function showRecoveryForm() {

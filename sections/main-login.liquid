@@ -346,7 +346,7 @@
             </div>
 
             <div class="custom-auth-divider">
-              <span>OR LOGIN WITH</span>
+              <span>OR LOGIN DIRECTLY</span>
             </div>
 
             <div class="oxi-social-login" style="margin-top: 15px"></div>
@@ -466,12 +466,12 @@
     }
 
     const btn = document.getElementById('go-to-login');
-  if (btn) {
-    btn.addEventListener('click', function () {
-      sessionStorage.removeItem('login');
-      window.location.href = '/account/login';
-    });
-  }
+    if (btn) {
+      btn.addEventListener('click', function () {
+        sessionStorage.removeItem('login');
+        window.location.href = '/account/login';
+      });
+    }
     // Validasi sebelum submit untuk login form
     const loginForm = document.querySelector('#FormLogin form');
     if (loginForm) {

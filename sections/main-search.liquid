@@ -271,6 +271,9 @@
     .banner-search__content {
       width: 100%;
     }
+    .product-card-wrapper {
+      grid-template-columns: repeat(1, 1fr);
+    }
   }
   @media (max-width: 426px) {
     .product-card-wrapper {
@@ -343,7 +346,9 @@
 <div class="main-search">
   <div class="main-search-container">
     {% assign search_term = search.terms | downcase | strip %}
-    {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection' | split: ',' %}
+    {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection'
+      | split: ','
+    %}
     {% assign found_any_product = false %}
     {% assign single_product_url = '' %}
     {% assign product_count = 0 %}
@@ -600,7 +605,7 @@
   <div class="product-card-button">
     <a class="product-url-link" href="{{ product.url }}">
       <button class="product-card-btn">
-        <p>Buy Now</p>
+        <p> See Product Details</p>
       </button>
     </a>
   </div>

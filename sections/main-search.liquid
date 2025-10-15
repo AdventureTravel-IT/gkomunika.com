@@ -288,6 +288,20 @@
 {% comment %} # JAVASCRIPT SECTION {% endcomment %}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    const currentUrl = window.location.href;
+
+    // Get the button element
+    const button = document.querySelector('.product-card-btn p');
+
+    // Check if the URL contains '/id/'
+    if (currentUrl.includes('/id/')) {
+      // Change the button text to 'Pilih Paket'
+      button.textContent = 'Pilih Paket';
+    } else {
+      // Otherwise, keep the default text
+      button.textContent = 'Choose Plan';
+    }
+
     // Flip card functionality (existing)
     document.querySelectorAll('.flipped-trigger').forEach(function (button) {
       button.addEventListener('click', function (event) {
@@ -605,7 +619,7 @@
   <div class="product-card-button">
     <a class="product-url-link" href="{{ product.url }}">
       <button class="product-card-btn">
-        <p> See Product Details</p>
+        <p></p>
       </button>
     </a>
   </div>

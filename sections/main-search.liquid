@@ -290,17 +290,13 @@
   document.addEventListener('DOMContentLoaded', function () {
     const currentUrl = window.location.href;
 
-    // Get the button element
-    const button = document.querySelector('.product-card-btn p');
-
-    // Check if the URL contains '/id/'
-    if (currentUrl.includes('/id/')) {
-      // Change the button text to 'Pilih Paket'
-      button.textContent = 'Pilih Paket';
-    } else {
-      // Otherwise, keep the default text
-      button.textContent = 'Choose Plan';
-    }
+    document.querySelectorAll('.product-card-btn p').forEach((button) => {
+      if (currentUrl.includes('/id/')) {
+        button.textContent = 'Pilih Paket';
+      } else {
+        button.textContent = 'Choose Plan';
+      }
+    });
 
     // Flip card functionality (existing)
     document.querySelectorAll('.flipped-trigger').forEach(function (button) {

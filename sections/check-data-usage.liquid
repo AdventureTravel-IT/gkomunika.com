@@ -280,9 +280,24 @@
   <div class="invalid-popup__content">
     <h2>Enter ICCID</h2>
     <p>Please input your ICCID to continue to Top Up</p>
-    <input type="number" id="popup-iccid" placeholder="Input ICCID Number" style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);">
-    <button id="iccid-popup-submit" style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;">Continue</button>
-    <button id="iccid-popup-cancel" style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;">Cancel</button>
+    <input
+      type="number"
+      id="popup-iccid"
+      placeholder="Input ICCID Number"
+      style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);"
+    >
+    <button
+      id="iccid-popup-submit"
+      style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;"
+    >
+      Continue
+    </button>
+    <button
+      id="iccid-popup-cancel"
+      style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;"
+    >
+      Cancel
+    </button>
   </div>
 </div>
 
@@ -310,19 +325,18 @@
     let lastSubmit = 0;
 
     const prefixVendorMap = [
-      { prefix: '89859', vendor: 'AF'}, //category: 'Top_Up_B' // AE
-      { prefix: '89862', vendor: 'AF'}, //category: 'Top_Up_B' // AS
-      { prefix: '89810', vendor: 'TE'}, //category: 'Top_Up_C' // TE
-      { prefix: '2210', vendor: 'BS'}, //category: 'Top_Up_A' // BS
-      { prefix: '8981200', vendor: 'BE'}, //category: 'Top_Up_A' // BE
-      { prefix: '89852', vendor: 'BE'}, //category: 'Top_Up_A' // BE
+      { prefix: '8985234202227', vendor: 'BE' }, //category: 'Top_Up_A' // BE
+      { prefix: '8985234202222', vendor: 'SEM' },
+      { prefix: '8981200', vendor: 'BE' }, //category: 'Top_Up_A' // BE
+      { prefix: '89859', vendor: 'AF' }, //category: 'Top_Up_B' // AE
+      { prefix: '89862', vendor: 'AF' }, //category: 'Top_Up_B' // AS
+      { prefix: '89810', vendor: 'TE' }, //category: 'Top_Up_C' // TE
+      { prefix: '2210', vendor: 'BS' }, //category: 'Top_Up_A' // BS
     ];
 
     const vendorCategoryMap = {
-      // 'AF': 'Top_Up_B', // AE & AS can't be top up
-      // 'BE': 'Top_Up_A', // BE can't be top up
-      'BS': 'Top_Up_A', // BS
-      // 'TE': 'Top_Up_C', // TE can't be top up
+      BS: 'Top_Up_A',
+      SEM: 'Top_Up_D',
     };
 
     function detectVendor(iccid) {
@@ -378,7 +392,7 @@
       if (isNaN(d)) return ms;
 
       const dd = String(d.getUTCDate()).padStart(2, '0');
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const MMM = months[d.getUTCMonth()];
       const yyyy = d.getUTCFullYear();
       const hh = String(d.getUTCHours()).padStart(2, '0');
@@ -401,7 +415,11 @@
 
       // YYYYMMDD
       if (/^\d{8}$/.test(s))
-        return `${s.slice(6,8)} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Number(s.slice(4,6))-1]} ${s.slice(0,4)} 00:00:00 UTC`;
+        return `${s.slice(6, 8)} ${
+          ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][
+            Number(s.slice(4, 6)) - 1
+          ]
+        } ${s.slice(0, 4)} 00:00:00 UTC`;
 
       // ISO/format lain → tampilkan tanggalnya (UTC) jika valid
       const d = new Date(s);
@@ -410,18 +428,17 @@
       return s; // fallback apa adanya
     }
 
-
     // ✅ Render SIM Info
     function renderEsimInfo(itemData, vendor) {
       const bundle = itemData.skuName || itemData.product_name || '-';
 
       // ambil raw value sesuai vendor
       const startRaw = vendor === 'AF' ? itemData.useSDate : itemData.planStartTime;
-      const endRaw   = vendor === 'AF' ? itemData.useEDate : itemData.planEndTime;
+      const endRaw = vendor === 'AF' ? itemData.useEDate : itemData.planEndTime;
 
       // formatkan (akan otomatis konversi 13-digit ms seperti contoh gambar)
       const startFmt = formatDateSmart(startRaw);
-      const endFmt   = formatDateSmart(endRaw);
+      const endFmt = formatDateSmart(endRaw);
 
       return `
         <div class="check-data-usage__esim-information">
@@ -441,7 +458,6 @@
         </div>
       `;
     }
-
 
     function renderTopUpButton() {
       return `<button id="top-up-plan" class="top-up-plan-btn">Top Up</button>`;
@@ -465,12 +481,14 @@
         return '<div>No data usage yet.</div>';
       }
       return Object.entries(countryUsageMap)
-        .map(([country, totalBytes]) => `
+        .map(
+          ([country, totalBytes]) => `
           <div class="total-data-usage__wrapper">
             <p>${country}</p>
             <p>${formatDataUsage(totalBytes, vendor)}</p>
           </div>
-        `)
+        `
+        )
         .join('');
     }
 
@@ -480,19 +498,21 @@
         return '<p>No data usage yet.</p>';
       }
 
-      return dataUsage.map((item) => {
-        const country = vendor === 'AF' ? (item.enus || '-') : (item.country || '-');
-        const date = vendor === 'AF' ? item.usageDate : item.usedDate;
-        const usage = vendor === 'AF' ? Number(item.usage || 0) : Number(item.usedAmount || 0);
+      return dataUsage
+        .map((item) => {
+          const country = vendor === 'AF' ? item.enus || '-' : item.country || '-';
+          const date = vendor === 'AF' ? item.usageDate : item.usedDate;
+          const usage = vendor === 'AF' ? Number(item.usage || 0) : Number(item.usedAmount || 0);
 
-        return `
+          return `
           <div class="data-usage__wrapper">
             <p>${country}</p>
             <p>${formatDate(date)}</p>
             <p>${formatDataUsage(usage, vendor)}</p>
           </div>
         `;
-      }).join('');
+        })
+        .join('');
     }
 
     function attachTopUpButtonListeners() {
@@ -573,10 +593,7 @@
             const categoryNeeded = vendorCategoryMap[vendor];
             const hasCategory = productCategories.includes(categoryNeeded);
 
-            const buttonHtml = hasCategory
-              ? renderTopUpButton()
-              : renderBuyEsimButtons();
-
+            const buttonHtml = hasCategory ? renderTopUpButton() : renderBuyEsimButtons();
 
             resultEl.innerHTML = `
               ${esimHtml}
@@ -666,15 +683,112 @@
           const categoryNeeded = vendorCategoryMap[vendor];
           const hasCategory = productCategories.includes(categoryNeeded);
 
-          const buttonHtml = hasCategory
-            ? renderTopUpButton()
-            : renderBuyEsimButtons();
+          const buttonHtml = hasCategory ? renderTopUpButton() : renderBuyEsimButtons();
 
           resultEl.innerHTML = `
             ${esimHtml}
             ${dataUsageHtml}
             ${buttonHtml}
           `;
+
+          attachTopUpButtonListeners();
+          return;
+        }
+
+        // ✅ Vendor SEM
+        else if (vendor === 'SEM') {
+          const usage = data.data_usage;
+
+          function formatSEMTotal(startTime) {
+            const today = new Date();
+            const yyyymmdd =
+              today.getFullYear() +
+              String(today.getMonth() + 1).padStart(2, '0') +
+              String(today.getDate()).padStart(2, '0');
+            const dateOnly = (startTime || '').slice(0, 8);
+            return dateOnly === yyyymmdd ? 'Unlimited' : 'Big Data';
+          }
+
+          function formatTEData(value) {
+            if (value === 'unlimited') return 'Unlimited';
+            const val = parseFloat(value) || 0;
+            if (val >= 1024 * 1024 * 1024) {
+              return (val / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+            } else if (val >= 1024 * 1024) {
+              return (val / (1024 * 1024)).toFixed(2) + ' MB';
+            } else if (val >= 1024) {
+              return (val / 1024).toFixed(2) + ' KB';
+            } else {
+              return val.toFixed(2) + ' B';
+            }
+          }
+
+          const categoryNeeded = vendorCategoryMap[vendor];
+          let hasCategory = productCategories.includes(categoryNeeded);
+
+          // ✅ pastikan SEM selalu bisa Top Up
+          if (vendor === 'SEM') hasCategory = true;
+
+          const buttonHtml = hasCategory ? renderTopUpButton() : renderBuyEsimButtons();
+
+          if (!usage || usage.success === false) {
+            const msg = usage?.retMesg || 'No information available';
+            resultEl.innerHTML = `
+      <div class="check-data-usage__usage-content">
+        <div style="text-align:center;">
+          <h2>Data Usage</h2>
+          <p>${msg}</p>
+        </div>
+      </div>
+      ${buttonHtml}
+    `;
+            attachTopUpButtonListeners();
+            return;
+          }
+
+          const quota = usage.quotaList?.[0];
+          if (!quota) {
+            resultEl.innerHTML = `
+      <div class="check-data-usage__usage-content">
+        <div style="text-align:center;">
+          <h2>Data Usage</h2>
+          <p>No quota data found.</p>
+        </div>
+      </div>
+      ${buttonHtml}
+    `;
+            attachTopUpButtonListeners();
+            return;
+          }
+
+          const totalLabel = formatSEMTotal(quota.startTime);
+          const usedLabel = formatTEData(quota.usedQuota);
+          const remainingLabel = formatTEData(quota.remainingQuota);
+
+          const dataUsageHtml = `
+    <div class="check-data-usage__usage-content">
+      <div style="text-align: center;"><h2>Data Usage</h2></div>
+      <div class="check-data-usage__total-usage">
+        <div style="display: flex; justify-content: space-between;">
+          <h3>Total:</h3>
+          <span style="font-weight: bold;">${totalLabel}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <h3>Used:</h3>
+          <span style="font-weight: bold;">${usedLabel}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <h3>Remaining:</h3>
+          <span style="font-weight: bold;">${remainingLabel}</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+          resultEl.innerHTML = `
+    ${dataUsageHtml}
+    ${buttonHtml}
+  `;
 
           attachTopUpButtonListeners();
           return;
@@ -705,9 +819,7 @@
           const categoryNeeded = vendorCategoryMap[vendor];
           const hasCategory = productCategories.includes(categoryNeeded);
 
-          const buttonHtml = hasCategory
-            ? renderTopUpButton()
-            : renderBuyEsimButtons();
+          const buttonHtml = hasCategory ? renderTopUpButton() : renderBuyEsimButtons();
 
           resultEl.innerHTML = `
             ${esimHtml}

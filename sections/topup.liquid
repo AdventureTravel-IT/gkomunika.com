@@ -1,8 +1,7 @@
 {% comment %} <span id="iccid-display"></span> {% endcomment %}
 
-{%  comment  %} wrapper untuk hasil filter pada saat input search {% endcomment %}
-<div class="product-card-wrapper">
-</div>
+{% comment %} wrapper untuk hasil filter pada saat input search {% endcomment %}
+<div class="product-card-wrapper"></div>
 
 <div id="no-results-message" class="main-search__error" style="display:none;">
   <p>No products match your search.</p>
@@ -11,7 +10,6 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const iccid = sessionStorage.getItem('iccid');
-    console.log('ICCID dari sessionStorage:', iccid);
 
     if (iccid) {
       // misalnya otomatis isi ke input:
@@ -94,6 +92,7 @@
   }
   .product-card-multi-flag,
   .product-card-icon-multi-flag {
+    flex-shrink: 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 3px;
@@ -191,7 +190,7 @@
     flex-direction: column;
     gap: 7px;
   }
-   .product-card-content-flip-back {
+  .product-card-content-flip-back {
     position: absolute;
     top: 0;
     left: 0;
@@ -285,120 +284,163 @@
 
 {% comment %} # JAVASCRIPT SECTION {% endcomment %}
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Flip card functionality
-    document.querySelectorAll('.flipped-trigger').forEach(function (button) {
-      button.addEventListener('click', function (event) {
-        event.stopPropagation();
-        let card = this.closest('.product-card-container');
-        card.classList.toggle('flipped');
+  (function () {
+    'use strict';
+
+    // Jalankan setelah semua elemen betul-betul ada
+    window.addEventListener('load', function () {
+      // ------- Elemen utama -------
+      const collectionWrapper = document.getElementById('collection-top-up-plan');
+      const noResults = document.getElementById('no-results-message');
+
+      // Helper
+      const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+      // ------- Flip card (tetap) -------
+      $$('.flipped-trigger').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const card = btn.closest('.product-card-container');
+          if (card) card.classList.toggle('flipped');
+        });
       });
-    });
-    document.addEventListener('click', function (event) {
-      document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
-        if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
-          card.classList.remove('flipped');
-        }
-      });
-    });
 
-    // ---------------------------
-    // FILTER LOGIC STARTS HERE
-    // ---------------------------
-
-    const vendorPrefixes = [
-      { prefix: '89859', vendor: 'AF' },
-      { prefix: '89862', vendor: 'AF' },
-      { prefix: '89810', vendor: 'TE' },
-      { prefix: '2210', vendor: 'BS' },
-      { prefix: '8981200', vendor: 'BE' },
-      { prefix: '89852', vendor: 'BE' },
-    ];
-
-    const vendorCategories = {
-      AF: 'Top_Up_B',
-      TE: 'Top_Up_C',
-      BS: 'Top_Up_A',
-      BE: 'Top_Up_A',
-    };
-
-    function findVendorFromICCID(iccid) {
-      let matchedVendor = null;
-      let longestMatchLength = 0;
-
-      vendorPrefixes.forEach((item) => {
-        if (iccid.startsWith(item.prefix)) {
-          if (item.prefix.length > longestMatchLength) {
-            longestMatchLength = item.prefix.length;
-            matchedVendor = item.vendor;
+      document.addEventListener('click', (e) => {
+        $$('.product-card-container.flipped').forEach((card) => {
+          if (!card.contains(e.target) || e.target.closest('.product-card-content-flip-back')) {
+            card.classList.remove('flipped');
           }
+        });
+      });
+
+      // ------- Mapping prefix -> vendor -------
+      const vendorPrefixes = [
+        { prefix: '8985234202227', vendor: 'BE' },
+        { prefix: '8985234202222', vendor: 'SEM' },
+        { prefix: '8981200', vendor: 'BE' },
+        { prefix: '89859', vendor: 'AF' },
+        { prefix: '89862', vendor: 'AF' },
+        { prefix: '89810', vendor: 'TE' },
+        { prefix: '2210', vendor: 'BS' },
+      ];
+
+      const vendorCategories = {
+        SEM: 'Top_Up_D',
+        AF: 'Top_Up_B',
+        TE: 'Top_Up_C',
+        BS: 'Top_Up_A',
+        BE: 'Top_Up_A',
+      };
+
+      function findVendorFromICCID(raw) {
+        const iccid = String(raw || '').trim();
+        let matchedVendor = null;
+        let longest = 0;
+        vendorPrefixes.forEach((it) => {
+          if (iccid.startsWith(it.prefix) && it.prefix.length > longest) {
+            longest = it.prefix.length;
+            matchedVendor = it.vendor;
+          }
+        });
+        return matchedVendor;
+      }
+
+      function showNotFoundMessage() {
+        if (collectionWrapper) collectionWrapper.style.display = 'none';
+        if (noResults) {
+          noResults.innerHTML = `
+            <div style="display:flex; flex-direction:column; justify-content:center">
+              <p>No products found in Top-Up Plan.</p>
+              <a href="/pages/check-data-usage">
+                <button class="product-card-btn">
+                  <p style="color: var(--color-neutral);">Back</p>
+                </button>
+              </a>
+            </div>
+          `;
+          noResults.style.display = 'flex';
+        }
+      }
+
+      function showCollection() {
+        if (noResults) noResults.style.display = 'none';
+        if (collectionWrapper) collectionWrapper.style.display = '';
+      }
+
+      // ------- Ambil ICCID -------
+      const iccid = (sessionStorage.getItem('iccid') || '').trim();
+      if (!iccid) {
+        console.warn('[TopUp] ICCID kosong di sessionStorage');
+        return showNotFoundMessage();
+      }
+
+      // ------- Resolve vendor -> kategori -------
+      const vendor = findVendorFromICCID(iccid);
+      if (!vendor) {
+        console.warn('[TopUp] Vendor tidak ditemukan dari ICCID:', iccid);
+        return showNotFoundMessage();
+      }
+
+      const desiredCategory = vendorCategories[vendor];
+      if (!desiredCategory) {
+        console.warn('[TopUp] Mapping kategori tidak ditemukan untuk vendor:', vendor);
+        return showNotFoundMessage();
+      }
+      const desired = desiredCategory.trim().toUpperCase();
+      console.debug('[TopUp] ICCID:', iccid, '| Vendor:', vendor, '| Kategori target:', desiredCategory);
+
+      // ------- Ambil semua card di dalam wrapper -------
+      if (!collectionWrapper) {
+        console.warn('[TopUp] #collection-top-up-plan tidak ditemukan');
+        return showNotFoundMessage();
+      }
+
+      const productCards = $$('.product-card-container', collectionWrapper);
+
+      // **PRE-HIDE** semua card dulu agar tidak "muncul semua" saat awal
+      productCards.forEach((c) => (c.style.display = 'none'));
+
+      // ------- Filter by data-category (case-insensitive) -------
+      const visibleCards = [];
+      productCards.forEach((card, idx) => {
+        // NOTE: pastikan Liquid mengisi data-category="{{ product.metafields.product.category.value }}"
+        let cat = card.dataset.category;
+
+        // Beberapa theme/metafield bisa return array -> stringify, jadi normalisasi
+        if (Array.isArray(cat)) cat = cat[0];
+        if (cat && typeof cat !== 'string') cat = String(cat);
+
+        const norm = (cat || '').trim().toUpperCase();
+        if (!norm) {
+          console.debug(`[TopUp] Card #${idx} tanpa data-category, di-hide`);
+          card.style.display = 'none';
+          return;
+        }
+
+        if (norm === desired) {
+          card.style.display = ''; // tampilkan
+          visibleCards.push(card);
         }
       });
 
-      return matchedVendor;
-    }
-
-    function showNotFoundMessage() {
-      const wrapper = document.getElementById('collection-top-up-plan');
-      if (wrapper) {
-        wrapper.style.display = "none";
+      if (visibleCards.length === 0) {
+        console.warn('[TopUp] Tidak ada produk dengan kategori:', desiredCategory);
+        return showNotFoundMessage();
       }
 
-      const message = document.getElementById('no-results-message');
-      if (message) {
-        message.innerHTML = `
-        <div style="display: flex; flex-direction: column; justify-content: center">
-          <p>No products found in Top-Up Plan.</p>
-          <a href="/pages/check-data-usage">
-            <button class="product-card-btn">
-              <p style="color: var(--color-neutral);">Back</p>
-            </button>
-          </a>
-          <div>
-        `;
-        message.style.display = "flex";
-      }
-    }
+      // Tampilkan wrapper setelah selesai filter (anti-flash)
+      showCollection();
 
-    const iccid = sessionStorage.getItem('iccid');
-    console.log('ICCID:', iccid);
-
-    if (!iccid) {
-      console.log('ICCID tidak ditemukan di sessionStorage');
-      showNotFoundMessage();
-      return;
-    }
-
-    const vendor = findVendorFromICCID(iccid);
-    console.log('Vendor ditemukan:', vendor);
-
-    if (!vendor) {
-      showNotFoundMessage();
-      return;
-    }
-
-    const desiredCategory = vendorCategories[vendor];
-    console.log('Desired Category:', desiredCategory);
-
-    let foundAnyProduct = false;
-
-    const productCards = document.querySelectorAll('.product-card-container');
-    productCards.forEach((card) => {
-      const category = card.dataset.category;
-      if (category === desiredCategory) {
-        card.style.display = '';
-        foundAnyProduct = true;
-      } else {
-        card.style.display = 'none';
+      // Jika hanya satu, auto-redirect
+      if (visibleCards.length === 1) {
+        const linkEl = visibleCards[0].querySelector('a.product-url-link');
+        if (linkEl && linkEl.href) {
+          window.location.assign(linkEl.href);
+        }
       }
     });
-
-    if (!foundAnyProduct) {
-      showNotFoundMessage();
-    }
-  });
+  })();
 </script>
-
 
 {% comment %} # TEMPLATE SECTION {% endcomment %}
 <div class="main-search">
@@ -466,7 +508,15 @@
                       </div>
                     {% endif %}
                     <div class="main-search__product">
-                      <span class="main-search__product-type">Top-Up Plan</span>
+                      <span class="main-search__product-type">
+                        {% assign cat = product.metafields.product.category.value | strip %}
+                        {% if cat == 'Top_Up_D' %}
+                          eSIM
+                        {% else %}
+                          Top Up Plan
+                        {% endif %}
+                      </span>
+
                       <h1>{{ product.title }}</h1>
                     </div>
                   </div>
@@ -497,7 +547,13 @@
 
                       <div class="product-card-field">
                         <div class="product-card-field-icons">
-                          <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" alt="Icon">
+                          <img
+                            class="field-icon"
+                            src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}"
+                            width="24"
+                            height="24"
+                            alt="Icon"
+                          >
                           <h1>Data</h1>
                         </div>
                         <h2>{{ last_optionquota }}</h2>
@@ -505,7 +561,13 @@
 
                       <div class="product-card-field">
                         <div class="product-card-field-icons">
-                          <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" alt="Icon">
+                          <img
+                            class="field-icon"
+                            src="{{ 'icon-date-range.svg' | asset_url }}"
+                            width="24"
+                            height="24"
+                            alt="Icon"
+                          >
                           <h1>Days</h1>
                         </div>
                         <h2>{{ first_optiondays }} - {{ last_optiondays }}</h2>

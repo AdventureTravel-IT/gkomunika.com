@@ -1,6 +1,6 @@
 {% comment %}
   Improved and validated Shopify section with SIM Type filter buttons
-  Fix: Heading collection hanya muncul kalau produk ada
+  Fix: Heading collection hanya muncul kalau produk ada / match filter
 {% endcomment %}
 
 {% comment %} # STYLES SECTION {% endcomment %}
@@ -249,8 +249,18 @@
     font-size: var(--font-supper-large);
     color: var(--color-primary);
   }
-  .main-search-container { opacity: 0; transition: opacity 0.3s ease; }
-  body.loaded .main-search-container { opacity: 1; }
+  .main-search-container {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  body.loaded .main-search-container {
+    opacity: 1;
+  }
+
+  /* NEW: helper class to hide wrappers when empty */
+  .hidden {
+    display: none !important;
+  }
 
   @media (max-width: 1600px) {
     .product-card-wrapper {
@@ -282,78 +292,105 @@
 
 {% comment %} # JAVASCRIPT SECTION {% endcomment %}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  /*** Flip Card Functionality ***/
-  document.querySelectorAll('.flipped-trigger').forEach(function (button) {
-    button.addEventListener('click', function (event) {
-      event.stopPropagation();
-      let card = this.closest('.product-card-container');
-      card.classList.toggle('flipped');
+  document.addEventListener('DOMContentLoaded', function () {
+    /*** Flip Card Functionality ***/
+    document.querySelectorAll('.flipped-trigger').forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.stopPropagation();
+        let card = this.closest('.product-card-container');
+        card.classList.toggle('flipped');
+      });
     });
-  });
 
-  document.addEventListener('click', function (event) {
-    document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
-      if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
-        card.classList.remove('flipped');
+    document.addEventListener('click', function (event) {
+      document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
+        if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
+          card.classList.remove('flipped');
+        }
+      });
+    });
+
+    /*** SIM Type Filter Buttons with URL Param Handling ***/
+    const params = new URLSearchParams(window.location.search);
+    const simTypeParam = params.get('sim_type'); // contoh: esim, sim-card, insurance
+
+    const filterButtonsContainer = document.querySelector('.sim-filter-buttons');
+    const buttons = filterButtonsContainer ? filterButtonsContainer.querySelectorAll('button') : [];
+    const productCards = document.querySelectorAll('.product-card-container');
+
+    // NEW: Sembunyikan wrapper koleksi yang kosong (tidak ada kartu yang terlihat)
+    function updateCollectionVisibility() {
+      const wrappers = document.querySelectorAll('.main-search-collection-wrapper');
+      wrappers.forEach((wrapper) => {
+        const cards = wrapper.querySelectorAll('.product-card-container');
+        const hasVisible = Array.from(cards).some((c) => c.style.display !== 'none');
+        wrapper.classList.toggle('hidden', !hasVisible);
+      });
+
+      // Tampilkan pesan saat semua wrapper tersembunyi (tidak ada match)
+      const anyVisibleWrapper = Array.from(document.querySelectorAll('.main-search-collection-wrapper')).some(
+        (w) => !w.classList.contains('hidden')
+      );
+      let emptyMsg = document.getElementById('no-match-msg');
+      if (!anyVisibleWrapper) {
+        if (!emptyMsg) {
+          emptyMsg = document.createElement('div');
+          emptyMsg.id = 'no-match-msg';
+          emptyMsg.className = 'main-search__error';
+          emptyMsg.innerHTML = '<p>No products match this filter.</p>';
+          document.querySelector('.main-search-container').appendChild(emptyMsg);
+        }
+      } else if (emptyMsg) {
+        emptyMsg.remove();
       }
-    });
-  });
-
-  /*** SIM Type Filter Buttons with URL Param Handling ***/
-  const params = new URLSearchParams(window.location.search);
-  const simTypeParam = params.get('sim_type'); // contoh: esim, sim-card, insurance
-
-  const filterButtonsContainer = document.querySelector('.sim-filter-buttons');
-  const buttons = filterButtonsContainer ? filterButtonsContainer.querySelectorAll('button') : [];
-  const productCards = document.querySelectorAll('.product-card-container');
-
-  // Fungsi untuk filter produk
-  function filterProducts(activeFilter) {
-    productCards.forEach(card => {
-      const cardSimType = card.className.match(/sim-type-([^\s]+)/);
-      const cardType = cardSimType ? cardSimType[1] : '';
-
-      if (activeFilter === 'all' || activeFilter === cardType) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  }
-
-  // Tentukan filter awal
-  let activeFilter = 'all';
-  if (simTypeParam) {
-    // Normalisasi param: lowercase & ganti spasi/underscore jadi dash
-    activeFilter = simTypeParam.toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
-  }
-
-  // Set tombol active sesuai param
-  buttons.forEach(btn => {
-    btn.classList.remove('active');
-    if (btn.getAttribute('data-filter') === activeFilter) {
-      btn.classList.add('active');
     }
-  });
 
-  // Jalankan filter pertama kali
-  filterProducts(activeFilter);
-  document.body.classList.add('loaded');
+    // Fungsi untuk filter produk
+    function filterProducts(activeFilter) {
+      productCards.forEach((card) => {
+        if (activeFilter === 'all') {
+          card.style.display = 'flex';
+          return;
+        }
+        const show = card.classList.contains('sim-type-' + activeFilter);
+        card.style.display = show ? 'flex' : 'none';
+      });
 
-  // Klik tombol manual untuk ganti filter
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      buttons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+      // NEW: periksa wrapper setelah filter
+      updateCollectionVisibility();
+    }
 
-      const selectedFilter = button.getAttribute('data-filter');
-      filterProducts(selectedFilter);
+    // Tentukan filter awal
+    let activeFilter = 'all';
+    if (simTypeParam) {
+      // Normalisasi param: lowercase & ganti spasi/underscore jadi dash
+      activeFilter = simTypeParam.toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
+    }
+
+    // Set tombol active sesuai param
+    buttons.forEach((btn) => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-filter') === activeFilter) {
+        btn.classList.add('active');
+      }
+    });
+
+    // Jalankan filter pertama kali
+    filterProducts(activeFilter);
+    document.body.classList.add('loaded');
+
+    // Klik tombol manual untuk ganti filter
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        buttons.forEach((btn) => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const selectedFilter = button.getAttribute('data-filter');
+        filterProducts(selectedFilter);
+      });
     });
   });
-});
 </script>
-
 
 {% comment %} # TEMPLATE SECTION {% endcomment %}
 <div class="main-search">
@@ -368,15 +405,18 @@ document.addEventListener('DOMContentLoaded', function () {
       {% if collection %}
         {% for product in collection.products %}
           {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-          {% unless sim_types contains product_category %}
+
+          {% if product_category == 'gSIM' %}
+            {%- comment -%} gSIM tidak dijadikan tombol; masukkan ke eSIM & SIM_Card {%- endcomment -%}
+            {% assign sim_types = sim_types | append: 'eSIM,' | append: 'SIM_Card,' %}
+          {% else %}
             {% assign sim_types = sim_types | append: product_category | append: ',' %}
-          {% endunless %}
+          {% endif %}
         {% endfor %}
       {% endif %}
     {% endfor %}
 
-    {% assign sim_types_array = sim_types | split: ',' %}
-    {% assign sim_types_array_sorted = sim_types_array | sort %}
+    {% assign sim_types_array_sorted = sim_types | split: ',' | uniq | sort %}
 
     {%- comment -%} Render filter buttons {%- endcomment -%}
     <div class="sim-filter-buttons">
@@ -429,7 +469,16 @@ document.addEventListener('DOMContentLoaded', function () {
   {% endfor %}
 {% endif %}
 
-<div class="product-card-container sim-type-{{ product_category | replace: '_', ' ' | downcase | replace: ' ', '-' }}"
+{% assign product_category_raw = product.metafields.product.category.value | default: 'Undefined' %}
+{% assign cat_norm = product_category_raw | replace: '_',' ' | downcase | replace: ' ','-' %}
+
+{% if cat_norm == 'gsim' %}
+  {% assign sim_type_classes = 'sim-type-esim sim-type-sim-card' %}
+{% else %}
+  {% assign sim_type_classes = 'sim-type-' | append: cat_norm %}
+{% endif %}
+
+<div class="product-card-container {{ sim_type_classes }}"
      data-country="{{ country_name | strip | downcase }}"
      data-alias="{{ alias_string | strip | downcase }}">
 
@@ -455,12 +504,17 @@ document.addEventListener('DOMContentLoaded', function () {
       {% endif %}
       <div class="main-search__product">
         {% if product_category == "Insurance" %}
-          <span class="main-search__product-type">Insurance</span>
-        {% else %}
-          <span class="main-search__product-type" {% if product_category == "SIM_Card" %}style="background-color: var(--color-secondary);" {% endif %}>
-            SIM Type: {{ product_category | replace: '_', ' ' }}
-          </span>
-        {% endif %}
+  <span class="main-search__product-type">Insurance</span>
+{% else %}
+  {% assign product_category_label = product_category | replace: '_', ' ' %}
+  {% if product_category == "gSIM" %}
+    {% assign product_category_label = "SIM Card & eSIM " %}
+  {% endif %}
+  <span class="main-search__product-type" {% if product_category == "SIM_Card" %}style="background-color: var(--color-secondary);" {% endif %}>
+    SIM Type: {{ product_category_label }}
+  </span>
+{% endif %}
+
         <h1>{{ product.title }}</h1>
       </div>
     </div>
@@ -563,14 +617,14 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 
 {% schema %}
-  {
-    "name": "Product Category Pages",
-    "settings": [],
-    "presets": [
-      {
-        "name": "Product Category Pages",
-        "category": "Custom"
-      }
-    ]
-  }
+{
+  "name": "Product Category Pages",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Product Category Pages",
+      "category": "Custom"
+    }
+  ]
+}
 {% endschema %}

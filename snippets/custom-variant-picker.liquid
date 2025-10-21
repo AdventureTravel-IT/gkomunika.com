@@ -268,7 +268,7 @@
   .variant-picker-btn__mobile {
     display: none;
   }
-  
+
   @media (max-width: 1440px) {
     .variant-picker-btn__mobile,
     .variant-picker-btn {
@@ -341,18 +341,21 @@
   {% assign min_price_formatted = min_price | money_with_currency %}
   {% assign max_price_formatted = max_price | money_with_currency %}
 
-  <div id="variant-warning-message" 
-     style="color:var(--color-primary); 
-            font-size: 14px; 
-            margin-bottom:10px; 
-            display:none; 
-            background-color: var(--color-background-third); 
-            border-radius: 15px; 
-            padding: 10px; 
-            width: fit-content; 
-            display: none; 
-            max-width: 100%;">
-  </div>
+  <div
+    id="variant-warning-message"
+    style="
+      color:var(--color-primary);
+      font-size: 14px;
+      margin-bottom:10px;
+      display:none;
+      background-color: var(--color-background-third);
+      border-radius: 15px;
+      padding: 10px;
+      width: fit-content;
+      display: none;
+      max-width: 100%;
+    "
+  ></div>
 
   <div style="display: flex; align-items: center;">
     <div class="variant-option__wrapper {% if product.metafields.product.category.value == "Insurance" %}insurance-product{% endif %}">
@@ -360,13 +363,22 @@
         <div class="variant-option" data-option-index="{{ forloop.index0 }}">
           <label class="variant-picker__label">
             {{ option.name }}
-            {% if forloop.index0 == 1 and product.metafields.product.category.value == 'eSIM' or product.metafields.product.category.value == 'SIM_Card' %}
+            {% if forloop.index0 == 1
+              and product.metafields.product.category.value == 'eSIM'
+              or product.metafields.product.category.value == 'SIM_Card'
+            %}
               <span class="tooltip-label">
                 {{ 'icon-info.svg' | inline_asset_content }}
                 <span class="tooltip-text">
-                    <li> Unlimited Data: Speeds may be reduced to 128 kbps after reaching the Fair Usage Policy (FUP) limit, and will automatically return to normal the next day.</li>
-                    <li> Big Data: Data can be used at any time during the active period with no daily usage limits. When the data runs out, the internet will stop.</li>
-                  </span>
+                  <li>
+                    Unlimited Data: Speeds may be reduced to 128 kbps after reaching the Fair Usage Policy (FUP) limit,
+                    and will automatically return to normal the next day.
+                  </li>
+                  <li>
+                    Big Data: Data can be used at any time during the active period with no daily usage limits. When the
+                    data runs out, the internet will stop.
+                  </li>
+                </span>
               </span>
             {% endif %}
           </label>
@@ -405,7 +417,8 @@
 
   {% if product.metafields.product.category.value == 'Insurance' %}
     {% render 'insurance-addon' %}
-    {% else %}
+  {% else %}
+
   {% endif %}
 
   <!-- Quantity -->
@@ -414,6 +427,7 @@
     {% if product.metafields.product.category.value == 'Top_Up_A'
       or product.metafields.product.category.value == 'Top_Up_B'
       or product.metafields.product.category.value == 'Top_Up_C'
+      or product.metafields.product.category.value == 'Top_Up_D'
     %}
       style="margin: 15px 0 5px;"
     {% else %}
@@ -424,6 +438,7 @@
       {% if product.metafields.product.category.value == 'Top_Up_A'
         or product.metafields.product.category.value == 'Top_Up_B'
         or product.metafields.product.category.value == 'Top_Up_C'
+        or product.metafields.product.category.value == 'Top_Up_D'
       %}
         hidden
       {% endif %}
@@ -480,6 +495,7 @@
     {% if product.metafields.product.category.value == 'Top_Up_A'
       or product.metafields.product.category.value == 'Top_Up_B'
       or product.metafields.product.category.value == 'Top_Up_C'
+      or product.metafields.product.category.value == 'Top_Up_D'
     %}
       <button
         class="buy"
@@ -535,6 +551,7 @@
       {% if product.metafields.product.category.value == 'Top_Up_A'
         or product.metafields.product.category.value == 'Top_Up_B'
         or product.metafields.product.category.value == 'Top_Up_C'
+        or product.metafields.product.category.value == 'Top_Up_D'
       %}
         <button
           class="buy"
@@ -588,7 +605,6 @@
     text-align: center;
   }
 {% endstyle %}
-
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -647,7 +663,7 @@
   // Fungsi untuk membersihkan nama negara (replace _ dengan spasi)
   function cleanCoverageData(coverageArray) {
     if (!coverageArray || !Array.isArray(coverageArray)) return [];
-    
+
     return coverageArray.map(country => {
       if (typeof country === 'string') {
         // Replace semua underscore dengan spasi
@@ -678,6 +694,55 @@
 
   // Simpan data yang sudah dibersihkan
   window.productCoverage = cleanCoverageData(rawCoverage);
+</script>
+
+<script>
+  window.TopUp = (() => {
+    const vendorPrefixes = [
+      { prefix: '8985234202227', vendor: 'BE' },
+      { prefix: '8985234202222', vendor: 'SEM' },
+      { prefix: '8981200', vendor: 'BE' },
+      { prefix: '89859', vendor: 'AF' },
+      { prefix: '89862', vendor: 'AF' },
+      { prefix: '89810', vendor: 'TE' },
+      { prefix: '2210', vendor: 'BS' },
+    ];
+
+    const vendorCategories = {
+      SEM: 'Top_Up_D',
+      AF: 'Top_Up_B',
+      TE: 'Top_Up_C',
+      BS: 'Top_Up_A',
+      BE: 'Top_Up_A',
+    };
+
+    function resolveVendorByPrefix(iccidRaw) {
+      const iccid = (iccidRaw || '').trim();
+      if (!iccid) return null;
+      const best = vendorPrefixes
+        .filter((v) => iccid.startsWith(v.prefix))
+        .sort((a, b) => b.prefix.length - a.prefix.length)[0];
+      return best ? best.vendor : null;
+    }
+
+    function expectedCategoryFromICCID(iccid) {
+      const vendor = resolveVendorByPrefix(iccid);
+      return vendor ? vendorCategories[vendor] : null;
+    }
+
+    function isIccidCategoryMatch(iccid, productCategory) {
+      const expected = expectedCategoryFromICCID(iccid);
+      return !!expected && expected === productCategory;
+    }
+
+    return {
+      resolveVendorByPrefix,
+      expectedCategoryFromICCID,
+      isIccidCategoryMatch,
+      vendorPrefixes,
+      vendorCategories,
+    };
+  })();
 </script>
 
 <script>
@@ -1427,43 +1492,106 @@ quantityInput?.addEventListener('input', () => {
       }
     }
 
+
+    // Simple modal untuk mismatch ICCID
+function showIccidMismatchDialog(iccid, {
+  message = "Your ICCID doesn’t match this product type. Click OK to go to a compatible top-up product.",
+  okText = "OK"
+} = {}) {
+  // jika sudah ada, hapus dulu biar tidak dobel
+  const old = document.getElementById("iccid-mismatch-popup");
+  if (old) old.remove();
+
+  const wrapper = document.createElement("div");
+  wrapper.id = "iccid-mismatch-popup";
+  wrapper.style.cssText = `
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,.35); z-index:10000;
+  `;
+
+  const box = document.createElement("div");
+  box.style.cssText = `
+    width:min(480px,90%); background:var(--color-neutral); color:var(--color-primary);
+    border-radius:12px; box-shadow:var(--box-shadow); padding:18px 16px;
+  `;
+  box.innerHTML = `
+    <h3 style="margin:0 0 8px 0; font-size:var(--font-large); font-weight:700; color: var(--color-primary)">
+      ICCID Invalid.
+    </h3>
+    <p style="margin:0 0 14px 0; line-height:1.5;">${message}</p>
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button id="iccid-mismatch-ok"
+        style="padding:10px 16px; border:none; border-radius:10px;
+               background:var(--color-primary); color:var(--color-neutral); cursor:pointer;">
+        ${okText}
+      </button>
+    </div>
+  `;
+  wrapper.appendChild(box);
+  document.body.appendChild(wrapper);
+
+  document.getElementById("iccid-mismatch-ok").onclick = () => {
+    // simpan ICCID supaya prefill di halaman /pages/top-up
+    sessionStorage.setItem("iccid", (iccid || "").trim());
+    // redirect
+    window.location.href = "/pages/top-up";
+  };
+}
+
+
     const buyTopUpDesktop = document.getElementById("buy-topup-button");
     const buyTopUpMobile = document.getElementById("buy-topup-button-mobile");
 
     buyTopUpDesktop?.addEventListener("click", handleBuyTopUp);
     buyTopUpMobile?.addEventListener("click", handleBuyTopUp);
+    
 
     function handleBuyTopUp() {
-      const variant = findVariant();
-      const quantity = 1;
-      let iccid = sessionStorage.getItem("iccid");
+  const variant = findVariant();
+  const quantity = 1;
+  let iccid = sessionStorage.getItem("iccid");
 
-      if (!variant || !variant.available) {
-        let hasEmpty = false;
-        variantDropdowns.forEach(select => {
-          if (select.value === "") {
-            select.classList.add("variant-warning");
-            hasEmpty = true;
-          }
-        });
-
-        if (hasEmpty) {
-          const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
-          if (firstEmpty) {
-            firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-        }
-        return;
+  // Validasi varian
+  if (!variant || !variant.available) {
+    let hasEmpty = false;
+    variantDropdowns.forEach(select => {
+      if (select.value === "") {
+        select.classList.add("variant-warning");
+        hasEmpty = true;
       }
-
-      // ✅ Validasi ICCID
-      if (!iccid || iccid.trim() === "") {
-        showICCIDPopup();
-        return;
-      }
-
-      proceedToCheckout(iccid, variant, quantity);
+    });
+    if (hasEmpty) {
+      const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
+      if (firstEmpty) firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
     }
+    return;
+  }
+
+  const productCategory = "{{ product.metafields.product.category.value }}";
+
+  // ICCID belum ada → buka popup input (validasi lanjutan ada di submit popup)
+  if (!iccid || iccid.trim() === "") {
+    showICCIDPopup();
+    return;
+  }
+
+  iccid = iccid.trim();
+
+  // ❌ Mismatch prefix→kategori: tampilkan dialog, OK => redirect ke /pages/top-up
+  if (!TopUp.isIccidCategoryMatch(iccid, productCategory)) {
+    showIccidMismatchDialog(iccid, {
+      message: "Your ICCID doesn’t match this product type. Click OK to go to a compatible top-up product.",
+      okText: "OK"
+    });
+    return;
+  }
+
+  // ✅ Match → lanjut checkout
+  proceedToCheckout(iccid, variant, quantity);
+}
+
+
+
 
     // ✅ Fungsi untuk memproses ke checkout
     function proceedToCheckout(iccid, variant, quantity) {
@@ -1496,40 +1624,67 @@ quantityInput?.addEventListener('input', () => {
     
     // ✅ Popup Input ICCID
     function showICCIDPopup() {
-      // Cek apakah popup sudah ada
-      let popup = document.getElementById("iccid-popup");
-      if (!popup) {
-        popup = document.createElement("div");
-        popup.id = "iccid-popup";
-        popup.classList.add("iccid-popup");
-        popup.innerHTML = `
-        <style>
-        #iccid-input::placeholder {
-          color: var(--color-primary);
-        }
-        </style>
-          <h3 style="margin: 0; line-height: 1.3; font-size: var(--font-extra-large); font-weight: bold; color: var(--color-primary);">Enter Your ICCID</h3>
-          <input type="text" id="iccid-input" placeholder="Input ICCID Number" style="width: 100%; padding: 15px 10px; border-radius: 10px; outline: none; border: 1px solid var(--color-primary); background-color: var(--color-background); margin: 10px 0;">
-          <div style="display: flex; justify-content: flex-end;">
-            <button id="iccid-submit" style="padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; background-color: var(--color-primary); color: var(--color-neutral); font-size: var(--font-large);">Next</button>
-          </div>
-        `;
-        document.body.appendChild(popup);
+  let popup = document.getElementById("iccid-popup");
+  if (!popup) {
+    popup = document.createElement("div");
+    popup.id = "iccid-popup";
+    popup.classList.add("iccid-popup");
+    popup.innerHTML = `
+      <style>
+        #iccid-input::placeholder { color: var(--color-primary); }
+      </style>
+      <h3 style="margin:0;line-height:1.3;font-size:var(--font-extra-large);font-weight:bold;color:var(--color-primary);">
+        Enter Your ICCID
+      </h3>
+      <input type="text" id="iccid-input" placeholder="Input ICCID Number"
+             style="width:100%;padding:15px 10px;border-radius:10px;outline:none;border:1px solid var(--color-primary);background-color:var(--color-background);margin:10px 0;">
+      <div style="display:flex;justify-content:flex-end;">
+        <button id="iccid-submit"
+                style="padding:10px 20px;border-radius:10px;border:none;cursor:pointer;background-color:var(--color-primary);color:var(--color-neutral);font-size:var(--font-large);">
+          Next
+        </button>
+      </div>
+    `;
+    document.body.appendChild(popup);
 
-        document.getElementById("iccid-submit").addEventListener("click", () => {
-          const iccidValue = document.getElementById("iccid-input").value.trim();
-          if (iccidValue) {
-            sessionStorage.setItem("iccid", iccidValue);
-            popup.remove();
-            const variant = findVariant();
-            const quantity = 1;
-            proceedToCheckout(iccidValue, variant, quantity);
-          } else {
-            alert("Please enter ICCID");
-          }
-        });
+    // ⬇️ Handler submit yang baru (VALIDASI SETELAH INPUT)
+    document.getElementById("iccid-submit").addEventListener("click", () => {
+      const inputEl = document.getElementById("iccid-input");
+      const iccidValue = (inputEl?.value || "").trim();
+      if (!iccidValue) {
+        alert("Please enter ICCID");
+        return;
       }
-    }
+
+      // Simpan dulu (biar konsisten dipakai di halaman /pages/top-up juga)
+      sessionStorage.setItem("iccid", iccidValue);
+
+      const productCategory = "{{ product.metafields.product.category.value }}";
+      // Pastikan helper tersedia (pakai namespace TopUp sesuai saran)
+      const isMatch = window.TopUp
+        ? TopUp.isIccidCategoryMatch(iccidValue, productCategory)
+        : false;
+
+      if (!isMatch) {
+        // ❌ Prefix tidak cocok (atau prefix unknown) → redirect ke halaman top-up
+        popup.remove();
+        window.location.href = "/pages/top-up";
+        return;
+      }
+
+      // ✅ Match → lanjut checkout
+      popup.remove();
+      const variant = findVariant();
+      if (!variant || !variant.available) {
+        // Jika user belum pilih varian, biar UI kasih tahu
+        showPopupMessage("Please select a valid variant first.");
+        return;
+      }
+      const quantity = 1;
+      proceedToCheckout(iccidValue, variant, quantity);
+    }, { once: true }); // pastikan tidak dobel attach
+  }
+}
 
     function showPopupMessage(message) {
       const popup = document.getElementById("variant-popup");

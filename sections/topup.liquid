@@ -370,28 +370,23 @@
       // ------- Ambil ICCID -------
       const iccid = (sessionStorage.getItem('iccid') || '').trim();
       if (!iccid) {
-        console.warn('[TopUp] ICCID kosong di sessionStorage');
         return showNotFoundMessage();
       }
 
       // ------- Resolve vendor -> kategori -------
       const vendor = findVendorFromICCID(iccid);
       if (!vendor) {
-        console.warn('[TopUp] Vendor tidak ditemukan dari ICCID:', iccid);
         return showNotFoundMessage();
       }
 
       const desiredCategory = vendorCategories[vendor];
       if (!desiredCategory) {
-        console.warn('[TopUp] Mapping kategori tidak ditemukan untuk vendor:', vendor);
         return showNotFoundMessage();
       }
       const desired = desiredCategory.trim().toUpperCase();
-      console.debug('[TopUp] ICCID:', iccid, '| Vendor:', vendor, '| Kategori target:', desiredCategory);
 
       // ------- Ambil semua card di dalam wrapper -------
       if (!collectionWrapper) {
-        console.warn('[TopUp] #collection-top-up-plan tidak ditemukan');
         return showNotFoundMessage();
       }
 
@@ -412,7 +407,6 @@
 
         const norm = (cat || '').trim().toUpperCase();
         if (!norm) {
-          console.debug(`[TopUp] Card #${idx} tanpa data-category, di-hide`);
           card.style.display = 'none';
           return;
         }
@@ -424,7 +418,6 @@
       });
 
       if (visibleCards.length === 0) {
-        console.warn('[TopUp] Tidak ada produk dengan kategori:', desiredCategory);
         return showNotFoundMessage();
       }
 

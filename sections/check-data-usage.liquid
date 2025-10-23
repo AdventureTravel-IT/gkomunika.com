@@ -819,7 +819,7 @@
           const categoryNeeded = vendorCategoryMap[vendor];
           const hasCategory = productCategories.includes(categoryNeeded);
 
-          const buttonHtml = hasCategory ? renderBuyEsimButtons() : renderTopUpButton();
+          const buttonHtml = hasCategory ? renderTopUpButton() : renderBuyEsimButtons();
 
           resultEl.innerHTML = `
             ${esimHtml}

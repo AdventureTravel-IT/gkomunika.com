@@ -696,6 +696,7 @@
         }
 
         // ✅ Vendor SEM
+        // ✅ Vendor SEM (perbaikan: sembunyikan "Remaining" jika Total = "Unlimited")
         else if (vendor === 'SEM') {
           const usage = data.data_usage;
 
@@ -709,8 +710,9 @@
             return dateOnly === yyyymmdd ? 'Unlimited' : 'Big Data';
           }
 
+          // dipakai untuk konversi angka kuota SEM
           function formatTEData(value) {
-            if (value === 'unlimited') return 'Unlimited';
+            if (String(value).toLowerCase() === 'unlimited') return 'Unlimited';
             const val = parseFloat(value) || 0;
             if (val >= 1024 * 1024 * 1024) {
               return (val / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
@@ -765,6 +767,17 @@
           const usedLabel = formatTEData(quota.usedQuota);
           const remainingLabel = formatTEData(quota.remainingQuota);
 
+          // ✅ jika total = "Unlimited", sembunyikan baris Remaining
+          const isUnlimitedTotal = String(totalLabel).trim().toLowerCase() === 'unlimited';
+          const remainingRow = isUnlimitedTotal
+            ? ''
+            : `
+      <div style="display: flex; justify-content: space-between;">
+        <h3>Remaining:</h3>
+        <span style="font-weight: bold;">${remainingLabel}</span>
+      </div>
+    `;
+
           const dataUsageHtml = `
     <div class="check-data-usage__usage-content">
       <div style="text-align: center;"><h2>Data Usage</h2></div>
@@ -777,10 +790,7 @@
           <h3>Used:</h3>
           <span style="font-weight: bold;">${usedLabel}</span>
         </div>
-        <div style="display: flex; justify-content: space-between;">
-          <h3>Remaining:</h3>
-          <span style="font-weight: bold;">${remainingLabel}</span>
-        </div>
+        ${remainingRow}
       </div>
     </div>
   `;

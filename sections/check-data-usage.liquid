@@ -250,8 +250,7 @@
         type="number"
         id="iccid"
         placeholder="Input ICCID Number"
-        required
-      >
+        required>
       <button id="check-iccid" type="button">Next</button>
     </div>
     <div class="check-data-usage__result">
@@ -265,18 +264,31 @@
     <h2>ICCID Invalid</h2>
     <p>
       Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
+ 
+ 
+ 
+ 
       phone settings.
     </p>
     <p>Please contact our WhatsApp Customer Service for more information</p>
     <div class="invalid-popup__button">
-      <button id="invalid-popup__buy-button"><span>Buy eSIM</span></button>
-      <button id="invalid-popup__contact-button"><span>Contact CS</span></button>
+      <button id="invalid-popup__buy-button">
+        <span>Buy eSIM</span>
+      </button>
+      <button id="invalid-popup__contact-button">
+        <span>Contact CS</span>
+      </button>
     </div>
-    <button id="invalid-popup__button-hide"><span>OK</span></button>
+    <button id="invalid-popup__button-hide">
+      <span>OK</span>
+    </button>
   </div>
 </div>
 
-<div class="iccid-popup" id="iccid-popup" style="display:none;">
+<div
+  class="iccid-popup"
+  id="iccid-popup"
+  style="display:none;">
   <div class="invalid-popup__content">
     <h2>Enter ICCID</h2>
     <p>Please input your ICCID to continue to Top Up</p>
@@ -284,18 +296,11 @@
       type="number"
       id="popup-iccid"
       placeholder="Input ICCID Number"
-      style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);"
-    >
-    <button
-      id="iccid-popup-submit"
-      style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;"
-    >
+      style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);">
+    <button id="iccid-popup-submit" style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;">
       Continue
     </button>
-    <button
-      id="iccid-popup-cancel"
-      style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;"
-    >
+    <button id="iccid-popup-cancel" style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;">
       Cancel
     </button>
   </div>
@@ -321,9 +326,9 @@
     const btnHidePopup = document.getElementById('invalid-popup__button-hide');
     const btnBuyEsim = document.getElementById('invalid-popup__buy-button');
     const btnContactCs = document.getElementById('invalid-popup__contact-button');
-
+  
     let lastSubmit = 0;
-
+  
     const prefixVendorMap = [
       { prefix: '8985234202227', vendor: 'BE' }, //category: 'Top_Up_A' // BE
       { prefix: '8985234202222', vendor: 'SEM' },
@@ -333,37 +338,37 @@
       { prefix: '89810', vendor: 'TE' }, //category: 'Top_Up_C' // TE
       { prefix: '2210', vendor: 'BS' }, //category: 'Top_Up_A' // BS
     ];
-
+  
     const vendorCategoryMap = {
       BS: 'Top_Up_A',
       SEM: 'Top_Up_D',
     };
-
+  
     function detectVendor(iccid) {
       return prefixVendorMap.find((item) => iccid.startsWith(item.prefix))?.vendor || null;
     }
-
+  
     function showInvalidPopup() {
       invalidPopup.style.display = 'block';
     }
-
+  
     function hideInvalidPopup() {
       invalidPopup.style.display = 'none';
     }
-
+  
     // ✅ Format Tanggal
     function formatDate(dateStr) {
       if (!dateStr || dateStr.length !== 8) return dateStr;
       return `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6)}`;
     }
-
+  
     // ✅ Fungsi Konversi Data Usage
     function formatDataUsage(value, vendor) {
       value = Number(value) || 0; // pastikan selalu number
       const KB = 1024;
       const MB = 1024 * KB;
       const GB = 1024 * MB;
-
+  
       if (vendor === 'BE' || vendor === 'BS') {
         // value dalam KB
         if (value >= MB) {
@@ -374,7 +379,7 @@
           return value.toFixed(2) + ' KB';
         }
       }
-
+  
       // Vendor AF & TE → value dalam Bytes
       if (value >= GB) {
         return (value / GB).toFixed(2) + ' GB';
@@ -384,13 +389,13 @@
         return (value / KB).toFixed(2) + ' KB';
       }
     }
-
+  
     function formatEpochMsUTC(ms) {
       const n = Number(ms);
       if (!Number.isFinite(n)) return ms;
       const d = new Date(n);
       if (isNaN(d)) return ms;
-
+  
       const dd = String(d.getUTCDate()).padStart(2, '0');
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const MMM = months[d.getUTCMonth()];
@@ -398,21 +403,21 @@
       const hh = String(d.getUTCHours()).padStart(2, '0');
       const mm = String(d.getUTCMinutes()).padStart(2, '0');
       const ss = String(d.getUTCSeconds()).padStart(2, '0');
-
+  
       // Contoh output: "06 Aug 2025 07:16:00 UTC"
       return `${dd} ${MMM} ${yyyy} ${hh}:${mm}:${ss} UTC`;
     }
-
+  
     function formatDateSmart(raw) {
       if (raw == null || raw === '') return '-';
       const s = String(raw).trim();
-
+  
       // 13-digit timestamp (ms)
       if (/^\d{13}$/.test(s)) return formatEpochMsUTC(s);
-
+  
       // 10-digit timestamp (s)
       if (/^\d{10}$/.test(s)) return formatEpochMsUTC(Number(s) * 1000);
-
+  
       // YYYYMMDD
       if (/^\d{8}$/.test(s))
         return `${s.slice(6, 8)} ${
@@ -420,26 +425,26 @@
             Number(s.slice(4, 6)) - 1
           ]
         } ${s.slice(0, 4)} 00:00:00 UTC`;
-
+  
       // ISO/format lain → tampilkan tanggalnya (UTC) jika valid
       const d = new Date(s);
       if (!isNaN(d)) return formatEpochMsUTC(d.getTime());
-
+  
       return s; // fallback apa adanya
     }
-
+  
     // ✅ Render SIM Info
     function renderEsimInfo(itemData, vendor) {
       const bundle = itemData.skuName || itemData.product_name || '-';
-
+  
       // ambil raw value sesuai vendor
       const startRaw = vendor === 'AF' ? itemData.useSDate : itemData.planStartTime;
       const endRaw = vendor === 'AF' ? itemData.useEDate : itemData.planEndTime;
-
+  
       // formatkan (akan otomatis konversi 13-digit ms seperti contoh gambar)
       const startFmt = formatDateSmart(startRaw);
       const endFmt = formatDateSmart(endRaw);
-
+  
       return `
         <div class="check-data-usage__esim-information">
           <h3>SIM Card Information</h3>
@@ -458,11 +463,11 @@
         </div>
       `;
     }
-
+  
     function renderTopUpButton() {
       return `<button id="top-up-plan" class="top-up-plan-btn">Top Up</button>`;
     }
-
+  
     function renderBuyEsimButtons() {
       return `
         <div class="button-topup__usage-wrapper">
@@ -474,7 +479,7 @@
         </div>
       `;
     }
-
+  
     // ✅ Render Total Usage per Country
     function renderTotalUsage(countryUsageMap, vendor) {
       if (Object.keys(countryUsageMap).length === 0) {
@@ -491,19 +496,19 @@
         )
         .join('');
     }
-
+  
     // ✅ Render Data Usage Detail
     function renderDataUsage(dataUsage, vendor) {
       if (!dataUsage?.length) {
         return '<p>No data usage yet.</p>';
       }
-
+  
       return dataUsage
         .map((item) => {
           const country = vendor === 'AF' ? item.enus || '-' : item.country || '-';
           const date = vendor === 'AF' ? item.usageDate : item.usedDate;
           const usage = vendor === 'AF' ? Number(item.usage || 0) : Number(item.usedAmount || 0);
-
+  
           return `
           <div class="data-usage__wrapper">
             <p>${country}</p>
@@ -514,87 +519,87 @@
         })
         .join('');
     }
-
+  
     function attachTopUpButtonListeners() {
       const btnTopUpBuyEsim = document.getElementById('btn-topup__buy-button');
       const btnTopUpContactCs = document.getElementById('btn-topup__contact-button');
-
+  
       if (btnTopUpBuyEsim) {
         btnTopUpBuyEsim.addEventListener('click', () => {
           window.location.href = 'https://gkomunika.com/pages/all-destination';
         });
       }
-
+  
       if (btnTopUpContactCs) {
         btnTopUpContactCs.addEventListener('click', () => {
           window.location.href = 'https://wa.me/628986454071';
         });
       }
     }
-
+  
     async function checkICCID() {
       const now = Date.now();
       if (now - lastSubmit < 3000) return;
       lastSubmit = now;
-
+  
       const iccid = iccidInput.value.trim();
       if (!iccid || iccid.length < 10) {
         resultEl.innerHTML = `<p style="color:red;">Invalid ICCID (minimum 10 digits)</p>`;
         return;
       }
-
+  
       const vendor = detectVendor(iccid);
       if (!vendor) {
         showInvalidPopup();
         return;
       }
-
+  
       checkBtn.disabled = true;
       checkBtn.textContent = 'Loading...';
-
+  
       try {
         const response = await fetch('https://gkomunika.id/api/v1/check/data_info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({ iccid }),
         });
-
+  
         const contentType = response.headers.get('Content-Type') || '';
         const data = contentType.includes('application/json') ? await response.json() : {};
-
+  
         if (data.status === 'error' || data.message === 'Order not found') {
           showInvalidPopup();
           return;
         }
-
+  
         let esimHtml = '';
         let dataUsageHtml = '';
         let totalUsageHtml = '';
         let totalUsedBytes = 0;
-
+  
         // ✅ Vendor AF
         if (vendor === 'AF') {
           if (data.success && data.data) {
             const itemData = data.data;
             const dataUsage = itemData.itemList || [];
             const countryUsageMap = {};
-
+  
             for (const item of dataUsage) {
               const country = item.enus || '-';
               const usage = Number(item.usage || 0);
               countryUsageMap[country] = (countryUsageMap[country] || 0) + usage;
               totalUsedBytes += usage;
             }
-
+  
             esimHtml = renderEsimInfo(itemData, vendor);
             dataUsageHtml = renderDataUsage(dataUsage, vendor);
             totalUsageHtml = renderTotalUsage(countryUsageMap, vendor);
-
+  
             const categoryNeeded = vendorCategoryMap[vendor];
             const hasCategory = productCategories.includes(categoryNeeded);
-
+  
             const buttonHtml = hasCategory ? renderTopUpButton() : renderBuyEsimButtons();
-
+  
             resultEl.innerHTML = `
               ${esimHtml}
               <div class="check-data-usage__usage-content">
@@ -616,18 +621,18 @@
             resultEl.innerHTML = renderBuyEsimButtons();
           }
         }
-
+  
         // ✅ Vendor TE
         else if (vendor === 'TE') {
           if (data.code !== '0000' || !data.data) {
             showInvalidPopup();
             return;
           }
-
+  
           const detail = data.data.detail || {};
           const usage = data.data.usage || {};
           const productName = data.data.product_name || '-';
-
+  
           function formatTEData(value) {
             if (value === 'unlimited') return 'Unlimited';
             const val = parseFloat(value) || 0;
@@ -637,7 +642,7 @@
               return val.toFixed(2) + ' MB';
             }
           }
-
+  
           const esimHtml = `
             <div class="check-data-usage__esim-information">
               <h3>SIM Card Information</h3>
@@ -659,7 +664,7 @@
               </div>
             </div>
           `;
-
+  
           const dataUsageHtml = `
             <div class="check-data-usage__usage-content">
               <div style="text-align: center;"><h2>Data Usage</h2></div>
@@ -679,27 +684,27 @@
               </div>
             </div>
           `;
-
+  
           const categoryNeeded = vendorCategoryMap[vendor];
           const hasCategory = productCategories.includes(categoryNeeded);
-
+  
           const buttonHtml = hasCategory ? renderTopUpButton() : renderBuyEsimButtons();
-
+  
           resultEl.innerHTML = `
             ${esimHtml}
             ${dataUsageHtml}
             ${buttonHtml}
           `;
-
+  
           attachTopUpButtonListeners();
           return;
         }
-
-        // ✅ Vendor SEM
-        // ✅ Vendor SEM (perbaikan: sembunyikan "Remaining" jika Total = "Unlimited")
+  
+        // ✅ Vendor SEM (Package label & hide Remaining when Big Data / Unlimited)
         else if (vendor === 'SEM') {
           const usage = data.data_usage;
-
+  
+          // Tentukan label package: 'Unlimited' jika startTime = hari ini, selain itu 'Big Data'
           function formatSEMTotal(startTime) {
             const today = new Date();
             const yyyymmdd =
@@ -709,30 +714,23 @@
             const dateOnly = (startTime || '').slice(0, 8);
             return dateOnly === yyyymmdd ? 'Unlimited' : 'Big Data';
           }
-
-          // dipakai untuk konversi angka kuota SEM
+  
+          // Format angka kuota SEM (paksa tampil dalam MB)
           function formatTEData(value) {
             if (String(value).toLowerCase() === 'unlimited') return 'Unlimited';
             const val = parseFloat(value) || 0;
-            if (val >= 1024 * 1024 * 1024) {
-              return (val / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
-            } else if (val >= 1024 * 1024) {
-              return (val / (1024 * 1024)).toFixed(2) + ' MB';
-            } else if (val >= 1024) {
-              return (val / 1024).toFixed(2) + ' KB';
-            } else {
-              return val.toFixed(2) + ' B';
-            }
+            const inMB = val / 1024 / 1024;
+            return inMB.toFixed(2) + ' MB';
           }
 
+  
           const categoryNeeded = vendorCategoryMap[vendor];
           let hasCategory = productCategories.includes(categoryNeeded);
-
-          // ✅ pastikan SEM selalu bisa Top Up
-          if (vendor === 'SEM') hasCategory = true;
-
+          // pastikan SEM selalu bisa Top Up
+          hasCategory = true;
+  
           const buttonHtml = hasCategory ? renderTopUpButton() : renderBuyEsimButtons();
-
+  
           if (!usage || usage.success === false) {
             const msg = usage?.retMesg || 'No information available';
             resultEl.innerHTML = `
@@ -747,7 +745,7 @@
             attachTopUpButtonListeners();
             return;
           }
-
+  
           const quota = usage.quotaList?.[0];
           if (!quota) {
             resultEl.innerHTML = `
@@ -762,14 +760,13 @@
             attachTopUpButtonListeners();
             return;
           }
-
-          const totalLabel = formatSEMTotal(quota.startTime);
+  
+          const packageLabel = formatSEMTotal(quota.startTime); // 'Unlimited' atau 'Big Data'
           const usedLabel = formatTEData(quota.usedQuota);
           const remainingLabel = formatTEData(quota.remainingQuota);
-
-          // ✅ jika total = "Unlimited", sembunyikan baris Remaining
-          const isUnlimitedTotal = String(totalLabel).trim().toLowerCase() === 'unlimited';
-          const remainingRow = isUnlimitedTotal
+  
+          const hideRemaining = ['big data', 'unlimited'].includes(String(packageLabel).trim().toLowerCase());
+          const remainingRow = hideRemaining
             ? ''
             : `
       <div style="display: flex; justify-content: space-between;">
@@ -777,14 +774,14 @@
         <span style="font-weight: bold;">${remainingLabel}</span>
       </div>
     `;
-
+  
           const dataUsageHtml = `
     <div class="check-data-usage__usage-content">
       <div style="text-align: center;"><h2>Data Usage</h2></div>
       <div class="check-data-usage__total-usage">
         <div style="display: flex; justify-content: space-between;">
-          <h3>Total:</h3>
-          <span style="font-weight: bold;">${totalLabel}</span>
+          <h3>Package:</h3> <!-- ganti dari 'Total' jadi 'Package' -->
+          <span style="font-weight: bold;">${packageLabel}</span>
         </div>
         <div style="display: flex; justify-content: space-between;">
           <h3>Used:</h3>
@@ -794,43 +791,43 @@
       </div>
     </div>
   `;
-
+  
           resultEl.innerHTML = `
     ${dataUsageHtml}
     ${buttonHtml}
   `;
-
+  
           attachTopUpButtonListeners();
           return;
         }
-
+  
         // ✅ Vendor BE / BS
         else {
           const itemData = data?.tradeData?.subOrderList?.[0];
           const dataUsage = itemData?.usageInfoList || [];
           const countryUsageMap = {};
-
+  
           if (data.tradeCode !== '1000' || !itemData) {
             resultEl.innerHTML = renderBuyEsimButtons();
             attachTopUpButtonListeners();
             return;
           }
-
+  
           for (const item of dataUsage) {
             const country = item.country || '-';
             const usedAmount = Number(item.usedAmount || 0);
             countryUsageMap[country] = (countryUsageMap[country] || 0) + usedAmount;
             totalUsedBytes += usedAmount;
           }
-
+  
           esimHtml = renderEsimInfo(itemData, vendor);
           dataUsageHtml = renderDataUsage(dataUsage, vendor);
           totalUsageHtml = renderTotalUsage(countryUsageMap, vendor);
           const categoryNeeded = vendorCategoryMap[vendor];
           const hasCategory = productCategories.includes(categoryNeeded);
-
+  
           const buttonHtml = hasCategory ? renderTopUpButton() : renderBuyEsimButtons();
-
+  
           resultEl.innerHTML = `
             ${esimHtml}
             <div class="check-data-usage__usage-content">
@@ -849,7 +846,7 @@
             </div>
           `;
         }
-
+  
         attachTopUpButtonListeners();
       } catch (e) {
         console.error(e);
@@ -859,7 +856,7 @@
         checkBtn.textContent = 'Next';
       }
     }
-
+  
     checkBtn.addEventListener('click', checkICCID);
     btnHidePopup.addEventListener('click', hideInvalidPopup);
     btnBuyEsim.addEventListener('click', () => {
@@ -868,7 +865,7 @@
     btnContactCs.addEventListener('click', () => {
       window.location.href = 'https://wa.me/628986454071';
     });
-
+  
     document.addEventListener('click', (e) => {
       if (e.target?.id === 'top-up-plan') {
         const iccidValue = document.getElementById('iccid')?.value?.trim();
@@ -882,14 +879,14 @@
 </script>
 
 {% schema %}
-{
-  "name": "Check Data Usage",
-  "settings": [],
-  "presets": [
-    {
-      "name": "Check Data Usage",
-      "category": "Custom"
-    }
-  ]
-}
+  {
+    "name": "Check Data Usage",
+    "settings": [],
+    "presets": [
+      {
+        "name": "Check Data Usage",
+        "category": "Custom"
+      }
+    ]
+  }
 {% endschema %}

@@ -1,30 +1,57 @@
-<a href="https://wa.me/+628986454071">
-  <button class="whatsapp-container">
-    {{- 'whatsapp.svg' | inline_asset_content -}}
-  </button>
+<a href="https://wa.me/628986454071"
+   class="whatsapp-fab"
+   aria-label="Chat WhatsApp dengan kami">
+  {{- 'whatsapp.svg' | inline_asset_content -}}
+  <span class="sr-only">Chat WhatsApp dengan kami</span>
 </a>
 
-{% style %}
-  .whatsapp-container {
-    position: fixed;
-    bottom: 85px;
-    right: 50px;
-    border-radius: 50%;
-    width: 70px;
-    height: 70px;
-    border: none;
-    background-color: #25D366;
-    box-shadow: var(--box-shadow);
-    z-index: 999;
-    cursor: pointer;
-  }
-  @media (max-width: 426px) {
-    .whatsapp-container {
-      width: 60px;
-      height: 60px;
-      right: 20px;
-      bottom: 120px;
 
-    }
+{% style %}
+.whatsapp-fab {
+  position: fixed;
+  bottom: 85px;
+  right: 50px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #25D366;
+  box-shadow: var(--box-shadow);
+  z-index: 999;
+  cursor: pointer;
+
+  /* tampilkan seperti tombol */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border: none;
+  outline: none;
+}
+
+/* Fokus keyboard yang jelas */
+.whatsapp-fab:focus-visible {
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 6px #1e9e56;
+}
+
+@media (max-width: 426px) {
+  .whatsapp-fab {
+    width: 60px;
+    height: 60px;
+    right: 20px;
+    bottom: 120px;
   }
+}
+
+/* utilitas teks hanya untuk screen reader */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+
 {% endstyle %}

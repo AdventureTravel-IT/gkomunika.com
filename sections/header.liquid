@@ -10,8 +10,10 @@
 
   .header__wrapper {
     display: flex;
-    justify-content: space-between; /* sesuai permintaan */
-    align-items: center; /* biar vertikal center */
+    justify-content: space-between;
+    /* sesuai permintaan */
+    align-items: center;
+    /* biar vertikal center */
     width: 100%;
   }
 
@@ -34,7 +36,8 @@
   }
 
   .sidebar-link {
-    display: flex; /* <-- perbaikan: tadinya none */
+    display: flex;
+    /* <-- perbaikan: tadinya none */
     align-items: center;
     gap: 10px;
     color: var(--color-primary);
@@ -69,7 +72,8 @@
     display: none;
     align-items: center;
     gap: 12px;
-    margin-left: auto; /* dorong ke ujung kanan */
+    margin-left: auto;
+    /* dorong ke ujung kanan */
   }
   .header-mobile-icon {
     display: inline-flex;
@@ -125,8 +129,7 @@
       display: none;
     } /* sembunyikan versi desktop di mobile */
 
-    /* Tampilkan ikon kanan hanya di mobile */
-    .header-mobile-right {
+    /* Tampilkan ikon kanan hanya di mobile */.header-mobile-right {
       display: flex;
     }
 
@@ -139,16 +142,23 @@
 
     .sidebar-panel {
       overflow: hidden;
-      max-height: 0; /* tertutup default */
+      max-height: 0;
+      /* tertutup default */
       opacity: 0;
-      transform: translateY(-8px); /* efek turun dari atas */
-      transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease;
+      transform: translateY(-8px);
+      /* efek turun dari atas */
+      transition: max-height 0.35s ease
+      , opacity 0.25s ease
+      , transform 0.25s ease;
       border-top: 1px solid #eaeaea;
       background: var(--color-neutral);
-      will-change: max-height, opacity, transform;
+      will-change: max-height
+      , opacity
+      , transform;
     }
     .sidebar-panel.active {
-      max-height: 80vh; /* cukup tinggi untuk isi panel */
+      max-height: 80vh;
+      /* cukup tinggi untuk isi panel */
       opacity: 1;
       transform: translateY(0);
     }
@@ -176,7 +186,8 @@
       border-top: 1px solid #eaeaea;
     }
     .sidebar-mobile-block .currency-language {
-      display: flex; /* tampilkan versi mobile */
+      display: flex;
+      /* tampilkan versi mobile */
       gap: 12px;
     }
     .sidebar-mobile-block .localization-form {
@@ -193,31 +204,44 @@
           class="menu-toggle"
           onclick="toggleMenu()"
           aria-label="Open Menu"
-          aria-expanded="false"
-        >
-          <div class="animated-icon" id="menu-icon"><span></span><span></span><span></span></div>
+          aria-expanded="false">
+          <div class="animated-icon" id="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </button>
 
         {% if section.settings.logo != blank %}
           <a href="/" style="display: inline-flex; align-items: center;">
             <img
               class="header-content-logo"
-              src="{{ section.settings.logo | img_url: 'master' }}"
-              width="120px"
-              height="40px"
+              src="{{ section.settings.logo | image_url: width: 120 }}"
+              srcset="
+  {{ section.settings.logo | image_url: width: 120 }} 120w,
+  {{ section.settings.logo | image_url: width: 240 }} 240w
+"
+              sizes="120px"
+              width="120"
+              height="40"
               alt="Global Komunika"
-              loading="eager"
-            >
+              loading="eager">
           </a>
         {% endif %}
       </div>
 
       <!-- IKON KANAN KHUSUS MOBILE -->
       <div class="header-mobile-right" aria-label="Quick actions">
-        <a href="/cart" class="header-mobile-icon" aria-label="Cart">
+        <a
+          href="/cart"
+          class="header-mobile-icon"
+          aria-label="Cart">
           <img src="{{ 'header-cart.svg' | asset_url }}" alt="Cart">
         </a>
-        <a href="/account/login" class="header-mobile-icon" aria-label="Profile">
+        <a
+          href="/account/login"
+          class="header-mobile-icon"
+          aria-label="Profile">
           <img src="{{ 'header-profile.svg' | asset_url }}" alt="Profile">
         </a>
       </div>
@@ -233,18 +257,19 @@
           </div>
 
           <localization-form>
-            {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
+            {%- form 'localization'
+              , id: 'FooterLanguageForm'
+              , class: 'localization-form' -%}
               <div style="display: flex; align-items: center;">
                 {{- 'header-language.svg' | inline_asset_content -}}
-                {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
+                {%- render 'language-localization'
+                  , localPosition: 'FooterLanguage' -%}
               </div>
             {%- endform -%}
           </localization-form>
         </div>
 
-        <div
-          id="navbar"
-          data-icons='
+        <div id="navbar" data-icons='
             {
                 "home": "{{ 'header-home.svg' | asset_url }}",
                 "esim": "{{ 'header-esim.svg' | asset_url }}",
@@ -257,8 +282,8 @@
                 "cart": "{{ 'header-cart.svg' | asset_url }}",
                 "profile": "{{ 'header-profile.svg' | asset_url }}"
             }
-          '
-        ></div>
+          '>
+</div>
       </div>
     </div>
 
@@ -279,10 +304,13 @@
             </div>
 
             <localization-form>
-              {%- form 'localization', id: 'FooterLanguageFormSidebar', class: 'localization-form' -%}
+              {%- form 'localization'
+                , id: 'FooterLanguageFormSidebar'
+                , class: 'localization-form' -%}
                 <div style="display: flex; align-items: center;">
                   {{- 'header-language.svg' | inline_asset_content -}}
-                  {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
+                  {%- render 'language-localization'
+                    , localPosition: 'FooterLanguage' -%}
                 </div>
               {%- endform -%}
             </localization-form>
@@ -295,7 +323,7 @@
 
 <script>
   const icons = JSON.parse(document.getElementById('navbar').getAttribute('data-icons'));
-
+  
   // Satu sumber data untuk navbar
   const menu = [
     { label: 'Home', icon: icons.home, link: '/' },
@@ -308,7 +336,7 @@
     { label: 'News', icon: icons.news, link: '/pages/news' },
     // Cart/Profile dikeluarkan dari sidebar mobile; tambah bila diperlukan
   ];
-
+  
   // Helper render list menu
   function renderMenuList(items) {
     return (
@@ -328,7 +356,7 @@
       `</ul>`
     );
   }
-
+  
   // Render NAVBAR (pakai versi header-menu untuk desktop)
   function renderHeaderMenu({ container, items }) {
     const html =
@@ -352,15 +380,15 @@
       `</ul>`;
     container.innerHTML = html;
   }
-
+  
   // Render NAVBAR (desktop)
   const nav = document.getElementById('navbar');
   renderHeaderMenu({ container: nav, items: menu });
-
+  
   // Render SIDEBAR LIST (mobile)
   const sidebarListMount = document.getElementById('sidebar-list');
   sidebarListMount.innerHTML = renderMenuList(menu);
-
+  
   /* ===========================
      Toggle Sidebar (Mobile)
   ============================*/
@@ -369,33 +397,33 @@
     const menuIcon = document.getElementById('menu-icon');
     const toggleBtn = document.querySelector('.menu-toggle');
     if (!panel) return;
-
+  
     const isOpen = panel.classList.toggle('active');
     if (menuIcon) menuIcon.classList.toggle('open', isOpen);
-
+  
     // A11y
     if (toggleBtn) {
       toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       toggleBtn.setAttribute('aria-label', isOpen ? 'Close Menu' : 'Open Menu');
     }
     panel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-
+  
     // kunci scroll saat terbuka
     document.documentElement.style.overflow = isOpen ? 'hidden' : '';
     document.body.style.overflow = isOpen ? 'hidden' : '';
   }
-
+  
   // Tutup saat klik di luar panel & tombol
   document.addEventListener('click', function (e) {
     const panel = document.querySelector('.sidebar-panel');
     const toggleBtn = document.querySelector('.menu-toggle');
     const menuIcon = document.getElementById('menu-icon');
-
+  
     if (!panel || !panel.classList.contains('active')) return;
-
+  
     const clickInsidePanel = panel.contains(e.target);
     const clickOnToggle = toggleBtn && toggleBtn.contains(e.target);
-
+  
     if (!clickInsidePanel && !clickOnToggle) {
       panel.classList.remove('active');
       if (menuIcon) menuIcon.classList.remove('open');
@@ -408,14 +436,14 @@
       document.body.style.overflow = '';
     }
   });
-
+  
   // Tutup saat ESC
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     const panel = document.querySelector('.sidebar-panel');
     const toggleBtn = document.querySelector('.menu-toggle');
     const menuIcon = document.getElementById('menu-icon');
-
+  
     if (panel && panel.classList.contains('active')) {
       panel.classList.remove('active');
       if (menuIcon) menuIcon.classList.remove('open');
@@ -431,19 +459,18 @@
 </script>
 
 {% schema %}
-{
-  "name": "Header Settings",
-  "settings": [
-    {
-      "type": "link_list",
-      "id": "selected_menu",
-      "label": "Menu"
-    },
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo"
-    }
-  ]
-}
+  {
+    "name": "Header Settings",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "selected_menu",
+        "label": "Menu"
+      }, {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      }
+    ]
+  }
 {% endschema %}

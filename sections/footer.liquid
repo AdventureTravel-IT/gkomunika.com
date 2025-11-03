@@ -134,7 +134,7 @@
       <h2 class="footer__heading-title">{{ section.settings.contact_heading }}</h2>
 
       <ul class="footer__contact-wrapper">
-        <div style="display: flex; align-items: center; gap: 1rem;">
+        <li style="display: flex; align-items: center; gap: 1rem;">
           {% if section.settings.email != blank %}
             <img
               src="{{ 'icon-email.svg' | asset_url }}"
@@ -142,14 +142,14 @@
               loading="lazy"
               width="20px"
               height="20px">
-            <li class="footer__contact-text">
+            <div class="footer__contact-text">
               <label class="footer__contact--label">Email</label>
               <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
-            </li>
+            </div>
           {% endif %}
-        </div>
+        </li>
 
-        <div style="display: flex; align-items: center; gap: 1rem;">
+        <li style="display: flex; align-items: center; gap: 1rem;">
           {% if section.settings.whatsapp != blank %}
             <img
               src="{{ 'icon-whatsapp.svg' | asset_url }}"
@@ -157,12 +157,12 @@
               loading="lazy"
               width="20px"
               height="20px">
-            <li class="footer__contact-text">
+            <div class="footer__contact-text">
               <label class="footer__contact--label">WhatsApp (Chat Only)</label>
               <a href="https://wa.me/{{ section.settings.whatsapp }}">{{ section.settings.whatsapp }}</a>
-            </li>
+            </div>
           {% endif %}
-        </div>
+        </li>
       </ul>
     </section>
   </div>

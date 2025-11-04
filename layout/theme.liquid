@@ -218,6 +218,7 @@ body {
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    
     <link
       rel="stylesheet"
       href="{{ 'component-cart-items.css' | asset_url }}"
@@ -315,9 +316,9 @@ body {
             <span></span>
             <!-- Ini hanya untuk dalam popup, akan dihapus saat klik Save -->
 
-            <span>Language</span>
+            <label for="language-select">Language</label>
             <form class="language-selector-form" onsubmit="event.preventDefault();">
-              <select id="language-select" style="padding: 15px;">
+              <select  id="language-select" style="padding: 15px;">
                 <option
                   value="https://gkomunika.com"
                   {% if request.locale.iso_code == 'en' %}

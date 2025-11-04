@@ -16,9 +16,7 @@ async function updateCartCount() {
     }
 
     cartFetched = true; // tandai bahwa cart sudah di-fetch
-  } catch (err) {
-    console.error("Error updating cart count:", err);
-  }
+  } catch (err) {}
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -43,9 +41,7 @@ document.addEventListener("submit", async (e) => {
       if (e.target.closest(".add-to-cart-mobile")) {
         await updateCartCount();
       }
-    } catch (err) {
-      console.error("Error adding product to cart:", err);
-    }
+    } catch (err) {}
   }
 });
 

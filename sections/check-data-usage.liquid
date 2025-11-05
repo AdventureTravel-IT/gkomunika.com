@@ -1,4 +1,3 @@
-
 {% style %}
   .invalid-popup {
     display: none;
@@ -265,6 +264,12 @@
     <h2>ICCID Invalid</h2>
     <p>
       Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
+ 
+ 
+ 
+ 
+ 
+ 
       phone settings.
     </p>
     <p>Please contact our WhatsApp Customer Service for more information</p>
@@ -315,7 +320,7 @@
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
   const iccidInput = document.getElementById('iccid');
   const checkBtn = document.getElementById('check-iccid');
   const resultEl = document.getElementById('result');
@@ -324,31 +329,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnBuyEsim = document.getElementById('invalid-popup__buy-button');
   const btnContactCs = document.getElementById('invalid-popup__contact-button');
   let lastSubmit = 0;
-
+  
   const prefixVendorMap = [
     { prefix: '89859', vendor: 'AF' },
     { prefix: '89862', vendor: 'AF' },
     { prefix: '89810', vendor: 'TE' },
     { prefix: '2210', vendor: 'BS' },
   ];
-
+  
   const vendorCategoryMap = {
     BS: 'Top_Up_A',
     SEM: 'Top_Up_D',
   };
-
+  
   function detectVendor(iccid) {
     return prefixVendorMap.find((i) => iccid.startsWith(i.prefix))?.vendor || null;
   }
-
+  
   function showInvalidPopup() { invalidPopup.style.display = 'block'; }
   function hideInvalidPopup() { invalidPopup.style.display = 'none'; }
-
+  
   function formatDate(dateStr) {
     if (!dateStr || dateStr.length !== 8) return dateStr;
     return `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6)}`;
   }
-
+  
   function formatDataUsage(value, vendor) {
     value = Number(value) || 0;
     const KB = 1024;
@@ -363,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (value >= MB) return (value / MB).toFixed(2) + ' MB';
     return (value / KB).toFixed(2) + ' KB';
   }
-
+  
   function renderEsimInfo(item, vendor) {
     const bundle = item.skuName || item.product_name || '-';
     const startRaw = vendor === 'AF' ? item.useSDate : item.planStartTime;
@@ -376,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="esim-information__wrapper"><p>End Date</p><span>${formatDate(endRaw)}</span></div>
       </div>`;
   }
-
+  
   function renderTopUpButton() { return `<button id="top-up-plan" class="top-up-plan-btn">Top Up</button>`; }
   function renderBuyEsimButtons() {
     return `<div class="button-topup__usage-wrapper">
@@ -387,29 +392,29 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>`;
   }
-
+  
   function attachTopUpButtonListeners() {
     const btnTopUpBuy = document.getElementById('btn-topup__buy-button');
     const btnTopUpCs = document.getElementById('btn-topup__contact-button');
     if (btnTopUpBuy) btnTopUpBuy.onclick = () => window.location.href = 'https://gkomunika.com/pages/all-destination';
     if (btnTopUpCs) btnTopUpCs.onclick = () => window.location.href = 'https://wa.me/628986454071';
   }
-
+  
   async function checkICCID() {
     const now = Date.now();
     if (now - lastSubmit < 3000) return;
     lastSubmit = now;
-
+  
     const iccid = iccidInput.value.trim();
     if (!iccid || iccid.length < 10) {
       resultEl.innerHTML = `<p style="color:red;">Invalid ICCID</p>`;
       return;
     }
-
+  
     let vendor = detectVendor(iccid);
     checkBtn.disabled = true;
     checkBtn.textContent = 'Loading...';
-
+  
     try {
       const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
         method: 'POST',
@@ -418,11 +423,30 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const data = await res.json();
 
+      console.log(data)
+        
       // Tentukan vendor berdasarkan response backend
-      if (data.tradeCode) vendor = 'BE';
-      else if (data.data_usage?.retCode) vendor = 'SEM';
-      else if (!vendor) vendor = null;
+      // Tentukan vendor berdasarkan response backend
+if (!vendor) {
+  // hanya ubah vendor kalau belum terdeteksi dari prefix
+  if (data.tradeCode && data.tradeData?.subOrderList) {
+    // tambahkan deteksi vendor BS berdasarkan prefix "2210"
+    if (iccid.startsWith('2210')) {
+      vendor = 'BS';
+    } else {
+      vendor = 'BE';
+    }
+  } else if (data.data_usage?.retCode) {
+    vendor = 'SEM';
+  } else {
+    vendor = null;
+  }
+}
 
+
+      window.lastDetectedVendor = vendor;
+
+  
       // === BE ===
       if (vendor === 'BE') {
         if (data.tradeCode !== '1000') { showInvalidPopup(); return; }
@@ -435,13 +459,13 @@ document.addEventListener('DOMContentLoaded', () => {
           total += Number(u.usedAmount || 0);
           perCountry[u.country] = (perCountry[u.country] || 0) + Number(u.usedAmount || 0);
         });
-
+  
         const esimHtml = renderEsimInfo(item, vendor);
         const totalUsageHtml = Object.entries(perCountry).map(([c, v]) => `
           <div class="total-data-usage__wrapper"><p>${c}</p><p>${formatDataUsage(v, vendor)}</p></div>`).join('');
         const detailUsageHtml = usageList.map(u => `
           <div class="data-usage__wrapper"><p>${u.country}</p><p>${formatDate(u.usedDate)}</p><p>${formatDataUsage(u.usedAmount, vendor)}</p></div>`).join('');
-
+  
         // BE tanpa Top Up
         resultEl.innerHTML = `
           ${esimHtml}
@@ -455,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>`;
         return;
       }
-
+  
       // === SEM ===
       if (vendor === 'SEM') {
         const usage = data.data_usage;
@@ -463,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const quota = usage.quotaList?.[0];
         const used = formatDataUsage(quota.usedQuota, vendor);
         const remaining = formatDataUsage(quota.remainingQuota, vendor);
-
+  
         resultEl.innerHTML = `
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
@@ -476,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
         attachTopUpButtonListeners();
         return;
       }
-
+  
       // === AF ===
       if (vendor === 'AF') {
         const item = data.data;
@@ -503,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
         attachTopUpButtonListeners();
         return;
       }
-
+  
       // === TE ===
       if (vendor === 'TE') {
         if (data.code !== '0000') { showInvalidPopup(); return; }
@@ -512,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const total = usage.dataTotal || 0;
         const used = usage.dataUsage || 0;
         const remain = usage.dataResidual || 0;
-
+  
         const esimHtml = `
           <div class="check-data-usage__esim-information">
             <h3>SIM Card Information</h3>
@@ -534,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
         attachTopUpButtonListeners();
         return;
       }
-
+  
       // === BS ===
       if (vendor === 'BS') {
         const item = data.tradeData?.subOrderList?.[0];
@@ -561,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
         attachTopUpButtonListeners();
         return;
       }
-
+  
       showInvalidPopup();
     } catch (err) {
       console.error(err);
@@ -571,19 +595,30 @@ document.addEventListener('DOMContentLoaded', () => {
       checkBtn.textContent = 'Next';
     }
   }
-
+  
   checkBtn.addEventListener('click', checkICCID);
   btnHidePopup.addEventListener('click', hideInvalidPopup);
   btnBuyEsim.addEventListener('click', () => window.location.href = 'https://gkomunika.com/pages/all-destination');
   btnContactCs.addEventListener('click', () => window.location.href = 'https://wa.me/628986454071');
   document.addEventListener('click', (e) => {
-    if (e.target?.id === 'top-up-plan') {
-      const iccidValue = iccidInput.value.trim();
-      if (iccidValue) sessionStorage.setItem('iccid', iccidValue);
-      window.location.href = '/pages/top-up';
-    }
+  if (e.target?.id === 'top-up-plan') {
+    const iccidValue = iccidInput.value.trim();
+    if (iccidValue) sessionStorage.setItem('iccid', iccidValue);
+  
+    // --- Tambahkan logika vendor SEM untuk simpan kategori ---
+    const lastVendor = window.lastDetectedVendor; // ambil vendor terakhir
+    if (lastVendor === 'SEM') {
+  sessionStorage.setItem('category', 'Top_Up_D');
+} else if (lastVendor === 'BS') {
+  sessionStorage.setItem('category', 'Top_Up_A');
+}
+
+  
+    window.location.href = '/pages/top-up';
+  }
   });
-});
+  
+  });
 </script>
 
 

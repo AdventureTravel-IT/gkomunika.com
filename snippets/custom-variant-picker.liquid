@@ -697,52 +697,81 @@
 </script>
 
 <script>
-  window.TopUp = (() => {
-    const vendorPrefixes = [
-      { prefix: '8985234202227', vendor: 'BE' },
-      { prefix: '8985234202222', vendor: 'SEM' },
-      { prefix: '8981200', vendor: 'BE' },
-      { prefix: '89859', vendor: 'AF' },
-      { prefix: '89862', vendor: 'AF' },
-      { prefix: '89810', vendor: 'TE' },
-      { prefix: '2210', vendor: 'BS' },
-    ];
+window.TopUp = (() => {
+  const vendorPrefixes = [
+    { prefix: '8985234202227', vendor: 'BE' },
+    { prefix: '8981200', vendor: 'BE' },
+    { prefix: '89859', vendor: 'AF' },
+    { prefix: '89862', vendor: 'AF' },
+    { prefix: '89810', vendor: 'TE' },
+    { prefix: '2210', vendor: 'BS' },
+  ];
 
-    const vendorCategories = {
-      SEM: 'Top_Up_D',
-      AF: 'Top_Up_B',
-      TE: 'Top_Up_C',
-      BS: 'Top_Up_A',
-      BE: 'Top_Up_A',
-    };
+  const vendorCategories = {
+    SEM: 'Top_Up_D',
+    AF: 'Top_Up_B',
+    TE: 'Top_Up_C',
+    BS: 'Top_Up_A',
+    BE: 'Top_Up_A',
+  };
 
-    function resolveVendorByPrefix(iccidRaw) {
-      const iccid = (iccidRaw || '').trim();
-      if (!iccid) return null;
-      const best = vendorPrefixes
-        .filter((v) => iccid.startsWith(v.prefix))
-        .sort((a, b) => b.prefix.length - a.prefix.length)[0];
-      return best ? best.vendor : null;
+  function resolveVendorByPrefix(iccidRaw) {
+    const iccid = (iccidRaw || '').trim();
+    if (!iccid) return null;
+    const best = vendorPrefixes
+      .filter((v) => iccid.startsWith(v.prefix))
+      .sort((a, b) => b.prefix.length - a.prefix.length)[0];
+    return best ? best.vendor : null;
+  }
+
+  function expectedCategoryFromICCID(iccid) {
+    const vendor = resolveVendorByPrefix(iccid);
+    return vendor ? vendorCategories[vendor] : null;
+  }
+
+  // 🔹 Validasi SEM via API
+  async function validateSemIccid(iccid) {
+    try {
+      const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ iccid }),
+      });
+      const data = await res.json();
+      return data?.data_usage?.retCode === '000000';
+    } catch (err) {
+      console.error('SEM validation failed:', err);
+      return false;
+    }
+  }
+
+  // 🔹 Fungsi utama validasi kategori ICCID
+  async function isIccidCategoryMatch(iccid, productCategory) {
+    iccid = (iccid || '').trim();
+    if (!iccid) return false;
+
+    const vendor = resolveVendorByPrefix(iccid);
+
+    // Jika prefix tidak terdeteksi, cek apakah ICCID valid SEM
+    if (!vendor) {
+      const isSem = await validateSemIccid(iccid);
+      if (isSem) return productCategory === vendorCategories.SEM;
+      return false;
     }
 
-    function expectedCategoryFromICCID(iccid) {
-      const vendor = resolveVendorByPrefix(iccid);
-      return vendor ? vendorCategories[vendor] : null;
-    }
+    const expected = vendorCategories[vendor];
+    return expected === productCategory;
+  }
 
-    function isIccidCategoryMatch(iccid, productCategory) {
-      const expected = expectedCategoryFromICCID(iccid);
-      return !!expected && expected === productCategory;
-    }
-
-    return {
-      resolveVendorByPrefix,
-      expectedCategoryFromICCID,
-      isIccidCategoryMatch,
-      vendorPrefixes,
-      vendorCategories,
-    };
-  })();
+  return {
+    resolveVendorByPrefix,
+    expectedCategoryFromICCID,
+    isIccidCategoryMatch,
+    vendorPrefixes,
+    vendorCategories,
+    validateSemIccid,
+  };
+})();
 </script>
 
 <script>
@@ -1546,10 +1575,16 @@ function showIccidMismatchDialog(iccid, {
     buyTopUpMobile?.addEventListener("click", handleBuyTopUp);
     
 
-    function handleBuyTopUp() {
+    async function handleBuyTopUp() {
   const variant = findVariant();
   const quantity = 1;
   let iccid = sessionStorage.getItem("iccid");
+
+  const buyTopUpDesktop = document.getElementById("buy-topup-button");
+  const buyTopUpMobile = document.getElementById("buy-topup-button-mobile");
+
+  // Gabung dua tombol (desktop & mobile)
+  const clickedBtn = event?.currentTarget || buyTopUpDesktop || buyTopUpMobile;
 
   // Validasi varian
   if (!variant || !variant.available) {
@@ -1569,7 +1604,7 @@ function showIccidMismatchDialog(iccid, {
 
   const productCategory = "{{ product.metafields.product.category.value }}";
 
-  // ICCID belum ada → buka popup input (validasi lanjutan ada di submit popup)
+  // ICCID belum ada → buka popup input
   if (!iccid || iccid.trim() === "") {
     showICCIDPopup();
     return;
@@ -1577,18 +1612,33 @@ function showIccidMismatchDialog(iccid, {
 
   iccid = iccid.trim();
 
-  // ❌ Mismatch prefix→kategori: tampilkan dialog, OK => redirect ke /pages/top-up
-  if (!TopUp.isIccidCategoryMatch(iccid, productCategory)) {
-    showIccidMismatchDialog(iccid, {
-      message: "Your ICCID doesn’t match this product type. Click OK to go to a compatible top-up product.",
-      okText: "OK"
-    });
-    return;
-  }
+  try {
+    // 🌀 Set tombol jadi loading
+    setButtonLoadingState(clickedBtn, true);
 
-  // ✅ Match → lanjut checkout
-  proceedToCheckout(iccid, variant, quantity);
+    const match = await TopUp.isIccidCategoryMatch(iccid, productCategory);
+
+    if (!match) {
+      showIccidMismatchDialog(iccid, {
+        message: "Your ICCID doesn’t match this product type. Click OK to go to a compatible top-up product.",
+        okText: "OK"
+      });
+      setButtonLoadingState(clickedBtn, false); // kembalikan tombol
+      return;
+    }
+
+    // ✅ Match → lanjut checkout
+    await proceedToCheckout(iccid, variant, quantity);
+
+  } catch (err) {
+    console.error("Error processing Top-Up:", err);
+    showPopupMessage("Failed to process Top Up. Please try again.");
+  } finally {
+    // 🔄 Pastikan tombol di-reset kalau gagal
+    setButtonLoadingState(clickedBtn, false);
+  }
 }
+
 
 
 
@@ -1647,44 +1697,60 @@ function showIccidMismatchDialog(iccid, {
     `;
     document.body.appendChild(popup);
 
-    // ⬇️ Handler submit yang baru (VALIDASI SETELAH INPUT)
-    document.getElementById("iccid-submit").addEventListener("click", () => {
+    // ✅ Handler submit baru (asynchronous)
+    document.getElementById("iccid-submit").addEventListener("click", async () => {
       const inputEl = document.getElementById("iccid-input");
       const iccidValue = (inputEl?.value || "").trim();
+
       if (!iccidValue) {
         alert("Please enter ICCID");
         return;
       }
 
-      // Simpan dulu (biar konsisten dipakai di halaman /pages/top-up juga)
       sessionStorage.setItem("iccid", iccidValue);
-
       const productCategory = "{{ product.metafields.product.category.value }}";
-      // Pastikan helper tersedia (pakai namespace TopUp sesuai saran)
+
       const isMatch = window.TopUp
-        ? TopUp.isIccidCategoryMatch(iccidValue, productCategory)
+        ? await TopUp.isIccidCategoryMatch(iccidValue, productCategory)
         : false;
 
       if (!isMatch) {
-        // ❌ Prefix tidak cocok (atau prefix unknown) → redirect ke halaman top-up
         popup.remove();
         window.location.href = "/pages/top-up";
         return;
       }
 
-      // ✅ Match → lanjut checkout
       popup.remove();
       const variant = findVariant();
       if (!variant || !variant.available) {
-        // Jika user belum pilih varian, biar UI kasih tahu
         showPopupMessage("Please select a valid variant first.");
         return;
       }
-      const quantity = 1;
-      proceedToCheckout(iccidValue, variant, quantity);
-    }, { once: true }); // pastikan tidak dobel attach
+      proceedToCheckout(iccidValue, variant, 1);
+    }, { once: true });
   }
 }
+
+// 🔹 Utility: set tombol ke state loading / normal
+function setButtonLoadingState(button, isLoading, text = "Processing...") {
+  if (!button) return;
+
+  if (isLoading) {
+    button.dataset.originalText = button.innerHTML;
+    button.innerHTML = `<p>${text}</p>`;
+    button.disabled = true;
+    button.style.opacity = "0.6";
+    button.style.cursor = "not-allowed";
+  } else {
+    if (button.dataset.originalText) {
+      button.innerHTML = button.dataset.originalText;
+    }
+    button.disabled = false;
+    button.style.opacity = "1";
+    button.style.cursor = "pointer";
+  }
+}
+
 
     function showPopupMessage(message) {
       const popup = document.getElementById("variant-popup");

@@ -287,8 +287,8 @@
   (function () {
     'use strict';
 
-    // Jalankan setelah semua elemen betul-betul ada
-    window.addEventListener('load', function () {
+    // Jalankan ketika HTML siap (lebih cepat dari window.load)
+    window.addEventListener('DOMContentLoaded', function () {
       // ------- Elemen utama -------
       const collectionWrapper = document.getElementById('collection-top-up-plan');
       const noResults = document.getElementById('no-results-message');
@@ -313,40 +313,12 @@
         });
       });
 
-      // ------- Mapping prefix -> vendor -------
-      const vendorPrefixes = [
-        { prefix: '8985234202227', vendor: 'BE' },
-        { prefix: '8985234202222', vendor: 'SEM' },
-        { prefix: '8981200', vendor: 'BE' },
-        { prefix: '89859', vendor: 'AF' },
-        { prefix: '89862', vendor: 'AF' },
-        { prefix: '89810', vendor: 'TE' },
-        { prefix: '2210', vendor: 'BS' },
-      ];
-
-      const vendorCategories = {
-        SEM: 'Top_Up_D',
-        AF: 'Top_Up_B',
-        TE: 'Top_Up_C',
-        BS: 'Top_Up_A',
-        BE: 'Top_Up_A',
-      };
-
-      function findVendorFromICCID(raw) {
-        const iccid = String(raw || '').trim();
-        let matchedVendor = null;
-        let longest = 0;
-        vendorPrefixes.forEach((it) => {
-          if (iccid.startsWith(it.prefix) && it.prefix.length > longest) {
-            longest = it.prefix.length;
-            matchedVendor = it.vendor;
-          }
-        });
-        return matchedVendor;
-      }
-
+      // ------- Helper: tampilkan pesan tidak ditemukan -------
       function showNotFoundMessage() {
-        if (collectionWrapper) collectionWrapper.style.display = 'none';
+        if (collectionWrapper) {
+          collectionWrapper.style.display = 'none';
+          collectionWrapper.classList.remove('visible');
+        }
         if (noResults) {
           noResults.innerHTML = `
             <div style="display:flex; flex-direction:column; justify-content:center">
@@ -362,78 +334,82 @@
         }
       }
 
+      // ------- Helper: tampilkan koleksi produk -------
       function showCollection() {
         if (noResults) noResults.style.display = 'none';
-        if (collectionWrapper) collectionWrapper.style.display = '';
+        if (collectionWrapper) {
+          collectionWrapper.style.display = '';
+          collectionWrapper.style.visibility = 'visible';
+          collectionWrapper.classList.add('visible');
+        }
       }
 
-      // ------- Ambil ICCID -------
-      const iccid = (sessionStorage.getItem('iccid') || '').trim();
-      if (!iccid) {
-        return showNotFoundMessage();
-      }
-
-      // ------- Resolve vendor -> kategori -------
-      const vendor = findVendorFromICCID(iccid);
-      if (!vendor) {
-        return showNotFoundMessage();
-      }
-
-      const desiredCategory = vendorCategories[vendor];
+      // ------- Ambil kategori dari sessionStorage -------
+      const desiredCategory = (sessionStorage.getItem('category') || '').trim();
       if (!desiredCategory) {
         return showNotFoundMessage();
       }
-      const desired = desiredCategory.trim().toUpperCase();
+      const desired = desiredCategory.toUpperCase();
 
       // ------- Ambil semua card di dalam wrapper -------
-      if (!collectionWrapper) {
-        return showNotFoundMessage();
-      }
-
+      if (!collectionWrapper) return showNotFoundMessage();
       const productCards = $$('.product-card-container', collectionWrapper);
+      if (productCards.length === 0) return showNotFoundMessage();
 
-      // **PRE-HIDE** semua card dulu agar tidak "muncul semua" saat awal
+      // Sembunyikan wrapper dan semua card lebih dulu (cegah flash)
+      collectionWrapper.style.display = 'none';
+      collectionWrapper.style.visibility = 'hidden';
+      collectionWrapper.classList.remove('visible');
       productCards.forEach((c) => (c.style.display = 'none'));
 
-      // ------- Filter by data-category (case-insensitive) -------
+      // ------- Filter berdasarkan data-category -------
       const visibleCards = [];
-      productCards.forEach((card, idx) => {
-        // NOTE: pastikan Liquid mengisi data-category="{{ product.metafields.product.category.value }}"
+      productCards.forEach((card) => {
         let cat = card.dataset.category;
-
-        // Beberapa theme/metafield bisa return array -> stringify, jadi normalisasi
         if (Array.isArray(cat)) cat = cat[0];
         if (cat && typeof cat !== 'string') cat = String(cat);
-
         const norm = (cat || '').trim().toUpperCase();
-        if (!norm) {
-          card.style.display = 'none';
-          return;
-        }
 
         if (norm === desired) {
-          card.style.display = ''; // tampilkan
+          card.style.display = '';
           visibleCards.push(card);
+        } else {
+          card.style.display = 'none';
         }
       });
 
-      if (visibleCards.length === 0) {
-        return showNotFoundMessage();
-      }
+      // ------- Jika tidak ada hasil -------
+      if (visibleCards.length === 0) return showNotFoundMessage();
 
-      // Tampilkan wrapper setelah selesai filter (anti-flash)
+      // ------- Tampilkan hasil -------
       showCollection();
 
-      // Jika hanya satu, auto-redirect
+      // ------- Jika hanya satu produk, redirect otomatis -------
       if (visibleCards.length === 1) {
         const linkEl = visibleCards[0].querySelector('a.product-url-link');
-        if (linkEl && linkEl.href) {
-          window.location.assign(linkEl.href);
-        }
+        if (linkEl?.href) window.location.assign(linkEl.href);
       }
+
+      // Opsional: bersihkan sessionStorage agar tidak bertahan
+      // sessionStorage.removeItem('category');
     });
   })();
 </script>
+
+<style>
+  /* Fade-in halus untuk wrapper */
+  .main-search-collection-wrapper {
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .main-search-collection-wrapper.visible {
+    display: block !important;
+    visibility: visible;
+    opacity: 1;
+  }
+</style>
 
 {% comment %} # TEMPLATE SECTION {% endcomment %}
 <div class="main-search">
@@ -452,7 +428,6 @@
               {% assign found_any_product = true %}
               {% assign product_count = product_count | plus: 1 %}
               {% assign single_product_url = product.url %}
-
               {% assign product_countries = product.metafields.coverage.country.value %}
               {% assign all_matched_countries = '' %}
               {% if product_countries %}
@@ -509,7 +484,6 @@
                           Top Up Plan
                         {% endif %}
                       </span>
-
                       <h1>{{ product.title }}</h1>
                     </div>
                   </div>
@@ -537,35 +511,20 @@
                       {% assign first_optiondays = product.variants.first.option1 | replace: ' Days', '' %}
                       {% assign last_optiondays = product.variants.last.option1 | strip %}
                       {% assign last_optionquota = product.variants.last.option2 | strip %}
-
                       <div class="product-card-field">
                         <div class="product-card-field-icons">
-                          <img
-                            class="field-icon"
-                            src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}"
-                            width="24"
-                            height="24"
-                            alt="Icon"
-                          >
+                          <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" width="24" height="24" alt="Icon">
                           <h1>Data</h1>
                         </div>
                         <h2>{{ last_optionquota }}</h2>
                       </div>
-
                       <div class="product-card-field">
                         <div class="product-card-field-icons">
-                          <img
-                            class="field-icon"
-                            src="{{ 'icon-date-range.svg' | asset_url }}"
-                            width="24"
-                            height="24"
-                            alt="Icon"
-                          >
+                          <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" width="24" height="24" alt="Icon">
                           <h1>Days</h1>
                         </div>
                         <h2>{{ first_optiondays }} - {{ last_optiondays }}</h2>
                       </div>
-
                       <div class="product-card-field">
                         <div class="product-card-field-icons">
                           <img class="field-icon" src="{{ 'icon-dollar.svg' | asset_url }}" alt="Icon">
@@ -575,6 +534,7 @@
                       </div>
                     {% endif %}
                   </div>
+
                   <div class="product-card-content-flip-back">
                     {% render 'coverage', product: product %}
                   </div>
@@ -596,12 +556,6 @@
       <div class="main-search__error">
         <p>No products found in Top-Up Plan.</p>
       </div>
-    {% endif %}
-
-    {% if product_count == 1 %}
-      <script>
-        window.location.href = '{{ single_product_url }}';
-      </script>
     {% endif %}
   </div>
 </div>

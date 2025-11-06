@@ -204,12 +204,12 @@
                   {%- endif -%}
                 </div>
 
-                <div class="totals">
+                <div class="totals" style="color: var(--color-primary)">
                   <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
                   <p class="totals__total-value money">{{ cart.total_price | money_with_currency }}</p>
                 </div>
 
-                <small class="tax-note caption-large rte">
+                <small class="tax-note caption-large rte" style="color: var(--color-primary)">
                   {%- if cart.duties_included and cart.taxes_included -%}
                     {%- if shop.shipping_policy.body == blank -%}
                       {{ 'sections.cart.duties_and_taxes_included_shipping_at_checkout_without_policy' | t }}
@@ -265,6 +265,7 @@
                     <button
                       type="button"
                       id="insurance-checkout-button"
+                      style="background-color: var(--color-primary); color: var(--color-neutral)"
                       class="cart__checkout-button button"
                       {% if cart == empty %}
                         disabled

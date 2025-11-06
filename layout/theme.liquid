@@ -8,6 +8,7 @@
     <link rel="canonical" href="{{ canonical_url }}">
 
     {{ 'critical.css' | asset_url | stylesheet_tag }}
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
 
     {% if template == 'product' %}
       {% style %}

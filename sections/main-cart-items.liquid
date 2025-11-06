@@ -25,7 +25,7 @@
 
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
 
-<cart-items class="gradient color-{{ section.settings.color_scheme }} isolate{% if cart == empty %} is-empty{% else %} section-{{ section.id }}-padding{% endif %}">
+<cart-items style="color: var(--color-primary)" class="gradient color-{{ section.settings.color_scheme }} isolate{% if cart == empty %} is-empty{% else %} section-{{ section.id }}-padding{% endif %}">
   <div class="page-width">
     <div class="title-wrapper-with-link">
       <h1 class="title title--primary">{{ 'sections.cart.title' | t }}</h1>
@@ -278,7 +278,7 @@
                                 {{- 'icon-info.svg' | inline_asset_content -}}
                               </button>
                             {%- endif -%}
-                            <quantity-input class="quantity cart-quantity">
+                            <quantity-input style="border:1px solid var(--color-primary)" class="quantity cart-quantity">
                               <button
                                 class="quantity__button"
                                 name="minus"
@@ -334,7 +334,7 @@
                               aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
                             >
                               <span class="svg-wrapper">
-                                {{- 'icon-remove.svg' | inline_asset_content -}}
+                                {% render 'icon-trash' %}
                               </span>
                             </a>
                           </cart-remove-button>
@@ -507,60 +507,66 @@
 </cart-items>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const formatMoney = (cents) => {
-      return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-      }).format(cents / 100);
-    };
+document.addEventListener('DOMContentLoaded', function () {
+  const formatMoney = (cents) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(cents / 100);
+  };
 
-    document.querySelectorAll('.quantity__input').forEach(function (input) {
-      input.addEventListener('change', function () {
-        const row = this.closest('tr.cart-item');
-        const key = row.dataset.key;
-        const newQuantity = parseInt(this.value, 10);
+  // Fungsi update quantity di Shopify
+  function updateCartQuantity(input) {
+    const row = input.closest('tr.cart-item');
+    const key = row.dataset.key;
+    const newQuantity = parseInt(input.value, 10);
 
-        fetch('/cart/change.js', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: key,
-            quantity: newQuantity,
-          }),
-        })
-          .then((res) => res.json())
-          .then((cart) => {
-            const updatedItem = cart.items.find((i) => i.key === key);
-            if (updatedItem) {
-              this.value = updatedItem.quantity;
-
-              const priceEls = row.querySelectorAll('.cart-item__price-wrapper');
-              priceEls.forEach((el) => {
-                el.innerHTML = `<span class="price price--end">${formatMoney(updatedItem.final_line_price)}</span>`;
-              });
-            }
-
-            const subtotalEl = document.querySelector('.cart__footer .totals__subtotal-value');
-if (subtotalEl) {
-  subtotalEl.textContent = formatMoney(cart.total_price);
-}
-
-// Update total (estimated total) in footer
-const totalValueEl = document.querySelector('.totals__total-value');
-if (totalValueEl) {
-  totalValueEl.textContent = formatMoney(cart.total_price);
-}
-
-          })
-          .catch((error) => {
-            console.error('Gagal update cart:', error);
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: key, quantity: newQuantity }),
+    })
+      .then((res) => res.json())
+      .then((cart) => {
+        const updatedItem = cart.items.find((i) => i.key === key);
+        if (updatedItem) {
+          input.value = updatedItem.quantity;
+          const priceEls = row.querySelectorAll('.cart-item__price-wrapper');
+          priceEls.forEach((el) => {
+            el.innerHTML = `<span class="price price--end">${formatMoney(updatedItem.final_line_price)}</span>`;
           });
-      });
+        }
+
+        const subtotalEl = document.querySelector('.cart__footer .totals__subtotal-value');
+        if (subtotalEl) subtotalEl.textContent = formatMoney(cart.total_price);
+        const totalValueEl = document.querySelector('.totals__total-value');
+        if (totalValueEl) totalValueEl.textContent = formatMoney(cart.total_price);
+      })
+      .catch(err)
+  }
+
+  // Dengarkan tombol + dan -
+  document.querySelectorAll('.quantity__button').forEach((btn) => {
+    btn.addEventListener('click', function () {
+      const input = this.closest('.quantity').querySelector('.quantity__input');
+      const step = parseInt(input.step) || 1;
+      let value = parseInt(input.value) || 0;
+
+      if (this.name === 'plus') value += step;
+      if (this.name === 'minus') value = Math.max(0, value - step);
+
+      input.value = value;
+      input.dispatchEvent(new Event('change')); // 🔥 trigger update
     });
   });
+
+  // Event untuk input manual
+  document.querySelectorAll('.quantity__input').forEach((input) => {
+    input.addEventListener('change', function () {
+      updateCartQuantity(this);
+    });
+  });
+});
 </script>
 
 {% schema %}

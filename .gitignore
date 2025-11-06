@@ -1,0 +1,16 @@
+# Node dependencies
+node_modules/
+
+# Editor directories and files
+.vscode/
+.idea/
+.fleet
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+Thumbs.db

@@ -1,6 +1,6 @@
-{% comment %}
-  Improved and validated Shopify section with SIM Type filter buttons
-  Fix: Heading collection hanya muncul kalau produk ada
+{% comment %} 
+                            Improved and validated Shopify section with SIM Type filter buttons
+                            Fix: Heading collection hanya muncul kalau produk ada 
 {% endcomment %}
 
 {% comment %} # STYLES SECTION {% endcomment %}
@@ -54,19 +54,20 @@
   }
   .product-card-wrapper {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 20px;
-    width: 100%;
-    height: 100%;
+    align-items: stretch;
   }
   .product-card-container {
     display: flex;
     gap: 10px;
-    flex-direction: column;
     padding: 15px;
     background-color: white;
     border-radius: 25px;
     box-shadow: var(--box-shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .product-card-country {
     display: flex;
@@ -88,13 +89,36 @@
     border-radius: 15px;
     border: 1px solid var(--color-border);
   }
-  .product-card-multi-flag,
-  .product-card-icon-multi-flag {
+  .product-card-multi-flag {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 25px);
     gap: 3px;
-    border-radius: 5px;
+    align-items: center;
+    justify-content: start;
   }
+
+  .product-card-multi-flag img {
+    width: 25px;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid var(--color-border);
+    object-fit: cover;
+  }
+
+  .product-card-flag-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    color: var(--color-primary);
+    background-color: white;
+    font-size: 10px;
+    font-weight: bold;
+  }
+
   .product-card-icon-multi-flag {
     border: 1px solid var(--color-border);
   }
@@ -193,7 +217,8 @@
     position: absolute;
     top: 0;
     left: 0;
-    overflow-y: hidden; /* default: tidak bisa scroll */
+    overflow-y: hidden;
+    /* default: tidak bisa scroll */
     background: var(--color-neutral);
     text-align: center;
     cursor: pointer;
@@ -201,7 +226,8 @@
   }
 
   .product-card-container.flipped .product-card-content-flip-back {
-    overflow-y: auto; /* aktifkan scroll hanya ketika flipped */
+    overflow-y: auto;
+    /* aktifkan scroll hanya ketika flipped */
   }
 
   .country-total-atribut-wrapper {
@@ -289,7 +315,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const currentUrl = window.location.href;
-
+  
     document.querySelectorAll('.product-card-btn p').forEach((button) => {
       if (currentUrl.includes('/id/')) {
         button.textContent = 'Pilih Paket';
@@ -297,7 +323,7 @@
         button.textContent = 'Choose Plan';
       }
     });
-
+  
     // Flip card functionality (existing)
     document.querySelectorAll('.flipped-trigger').forEach(function (button) {
       button.addEventListener('click', function (event) {
@@ -313,21 +339,21 @@
         }
       });
     });
-
+  
     // SIM Type Filter buttons
     const filterButtonsContainer = document.querySelector('.sim-filter-buttons');
     if (!filterButtonsContainer) return;
-
+  
     const buttons = filterButtonsContainer.querySelectorAll('button');
     const collectionWrappers = document.querySelectorAll('.main-search-collection-wrapper');
-
+  
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
         buttons.forEach((btn) => btn.classList.remove('active'));
         button.classList.add('active');
-
+  
         const filter = button.getAttribute('data-filter');
-
+  
         // Show/hide products
         document.querySelectorAll('.product-card-container').forEach((productCard) => {
           if (filter === 'all') {
@@ -340,7 +366,7 @@
             }
           }
         });
-
+  
         // Show/hide collection wrappers based on visible products inside them
         collectionWrappers.forEach((wrapper) => {
           const products = wrapper.querySelectorAll('.product-card-container');
@@ -357,11 +383,11 @@
   <div class="main-search-container">
     {% assign search_term = search.terms | downcase | strip %}
     {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection'
-      | split: ','
+ | split: ','
     %}
     {% assign found_any_product = false %}
     {% assign single_product_url = '' %}
-    {% assign product_count = 0 %}
+  {% assign product_count = 0 %}
 
     {%- comment -%} Loop pertama: kumpulkan semua tipe SIM unik dari produk hasil pencarian {%- endcomment -%}
     {% assign sim_types = '' %}
@@ -408,11 +434,11 @@
           {% endif %}
 
           {% if product_alias contains search_term
-            or product_alias_2 contains search_term
-            or product_title contains search_term
-            or matched_countries != ''
-            or matched_countries_2 != ''
-            or match_region
+ or product_alias_2 contains search_term
+ or product_title contains search_term
+ or matched_countries != ''
+ or matched_countries_2 != ''
+ or match_region
           %}
             {% assign found_any_product = true %}
             {% unless sim_types contains product_category %}
@@ -435,10 +461,7 @@
         {% assign sim_type_trim = sim_type | strip %}
         {% if sim_type_trim != '' and sim_type_trim != 'Undefined' %}
           {% if sim_type_trim != 'Insurance' %}
-            <button
-              class="filter-btn"
-              data-filter="{{ sim_type_trim | replace: '_', ' ' | downcase | replace: ' ', '-' }}"
-            >
+            <button class="filter-btn" data-filter="{{ sim_type_trim | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
               {{ sim_type_trim | replace: '_', ' ' }}
             </button>
           {% endif %}
@@ -501,11 +524,11 @@
           {% endif %}
 
           {% if product_alias contains search_term
-            or product_alias_2 contains search_term
-            or product_title contains search_term
-            or matched_countries != ''
-            or matched_countries_2 != ''
-            or match_region
+ or product_alias_2 contains search_term
+ or product_title contains search_term
+ or matched_countries != ''
+ or matched_countries_2 != ''
+ or match_region
           %}
             {% assign found_product = true %}
             {% assign found_any_product = true %}
@@ -655,42 +678,40 @@
 
 {% comment %} # SCHEMA SECTION {% endcomment %}
 {% schema %}
-{
-  "name": "Main Search",
-  "settings": [
-    {
-      "type": "text",
-      "label": "Single Country Title",
-      "id": "title_single",
-      "default": "Single Country"
-    },
-    {
-      "type": "collection",
-      "label": "Single Country Collection",
-      "id": "single_country_collection"
-    },
-    {
-      "type": "text",
-      "label": "Multi Country Title",
-      "id": "title_multi",
-      "default": "Multi Country"
-    },
-    {
-      "type": "collection",
-      "label": "Multi Country Collection",
-      "id": "multi_country_collection"
-    },
-    {
-      "type": "text",
-      "label": "Global Country Title",
-      "id": "title_global",
-      "default": "Global Country"
-    },
-    {
-      "type": "collection",
-      "label": "Global Country Collection",
-      "id": "global_country_collection"
-    }
-  ]
-}
+  {
+    "name": "Main Search",
+    "settings": [
+      {
+        "type": "text",
+        "label": "Single Country Title",
+        "id": "title_single",
+        "default": "Single Country"
+      },
+      {
+        "type": "collection",
+        "label": "Single Country Collection",
+        "id": "single_country_collection"
+      },
+      {
+        "type": "text",
+        "label": "Multi Country Title",
+        "id": "title_multi",
+        "default": "Multi Country"
+      },
+      {
+        "type": "collection",
+        "label": "Multi Country Collection",
+        "id": "multi_country_collection"
+      }, {
+        "type": "text",
+        "label": "Global Country Title",
+        "id": "title_global",
+        "default": "Global Country"
+      }, {
+        "type": "collection",
+        "label": "Global Country Collection",
+        "id": "global_country_collection"
+      }
+    ]
+  }
 {% endschema %}

@@ -1,69 +1,56 @@
-{% style %}
-  .product-category__container {
-      max-width: 1920px;
-      margin: 0 auto;
-  }
-  .product-category__wrapper {
-      padding: 20px 10%;
-  }
-  .product-category__content {
-      display: flex;
-      gap: 10px;
-      max-width: 100%;
-      overflow-x: auto;
-  }
-  .product-category__items {
-      padding: 10px;
-      border-radius: 15px;
-      background-color: var(--color-primary);
-      border: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-  }
-  .product-category__items span {
-      color: var(--color-neutral);
-      font-size: var(--font-extra-large);
-      font-weight: bold;
-      text-align: left;
-  }
-  @media (max-width: 1440px) {
-    .product-category__wrapper {
-      padding: 20px 10%;
-    }
-  }
-  @media (max-width: 768px) {
-    .product-category__wrapper {
-      padding: 20px 24px;
-    }
-  }
-{% endstyle %}
+<section class="container">
+  <div class="wrapper md:wrapper-base flex flex-nowrap space-x-5 overflow-x-auto scroll-smooth">
+    <button
+      id="btn-esim"
+      class="bg-primary flex rounded-[15px] gap-2.5  items-center justify-center p-[15px]"
+      data-category="esim">
+      <div class="shrink-0">
+        {% render 'icon-qr-code' %}
+      </div>
+      <span class="text-neutral font-bold text-3xl">eSIM</span>
+    </button>
 
-<section class="product-category__container">
-    <div class="product-category__wrapper">
-        <div class="product-category__content">
-            <button class="product-category__items" data-category="esim">{{- 'qrcode-category.svg' | inline_asset_content -}}<span>eSIM</span></button>
-            <button class="product-category__items" data-category="sim-card">{{- 'simcard-category.svg' | inline_asset_content -}}<span>SIM<br>Card</span></button>
-            <button class="product-category__items" data-category="insurance">{{- 'insurance-category.svg' | inline_asset_content -}}<span>Insurance</span></button>
-        </div>
-    </div>
+    <button
+      id="btn-simcard"
+      class="bg-primary flex rounded-[15px] gap-2.5  items-center justify-center p-[15px]"
+      data-category="sim-card">
+      <div class="shrink-0">
+        {% render 'icon-simcard' %}
+      </div>
+      <span class="text-neutral font-bold text-3xl">SIM Card</span>
+    </button>
+
+    <button
+      id="btn-insurance"
+      class="bg-primary flex rounded-[15px] gap-2.5  items-center justify-center p-[15px]"
+      data-category="insurance">
+      <div class="shrink-0">
+        {% render 'icon-insurance' %}
+      </div>
+      <span class="text-neutral font-bold text-3xl">Insurance</span>
+    </button>
+  </div>
 </section>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.product-category__items');
-
-    buttons.forEach(button => {
-      button.addEventListener('click', function() {
-        const categoryValue = button.getAttribute('data-category'); // Ambil value dari data-category
-
-        if (categoryValue) {
-          // Redirect ke halaman dengan parameter URL
-          window.location.href = `/pages/product-category?sim_type=${encodeURIComponent(categoryValue)}`;
-        }
-      });
-    });
+    // Ambil elemen berdasarkan ID
+    const btnEsim = document.getElementById('btn-esim');
+    const btnSimcard = document.getElementById('btn-simcard');
+    const btnInsurance = document.getElementById('btn-insurance');
+  
+    // Fungsi untuk redirect
+    function goToCategory(button) {
+      const categoryValue = button.getAttribute('data-category');
+      if (categoryValue) {
+        window.location.href = `/pages/product-category?sim_type=${encodeURIComponent(categoryValue)}`;
+      }
+    }
+  
+    // Pasang event listener
+    btnEsim.addEventListener('click', () => goToCategory(btnEsim));
+    btnSimcard.addEventListener('click', () => goToCategory(btnSimcard));
+    btnInsurance.addEventListener('click', () => goToCategory(btnInsurance));
   });
 </script>
 

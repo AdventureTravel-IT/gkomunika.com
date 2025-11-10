@@ -242,7 +242,11 @@
 <div class="check-data-usage__container">
   <div class="check-data-usage__wrapper">
     <div class="check-data-usage__header">
-      <p>Check Data Usage</p>
+      {% if template.suffix == 'check-data-usage' %}
+        <p>Check Data Usage</p>
+        {%  else %}
+        <p>Check Data Usage / Top Up</p>
+      {% endif %}
       <span>Enter your ICCID</span>
     </div>
     <div class="check-data-usage__input">

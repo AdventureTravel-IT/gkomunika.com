@@ -276,6 +276,7 @@
                 "simcard": "{{ 'header-simcard.svg' | asset_url }}",
                 "insurance": "{{ 'header-insurance.svg' | asset_url }}",
                 "usage": "{{ 'header-usage.svg' | asset_url }}",
+                "topup": "{{ 'icon-plus.svg' | asset_url }}",
                 "about": "{{ 'header-about.svg' | asset_url }}",
                 "faq": "{{ 'header-faq.svg' | asset_url }}",
                 "news": "{{ 'header-news.svg' | asset_url }}",
@@ -330,7 +331,8 @@
     { label: 'eSIM', icon: icons.esim, link: '/pages/product-category?sim_type=esim' },
     { label: 'SIM Card', icon: icons.simcard, link: '/pages/product-category?sim_type=sim-card' },
     { label: 'Insurance', icon: icons.insurance, link: '/pages/product-category?sim_type=insurance' },
-    { label: 'Data Usage', icon: icons.usage, link: 'pages/check-data-usage' },
+    { label: 'Data Usage', icon: icons.usage, link: '/pages/check-data-usage' },
+    { label: 'Top Up', icon: icons.topup, link: '/pages/check-data-usage-topup' },
     { label: 'About Us', icon: icons.about, link: '/pages/about-us' },
     { label: 'FAQ', icon: icons.faq, link: '/pages/faq' },
     { label: 'News', icon: icons.news, link: '/pages/news' },
@@ -474,3 +476,5 @@
     ]
   }
 {% endschema %}
+
+

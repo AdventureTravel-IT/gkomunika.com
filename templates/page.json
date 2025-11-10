@@ -11,20 +11,13 @@
   "sections": {
     "main": {
       "type": "main-page",
-      "disabled": true,
       "settings": {
         "padding_top": 28,
         "padding_bottom": 28
       }
-    },
-    "check_data_usage_WCJ4fp": {
-      "type": "check-data-usage",
-      "name": "Check Data Usage",
-      "settings": {}
     }
   },
   "order": [
-    "main",
-    "check_data_usage_WCJ4fp"
+    "main"
   ]
 }

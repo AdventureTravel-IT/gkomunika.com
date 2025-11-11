@@ -1,0 +1,44 @@
+{%- comment -%}
+  Reusable Tooltip (HTML-enabled, accessible)
+  Params:
+    - text (opsional): label di sebelah ikon
+    - content (wajib): isi tooltip (boleh HTML)
+    - id (opsional): untuk aria-describedby (beri unik jika perlu)
+    - placement (opsional): 'top' (default) atau 'bottom'
+    - hover (opsional, boolean): true agar juga buka saat hover
+    - class (opsional): kelas tambahan (default 'tt--brand')
+{%- endcomment -%}
+
+{%- liquid
+  assign _id = id | default: text | default: 'tooltip'
+  assign tooltip_id = 'tt-' | append: _id | handleize
+  assign placement = placement | default: 'top'
+  assign hover = hover | default: false
+  assign extra_class = class | default: 'tt--brand'
+-%}
+
+<span class="tt {{ extra_class }}"
+      {% if placement == 'bottom' %}data-placement="bottom"{% endif %}
+      {% if hover %}data-hover="true"{% endif %}>
+  {%- if text -%}
+    <span class="tt__label">{{ text }}</span>
+  {%- endif -%}
+
+  <button type="button"
+          class="tt__btn"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-describedby="{{ tooltip_id }}"
+          data-tooltip-trigger>
+    <span aria-hidden="true">❓</span>
+    <span class="sr-only">Info</span>
+  </button>
+
+  <span id="{{ tooltip_id }}"
+        role="tooltip"
+        class="tt__panel"
+        hidden
+        data-tooltip-panel>
+    {{ content }}
+  </span>
+</span>

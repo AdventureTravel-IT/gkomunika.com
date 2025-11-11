@@ -239,15 +239,43 @@
   }
 {% endstyle %}
 
+<style>
+  /* biar newline kebaca dan teks rata kiri */
+  [role~="tooltip"][data-microtip-bullets]::after {
+    white-space: pre-line;
+    text-align: left;
+    line-height: 1.35;
+  }
+  /* opsional: lebarkan tooltip biar nggak terlalu memanjang */
+  [role~="tooltip"][data-microtip-bullets][data-microtip-size="large"]::after {
+    width: 24rem; 
+  }
+</style>
+
 <div class="check-data-usage__container">
   <div class="check-data-usage__wrapper">
     <div class="check-data-usage__header">
       {% if template.suffix == 'check-data-usage' %}
         <p>Check Data Usage</p>
-        {%  else %}
+      {% else %}
         <p>Check Data Usage / Top Up</p>
       {% endif %}
-      <span>Enter your ICCID</span>
+      <div class="flex items-center gap-2.5">
+        <span>Enter your ICCID</span>
+
+        <button
+          aria-label="• SIM Card: ICCID dapat ditemukan di belakang potongan SIM Card.&#10;&#10;• eSIM: ICCID dapat ditemukan di email pada bagian eSIM Information."
+          data-microtip-position="bottom"
+          data-microtip-size="large"
+          data-microtip-bullets
+          role="tooltip">
+          <div class="text-secondary">
+            {% render 'icon-info' %}
+          </div>
+        </button>
+
+      </div>
+
     </div>
     <div class="check-data-usage__input">
       <input
@@ -268,6 +296,13 @@
     <h2>ICCID Invalid</h2>
     <p>
       Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
@@ -426,12 +461,12 @@
         body: new URLSearchParams({ iccid }),
       });
       const data = await res.json();
-
+  
       console.log(data)
         
       // Tentukan vendor berdasarkan response backend
       // Tentukan vendor berdasarkan response backend
-if (!vendor) {
+  if (!vendor) {
   // hanya ubah vendor kalau belum terdeteksi dari prefix
   if (data.tradeCode && data.tradeData?.subOrderList) {
     // tambahkan deteksi vendor BS berdasarkan prefix "2210"
@@ -445,11 +480,11 @@ if (!vendor) {
   } else {
     vendor = null;
   }
-}
-
-
+  }
+  
+  
       window.lastDetectedVendor = vendor;
-
+  
   
       // === BE ===
       if (vendor === 'BE') {
@@ -613,10 +648,10 @@ if (!vendor) {
     const lastVendor = window.lastDetectedVendor; // ambil vendor terakhir
     if (lastVendor === 'SEM') {
   sessionStorage.setItem('category', 'Top_Up_D');
-} else if (lastVendor === 'BS') {
+  } else if (lastVendor === 'BS') {
   sessionStorage.setItem('category', 'Top_Up_A');
-}
-
+  }
+  
   
     window.location.href = '/pages/top-up';
   }

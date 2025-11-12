@@ -1,0 +1,186 @@
+.hero-wrap {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgba(14, 165, 233, 0.52),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.14));
+  background-blend-mode: multiply;
+  -webkit-backdrop-filter: blur(4px) saturate(115%);
+  backdrop-filter: blur(4px) saturate(115%);
+}
+
+.landing-hero {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-areas: "copy image";
+  max-width: 1280px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 28px 20px;
+  padding-left: clamp(56px, 12vw, 200px);
+  padding-right: clamp(20px, 5vw, 72px);
+  align-items: center;
+  row-gap: 12px;
+  grid-template-columns: 1.2fr minmax(360px, 36vw);
+  column-gap: clamp(24px, 5vw, 72px);
+}
+
+.hero-content {
+  grid-area: copy;
+  justify-self: start;
+}
+
+.cover-img {
+  grid-area: image;
+  justify-self: end;
+  align-self: center;
+  display: block;
+  width: clamp(280px, 36vw, 560px);
+  height: auto;
+  will-change: transform;
+  margin-right: clamp(-40px, -6vw, -140px);
+}
+
+.cover-image img {
+  height: auto;
+  display: block;
+  object-fit: contain;
+  transform: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  width: clamp(480px, 46vw, 900px) !important;
+  max-height: 72vh;
+}
+
+.hero-title {
+  margin: 0 0 12px;
+  font-size: clamp(26px, 4.2vw, 48px);
+  line-height: 1.15;
+  color: #fff;
+  font-weight: 800;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
+  max-width: 26ch; 
+  text-wrap: balance;
+}
+
+.hero-subtitle {
+  margin: 0;
+  font-size: clamp(16px, 2.2vw, 20px);
+  color: rgba(255, 255, 255, 0.96);
+  font-weight: 600;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  max-width: 60ch;
+}
+
+.btn-primary {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  padding: 12px 20px !important;
+  border-radius: 24px;
+  background-color: #0ea5e9;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  width: auto !important;
+  max-width: max-content !important;
+  min-width: 0 !important;
+  box-sizing: border-box;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  transform: translateY(0) scale(1);
+  will-change: transform, opacity, box-shadow;
+  transition: background-color 0.18s ease,
+    transform 0.18s cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 0.18s ease,
+    opacity 0.18s ease;
+}
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  background-color: #2a7dba;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+  opacity: 1;
+}
+.btn-primary:active {
+  transform: translateY(-1px) scale(0.995);
+  opacity: 0.95;
+}
+
+@media (min-width: 1400px) {
+  .cover-image {
+    margin-right: clamp(-60px, -8vw, -180px);
+  }
+}
+@media (max-width: 1200px) {
+  .hero-title {
+    max-width: 24ch;
+  }
+  .cover-image {
+    margin-right: clamp(-20px, -4vw, -80px);
+  }
+  .cover-image img {
+    width: clamp(380px, 42vw, 760px) !important;
+    max-height: 60vh;
+  }
+}
+@media (max-width: 768px) {
+  .landing-hero{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "image"
+      "copy";
+    row-gap: 16px;
+    min-height: auto;
+    padding: 28px 18px;
+    padding-left: 16px;
+  }
+  .cover-image{
+    justify-self: center;
+    align-self: start;
+  }
+  .cover-image img{
+    width: clamp(300px, 78vw, 560px) !important;
+    max-height: 46vh;
+    transform: translateX(-24px) !important;
+  }
+  .hero-content{
+    justify-self: center;
+    text-align: center;
+  }
+  .hero-title{
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-subtitle{
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .btn-primary{
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

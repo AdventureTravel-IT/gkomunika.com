@@ -1,0 +1,67 @@
+<link rel="stylesheet" href="{{ 'landing-review-gsim.css' | asset_url }}">
+<script src="{{ 'landing-review-gsim.js' | asset_url }}" defer></script>
+
+<section class="landing-review-gsim">
+  <div class="review-header">
+    <img
+      src="{{ 'review-icon.png' | asset_url }}"
+      alt="Review Icon"
+      class="review-icon"
+      width="50"
+      height="auto"
+      loading="eager"
+      decoding="async"
+    >
+    <h2 class="review-title">What Our Customers Say</h2>
+  </div>
+
+  <div class="review-wrapper">
+    <button class="review-nav prev" type="button" aria-label="Previous reviews"></button>
+
+    <div class="review-track">
+      <article class="review-card">
+        <img
+          src="{{ 'review-image-1.png' | asset_url }}"
+          alt="Customer Review 1"
+          width="100%"
+          height="auto"
+          loading="lazy"
+          decoding="async"
+        >
+      </article>
+      <article class="review-card">
+        <img
+          src="{{ 'review-image-2.png' | asset_url }}"
+          alt="Customer Review 2"
+          width="100%"
+          height="auto"
+          loading="lazy"
+          decoding="async"
+        >
+      </article>
+      <article class="review-card">
+        <img
+          src="{{ 'review-image-3.png' | asset_url }}"
+          alt="Customer Review 3"
+          width="100%"
+          height="auto"
+          loading="lazy"
+          decoding="async"
+        >
+      </article>
+    </div>
+
+    <button class="review-nav next" type="button" aria-label="Next reviews"></button>
+  </div>
+
+  {% render 'snippet-faq-gsim' %}
+</section>
+
+{% schema %}
+{
+  "name": "Landing • Reviews gSim",
+  "settings": [],
+  "blocks": [],
+  "presets": [{ "name": "Landing • Reviews gSim" }]
+}
+{% endschema %}

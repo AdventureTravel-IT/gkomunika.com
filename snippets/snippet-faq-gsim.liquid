@@ -1,0 +1,116 @@
+{%- unless faq_assets_loaded -%}
+  <link rel="stylesheet" href="{{ 'snippet-faq-gsim.css' | asset_url }}">
+  <script src="{{ 'snippet-faq-gsim.js' | asset_url }}" defer></script>
+  {%- assign faq_assets_loaded = true -%}
+{%- endunless -%}
+
+<section class="snippet-faq-gsim">
+  <div class="faq-card">
+    <header class="faq-header">
+      <span class="faq-tag">FAQ</span>
+    </header>
+
+    <div class="faq-questions" id="faqList">
+      <article class="faq-question open">
+        <h4
+          class="question-title"
+          id="q1"
+          role="button"
+          tabindex="0"
+          aria-controls="a1"
+          aria-expanded="true"
+        >
+          What is gSim!?
+        </h4>
+
+        <div class="question-body" id="a1" aria-labelledby="q1">
+          <p class="question-answer">
+            gSim! is a reusable eSIM that allows you to stay connected anywhere in the world. Once installed, you can
+            top up and use it anytime without needing a new QR code.
+          </p>
+        </div>
+      </article>
+
+      <article class="faq-question">
+        <h4
+          class="question-title"
+          id="q2"
+          role="button"
+          tabindex="0"
+          aria-controls="a2"
+          aria-expanded="false"
+        >
+          How do I activate gSim!?
+        </h4>
+
+        <div class="question-body" id="a2" aria-labelledby="q2">
+          <p class="question-answer">
+            Simply scan the QR code sent to your email after purchase. Once activated, your gSim! is ready to use
+            instantly.
+          </p>
+        </div>
+      </article>
+
+      <article class="faq-question">
+        <h4
+          class="question-title"
+          id="q3"
+          role="button"
+          tabindex="0"
+          aria-controls="a3"
+          aria-expanded="false"
+        >
+          Can I deactivate gSim! when not in use?
+        </h4>
+
+        <div class="question-body" id="a3" aria-labelledby="q3">
+          <p class="question-answer">
+            Yes. You can easily deactivate gSim! when you don’t need it and reactivate it anytime before your next trip.
+          </p>
+        </div>
+      </article>
+
+      <article class="faq-question">
+        <h4
+          class="question-title"
+          id="q4"
+          role="button"
+          tabindex="0"
+          aria-controls="a4"
+          aria-expanded="false"
+        >
+          How can I top up my gSim!?
+        </h4>
+
+        <div class="question-body" id="a4" aria-labelledby="q4">
+          <p class="question-answer">
+            You can easily top up your data plan anytime via
+            <a href="https://gkomunika.com/pages/check-data-usage-topup" target="_blank">gkomunika.com</a>
+          </p>
+        </div>
+      </article>
+
+      <article class="faq-question">
+        <h4
+          class="question-title"
+          id="q5"
+          role="button"
+          tabindex="0"
+          aria-controls="a5"
+          aria-expanded="false"
+        >
+          Is gSim! compatible with all devices?
+        </h4>
+
+        <div class="question-body" id="a5" aria-labelledby="q5">
+          <p class="question-answer">
+            gSim! works with eSIM-supported devices. Please check your phone’s settings by following
+            <a href="https://gkomunika.com/pages/here-s-how-to-check-if-your-phone-supports-esim" target="_blank"
+              >the instructions here</a
+            >, or contact us to confirm compatibility.
+          </p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

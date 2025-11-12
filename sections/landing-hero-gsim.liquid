@@ -1,0 +1,185 @@
+<link rel="stylesheet" href="{{ 'landing-hero-gsim.css' | asset_url }}">
+
+<section class="hero-wrap" id="landing-hero-gsim" data-parallax-speed="0.25">
+  {%- assign poster_url = section.settings.poster_image | default: 'bg-hero-gsim.png' | asset_url -%}
+
+  {%- if section.settings.video_file != blank -%}
+    {{
+      section.settings.video_file
+      | video_tag:
+        autoplay: true,
+        loop: true,
+        muted: true,
+        playsinline: true,
+        preload: 'metadata',
+        poster: poster_url,
+        class: 'hero-video'
+    }}
+  {%- else -%}
+    {%- assign mp4_src = '' -%}
+    {%- assign webm_src = '' -%}
+
+    {%- if section.settings.video_mp4_asset != blank -%}
+      {%- assign mp4_src = section.settings.video_mp4_asset | asset_url -%}
+    {%- elsif section.settings.video_mp4_url != blank -%}
+      {%- assign mp4_src = section.settings.video_mp4_url -%}
+    {%- else -%}
+      {%- assign mp4_src = 'bg-hero-gsim.mp4' | asset_url -%}
+    {%- endif -%}
+
+    {%- if section.settings.video_webm_asset != blank -%}
+      {%- assign webm_src = section.settings.video_webm_asset | asset_url -%}
+    {%- elsif section.settings.video_webm_url != blank -%}
+      {%- assign webm_src = section.settings.video_webm_url -%}
+    {%- else -%}
+      {%- assign webm_src = 'bg-hero-gsim.webm' | asset_url -%}
+    {%- endif -%}
+
+    <video
+      class="hero-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      aria-hidden="true"
+      poster="{{ poster_url }}"
+      {% if mp4_src contains 'http' or webm_src contains 'http' %}
+        crossorigin="anonymous"
+      {% endif %}
+    >
+      {%- if webm_src != '' -%}
+        <source src="{{ webm_src }}" type="video/webm">
+      {%- endif -%}
+      <source src="{{ mp4_src }}" type="video/mp4">
+    </video>
+  {%- endif -%}
+
+  <div class="hero-overlay" style="--ovo: {{ section.settings.overlay_opacity | default: 0.5 }};"></div>
+
+  <div class="landing-hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        {{ section.settings.heading | default: 'Travel Smarter with Global Komunika gSim!' }}
+      </h1>
+      <p class="hero-subtitle">
+        {{
+          section.settings.subheading
+          | default: 'A reusable eSIM that can be topped up anytime for flexible connectivity.'
+        }}
+      </p>
+
+      {%- assign btn_label = section.settings.button_label | default: 'OUR PRODUCT' -%}
+      {%- assign btn_href = section.settings.button_link | default: 'https://gkomunika.com/id/search?q=gsim' -%}
+      <a
+        class="btn-primary"
+        href="{{ btn_href }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="{{ btn_label }}"
+      >
+        {{- btn_label -}}
+      </a>
+    </div>
+
+    <div class="cover-image">
+      {%- assign cover_src_raw = section.settings.cover_image | default: 'cover.png' -%}
+      {%- if cover_src_raw contains 'http' -%}
+        {%- assign cover_src = cover_src_raw -%}
+      {%- else -%}
+        {%- assign cover_src = cover_src_raw | asset_url -%}
+      {%- endif -%}
+
+      <img
+        src="{{ cover_src }}"
+        alt="{{ section.settings.cover_alt | default: 'Global Komunika gSim' }}"
+        width="300"
+        height="200"
+        loading="eager"
+        decoding="async"
+        class="cover-img"
+      >
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Landing Hero gSim",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Travel Smarter with Global Komunika gSim!"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "A reusable eSIM that can be topped up anytime for flexible connectivity."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "OUR PRODUCT"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "image_picker",
+      "id": "cover_image",
+      "label": "Cover image (kanan)"
+    },
+    {
+      "type": "text",
+      "id": "cover_alt",
+      "label": "Cover image alt",
+      "default": "Global Komunika gSim"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Video poster (fallback image)"
+    },
+    {
+      "type": "video",
+      "id": "video_file",
+      "label": "Video file (upload)",
+      "info": "Pilih video yang diunggah di Files. Jika kosong, gunakan MP4 asset/url di bawah."
+    },
+    {
+      "type": "text",
+      "id": "video_mp4_asset",
+      "label": "Video MP4 (theme asset filename)",
+      "info": "Contoh: bg-hero-gsim.mp4 (file berada di Assets)."
+    },
+    {
+      "type": "url",
+      "id": "video_mp4_url",
+      "label": "Video MP4 (full URL)",
+      "info": "Alternatif: tautan penuh dari Files (Content > Files)."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay gelap (opacity)",
+      "min": 0,
+      "max": 0.9,
+      "step": 0.1,
+      "default": 0.5
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Landing Hero gSim",
+      "category": "Hero"
+    }
+  ]
+}
+{% endschema %}

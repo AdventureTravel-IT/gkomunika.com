@@ -1,7 +1,8 @@
+<link rel="preload" href="{{ 'landing-hero-gsim.css' | asset_url }}" as="style">
 <link rel="stylesheet" href="{{ 'landing-hero-gsim.css' | asset_url }}">
 
 <section class="hero-wrap" id="landing-hero-gsim" data-parallax-speed="0.25">
-  {%- assign poster_url = section.settings.poster_image | default: 'bg-hero-gsim.png' | asset_url -%}
+  {%- assign poster_url = section.settings.poster_image | default: 'bg-hero-gsim.webp' | asset_url -%}
 
   {%- if section.settings.video_file != blank -%}
     {{
@@ -11,21 +12,12 @@
         loop: true,
         muted: true,
         playsinline: true,
-        preload: 'metadata',
+        preload: 'none',
         poster: poster_url,
         class: 'hero-video'
     }}
   {%- else -%}
-    {%- assign mp4_src = '' -%}
     {%- assign webm_src = '' -%}
-
-    {%- if section.settings.video_mp4_asset != blank -%}
-      {%- assign mp4_src = section.settings.video_mp4_asset | asset_url -%}
-    {%- elsif section.settings.video_mp4_url != blank -%}
-      {%- assign mp4_src = section.settings.video_mp4_url -%}
-    {%- else -%}
-      {%- assign mp4_src = 'bg-hero-gsim.mp4' | asset_url -%}
-    {%- endif -%}
 
     {%- if section.settings.video_webm_asset != blank -%}
       {%- assign webm_src = section.settings.video_webm_asset | asset_url -%}
@@ -41,21 +33,22 @@
       muted
       loop
       playsinline
-      preload="metadata"
+      preload="none"
       aria-hidden="true"
       poster="{{ poster_url }}"
-      {% if mp4_src contains 'http' or webm_src contains 'http' %}
+      width="1920"
+      height="1080"
+      {% if webm_src contains 'http' %}
         crossorigin="anonymous"
       {% endif %}
     >
       {%- if webm_src != '' -%}
         <source src="{{ webm_src }}" type="video/webm">
       {%- endif -%}
-      <source src="{{ mp4_src }}" type="video/mp4">
     </video>
   {%- endif -%}
 
-  <div class="hero-overlay" style="--ovo: {{ section.settings.overlay_opacity | default: 0.5 }};"></div>
+  <div class="hero-overlay"></div>
 
   <div class="landing-hero">
     <div class="hero-content">
@@ -83,20 +76,23 @@
     </div>
 
     <div class="cover-image">
-      {%- assign cover_src_raw = section.settings.cover_image | default: 'cover.png' -%}
+      {%- assign cover_src_raw = section.settings.cover_image | default: 'cover.webp' -%}
       {%- if cover_src_raw contains 'http' -%}
         {%- assign cover_src = cover_src_raw -%}
-      {%- else -%}
+      {%- elsif cover_src_raw contains '.webp' or cover_src_raw contains '.jpg' or cover_src_raw contains '.png' -%}
         {%- assign cover_src = cover_src_raw | asset_url -%}
+      {%- else -%}
+        {%- assign cover_src = cover_src_raw | img_url: '640x' -%}
       {%- endif -%}
 
       <img
         src="{{ cover_src }}"
-        alt="{{ section.settings.cover_alt | default: 'Global Komunika gSim' }}"
-        width="300"
-        height="200"
+        alt="{{ section.settings.cover_alt | default: 'Global Komunika gSim Mascot' }}"
+        width="480"
+        height="854"
         loading="eager"
         decoding="async"
+        fetchpriority="high"
         class="cover-img"
       >
     </div>
@@ -133,13 +129,13 @@
     {
       "type": "image_picker",
       "id": "cover_image",
-      "label": "Cover image (kanan)"
+      "label": "Cover image (maskot)"
     },
     {
       "type": "text",
       "id": "cover_alt",
       "label": "Cover image alt",
-      "default": "Global Komunika gSim"
+      "default": "Global Komunika gSim Mascot"
     },
     {
       "type": "image_picker",
@@ -149,32 +145,19 @@
     {
       "type": "video",
       "id": "video_file",
-      "label": "Video file (upload)",
-      "info": "Pilih video yang diunggah di Files. Jika kosong, gunakan MP4 asset/url di bawah."
+      "label": "Video file (upload)"
     },
     {
       "type": "text",
-      "id": "video_mp4_asset",
-      "label": "Video MP4 (theme asset filename)",
-      "info": "Contoh: bg-hero-gsim.mp4 (file berada di Assets)."
+      "id": "video_webm_asset",
+      "label": "Video WEBM (theme asset filename)"
     },
     {
       "type": "url",
-      "id": "video_mp4_url",
-      "label": "Video MP4 (full URL)",
-      "info": "Alternatif: tautan penuh dari Files (Content > Files)."
-    },
-    {
-      "type": "range",
-      "id": "overlay_opacity",
-      "label": "Overlay gelap (opacity)",
-      "min": 0,
-      "max": 0.9,
-      "step": 0.1,
-      "default": 0.5
+      "id": "video_webm_url",
+      "label": "Video WEBM (full URL)"
     }
   ],
-  "blocks": [],
   "presets": [
     {
       "name": "Landing Hero gSim",

@@ -113,8 +113,8 @@
   z-index: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: clamp(28px, 4vw, 48px);
-  max-width: 1100px;
+  gap: clamp(24px, 3.5vw, 40px);
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 clamp(16px, 4vw, 40px);
   contain: layout style;
@@ -122,175 +122,284 @@
 
 .step-card {
   position: relative;
-  background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0ea5e9 100%);
-  border-radius: 16px;
-  padding: clamp(20px, 3vw, 28px) clamp(18px, 2.8vw, 24px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, rgba(3, 105, 161, 0.85) 0%, rgba(2, 132, 199, 0.88) 50%, rgba(14, 165, 233, 0.9) 100%);
+  border-radius: 50px;
+  padding: clamp(20px, 2.5vw, 28px) clamp(18px, 2.2vw, 26px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   overflow: visible;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   user-select: text;
   -webkit-user-select: text;
   cursor: text;
-  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: auto;
+  width: 100%;
   margin: 0 auto;
 }
 
 .step-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
 }
 
 .step-icon {
   position: absolute;
-  top: -32px;
+  top: -28px;
   left: 50%;
   transform: translateX(-50%);
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+  width: clamp(56px, 7vw, 76px);
+  height: clamp(56px, 7vw, 76px);
+  background: linear-gradient(135deg, rgba(3, 105, 161, 0.9) 0%, rgba(14, 165, 233, 0.92) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 20px rgba(3, 105, 161, 0.4);
+  box-shadow: 0 6px 16px rgba(3, 105, 161, 0.3);
   z-index: 2;
 }
 
 .step-icon svg {
-  width: 32px;
-  height: 32px;
+  width: clamp(28px, 3.5vw, 38px);
+  height: clamp(28px, 3.5vw, 38px);
   fill: #fff;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .step-title {
-  margin: 36px 0 10px;
-  font-size: clamp(17px, 2vw, 20px);
+  margin: 0;
+  padding-top: clamp(30px, 3.5vw, 42px);
+  padding-bottom: clamp(8px, 1vw, 12px);
+  font-size: clamp(16px, 2.2vw, 26px);
   font-weight: 700;
   color: #fff;
-  line-height: 1.3;
+  line-height: 1.4;
   text-shadow: 0 2px 6px rgba(0,0,0,0.2);
   user-select: text;
   -webkit-user-select: text;
+  word-break: break-word;
+  hyphens: auto;
 }
 
-.step-description {
-  margin: 0;
-  font-size: clamp(13px, 1.5vw, 15px);
-  line-height: 1.6;
-  color: #e0f2fe;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.15);
-  user-select: text;
-  -webkit-user-select: text;
-}
-
-@media (max-width: 992px) {
+/* Layar Besar (Full HD dan lebih besar) - 1920px+ */
+@media (min-width: 1920px) {
   .landing-started-gsim {
-    padding-top: clamp(36px, 5.5vw, 64px);
-    padding-bottom: clamp(44px, 6.5vw, 76px);
+    padding-top: 80px;
+    padding-bottom: 96px;
   }
   
   .started-content {
-    margin-bottom: clamp(44px, 5.5vw, 64px);
+    margin-bottom: 80px;
+  }
+  
+  .started-title {
+    font-size: 46px;
+    padding: 20px 44px;
   }
   
   .started-steps {
-    gap: clamp(32px, 4.5vw, 48px);
-    padding: 0 clamp(16px, 4vw, 32px);
+    max-width: 1400px;
+    gap: 48px;
   }
   
   .step-card {
-    padding: clamp(22px, 3.2vw, 30px) clamp(18px, 3vw, 26px);
+    border-radius: 60px;
+    padding: 32px 30px;
+    background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0ea5e9 100%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   }
   
   .step-icon {
-    width: 60px;
-    height: 60px;
+    width: 84px;
+    height: 84px;
+    top: -32px;
+    background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+    box-shadow: 0 8px 20px rgba(3, 105, 161, 0.4);
+  }
+  
+  .step-icon svg {
+    width: 42px;
+    height: 42px;
+  }
+  
+  .step-title {
+    font-size: 28px;
+    padding-top: 48px;
+    padding-bottom: 14px;
+  }
+}
+
+/* Desktop Besar - 1440px to 1919px */
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .landing-started-gsim {
+    padding-top: 72px;
+    padding-bottom: 88px;
+  }
+  
+  .started-content {
+    margin-bottom: 72px;
+  }
+  
+  .started-title {
+    font-size: 42px;
+    padding: 18px 40px;
+  }
+  
+  .started-steps {
+    max-width: 1300px;
+    gap: 44px;
+  }
+  
+  .step-card {
+    border-radius: 58px;
+    padding: 30px 28px;
+    background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0ea5e9 100%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  }
+  
+  .step-icon {
+    width: 80px;
+    height: 80px;
+    top: -31px;
+    background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+    box-shadow: 0 8px 20px rgba(3, 105, 161, 0.4);
+  }
+  
+  .step-icon svg {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .step-title {
+    font-size: 26px;
+    padding-top: 46px;
+    padding-bottom: 13px;
+  }
+}
+
+/* Desktop Standar - 1200px to 1439px */
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .landing-started-gsim {
+    padding-top: 64px;
+    padding-bottom: 80px;
+  }
+  
+  .started-content {
+    margin-bottom: 64px;
+  }
+  
+  .started-title {
+    font-size: 38px;
+    padding: 16px 36px;
+  }
+  
+  .started-steps {
+    max-width: 1150px;
+    gap: 40px;
+  }
+  
+  .step-card {
+    border-radius: 56px;
+    padding: 28px 26px;
+  }
+  
+  .step-icon {
+    width: 76px;
+    height: 76px;
     top: -30px;
   }
   
   .step-icon svg {
-    width: 30px;
-    height: 30px;
+    width: 38px;
+    height: 38px;
   }
   
   .step-title {
-    margin-top: 34px;
+    font-size: 24px;
+    padding-top: 44px;
+    padding-bottom: 12px;
   }
 }
 
-@media (max-width: 768px) {
+/* Desktop Kecil - 992px to 1199px */
+@media (min-width: 992px) and (max-width: 1199px) {
   .landing-started-gsim {
-    padding-top: 32px;
-    padding-bottom: 48px;
+    padding-top: 56px;
+    padding-bottom: 72px;
+  }
+  
+  .started-content {
+    margin-bottom: 56px;
+  }
+  
+  .started-title {
+    font-size: 34px;
+    padding: 15px 32px;
+  }
+  
+  .started-steps {
+    max-width: 960px;
+    gap: 36px;
+  }
+  
+  .step-card {
+    border-radius: 54px;
+    padding: 24px 22px;
+  }
+  
+  .step-icon {
+    width: 68px;
+    height: 68px;
+    top: -27px;
+  }
+  
+  .step-icon svg {
+    width: 34px;
+    height: 34px;
+  }
+  
+  .step-title {
+    font-size: 22px;
+    padding-top: 40px;
+    padding-bottom: 10px;
+  }
+}
+
+/* Tablet Landscape - 768px to 991px */
+@media (min-width: 768px) and (max-width: 991px) {
+  .landing-started-gsim {
+    padding-top: 48px;
+    padding-bottom: 64px;
   }
   
   .started-content {
     margin-bottom: 48px;
   }
   
-  .started-steps {
-    grid-template-columns: 1fr;
-    gap: 64px;
-    padding: 0 20px;
-  }
-  
-  .step-card {
-    padding: 26px 22px 24px;
-    max-width: 480px;
-  }
-  
-  .step-icon {
-    width: 60px;
-    height: 60px;
-    top: -30px;
-  }
-  
-  .step-icon svg {
-    width: 30px;
-    height: 30px;
-  }
-  
-  .step-title {
-    margin-top: 34px;
-    font-size: 18px;
-  }
-  
-  .step-description {
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .landing-started-gsim {
-    padding-top: 28px;
-    padding-bottom: 40px;
-  }
-  
-  .started-content {
-    margin-bottom: 44px;
-  }
-  
   .started-title {
-    font-size: 22px;
-    padding: 12px 24px;
+    font-size: 30px;
+    padding: 14px 28px;
   }
   
   .started-steps {
-    gap: 60px;
-    padding: 0 16px;
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 720px;
+    gap: 32px;
+    padding: 0 24px;
   }
   
   .step-card {
-    padding: 24px 20px 22px;
-    border-radius: 14px;
-    max-width: 100%;
+    border-radius: 42px;
+    padding: 16px 18px;
   }
   
   .step-icon {
     width: 56px;
     height: 56px;
-    top: -28px;
+    top: -23px;
   }
   
   .step-icon svg {
@@ -299,12 +408,193 @@
   }
   
   .step-title {
-    margin-top: 32px;
     font-size: 17px;
+    padding-top: 34px;
+    padding-bottom: 7px;
+  }
+}
+
+/* Tablet Portrait - 576px to 767px */
+@media (min-width: 576px) and (max-width: 767px) {
+  .landing-started-gsim {
+    padding-top: 44px;
+    padding-bottom: 56px;
   }
   
-  .step-description {
+  .started-content {
+    margin-bottom: 44px;
+  }
+  
+  .started-title {
+    font-size: 28px;
+    padding: 13px 26px;
+  }
+  
+  .started-steps {
+    grid-template-columns: 1fr;
+    gap: 38px;
+    padding: 0 20px;
+    max-width: 400px;
+  }
+  
+  .step-card {
+    border-radius: 40px;
+    padding: 14px 18px;
+  }
+  
+  .step-icon {
+    width: 54px;
+    height: 54px;
+    top: -22px;
+  }
+  
+  .step-icon svg {
+    width: 27px;
+    height: 27px;
+  }
+  
+  .step-title {
+    font-size: 16px;
+    padding-top: 32px;
+    padding-bottom: 6px;
+  }
+}
+
+/* Mobile Large - 480px to 575px */
+@media (min-width: 480px) and (max-width: 575px) {
+  .landing-started-gsim {
+    padding-top: 40px;
+    padding-bottom: 52px;
+  }
+  
+  .started-content {
+    margin-bottom: 40px;
+  }
+  
+  .started-title {
+    font-size: 26px;
+    padding: 12px 24px;
+  }
+  
+  .started-steps {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 0 20px;
+    max-width: 360px;
+  }
+  
+  .step-card {
+    border-radius: 38px;
+    padding: 12px 16px;
+  }
+  
+  .step-icon {
+    width: 52px;
+    height: 52px;
+    top: -21px;
+  }
+  
+  .step-icon svg {
+    width: 26px;
+    height: 26px;
+  }
+  
+  .step-title {
+    font-size: 15px;
+    padding-top: 30px;
+    padding-bottom: 5px;
+  }
+}
+
+/* Mobile Medium - 375px to 479px */
+@media (min-width: 375px) and (max-width: 479px) {
+  .landing-started-gsim {
+    padding-top: 36px;
+    padding-bottom: 48px;
+  }
+  
+  .started-content {
+    margin-bottom: 36px;
+  }
+  
+  .started-title {
+    font-size: 24px;
+    padding: 12px 22px;
+  }
+  
+  .started-steps {
+    grid-template-columns: 1fr;
+    gap: 34px;
+    padding: 0 18px;
+    max-width: 320px;
+  }
+  
+  .step-card {
+    border-radius: 36px;
+    padding: 10px 14px;
+  }
+  
+  .step-icon {
+    width: 50px;
+    height: 50px;
+    top: -20px;
+  }
+  
+  .step-icon svg {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .step-title {
+    font-size: 14px;
+    padding-top: 28px;
+    padding-bottom: 4px;
+  }
+}
+
+/* Mobile Small - 320px to 374px */
+@media (max-width: 374px) {
+  .landing-started-gsim {
+    padding-top: 32px;
+    padding-bottom: 44px;
+  }
+  
+  .started-content {
+    margin-bottom: 32px;
+  }
+  
+  .started-title {
+    font-size: 22px;
+    padding: 11px 20px;
+  }
+  
+  .started-steps {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 0 16px;
+    max-width: 280px;
+  }
+  
+  .step-card {
+    border-radius: 34px;
+    padding: 8px 12px;
+  }
+  
+  .step-icon {
+    width: 48px;
+    height: 48px;
+    top: -19px;
+  }
+  
+  .step-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .step-title {
     font-size: 13px;
-    line-height: 1.5;
+    line-height: 1.3;
+    padding-top: 26px;
+    padding-bottom: 3px;
   }
 }

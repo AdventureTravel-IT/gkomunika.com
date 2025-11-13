@@ -85,6 +85,63 @@
 
 .faq-question:last-child { border-bottom: none; }
 
+/* Full HD dan layar lebih besar - 1920px+ */
+@media (min-width: 1920px) {
+  .snippet-faq-gsim {
+    padding: 80px 0;
+  }
+
+  .faq-card {
+    max-width: 1200px;
+    padding: 48px 56px;
+    border-radius: 18px;
+  }
+
+  .faq-header {
+    margin-bottom: 32px;
+  }
+
+  .faq-tag {
+    font-size: 28px;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
+
+  .faq-tag:after {
+    width: 120px;
+    height: 4px;
+    margin-top: 14px;
+  }
+
+  .faq-question {
+    margin-top: 18px;
+    padding: 24px 0 18px;
+    --chev-space: 40px;
+  }
+
+  .question-title {
+    font-size: 24px;
+    line-height: 1.4;
+  }
+
+  .question-title::after {
+    width: 12px;
+    height: 12px;
+    border-width: 3px;
+    right: 8px;
+  }
+
+  .question-body {
+    padding: 16px 0 10px;
+  }
+
+  .question-answer {
+    font-size: 20px;
+    line-height: 1.8;
+    margin: 8px 0 12px;
+  }
+}
+
 @media (max-width: 560px) {
   .faq-card {
     padding: 18px;

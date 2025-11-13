@@ -8,15 +8,15 @@
       90deg,
       rgba(14,165,233,0.22) 0%,
       rgba(14,165,233,0.16) 18%,
-      rgba(14,165,233,0.10) 36%,
+      rgba(14,165,233,0.1) 36%,
       rgba(14,165,233,0.06) 54%,
       rgba(14,165,233,0.02) 72%,
-      rgba(14,165,233,0.00) 100%
+      rgba(14,165,233,0) 100%
     ),
     linear-gradient(
       180deg,
       rgba(14,165,233,0.06) 0%,
-      rgba(14,165,233,0.00) 60%
+      rgba(14,165,233,0) 60%
     ),
     #ffffff;
   padding-top: clamp(8px, 2.5vw, 16px);
@@ -33,6 +33,7 @@
   color: var(--title);
   margin-top: 0;
   margin-bottom: clamp(20px, 4vw, 40px);
+  user-select: text;
 }
 
 .discover-grid{
@@ -56,6 +57,8 @@
   display: inline-block;
   transform: translateZ(0);
   margin-bottom: clamp(12px, 1.5vw, 16px);
+  user-select: none;
+  pointer-events: none;
 }
 
 .feature-heading{
@@ -64,6 +67,7 @@
   color: #0369a1;
   font-size: clamp(14px, 2vw, 20px);
   line-height: 1.3;
+  user-select: text;
 }
 
 .feature-desc{
@@ -72,11 +76,7 @@
   color: #374151;
   font-size: clamp(13px, 1.4vw, 16px);
   line-height: 1.6;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  user-select: text;
 }
 
 @media (max-width: 992px){
@@ -109,7 +109,6 @@
 
   .feature-icon{
     width: clamp(180px, 38vw, 260px);
-    height: auto;
     display: block;
     margin-inline: auto;
   }
@@ -120,18 +119,16 @@
 
 @media (max-width: 420px){
   .discover-title{
-    /* izinkan turun baris */
-    white-space: normal;          /* hapus nowrap */
-    overflow-wrap: anywhere;      /* pecah kata panjang jika perlu */
+    white-space: normal;
+    overflow-wrap: anywhere;
     word-break: normal;
     hyphens: auto;
 
-    /* ukuran & tata letak aman di HP */
     font-size: clamp(18px, 5.5vw, 26px);
     line-height: 1.2;
     text-align: center;
     margin: 0 auto clamp(10px, 3vw, 14px);
-    max-width: 90vw;              /* cegah melebar keluar layar */
+    max-width: 90vw;
   }
 
   .discover-grid{

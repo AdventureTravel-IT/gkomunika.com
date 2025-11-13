@@ -1,15 +1,16 @@
+<link rel="preload" href="{{ 'bg-review-gsim.webp' | asset_url }}" as="image" type="image/webp">
 <link rel="stylesheet" href="{{ 'landing-review-gsim.css' | asset_url }}">
 <script src="{{ 'landing-review-gsim.js' | asset_url }}" defer></script>
 
 <section class="landing-review-gsim">
   <div class="review-header">
     <img
-      src="{{ 'review-icon.png' | asset_url }}"
+      src="{{ 'review-icon.webp' | asset_url }}"
       alt="Review Icon"
       class="review-icon"
-      width="50"
-      height="auto"
-      loading="eager"
+      width="92"
+      height="92"
+      loading="lazy"
       decoding="async"
     >
     <h2 class="review-title">What Our Customers Say</h2>
@@ -20,34 +21,87 @@
 
     <div class="review-track">
       <article class="review-card">
-        <img
-          src="{{ 'review-image-1.png' | asset_url }}"
-          alt="Customer Review 1"
-          width="100%"
-          height="auto"
-          loading="lazy"
-          decoding="async"
-        >
+        <div class="review-stars">
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+        </div>
+        <p class="review-text">
+          "Better use this one instead of doing all that roaming thing. My friend tried roaming but it didn’t work haha.
+          This eSIM is so much easier — can use straight away!"
+        </p>
+        <div class="review-author">
+          <div class="author-avatar">SA</div>
+          <div class="author-info">
+            <h4 class="author-name">Sarah Anderson</h4>
+            <p class="author-location">Singapore</p>
+          </div>
+        </div>
       </article>
+
       <article class="review-card">
-        <img
-          src="{{ 'review-image-2.png' | asset_url }}"
-          alt="Customer Review 2"
-          width="100%"
-          height="auto"
-          loading="lazy"
-          decoding="async"
-        >
+        <div class="review-stars">
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+        </div>
+        <p class="review-text">
+          "Pengalaman yang sangat hebat menggunakan eSIM ini — respons pantas dan terus boleh digunakan dengan baik.
+          Penjual sangat disyorkan, terima kasih!"
+        </p>
+        <div class="review-author">
+          <div class="author-avatar">MC</div>
+          <div class="author-info">
+            <h4 class="author-name">Michael Chen</h4>
+            <p class="author-location">Malaysia</p>
+          </div>
+        </div>
       </article>
+
       <article class="review-card">
-        <img
-          src="{{ 'review-image-3.png' | asset_url }}"
-          alt="Customer Review 3"
-          width="100%"
-          height="auto"
-          loading="lazy"
-          decoding="async"
-        >
+        <div class="review-stars">
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+        </div>
+        <p class="review-text">
+          "Pelayanan cepat, ga sampe 5 menit code barcode dikirim langsung. tanya-tanya cuman fast respon...keliling
+          eropa ga khawatir pake eSIM ini. Pokoknya terbaik 👍"
+        </p>
+        <div class="review-author">
+          <div class="author-avatar">PR</div>
+          <div class="author-info">
+            <h4 class="author-name">Priya Ramirez</h4>
+            <p class="author-location">Indonesia</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="review-card">
+        <div class="review-stars">
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+          <span class="star">★</span>
+        </div>
+        <p class="review-text">
+          "Traveled to 8 countries with gSim. Never had any connection issues. The top-up process is super easy. This is
+          the future of travel connectivity!"
+        </p>
+        <div class="review-author">
+          <div class="author-avatar">DK</div>
+          <div class="author-info">
+            <h4 class="author-name">David Kim</h4>
+            <p class="author-location">Thailand</p>
+          </div>
+        </div>
       </article>
     </div>
 

@@ -184,6 +184,65 @@
   pointer-events: none;
 }
 
+/* Full HD dan layar lebih besar - 1920px+ */
+@media (min-width: 1920px) {
+  .landing-package-gsim {
+    padding-top: 32px;
+    padding-bottom: 40px;
+    padding-right: 80px;
+    padding-left: 80px;
+  }
+
+  .package-content {
+    max-width: 1600px;
+    gap: 28px;
+    column-gap: 24px;
+    row-gap: 18px;
+  }
+
+  .package-image {
+    width: 600px !important;
+    margin-right: 24px;
+  }
+
+  .asia-image,
+  .eropa-image,
+  .middle-east-image,
+  .amerika-image {
+    width: 300px !important;
+    border-radius: 8px;
+  }
+
+  .btn-buy-package {
+    width: 220px;
+    padding: 14px 0;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+    border-radius: 6px;
+  }
+
+  .btn-next,
+  .btn-prev {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+  }
+
+  .btn-prev {
+    left: 100px;
+  }
+
+  .btn-next {
+    right: 100px;
+  }
+
+  .btn-prev::before,
+  .btn-next::before {
+    font-size: 32px;
+  }
+}
+
 @media (min-width: 993px) {
   .landing-package-gsim {
     position: relative;
@@ -358,7 +417,6 @@
     margin-top: 6px;
   }
 
-  /* Navigation buttons di bawah tengah */
   .btn-prev,
   .btn-next {
     position: absolute;

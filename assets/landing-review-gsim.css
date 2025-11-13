@@ -220,6 +220,96 @@
   pointer-events: none
 }
 
+/* Full HD dan layar lebih besar - 1920px+ */
+@media (min-width: 1920px) {
+  .landing-review-gsim {
+    padding: 72px 56px;
+  }
+
+  .review-header {
+    gap: 18px;
+    margin-bottom: 48px;
+  }
+
+  .review-icon {
+    width: 112px;
+  }
+
+  .review-title {
+    font-size: 64px;
+    letter-spacing: 0.5px;
+  }
+
+  .review-wrapper {
+    max-width: 1600px;
+    padding: 0 120px;
+  }
+
+  .review-track {
+    grid-template-columns: repeat(3, minmax(360px, 1fr));
+    gap: 32px;
+  }
+
+  .review-card {
+    border-radius: 20px;
+    padding: 36px;
+    gap: 20px;
+    min-height: 340px;
+  }
+
+  .review-stars {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .review-stars .star {
+    font-size: 30px;
+  }
+
+  .review-text {
+    font-size: 19px;
+    line-height: 1.7;
+  }
+
+  .review-author {
+    gap: 16px;
+    padding-top: 20px;
+  }
+
+  .author-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+  }
+
+  .author-name {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  .author-location {
+    font-size: 17px;
+  }
+
+  .review-nav {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+  }
+
+  .review-nav::before {
+    font-size: 34px;
+  }
+
+  .review-nav.prev {
+    left: 40px;
+  }
+
+  .review-nav.next {
+    right: 40px;
+  }
+}
+
 @media(min-width:993px) {
   .review-nav {
     width: 52px;

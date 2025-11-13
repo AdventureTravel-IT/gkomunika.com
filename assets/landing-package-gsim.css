@@ -53,7 +53,9 @@
 }
 
 .asia-image,
-.eropa-image {
+.eropa-image,
+.middle-east-image,
+.amerika-image {
   width: clamp(180px, 18vw, 240px) !important;
   height: auto;
   display: block;
@@ -62,6 +64,18 @@
   justify-self: start;
   margin-left: 0;
   transform: none;
+}
+
+.middle-east-image {
+  justify-self: center;
+  transform: translateX(-8px);
+  grid-area: asia;
+}
+
+.amerika-image {
+  justify-self: center;
+  transform: translateX(-4px);
+  grid-area: eropa;
 }
 
 .btn-buy-package {
@@ -100,10 +114,10 @@
   grid-area: eropaB;
 }
 
-.btn-next {
+.btn-next,
+.btn-prev {
   position: absolute;
   top: 50%;
-  right: clamp(40px, 6vw, 72px);
   transform: translateY(-50%);
   width: 44px;
   height: 44px;
@@ -114,10 +128,26 @@
   display: grid;
   place-items: center;
   cursor: pointer;
-  z-index: 1;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease;
+  z-index: 2;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease, opacity 0.2s ease;
   box-shadow: 0 10px 22px rgba(14, 165, 233, 0.42),
     0 0 0 6px rgba(14, 165, 233, 0.1);
+}
+
+.btn-prev {
+  left: clamp(40px, 6vw, 72px);
+}
+
+.btn-next {
+  right: clamp(40px, 6vw, 72px);
+}
+
+.btn-prev::before {
+  content: "‹";
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 .btn-next::before {
@@ -130,54 +160,63 @@
 
 .btn-next:hover,
 .btn-next:focus,
-.btn-next:focus-visible {
-  transform: none;
+.btn-next:focus-visible,
+.btn-prev:hover,
+.btn-prev:focus,
+.btn-prev:focus-visible {
+  transform: translateY(-50%);
   box-shadow: 0 8px 18px rgba(14, 165, 233, 0.28);
   outline: none;
 }
 
-.btn-next:active {
-  transform: translateY(calc(-50% + 2px)) scale(0.98);
+.btn-next:active,
+.btn-prev:active {
+  transform: translateY(-50%) scale(0.98);
   box-shadow: 0 8px 14px rgba(14, 165, 233, 0.32),
     0 0 0 4px rgba(14, 165, 233, 0.06);
   transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.btn-next:disabled,
+.btn-prev:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 @media (min-width: 993px) {
   .landing-package-gsim {
     position: relative;
     padding-right: clamp(24px, 5vw, 80px);
+    padding-left: clamp(24px, 5vw, 80px);
+  }
+
+  .btn-prev {
+    left: clamp(40px, 6vw, 96px);
+    width: 46px;
+    height: 46px;
   }
 
   .btn-next {
-    position: absolute;
-    top: 50%;
     right: clamp(40px, 6vw, 96px);
-    transform: translateY(-50%);
     width: 46px;
     height: 46px;
-    display: grid;
-    place-items: center;
-    margin: 0;
   }
 
   .btn-next:hover,
-  .btn-next:focus {
+  .btn-next:focus,
+  .btn-prev:hover,
+  .btn-prev:focus {
     transform: translateY(-50%);
     box-shadow: 0 10px 22px rgba(14, 165, 233, 0.28);
     filter: brightness(1.05);
     outline: none;
   }
 
-  .btn-next:active {
+  .btn-next:active,
+  .btn-prev:active {
     transform: translateY(-50%);
     filter: brightness(0.97);
-  }
-
-  @supports (right: max(0px)) {
-    .btn-next {
-      right: max(clamp(40px, 6vw, 96px), env(safe-area-inset-right));
-    }
   }
 }
 
@@ -211,8 +250,16 @@
   .eropa-image {
     grid-area: eropa;
   }
+  .middle-east-image {
+    grid-area: asia;
+  }
+  .amerika-image {
+    grid-area: eropa;
+  }
   .asia-image,
-  .eropa-image {
+  .eropa-image,
+  .middle-east-image,
+  .amerika-image {
     justify-self: center;
     width: clamp(240px, 38vw, 380px) !important;
     height: auto;
@@ -231,6 +278,16 @@
     padding: 10px 0;
     font-size: 13px;
   }
+  .btn-prev {
+    position: absolute;
+    top: auto;
+    bottom: 14px;
+    left: 14px;
+    transform: none;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+  }
   .btn-next {
     position: absolute;
     top: auto;
@@ -242,26 +299,22 @@
     margin: 0;
   }
   .btn-next:hover,
-  .btn-next:focus {
+  .btn-next:focus,
+  .btn-prev:hover,
+  .btn-prev:focus {
     transform: none;
     box-shadow: 0 8px 18px rgba(14, 165, 233, 0.22);
     filter: brightness(1.04);
     outline: none;
   }
-
-  @supports (right: max(0px)) {
-    .btn-next {
-      right: max(14px, env(safe-area-inset-right));
-      bottom: max(14px, env(safe-area-inset-bottom));
-    }
-  }
 }
 
 @media (max-width: 640px) {
   .landing-package-gsim {
-    padding: clamp(14px, 4vw, 20px) clamp(12px, 5vw, 20px);
-    display: grid;
-    row-gap: 10px;
+    padding: clamp(14px, 4vw, 20px) clamp(12px, 5vw, 20px) clamp(60px, 15vw, 80px);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
   }
 
   .package-content {
@@ -276,21 +329,26 @@
     align-items: center;
     gap: clamp(8px, 3vw, 12px);
     column-gap: 0;
-    row-gap: clamp(
-      12px,
-      3.5vw,
-      16px
-    );
+    row-gap: clamp(12px, 3.5vw, 16px);
     padding-right: 0;
+    margin-bottom: 0;
   }
   .package-image {
     width: clamp(280px, 75vw, 420px) !important;
     margin: 0;
   }
   .asia-image,
-  .eropa-image {
+  .eropa-image,
+  .middle-east-image,
+  .amerika-image {
     width: clamp(180px, 75vw, 300px) !important;
     margin: 0;
+  }
+  .middle-east-image {
+    grid-area: asia;
+  }
+  .amerika-image {
+    grid-area: eropa;
   }
   .package-content .btn-buy-package:nth-of-type(1),
   .package-content .btn-buy-package:nth-of-type(2) {
@@ -299,22 +357,55 @@
     font-size: 12px;
     margin-top: 6px;
   }
+
+  /* Navigation buttons di bawah tengah */
+  .btn-prev,
   .btn-next {
-    position: static;
-    width: 40px;
-    height: 40px;
-    margin: 10px auto 0;
-    display: inline-grid;
-    place-items: center;
+    position: absolute;
+    bottom: 12px;
+    top: auto;
+    width: 42px;
+    height: 42px;
     transform: none;
+    box-shadow: 0 6px 16px rgba(14, 165, 233, 0.35);
   }
+
+  .btn-prev {
+    left: 50%;
+    transform: translateX(-54px);
+  }
+
+  .btn-next {
+    right: 50%;
+    transform: translateX(54px);
+  }
+
+  .btn-prev::before,
   .btn-next::before {
-    font-size: 20px;
+    font-size: 22px;
   }
+
   .btn-next:hover,
-  .btn-next:focus {
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(14, 165, 233, 0.18);
-    filter: brightness(1.04);
+  .btn-next:focus,
+  .btn-prev:hover,
+  .btn-prev:focus {
+    transform: translateX(54px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+    filter: brightness(1.05);
+  }
+
+  .btn-prev:hover,
+  .btn-prev:focus {
+    transform: translateX(-54px) scale(1.05);
+  }
+
+  .btn-next:active,
+  .btn-prev:active {
+    transform: translateX(54px) scale(0.98);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+  }
+
+  .btn-prev:active {
+    transform: translateX(-54px) scale(0.98);
   }
 }

@@ -1,50 +1,37 @@
 .landing-review-gsim {
   position: relative;
   overflow: hidden;
-  box-sizing: border-box;
   padding: clamp(28px, 6vw, 56px) clamp(16px, 5vw, 40px);
-  padding-top: clamp(20px, 4.5vw, 40px);
-  padding-bottom: clamp(20px, 4.5vw, 40px);
-  background: linear-gradient(
-      180deg,
-      rgba(14, 165, 233, 0.18) 0%,
-      rgba(14, 165, 233, 0.1) 40%,
-      rgba(14, 165, 233, 0.04) 100%
-    ),
-    radial-gradient(
-      1200px 520px at 50% -10%,
-      rgba(14, 165, 233, 0.18) 0%,
-      rgba(14, 165, 233, 0) 70%
-    ),
-    url("bg-review-gsim.png"), #e9f7ff;
+  background: #0ea5e9;
+  background-image: url('bg-review-gsim.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  contain: layout style paint;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  will-change: auto
+}
 
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
-  background-position: center, 50% -10%, center, 0 0;
-  background-size: auto, auto, cover, auto;
-  background-attachment: fixed;
+.landing-review-gsim.visible {
+  opacity: 1;
+  transform: translateY(0)
 }
 
 .landing-review-gsim::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(14, 165, 233, 0.16) 0%,
-    rgba(14, 165, 233, 0.1) 38%,
-    rgba(14, 165, 233, 0.06) 65%,
-    rgba(14, 165, 233, 0.03) 82%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  backdrop-filter: blur(4px) saturate(110%);
-  -webkit-backdrop-filter: blur(4px) saturate(110%);
+  background: linear-gradient(180deg, rgba(14, 165, 233, 0.12) 0%, rgba(14, 165, 233, 0.06) 50%, transparent 100%);
   pointer-events: none;
-  z-index: 1;
+  z-index: 1
 }
 
-.landing-review-gsim > * {
+.landing-review-gsim>* {
   position: relative;
-  z-index: 2;
+  z-index: 2
 }
 
 .review-header {
@@ -53,56 +40,131 @@
   justify-content: center;
   gap: 12px;
   margin-bottom: clamp(18px, 4vw, 32px);
+  contain: layout style paint
 }
+
 .review-icon {
   width: clamp(64px, 6vw, 92px);
   height: auto;
   display: block;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15))
 }
+
 .review-title {
   margin: 0;
   font-weight: 800;
-  color: #fff;
+  color: #0284c7;
   letter-spacing: 0.3px;
   text-align: center;
-  text-shadow: 0 2px 10px rgba(14, 165, 233, 0.14);
+  text-shadow: 0 1px 4px rgba(14, 165, 233, 0.3);
   font-size: clamp(22px, 4.6vw, 56px);
-  font-weight: 800;
-  line-height: 1.08;
+  line-height: 1.08
 }
 
 .review-wrapper {
   position: relative;
   max-width: 1280px;
   margin: 0 auto;
-  padding-right: 96px;
-  padding-left: 96px;
+  padding: 0 96px;
+  contain: layout;
+  overflow: visible
 }
 
 .review-track {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
-  align-items: stretch;
   width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-  grid-template-columns: repeat(3, minmax(320px, 1fr));
-  gap: clamp(10px, 1.6vw, 16px);
+  overflow: visible;
+  grid-template-columns: repeat(3, minmax(280px, 1fr));
+  gap: clamp(12px, 1.8vw, 20px);
+  contain: layout style
 }
 
 .review-card {
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
+  background: #fff !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 16px;
+  padding: clamp(20px, 3vw, 28px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   overflow: visible;
+  contain: layout style paint;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 280px
 }
-.review-card img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 0;
+
+.review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15)
+}
+
+.review-stars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px
+}
+
+.review-stars .star {
+  color: #fbbf24;
+  font-size: clamp(18px, 2.5vw, 24px);
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(251, 191, 36, 0.3))
+}
+
+.review-text {
+  margin: 0;
+  font-size: clamp(14px, 1.6vw, 16px);
+  line-height: 1.6;
+  color: #374151;
+  flex: 1;
+  font-style: italic
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06)
+}
+
+.author-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3)
+}
+
+.author-info {
+  flex: 1;
+  min-width: 0
+}
+
+.author-name {
+  margin: 0 0 4px;
+  font-size: clamp(14px, 1.6vw, 16px);
+  font-weight: 700;
+  color: #0b1b2b;
+  line-height: 1.2
+}
+
+.author-location {
+  margin: 0;
+  font-size: clamp(12px, 1.4vw, 14px);
+  color: #6b7280;
+  line-height: 1
 }
 
 .review-nav {
@@ -118,112 +180,136 @@
   display: grid;
   place-items: center;
   cursor: pointer;
-  box-shadow: 0 10px 22px rgba(14, 165, 233, 0.42);
   z-index: 2;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  contain: layout style paint;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
 }
+
 .review-nav::before {
   content: "‹";
   font-weight: 900;
   font-size: 26px;
-  line-height: 1;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  line-height: 1
 }
+
 .review-nav.next::before {
-  content: "›";
+  content: "›"
 }
+
 .review-nav.prev {
-  left: 24px;
+  left: 24px
 }
+
 .review-nav.next {
-  right: 24px;
+  right: 24px
 }
+
 .review-nav:hover {
-  filter: brightness(1.07);
-  transform: translateY(-50%) scale(1.03);
+  transform: translateY(-50%) scale(1.05);
+  background: #0284c7
 }
+
 .review-nav:active {
-  filter: brightness(0.97);
-  transform: translateY(-50%) scale(0.99);
+  transform: translateY(-50%) scale(0.98)
 }
 
 .review-nav:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  pointer-events: none;
+  pointer-events: none
 }
 
-@media (min-width: 993px) {
+@media(min-width:993px) {
   .review-nav {
     width: 52px;
-    height: 52px;
+    height: 52px
   }
 
   .review-nav.prev {
-    left: 28px;
+    left: 32px
   }
 
   .review-nav.next {
-    right: 28px;
+    right: 32px
   }
 }
 
-@media (min-width: 601px) and (max-width: 992px) {
+@media(min-width:601px)and (max-width:992px) {
   .review-nav {
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
+    width: 44px;
+    height: 44px
   }
 
   .review-nav.prev {
-    left: 8px;
+    left: 12px
   }
 
   .review-nav.next {
-    right: 8px;
-  }
-}
-
-@media (max-width: 600px) {
-  .review-nav {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
+    right: 12px
   }
 
-  .review-nav.prev {
-    left: 4px;
-  }
-
-  .review-nav.next {
-    right: 4px;
-  }
-}
-
-@media (min-width: 601px) and (max-width: 992px) {
   .review-track {
-    grid-template-columns: repeat(2, 1fr);
-    gap: clamp(12px, 2vw, 16px);
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+    gap: 16px;
+    overflow: visible
   }
 
   .review-wrapper {
-    padding-right: 56px;
-    padding-left: 56px;
+    padding: 0 64px;
+    overflow: visible
+  }
+
+  .review-card {
+    min-height: 300px
   }
 }
 
-@media (max-width: 600px) {
+@media(max-width:600px) {
+  .landing-review-gsim {
+    background-attachment: scroll
+  }
+
+  .review-nav {
+    width: 40px;
+    height: 40px
+  }
+
+  .review-nav::before {
+    font-size: 22px
+  }
+
+  .review-nav.prev {
+    left: 8px
+  }
+
+  .review-nav.next {
+    right: 8px
+  }
+
   .review-track {
     grid-template-columns: 1fr;
     gap: 16px;
+    overflow: visible
   }
 
   .review-wrapper {
-    padding-right: 52px;
-    padding-left: 52px;
+    padding: 0 52px;
+    overflow: visible
   }
 
-  .review-card:nth-child(n + 2) {
-    display: none;
+  .review-card {
+    min-height: auto;
+    padding: 20px
+  }
+
+  .review-text {
+    font-size: 14px
+  }
+
+  .author-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 16px
   }
 }

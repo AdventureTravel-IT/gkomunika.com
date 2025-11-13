@@ -31,7 +31,7 @@
     for (let i = 0; i < cardsPerView; i++) {
       const idx = currentIndex + i;
       if (idx < cards.length) {
-        cards[idx].style.display = 'block';
+        cards[idx].style.display = 'flex';
       }
     }
     updateButtons();

@@ -8,23 +8,34 @@
  * ------------------------------------------------------------
  */
 {
+  "name": "Landing Page GSIM",
   "sections": {
     "main": {
-      "type": "main-page",
-      "settings": {
-        "padding_top": 28,
-        "padding_bottom": 28
-      }
-    },
-    "check_data_usage_dFM6rw": {
-      "type": "check-data-usage",
-      "disabled": true,
-      "name": "Check Data Usage",
+      "type": "landing-hero-gsim",
       "settings": {}
-    }
+    },
+    "discover": {
+      "type": "landing-discover-gsim",
+      "settings": {}
+    },
+    "started": {
+      "type": "landing-started-gsim",
+      "settings": {}
+    },
+    "package": {
+      "type": "landing-package-gsim",
+      "settings": {}
+    },
+    "review": {
+      "type": "landing-review-gsim",
+      "settings": {}
+    },
   },
   "order": [
     "main",
-    "check_data_usage_dFM6rw"
+    "discover",
+    "started",
+    "package",
+    "review"
   ]
 }

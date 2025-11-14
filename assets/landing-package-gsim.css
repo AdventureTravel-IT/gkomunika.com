@@ -46,6 +46,7 @@
   transform: translateX(-8px);
   grid-area: asia;
 }
+
 .eropa-image {
   justify-self: center;
   transform: translateX(-4px);
@@ -96,6 +97,7 @@
   transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease,
     background 0.15s ease, color 0.15s ease;
 }
+
 .btn-buy-package:hover,
 .btn-buy-package:focus,
 .btn-buy-package:active,
@@ -107,9 +109,11 @@
   transform: translateY(-2px) scale(1.02);
   outline: none;
 }
+
 .package-content .btn-buy-package:nth-of-type(1) {
   grid-area: asiaB;
 }
+
 .package-content .btn-buy-package:nth-of-type(2) {
   grid-area: eropaB;
 }
@@ -129,7 +133,8 @@
   place-items: center;
   cursor: pointer;
   z-index: 2;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease, opacity 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease,
+    opacity 0.2s ease;
   box-shadow: 0 10px 22px rgba(14, 165, 233, 0.42),
     0 0 0 6px rgba(14, 165, 233, 0.1);
 }
@@ -184,7 +189,6 @@
   pointer-events: none;
 }
 
-/* Full HD dan layar lebih besar - 1920px+ */
 @media (min-width: 1920px) {
   .landing-package-gsim {
     padding-top: 32px;
@@ -283,6 +287,7 @@
   .landing-package-gsim {
     padding: clamp(16px, 3.8vw, 28px) clamp(16px, 5vw, 36px);
   }
+
   .package-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -297,24 +302,30 @@
     row-gap: clamp(8px, 2.2vw, 16px);
     padding-right: 0;
   }
+
   .package-image {
     grid-area: speech;
     justify-self: center;
     width: clamp(320px, 58vw, 680px) !important;
     margin: 0 0 clamp(6px, 1vw, 10px) 0;
   }
+
   .asia-image {
     grid-area: asia;
   }
+
   .eropa-image {
     grid-area: eropa;
   }
+
   .middle-east-image {
     grid-area: asia;
   }
+
   .amerika-image {
     grid-area: eropa;
   }
+
   .asia-image,
   .eropa-image,
   .middle-east-image,
@@ -324,19 +335,25 @@
     height: auto;
     margin: 0;
   }
+
   .package-content .btn-buy-package:nth-of-type(1) {
     grid-area: asiaB;
   }
+
   .package-content .btn-buy-package:nth-of-type(2) {
     grid-area: eropaB;
   }
-  .package-content .btn-buy-package:nth-of-type(1),
-  .package-content .btn-buy-package:nth-of-type(2) {
-    width: clamp(160px, 28vw, 220px);
+
+  .package-content .btn-buy-package {
+    width: clamp(180px, 28vw, 220px) !important;
+    min-width: 180px !important;
+    padding: 12px 16px !important;
+    font-size: clamp(12px, 2vw, 14px) !important;
     margin-top: 6px;
-    padding: 10px 0;
-    font-size: 13px;
+    white-space: nowrap;
+    text-align: center;
   }
+
   .btn-prev {
     position: absolute;
     top: auto;
@@ -347,6 +364,7 @@
     height: 44px;
     margin: 0;
   }
+
   .btn-next {
     position: absolute;
     top: auto;
@@ -357,6 +375,7 @@
     height: 44px;
     margin: 0;
   }
+
   .btn-next:hover,
   .btn-next:focus,
   .btn-prev:hover,
@@ -370,7 +389,8 @@
 
 @media (max-width: 640px) {
   .landing-package-gsim {
-    padding: clamp(14px, 4vw, 20px) clamp(12px, 5vw, 20px) clamp(60px, 15vw, 80px);
+    padding: clamp(14px, 4vw, 20px) clamp(12px, 5vw, 20px)
+      clamp(60px, 15vw, 80px);
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -392,10 +412,12 @@
     padding-right: 0;
     margin-bottom: 0;
   }
+
   .package-image {
     width: clamp(280px, 75vw, 420px) !important;
     margin: 0;
   }
+
   .asia-image,
   .eropa-image,
   .middle-east-image,
@@ -403,18 +425,23 @@
     width: clamp(180px, 75vw, 300px) !important;
     margin: 0;
   }
+
   .middle-east-image {
     grid-area: asia;
   }
+
   .amerika-image {
     grid-area: eropa;
   }
-  .package-content .btn-buy-package:nth-of-type(1),
-  .package-content .btn-buy-package:nth-of-type(2) {
-    width: clamp(150px, 58vw, 240px);
-    padding: 10px 0;
-    font-size: 12px;
+
+  .package-content .btn-buy-package {
+    width: clamp(180px, 28vw, 220px) !important;
+    min-width: 180px !important;
+    padding: 12px 16px !important;
+    font-size: clamp(12px, 2vw, 14px) !important;
     margin-top: 6px;
+    white-space: nowrap;
+    text-align: center;
   }
 
   .btn-prev,

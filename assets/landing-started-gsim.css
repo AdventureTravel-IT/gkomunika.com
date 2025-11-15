@@ -200,6 +200,35 @@
   hyphens: auto;
 }
 
+/* Media Queries for Mobile Optimization */
+@media (max-width: 768px) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .step-card:hover {
+    transform: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .started-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .step-card {
+    padding: 14px 18px;
+  }
+
+  .step-icon {
+    width: 56px;
+    height: 56px;
+    top: -23px;
+  }
+}
+
+/* Responsive Breakpoints for Different Screen Sizes */
 @media (min-width: 1920px) {
   .landing-started-gsim {
     padding-top: 80px;

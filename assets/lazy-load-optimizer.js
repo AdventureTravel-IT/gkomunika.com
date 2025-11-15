@@ -1,7 +1,12 @@
 (() => {
   if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver(
-      (entries, obs) => {
+    const images = document.querySelectorAll("img[data-src]");
+    const sections = document.querySelectorAll(
+      ".landing-started-gsim, .landing-package-gsim, .landing-review-gsim"
+    );
+
+    const imgObserver = new IntersectionObserver(
+      (entries, observer) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const img = entry.target;
@@ -10,28 +15,33 @@
               img.removeAttribute("data-src");
             }
             img.classList.add("loaded");
-            obs.unobserve(img);
+            observer.unobserve(img);
           }
         });
       },
-      { rootMargin: "50px 0px", threshold: 0.01 }
+      {
+        rootMargin: "50px 0px",
+        threshold: 0.01,
+      }
     );
-    document
-      .querySelectorAll("img[data-src]")
-      .forEach((img) => observer.observe(img));
-    const sections = document.querySelectorAll(
-      ".landing-started-gsim,.landing-package-gsim,.landing-review-gsim"
-    );
+
+    images.forEach((img) => imgObserver.observe(img));
+
     const sectionObserver = new IntersectionObserver(
-      (entries) => {
+      (entries, observer) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
           }
         });
       },
-      { rootMargin: "100px 0px", threshold: 0.1 }
+      {
+        rootMargin: "100px 0px",
+        threshold: 0.1,
+      }
     );
+
     sections.forEach((section) => sectionObserver.observe(section));
   }
 })();

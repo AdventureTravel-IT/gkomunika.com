@@ -1,95 +1,52 @@
 (() => {
   'use strict';
-  
-  const wrapper = document.querySelector('.package-content');
-  if (!wrapper) return;
 
+  const wrapper = document.querySelector('.package-content');
   const prevBtn = document.querySelector('.btn-prev');
   const nextBtn = document.querySelector('.btn-next');
-  
-  const groups = [
-    {
-      images: [
-        wrapper.querySelector('.package-image'),
-        wrapper.querySelector('.asia-image'),
-        wrapper.querySelector('.eropa-image')
-      ],
-      buttons: [
-        wrapper.querySelectorAll('.btn-buy-package')[0],
-        wrapper.querySelectorAll('.btn-buy-package')[1]
-      ]
+
+  if (!wrapper || !prevBtn || !nextBtn) return;
+
+  const packages = [
+    { 
+      images: ['.asia-image', '.eropa-image'],
+      buttons: 2
     },
-    {
-      images: [
-        wrapper.querySelector('.package-image').cloneNode(true),
-        wrapper.querySelector('.middle-east-image'),
-        wrapper.querySelector('.amerika-image')
-      ],
-      buttons: [
-        wrapper.querySelectorAll('.btn-buy-package')[2],
-        wrapper.querySelectorAll('.btn-buy-package')[3]
-      ]
+    { 
+      images: ['.middle-east-image', '.amerika-image'],
+      buttons: 2
     }
   ];
 
   let currentIndex = 0;
-  const totalGroups = 2;
 
-  function updateView() {
-    wrapper.querySelectorAll('.asia-image, .eropa-image, .middle-east-image, .amerika-image').forEach(img => {
-      img.style.display = 'none';
+  const allImages = document.querySelectorAll('.asia-image, .eropa-image, .middle-east-image, .amerika-image');
+
+  const updateDisplay = () => {
+    allImages.forEach(img => img.style.display = 'none');
+
+    packages[currentIndex].images.forEach(selector => {
+      const img = document.querySelector(selector);
+      if (img) img.style.display = 'block';
     });
-    
-    wrapper.querySelectorAll('.btn-buy-package').forEach(btn => {
-      btn.style.display = 'none';
-    });
 
-    if (currentIndex === 0) {
-      wrapper.querySelector('.asia-image').style.display = 'block';
-      wrapper.querySelector('.eropa-image').style.display = 'block';
-      wrapper.querySelectorAll('.btn-buy-package')[0].style.display = 'block';
-      wrapper.querySelectorAll('.btn-buy-package')[1].style.display = 'block';
-    } else {
-      wrapper.querySelector('.middle-east-image').style.display = 'block';
-      wrapper.querySelector('.amerika-image').style.display = 'block';
-      wrapper.querySelectorAll('.btn-buy-package')[2].style.display = 'block';
-      wrapper.querySelectorAll('.btn-buy-package')[3].style.display = 'block';
-    }
-
-    updateButtons();
-  }
-
-  function updateButtons() {
-    if (currentIndex <= 0) {
-      prevBtn.disabled = true;
-      prevBtn.style.opacity = '0.3';
-    } else {
-      prevBtn.disabled = false;
-      prevBtn.style.opacity = '1';
-    }
-
-    if (currentIndex >= totalGroups - 1) {
-      nextBtn.disabled = true;
-      nextBtn.style.opacity = '0.3';
-    } else {
-      nextBtn.disabled = false;
-      nextBtn.style.opacity = '1';
-    }
-  }
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex === packages.length - 1;
+  };
 
   prevBtn.addEventListener('click', () => {
     if (currentIndex > 0) {
       currentIndex--;
-      updateView();
+      updateDisplay();
     }
   });
 
   nextBtn.addEventListener('click', () => {
-    if (currentIndex < totalGroups - 1) {
+    if (currentIndex < packages.length - 1) {
       currentIndex++;
-      updateView();
+      updateDisplay();
     }
   });
 
-  updateView();
+  updateDisplay();
 })();

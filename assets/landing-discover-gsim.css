@@ -1,188 +1,108 @@
-.discover-gsim{
+.discover-gsim {
   --blue: #0EA5E9;
   --title: #0EA5E9;
   --text: #0b1b2b;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(14,165,233,0.22) 0%,
-      rgba(14,165,233,0.16) 18%,
-      rgba(14,165,233,0.1) 36%,
-      rgba(14,165,233,0.06) 54%,
-      rgba(14,165,233,0.02) 72%,
-      rgba(14,165,233,0) 100%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(14,165,233,0.06) 0%,
-      rgba(14,165,233,0) 60%
-    ),
-    #ffffff;
-  padding-top: clamp(8px, 2.5vw, 16px);
-  padding-right: clamp(16px, 4vw, 40px);
-  padding-bottom: clamp(24px, 5vw, 48px);
-  padding-left: clamp(16px, 4vw, 40px);
-  margin-top: 0; 
+  background: linear-gradient(90deg, rgba(14,165,233,0.22) 0%, rgba(14,165,233,0.16) 18%, rgba(14,165,233,0.1) 36%, rgba(14,165,233,0.06) 54%, rgba(14,165,233,0.02) 72%, rgba(14,165,233,0) 100%), linear-gradient(180deg, rgba(14,165,233,0.06) 0%, rgba(14,165,233,0) 60%), #ffffff;
+  padding: clamp(8px, 2.5vw, 16px) clamp(16px, 4vw, 40px);
+  margin-top: 0;
 }
 
-.discover-title{
+.discover-title {
   font-size: clamp(26px, 6vw, 48px);
   font-weight: 700;
   text-align: center;
   color: var(--title);
-  margin-top: 0;
   margin-bottom: clamp(20px, 4vw, 40px);
-  user-select: text;
+  text-shadow: 0 4px 16px rgba(255, 255, 255, .6), 0 2px 8px rgba(255, 255, 255, .4);
 }
 
-.discover-grid{
-  max-width: 1000px;
-  margin: 0 auto;
+.discover-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(16px, 3vw, 32px);
-  align-items: start;
   padding-inline: clamp(16px, 4vw, 40px);
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-.feature-item{
+.feature-item {
   text-align: center;
-  padding: 0;
 }
 
-.feature-icon{
+.feature-icon {
   width: clamp(140px, 16vw, 220px);
   height: auto;
   display: inline-block;
-  transform: translateZ(0);
   margin-bottom: clamp(12px, 1.5vw, 16px);
-  user-select: none;
-  pointer-events: none;
 }
 
-.feature-heading{
-  margin: 0 0 clamp(8px, 1.1vw, 12px);
+.feature-heading {
   font-weight: 700;
   color: #0369a1;
   font-size: clamp(14px, 2vw, 20px);
-  line-height: 1.3;
-  user-select: text;
+  margin: 0 0 clamp(8px, 1.1vw, 12px);
 }
 
-.feature-desc{
+.feature-desc {
   margin: 0 auto;
-  max-width: 36ch;
   color: #374151;
   font-size: clamp(13px, 1.4vw, 16px);
   line-height: 1.6;
-  user-select: text;
+  max-width: 36ch;
 }
 
-/* Full HD dan layar lebih besar - 1920px+ */
 @media (min-width: 1920px) {
-  .discover-gsim {
-    padding-top: 32px;
-    padding-right: 64px;
-    padding-bottom: 72px;
-    padding-left: 64px;
-  }
-
   .discover-title {
     font-size: 56px;
     margin-bottom: 56px;
-    letter-spacing: 0.3px;
-  }
-
-  .discover-grid {
-    max-width: 1400px;
-    gap: 48px;
-    padding-inline: 56px;
   }
 
   .feature-icon {
     width: 280px;
-    margin-bottom: 24px;
   }
 
   .feature-heading {
     font-size: 26px;
-    margin-bottom: 16px;
-    letter-spacing: 0.2px;
   }
 
   .feature-desc {
     font-size: 20px;
-    line-height: 1.7;
-    max-width: 40ch;
   }
 }
 
-@media (max-width: 992px){
-  .discover-title{
+@media (max-width: 992px) {
+  .discover-title {
     font-size: clamp(24px, 3.4vw, 32px);
-    line-height: 1.15;
     text-align: center;
     margin-bottom: clamp(10px, 2.4vw, 16px);
-    white-space: nowrap;
   }
 
-  .discover-grid{
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0,1fr));
-    gap: clamp(10px, 2.2vw, 16px);
-    padding-inline: clamp(16px, 4vw, 24px);
-    align-items: start;
+  .discover-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .discover-grid .feature-item:nth-child(3){
+  .feature-item:nth-child(3) {
     grid-column: 1 / -1;
-    justify-self: center;
-    max-width: min(560px, 90%);
   }
 
-  .feature-item{
-    padding: 10px 0;
-    text-align: center;
-  }
-
-  .feature-icon{
+  .feature-icon {
     width: clamp(180px, 38vw, 260px);
-    display: block;
-    margin-inline: auto;
   }
-
-  .feature-heading{ margin-top: 8px; }
-  .feature-desc{ margin-top: 6px; }
 }
 
-@media (max-width: 420px){
-  .discover-title{
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: normal;
-    hyphens: auto;
-
+@media (max-width: 420px) {
+  .discover-title {
     font-size: clamp(18px, 5.5vw, 26px);
-    line-height: 1.2;
-    text-align: center;
     margin: 0 auto clamp(10px, 3vw, 14px);
-    max-width: 90vw;
   }
 
-  .discover-grid{
+  .discover-grid {
     grid-template-columns: 1fr;
     gap: 10px;
     padding-inline: 12px;
   }
 
-  .feature-item{ padding: 8px 0; }
-
-  .feature-icon{
+  .feature-icon {
     width: clamp(160px, 56vw, 220px);
   }
-
-  .feature-heading{ margin-top: 6px; }
-  .feature-desc{ margin-top: 4px; }
 }
-

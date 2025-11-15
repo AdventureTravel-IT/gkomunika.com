@@ -1,6 +1,23 @@
 <link rel="preload" href="{{ 'bg-review-gsim.webp' | asset_url }}" as="image" type="image/webp">
 <link rel="stylesheet" href="{{ 'landing-review-gsim.css' | asset_url }}">
-<script src="{{ 'landing-review-gsim.js' | asset_url }}" defer></script>
+<link rel="stylesheet" href="{{ 'landing-review-gsim.css' | asset_url }}" media="print" onload="this.media='all'">
+
+<script>
+  (() => {
+    const initCarousel = () => {
+      const wrapper = document.querySelector('.review-wrapper');
+      if (!wrapper) return;
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCarousel);
+    } else {
+      initCarousel();
+    }
+  })();
+</script>
+
+<script src="{{ 'landing-review-gsim.js' | asset_url }}" defer async></script>
 
 <section class="landing-review-gsim">
   <div class="review-header">
@@ -33,7 +50,6 @@
           This eSIM is so much easier — can use straight away!"
         </p>
         <div class="review-author">
-          <div class="author-avatar">SA</div>
           <div class="author-info">
             <h4 class="author-name">Sarah Anderson</h4>
             <p class="author-location">Singapore</p>
@@ -54,7 +70,6 @@
           Penjual sangat disyorkan, terima kasih!"
         </p>
         <div class="review-author">
-          <div class="author-avatar">MC</div>
           <div class="author-info">
             <h4 class="author-name">Michael Chen</h4>
             <p class="author-location">Malaysia</p>
@@ -75,7 +90,6 @@
           eropa ga khawatir pake eSIM ini. Pokoknya terbaik 👍"
         </p>
         <div class="review-author">
-          <div class="author-avatar">PR</div>
           <div class="author-info">
             <h4 class="author-name">Priya Ramirez</h4>
             <p class="author-location">Indonesia</p>
@@ -96,11 +110,8 @@
           the future of travel connectivity!"
         </p>
         <div class="review-author">
-          <div class="author-avatar">DK</div>
-          <div class="author-info">
-            <h4 class="author-name">David Kim</h4>
-            <p class="author-location">Thailand</p>
-          </div>
+          <h4 class="author-name">David Kim</h4>
+          <p class="author-location">Thailand</p>
         </div>
       </article>
     </div>

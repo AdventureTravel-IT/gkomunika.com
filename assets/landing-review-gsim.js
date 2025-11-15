@@ -7,79 +7,46 @@
   const nextBtn = wrapper.querySelector('.review-nav.next');
   const cards = track.querySelectorAll('.review-card');
 
+  if (!track || !cards.length) return;
+
   let currentIndex = 0;
-  let cardsPerView = 3;
+  const cardWidth = cards[0].offsetWidth + 16;
+  const visibleCards = window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 2 : 3;
+  const maxIndex = Math.max(0, cards.length - visibleCards);
 
-  function getCardsPerView() {
-    const width = window.innerWidth;
-    if (width <= 600) return 1;
-    if (width <= 992) return 2;
-    return 3;
-  }
+  const updatePosition = () => {
+    track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+    
+    if (prevBtn) prevBtn.disabled = currentIndex === 0;
+    if (nextBtn) nextBtn.disabled = currentIndex >= maxIndex;
+  };
 
-  function updateCardsPerView() {
-    cardsPerView = getCardsPerView();
-    currentIndex = 0;
-    updateView();
-  }
-
-  function updateView() {
-    cards.forEach((card, idx) => {
-      card.style.display = 'none';
-    });
-
-    for (let i = 0; i < cardsPerView; i++) {
-      const idx = currentIndex + i;
-      if (idx < cards.length) {
-        cards[idx].style.display = 'flex';
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updatePosition();
       }
-    }
-    updateButtons();
+    });
   }
 
-  function updateButtons() {
-    const maxIndex = Math.max(0, cards.length - cardsPerView);
-
-    if (currentIndex <= 0) {
-      prevBtn.disabled = true;
-      prevBtn.style.opacity = '0.4';
-      prevBtn.style.cursor = 'not-allowed';
-    } else {
-      prevBtn.disabled = false;
-      prevBtn.style.opacity = '1';
-      prevBtn.style.cursor = 'pointer';
-    }
-
-    if (currentIndex >= maxIndex || cards.length <= cardsPerView) {
-      nextBtn.disabled = true;
-      nextBtn.style.opacity = '0.4';
-      nextBtn.style.cursor = 'not-allowed';
-    } else {
-      nextBtn.disabled = false;
-      nextBtn.style.opacity = '1';
-      nextBtn.style.cursor = 'pointer';
-    }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+        updatePosition();
+      }
+    });
   }
 
-  prevBtn.addEventListener('click', function() {
-    if (currentIndex > 0) {
-      currentIndex--;
-      updateView();
-    }
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      currentIndex = 0;
+      updatePosition();
+    }, 250);
   });
 
-  nextBtn.addEventListener('click', function() {
-    const maxIndex = Math.max(0, cards.length - cardsPerView);
-    if (currentIndex < maxIndex) {
-      currentIndex++;
-      updateView();
-    }
-  });
-
-  let resizeTimer;
-  window.addEventListener('resize', function() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(updateCardsPerView, 150);
-  });
-  updateCardsPerView();
+  updatePosition();
 })();

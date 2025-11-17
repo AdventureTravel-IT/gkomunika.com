@@ -1,27 +1,10 @@
-<style>
-  .hero-wrap {
-    position: relative;
-    width: 100%;
-    min-height: 100vh;
-    overflow: hidden;
-    contain: layout style paint;
-  }
-
-  .hero-video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
-    pointer-events: none;
-    filter: brightness(0.7);
-  }
-</style>
-
-<link rel="preload" href="{{ 'landing-hero-gsim.css' | asset_url }}" as="style">
-<link rel="stylesheet" href="{{ 'landing-hero-gsim.css' | asset_url }}" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="{{ 'landing-hero-gsim.css' | asset_url }}"></noscript>
+<link rel="preload" href="{{ 'landing-page-gsim.css' | asset_url }}" as="style">
+<link rel="stylesheet" href="{{ 'landing-page-gsim.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'landing-page-gsim.css' | asset_url }}"></noscript>
+<script src="{{ 'lazy-load-optimizer.js' | asset_url }}" defer></script>
+<script src="{{ 'landing-package-gsim.js' | asset_url }}" defer></script>
+<script src="{{ 'landing-review-gsim.js' | asset_url }}" defer></script>
+<script src="{{ 'landing-faq-gsim.js' | asset_url }}" defer></script>
 
 {%- assign is_mobile = false -%}
 {%- if request.user_agent contains 'Mobile' or request.user_agent contains 'Android' -%}

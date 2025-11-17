@@ -1,10 +1,4 @@
-{%- unless faq_assets_loaded -%}
-  <link rel="stylesheet" href="{{ 'snippet-faq-gsim.css' | asset_url }}">
-  <script src="{{ 'snippet-faq-gsim.js' | asset_url }}" defer></script>
-  {%- assign faq_assets_loaded = true -%}
-{%- endunless -%}
-
-<section class="snippet-faq-gsim">
+<section class="landing-faq-gsim">
   <div class="faq-card">
     <h2 class="faq-heading">FAQ</h2>
 
@@ -125,3 +119,15 @@
     </div>
   </div>
 </section>
+
+{% schema %}
+{
+  "name": "Landing • FAQ gSim",
+  "settings": [],
+  "presets": [
+    {
+      "name": "FAQ gSim"
+    }
+  ]
+}
+{% endschema %}

@@ -1,3 +1,7 @@
+{%- if request.design_mode -%}
+  {{ 'landing-page-gsim.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+
 <section class="landing-package-gsim">
   <button class="btn-prev" type="button" aria-label="Previous packages"></button>
 
@@ -95,9 +99,9 @@
 
 {% schema %}
 {
-  "name": "Landing • Packages gSim",
+  "name": "Landing Packages gSim",
   "settings": [],
   "blocks": [],
-  "presets": [{ "name": "Landing • Packages gSim" }]
+  "presets": [{ "name": "Landing Packages gSim" }]
 }
 {% endschema %}

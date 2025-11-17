@@ -1,23 +1,9 @@
-<link rel="preload" href="{{ 'bg-review-gsim.webp' | asset_url }}" as="image" type="image/webp">
-<link rel="stylesheet" href="{{ 'landing-review-gsim.css' | asset_url }}">
-<link rel="stylesheet" href="{{ 'landing-review-gsim.css' | asset_url }}" media="print" onload="this.media='all'">
-
-<script>
-  (() => {
-    const initCarousel = () => {
-      const wrapper = document.querySelector('.review-wrapper');
-      if (!wrapper) return;
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCarousel);
-    } else {
-      initCarousel();
-    }
-  })();
-</script>
-
-<script src="{{ 'landing-review-gsim.js' | asset_url }}" defer async></script>
+<link
+  rel="preload"
+  href="{{ 'bg-review-gsim.webp' | asset_url }}"
+  as="image"
+  type="image/webp"
+>
 
 <section class="landing-review-gsim">
   <div class="review-header">
@@ -34,7 +20,11 @@
   </div>
 
   <div class="review-wrapper">
-    <button class="review-nav prev" type="button" aria-label="Previous reviews"></button>
+    <button
+      class="review-nav prev"
+      type="button"
+      aria-label="Previous reviews"
+    ></button>
 
     <div class="review-track">
       <article class="review-card">
@@ -116,10 +106,12 @@
       </article>
     </div>
 
-    <button class="review-nav next" type="button" aria-label="Next reviews"></button>
+    <button
+      class="review-nav next"
+      type="button"
+      aria-label="Next reviews"
+    ></button>
   </div>
-
-  {% render 'snippet-faq-gsim' %}
 </section>
 
 {% schema %}
@@ -127,6 +119,10 @@
   "name": "Landing • Reviews gSim",
   "settings": [],
   "blocks": [],
-  "presets": [{ "name": "Landing • Reviews gSim" }]
+  "presets": [
+    {
+      "name": "Landing • Reviews gSim"
+    }
+  ]
 }
 {% endschema %}

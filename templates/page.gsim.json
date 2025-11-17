@@ -30,12 +30,17 @@
       "type": "landing-review-gsim",
       "settings": {}
     },
+    "faq": {
+      "type": "landing-faq-gsim",
+      "settings": {}
+    },
   },
   "order": [
     "main",
     "discover",
     "started",
     "package",
-    "review"
+    "review",
+    "faq"
   ]
 }

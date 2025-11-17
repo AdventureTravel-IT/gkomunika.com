@@ -1,3 +1,7 @@
+{%- if request.design_mode -%}
+  {{ 'landing-page-gsim.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+
 <section class="landing-faq-gsim">
   <div class="faq-card">
     <h2 class="faq-heading">FAQ</h2>
@@ -122,7 +126,7 @@
 
 {% schema %}
 {
-  "name": "Landing • FAQ gSim",
+  "name": "Landing FAQ gSim",
   "settings": [],
   "presets": [
     {

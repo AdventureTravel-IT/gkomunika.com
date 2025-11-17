@@ -1,4 +1,6 @@
-<link rel="preload" href="{{ 'bg-step-gsim.webp' | asset_url }}" as="image" type="image/webp">
+{%- if request.design_mode -%}
+  {{ 'landing-page-gsim.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
 
 <section class="landing-started-gsim">
   <div class="started-content">

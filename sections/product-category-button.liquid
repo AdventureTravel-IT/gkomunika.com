@@ -1,36 +1,115 @@
-<section class="container">
-  <div class="wrapper md:wrapper-base flex flex-nowrap space-x-5 overflow-x-auto scroll-smooth">
+<section class="product-category">
+  <div class="product-category__wrapper">
     <button
       id="btn-esim"
-      class="bg-primary flex rounded-[15px] gap-2.5  items-center justify-center p-[15px]"
+      class="product-category__button"
       data-category="esim">
-      <div class="shrink-0">
+      <div class="product-category__icon">
         {% render 'icon-qr-code' %}
       </div>
-      <span class="text-neutral font-bold text-3xl">eSIM</span>
+      <span class="product-category__label">eSIM</span>
     </button>
 
     <button
       id="btn-simcard"
-      class="bg-primary flex rounded-[15px] gap-2.5  items-center justify-center p-[15px]"
+      class="product-category__button"
       data-category="sim-card">
-      <div class="shrink-0">
+      <div class="product-category__icon">
         {% render 'icon-simcard' %}
       </div>
-      <span class="text-neutral font-bold text-3xl">SIM Card</span>
+      <span class="product-category__label">SIM Card</span>
     </button>
 
     <button
       id="btn-insurance"
-      class="bg-primary flex rounded-[15px] gap-2.5  items-center justify-center p-[15px]"
+      class="product-category__button"
       data-category="insurance">
-      <div class="shrink-0">
+      <div class="product-category__icon">
         {% render 'icon-insurance' %}
       </div>
-      <span class="text-neutral font-bold text-3xl">Insurance</span>
+      <span class="product-category__label">Insurance</span>
     </button>
   </div>
 </section>
+
+<style>
+  .product-category {
+   max-width: 1920px;
+    margin: 0 auto;
+  }
+
+  .product-category__wrapper {
+    display: flex;
+    padding: 20px 10%;
+    flex-wrap: nowrap;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 8px;
+  }
+
+  .product-category__wrapper::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .product-category__wrapper::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .product-category__wrapper::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 999px;
+  }
+
+  .product-category__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    background-color: var(--color-primary, #2563eb); /* fallback biru */
+    color: var(--color-on-primary, #ffffff);
+    white-space: nowrap;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .product-category__button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-category__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-category__label {
+    font-weight: 700;
+    font-size: 1.5rem; /* kira-kira setara text-3xl di Tailwind */
+    line-height: 1.2;
+    color: inherit; /* biar ikut warna button (neutral on primary) */
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .product-category__label {
+      font-size: 1.25rem;
+    }
+    .product-category__wrapper {
+      padding: 20px 24px;
+    }
+
+    .product-category__button {
+      padding: 12px;
+    }
+  }
+</style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {

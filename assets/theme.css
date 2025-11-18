@@ -763,18 +763,39 @@ video {
   background-color: var(--color-primary);
 }
 
+.p-2 {
+  padding: 0.5rem;
+}
+
+.p-2\.5 {
+  padding: 0.625rem;
+}
+
 .p-\[15px\] {
   padding: 15px;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.p-0 {
+  padding: 0px;
+}
+
+.px-5 {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
-}
-
-.text-base {
-  font-size: 1rem;
-  line-height: 1.5rem;
 }
 
 .font-bold {
@@ -804,10 +825,6 @@ video {
 
 .text-neutral {
   color: var(--color-neutral);
-}
-
-.text-primary {
-  color: var(--color-primary);
 }
 
 .text-secondary {
@@ -869,6 +886,10 @@ video {
   max-width: 1920px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.\!wrapper {
+  padding: 20px 24px !important;
 }
 
 .wrapper {

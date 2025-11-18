@@ -239,7 +239,6 @@
   object-fit: cover;
   z-index: 0;
   pointer-events: none;
-  user-select: none;
 }
 
 .banner__content--wrapper {

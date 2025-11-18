@@ -61,16 +61,6 @@
       />
 
       <button
-        type="reset"
-        class="search__button-reset{% if search.terms == blank %} hidden{% endif %}"
-        aria-label="{{ 'general.search.reset' | t }}"
-      >
-        <span class="svg-wrapper">
-          {{- 'icon-reset.svg' | inline_asset_content -}}
-        </span>
-      </button>
-
-      <button
         type="submit"
         class="search__button-submit"
         aria-label="{{ 'general.search.search' | t }}"

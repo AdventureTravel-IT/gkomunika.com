@@ -1,17 +1,31 @@
-{%- comment -%}
-  Renders the language picker for the localization form
-  Accepts:
-  - localPosition: pass in the position in which the form is coming up to create specific IDs
-{%- endcomment -%}
+<style>
+  .disclosure__button .collapse-icon {
+    display: inline-flex;
+    transition: transform 0.2s ease;
+  }
+
+  .disclosure__button[aria-expanded="true"] .collapse-icon {
+    transform: rotate(-180deg);
+  }
+</style>
 
 <script>
-  document.querySelectorAll('.disclosure__button').forEach((button) => {
-    button.addEventListener('click', () => {
-      const expanded = button.getAttribute('aria-expanded') === 'true';
-      button.setAttribute('aria-expanded', String(!expanded));
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.disclosure__button').forEach(function(button) {
+      button.addEventListener('click', function() {
+        var expanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', String(!expanded));
+
+        // Optional: sekalian toggle list-nya
+        var wrapper = button.parentElement.querySelector('.disclosure__list-wrapper');
+        if (wrapper) {
+          wrapper.hidden = expanded; // kalau tadinya terbuka, sekarang disembunyikan
+        }
+      });
     });
   });
 </script>
+
 
 <div class="disclosure">
   <button
@@ -22,8 +36,16 @@
     aria-describedby="{{ localPosition }}Label"
   >
     {%- assign current_code = localization.language.iso_code | split: '-' | first | upcase -%}
-    <span>{{ current_code }}</span>
-    {{ 'icon-caret.svg' | inline_asset_content }}
+
+    <div style="display: flex; gap: 10px; align-items: center;">
+      {{- 'header-language.svg' | inline_asset_content -}}
+      <div style="flex-shrink: 0; display: flex; align-items: center; gap: 5px;">
+        <span>{{ current_code }}</span>
+        <span class="collapse-icon">
+          {% render 'icon-collapse' %}
+        </span>
+      </div>
+    </div>
   </button>
 
   <div class="disclosure__list-wrapper language-selector" hidden>

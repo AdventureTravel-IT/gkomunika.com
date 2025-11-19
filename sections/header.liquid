@@ -1,20 +1,59 @@
 <style>
-  .header-menu {
+  /* =============== Utilities & Global =============== */
+
+  .flex-center {
     display: flex;
-    gap: 15px;
     align-items: center;
+  }
+
+  .inline-flex-center {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .icon-24 {
+    width: 24px;
+    height: 24px;
+  }
+
+  .header-menu,
+  .sidebar-list {
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
+  a {
+    text-decoration: none;
+  }
+
+  /* =============== Header =============== */
+
   .header__wrapper {
     display: flex;
     justify-content: space-between;
-    /* sesuai permintaan */
     align-items: center;
-    /* biar vertikal center */
     width: 100%;
+  }
+
+  .header__container {
+    width: 100%;
+  }
+
+  .header-conten-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-right {
+    display: flex;
+  }
+
+  .header-menu {
+    display: flex;
+    gap: 15px;
+    align-items: center;
   }
 
   .menu-list {
@@ -23,25 +62,45 @@
     align-items: center;
     justify-content: center;
     color: var(--color-primary);
-    text-decoration: none;
   }
 
-  /* --- Sidebar base style (desktop) --- */
-  .sidebar-list {
-    list-style: none;
+  /* reset button */
+  .menu-toggle {
+    border: none;
+    background: transparent;
     padding: 0;
-    margin: 0;
+    cursor: pointer;
+  }
+
+  /* =============== Currency & Language =============== */
+
+  .currency-language {
+    display: flex;
+    align-items: center;
+  }
+
+  .currency-language-group {
+    display: flex;
+    align-items: center;
+  }
+
+  .localization-inner {
+    display: flex;
+    align-items: center;
+  }
+
+  /* =============== Sidebar Desktop Base =============== */
+
+  .sidebar-list {
     display: grid;
     gap: 10px;
   }
 
   .sidebar-link {
     display: flex;
-    /* <-- perbaikan: tadinya none */
     align-items: center;
     gap: 10px;
     color: var(--color-primary);
-    text-decoration: none;
     padding-left: 10px;
   }
 
@@ -54,11 +113,6 @@
     align-items: center;
   }
 
-  .currency-language {
-    display: flex;
-    align-items: center;
-  }
-
   #sidebar {
     display: none;
   }
@@ -67,31 +121,34 @@
     display: none;
   }
 
-  /* Ikon kanan (cart & profile) khusus mobile */
+  /* =============== Header Right (Mobile Icons) =============== */
+
   .header-mobile-right {
     display: none;
     align-items: center;
     gap: 12px;
     margin-left: auto;
-    /* dorong ke ujung kanan */
   }
+
   .header-mobile-icon {
     display: inline-flex;
     align-items: center;
-    text-decoration: none;
   }
+
   .header-mobile-icon img {
     width: 24px;
     height: 24px;
   }
 
-  /* Hamburger base */
+  /* =============== Hamburger Icon =============== */
+
   .animated-icon {
     position: relative;
     width: 20px;
     height: 20px;
     cursor: pointer;
   }
+
   .animated-icon span {
     position: absolute;
     width: 100%;
@@ -100,40 +157,48 @@
     border-radius: 2px;
     transition: all 0.2s ease-in-out;
   }
+
   .animated-icon span:nth-child(1) {
     top: 0;
   }
+
   .animated-icon span:nth-child(2) {
     top: 8px;
   }
+
   .animated-icon span:nth-child(3) {
     top: 16px;
   }
+
   .animated-icon.open span:nth-child(1) {
     top: 8px;
     transform: rotate(45deg);
   }
+
   .animated-icon.open span:nth-child(2) {
     opacity: 0;
   }
+
   .animated-icon.open span:nth-child(3) {
     top: 8px;
     transform: rotate(-45deg);
   }
 
+  /* =============== Mobile =============== */
+
   @media (max-width: 768px) {
     .header-menu {
       display: none;
     }
+
     .currency-language {
       display: none;
-    } /* sembunyikan versi desktop di mobile */
+    }
 
-    /* Tampilkan ikon kanan hanya di mobile */.header-mobile-right {
+    .header-mobile-right {
       display: flex;
     }
 
-    /* --- Panel sidebar yang dianimasikan --- */
     #sidebar {
       display: block;
       position: relative;
@@ -143,53 +208,47 @@
     .sidebar-panel {
       overflow: hidden;
       max-height: 0;
-      /* tertutup default */
       opacity: 0;
       transform: translateY(-8px);
-      /* efek turun dari atas */
-      transition: max-height 0.35s ease
-      , opacity 0.25s ease
-      , transform 0.25s ease;
+      transition: max-height 0.35s ease,
+        opacity 0.25s ease,
+        transform 0.25s ease;
       border-top: 1px solid #eaeaea;
       background: var(--color-neutral);
-      will-change: max-height
-      , opacity
-      , transform;
+      will-change: max-height, opacity, transform;
     }
+
     .sidebar-panel.active {
       max-height: 80vh;
-      /* cukup tinggi untuk isi panel */
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* Daftar menu di dalam panel */
     .sidebar-list {
       display: block;
-      padding: 0;
-      margin: 0;
     }
+
     .sidebar-list li {
-      list-style: none;
       border-bottom: 1px solid #d9d9d9;
       padding: 10px 0;
       margin: 0;
     }
+
     .sidebar-link {
       padding: 0 24px;
     }
 
-    /* Blok currency/language khusus mobile di dalam panel */
     .sidebar-mobile-block {
       padding: 12px 24px 16px;
       display: block;
       border-top: 1px solid #eaeaea;
     }
+
     .sidebar-mobile-block .currency-language {
       display: flex;
-      /* tampilkan versi mobile */
       gap: 12px;
     }
+
     .sidebar-mobile-block .localization-form {
       margin-left: 4px;
     }
@@ -199,10 +258,10 @@
 {% unless template == 'customers/login' or template == 'customers/register' %}
   <div class="header__container">
     <div class="header__wrapper">
-      <div class="header-conten-menu" style="display:flex;align-items:center;gap:10px;">
+      <div class="header-conten-menu">
         <button
           class="menu-toggle"
-          onclick="toggleMenu()"
+          type="button"
           aria-label="Open Menu"
           aria-expanded="false">
           <div class="animated-icon" id="menu-icon">
@@ -213,14 +272,14 @@
         </button>
 
         {% if section.settings.logo != blank %}
-          <a href="/" style="display: inline-flex; align-items: center;">
+          <a href="/" class="inline-flex-center">
             <img
               class="header-content-logo"
               src="{{ section.settings.logo | image_url: width: 120 }}"
               srcset="
-  {{ section.settings.logo | image_url: width: 120 }} 120w,
-  {{ section.settings.logo | image_url: width: 240 }} 240w
-"
+                {{ section.settings.logo | image_url: width: 120 }} 120w,
+                {{ section.settings.logo | image_url: width: 240 }} 240w
+              "
               sizes="120px"
               width="120"
               height="40"
@@ -232,59 +291,54 @@
 
       <!-- IKON KANAN KHUSUS MOBILE -->
       <div class="header-mobile-right" aria-label="Quick actions">
-        <a
-          href="/cart"
-          class="header-mobile-icon"
-          aria-label="Cart">
-          <img src="{{ 'header-cart.svg' | asset_url }}" alt="Cart">
+        <a href="/cart" class="header-mobile-icon" aria-label="Cart">
+          <img src="{{ 'header-cart.svg' | asset_url }}" alt="Cart" class="icon-24">
         </a>
-        <a
-          href="/account/login"
-          class="header-mobile-icon"
-          aria-label="Profile">
-          <img src="{{ 'header-profile.svg' | asset_url }}" alt="Profile">
+        <a href="/account/login" class="header-mobile-icon" aria-label="Profile">
+          <img src="{{ 'header-profile.svg' | asset_url }}" alt="Profile" class="icon-24">
         </a>
       </div>
 
-      <div style="display: flex;">
+      <div class="header-right">
         <!-- Versi DESKTOP -->
         <div class="currency-language">
-          <div style="display: flex; align-items: center;">
-            <div style="display: inline-flex; align-items: center;">
+          <div class="currency-language-group">
+            <div class="inline-flex-center">
               {{- 'header-currency.svg' | inline_asset_content -}}
             </div>
             <div id="bucks-floating-desktop"></div>
           </div>
 
           <localization-form>
-            {%- form 'localization'
-              , id: 'FooterLanguageForm'
-              , class: 'localization-form' -%}
-              <div style="display: flex; align-items: center;">
-                {{- 'header-language.svg' | inline_asset_content -}}
-                {%- render 'language-localization'
-                  , localPosition: 'FooterLanguage' -%}
+            {%- form 'localization',
+              id: 'FooterLanguageForm',
+              class: 'localization-form'
+            -%}
+              <div class="localization-inner">
+                {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
               </div>
             {%- endform -%}
           </localization-form>
         </div>
 
-        <div id="navbar" data-icons='
-            {
-                "home": "{{ 'header-home.svg' | asset_url }}",
-                "esim": "{{ 'header-esim.svg' | asset_url }}",
-                "simcard": "{{ 'header-simcard.svg' | asset_url }}",
-                "insurance": "{{ 'header-insurance.svg' | asset_url }}",
-                "usage": "{{ 'header-usage.svg' | asset_url }}",
-                "topup": "{{ 'icon-plus.svg' | asset_url }}",
-                "about": "{{ 'header-about.svg' | asset_url }}",
-                "faq": "{{ 'header-faq.svg' | asset_url }}",
-                "news": "{{ 'header-news.svg' | asset_url }}",
-                "cart": "{{ 'header-cart.svg' | asset_url }}",
-                "profile": "{{ 'header-profile.svg' | asset_url }}"
-            }
-          '>
-</div>
+        <div
+          id="navbar"
+          role="navigation"
+          aria-label="Main navigation"
+          data-icons='{
+            "home": "{{ 'header-home.svg' | asset_url }}",
+            "esim": "{{ 'header-esim.svg' | asset_url }}",
+            "simcard": "{{ 'header-simcard.svg' | asset_url }}",
+            "insurance": "{{ 'header-insurance.svg' | asset_url }}",
+            "usage": "{{ 'header-usage.svg' | asset_url }}",
+            "topup": "{{ 'icon-plus.svg' | asset_url }}",
+            "about": "{{ 'header-about.svg' | asset_url }}",
+            "faq": "{{ 'header-faq.svg' | asset_url }}",
+            "news": "{{ 'header-news.svg' | asset_url }}",
+            "cart": "{{ 'header-cart.svg' | asset_url }}",
+            "profile": "{{ 'header-profile.svg' | asset_url }}"
+          }'>
+        </div>
       </div>
     </div>
 
@@ -297,21 +351,20 @@
         <!-- Blok currency-language untuk MOBILE -->
         <div class="sidebar-mobile-block">
           <div class="currency-language">
-            <div style="display: flex; align-items: center;">
-              <div style="display: inline-flex; align-items: center;">
+            <div class="currency-language-group">
+              <div class="inline-flex-center">
                 {{- 'header-currency.svg' | inline_asset_content -}}
               </div>
               <div id="bucks-mobile"></div>
             </div>
 
             <localization-form>
-              {%- form 'localization'
-                , id: 'FooterLanguageFormSidebar'
-                , class: 'localization-form' -%}
-                <div style="display: flex; align-items: center;">
-                  {{- 'header-language.svg' | inline_asset_content -}}
-                  {%- render 'language-localization'
-                    , localPosition: 'FooterLanguage' -%}
+              {%- form 'localization',
+                id: 'FooterLanguageFormSidebar',
+                class: 'localization-form'
+              -%}
+                <div class="localization-inner">
+                  {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
                 </div>
               {%- endform -%}
             </localization-form>
@@ -323,141 +376,142 @@
 {% endunless %}
 
 <script>
-  const icons = JSON.parse(document.getElementById('navbar').getAttribute('data-icons'));
-  
-  // Satu sumber data untuk navbar
-  const menu = [
-    { label: 'Home', icon: icons.home, link: '/' },
-    { label: 'eSIM', icon: icons.esim, link: '/pages/product-category?sim_type=esim' },
-    { label: 'SIM Card', icon: icons.simcard, link: '/pages/product-category?sim_type=sim-card' },
-    { label: 'Insurance', icon: icons.insurance, link: '/pages/product-category?sim_type=insurance' },
-    { label: 'Data Usage', icon: icons.usage, link: '/pages/check-data-usage' },
-    { label: 'Top Up', icon: icons.topup, link: '/pages/check-data-usage-topup' },
-    { label: 'About Us', icon: icons.about, link: '/pages/about-us' },
-    { label: 'FAQ', icon: icons.faq, link: '/pages/faq' },
-    { label: 'News', icon: icons.news, link: '/pages/news' },
-    // Cart/Profile dikeluarkan dari sidebar mobile; tambah bila diperlukan
-  ];
-  
-  // Helper render list menu
-  function renderMenuList(items) {
-    return (
-      `<ul class="sidebar-list">` +
-      items
+  (function () {
+    const nav = document.getElementById('navbar');
+    if (!nav) return;
+
+    const iconsData = nav.getAttribute('data-icons');
+    if (!iconsData) return;
+
+    const icons = JSON.parse(iconsData);
+
+    const menu = [
+      { label: 'Home', icon: icons.home, link: '/' },
+      { label: 'eSIM', icon: icons.esim, link: '/pages/product-category?sim_type=esim' },
+      { label: 'SIM Card', icon: icons.simcard, link: '/pages/product-category?sim_type=sim-card' },
+      { label: 'Insurance', icon: icons.insurance, link: '/pages/product-category?sim_type=insurance' },
+      { label: 'Data Usage', icon: icons.usage, link: '/pages/check-data-usage' },
+      { label: 'Top Up', icon: icons.topup, link: '/pages/check-data-usage-topup' },
+      { label: 'About Us', icon: icons.about, link: '/pages/about-us' },
+      { label: 'FAQ', icon: icons.faq, link: '/pages/faq' },
+      { label: 'News', icon: icons.news, link: '/pages/news' }
+    ];
+
+    const normalizeLink = (link) =>
+      link && link.startsWith('/') ? link : `/${link || ''}`;
+
+    function renderMenuList(items) {
+      const itemsHtml = items
         .map(
           (item) => `
-        <li>
-          <a href="${item.link.startsWith('/') ? item.link : '/' + item.link}" class="sidebar-link">
-            <img src="${item.icon}" alt="${item.label} icon" style="width:24px;height:24px;" />
-            <span style="font-weight:bold;">${item.label}</span>
-          </a>
-        </li>
-      `
+            <li>
+              <a href="${normalizeLink(item.link)}" class="sidebar-link">
+                <img src="${item.icon}" alt="${item.label} icon" class="icon-24" />
+                <span style="font-weight:bold;">${item.label}</span>
+              </a>
+            </li>`
         )
-        .join('') +
-      `</ul>`
-    );
-  }
-  
-  // Render NAVBAR (pakai versi header-menu untuk desktop)
-  function renderHeaderMenu({ container, items }) {
-    const html =
-      `<ul class="header-menu">` +
-      items
-        .concat([
-          { label: 'Cart', icon: icons.cart, link: '/cart' },
-          { label: 'Profile', icon: icons.profile, link: 'account' },
-        ])
+        .join('');
+
+      return `<ul class="sidebar-list">${itemsHtml}</ul>`;
+    }
+
+    function renderHeaderMenu({ container, items }) {
+      const fullItems = items.concat([
+        { label: 'Cart', icon: icons.cart, link: '/cart' },
+        { label: 'Profile', icon: icons.profile, link: '/account' }
+      ]);
+
+      const itemsHtml = fullItems
         .map(
           (item) => `
-        <li>
-          <a href="${item.link.startsWith('/') ? item.link : '/' + item.link}" class="menu-list">
-            <img src="${item.icon}" alt="${item.label} icon" style="width:24px;height:24px;" />
-            <span style="font-weight:bold;">${item.label}</span>
-          </a>
-        </li>
-      `
+            <li>
+              <a href="${normalizeLink(item.link)}" class="menu-list">
+                <img src="${item.icon}" alt="${item.label} icon" class="icon-24" />
+                <span style="font-weight:bold;">${item.label}</span>
+              </a>
+            </li>`
         )
-        .join('') +
-      `</ul>`;
-    container.innerHTML = html;
-  }
-  
-  // Render NAVBAR (desktop)
-  const nav = document.getElementById('navbar');
-  renderHeaderMenu({ container: nav, items: menu });
-  
-  // Render SIDEBAR LIST (mobile)
-  const sidebarListMount = document.getElementById('sidebar-list');
-  sidebarListMount.innerHTML = renderMenuList(menu);
-  
-  /* ===========================
-     Toggle Sidebar (Mobile)
-  ============================*/
-  function toggleMenu() {
-    const panel = document.querySelector('.sidebar-panel');
-    const menuIcon = document.getElementById('menu-icon');
-    const toggleBtn = document.querySelector('.menu-toggle');
-    if (!panel) return;
-  
-    const isOpen = panel.classList.toggle('active');
-    if (menuIcon) menuIcon.classList.toggle('open', isOpen);
-  
-    // A11y
-    if (toggleBtn) {
-      toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      toggleBtn.setAttribute('aria-label', isOpen ? 'Close Menu' : 'Open Menu');
+        .join('');
+
+      container.innerHTML = `<ul class="header-menu">${itemsHtml}</ul>`;
     }
-    panel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-  
-    // kunci scroll saat terbuka
-    document.documentElement.style.overflow = isOpen ? 'hidden' : '';
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-  }
-  
-  // Tutup saat klik di luar panel & tombol
-  document.addEventListener('click', function (e) {
-    const panel = document.querySelector('.sidebar-panel');
-    const toggleBtn = document.querySelector('.menu-toggle');
+
+    // Render header menu (desktop)
+    renderHeaderMenu({ container: nav, items: menu });
+
+    // Render sidebar list (mobile)
+    const sidebarListMount = document.getElementById('sidebar-list');
+    if (sidebarListMount) {
+      sidebarListMount.innerHTML = renderMenuList(menu);
+    }
+
+    /* ===========================
+       Toggle Sidebar (Mobile)
+    ============================*/
+    const sidebarPanel = document.querySelector('.sidebar-panel');
+    const menuToggleBtn = document.querySelector('.menu-toggle');
     const menuIcon = document.getElementById('menu-icon');
-  
-    if (!panel || !panel.classList.contains('active')) return;
-  
-    const clickInsidePanel = panel.contains(e.target);
-    const clickOnToggle = toggleBtn && toggleBtn.contains(e.target);
-  
-    if (!clickInsidePanel && !clickOnToggle) {
-      panel.classList.remove('active');
-      if (menuIcon) menuIcon.classList.remove('open');
-      if (toggleBtn) {
-        toggleBtn.setAttribute('aria-expanded', 'false');
-        toggleBtn.setAttribute('aria-label', 'Open Menu');
+    const root = document.documentElement;
+
+    function setScrollLock(locked) {
+      const value = locked ? 'hidden' : '';
+      root.style.overflow = value;
+      document.body.style.overflow = value;
+    }
+
+    function setMenuState(isOpen) {
+      if (!sidebarPanel) return;
+
+      sidebarPanel.classList.toggle('active', isOpen);
+      sidebarPanel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+
+      if (menuIcon) {
+        menuIcon.classList.toggle('open', isOpen);
       }
-      panel.setAttribute('aria-hidden', 'true');
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-    }
-  });
-  
-  // Tutup saat ESC
-  document.addEventListener('keydown', function (e) {
-    if (e.key !== 'Escape') return;
-    const panel = document.querySelector('.sidebar-panel');
-    const toggleBtn = document.querySelector('.menu-toggle');
-    const menuIcon = document.getElementById('menu-icon');
-  
-    if (panel && panel.classList.contains('active')) {
-      panel.classList.remove('active');
-      if (menuIcon) menuIcon.classList.remove('open');
-      if (toggleBtn) {
-        toggleBtn.setAttribute('aria-expanded', 'false');
-        toggleBtn.setAttribute('aria-label', 'Open Menu');
+
+      if (menuToggleBtn) {
+        menuToggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        menuToggleBtn.setAttribute('aria-label', isOpen ? 'Close Menu' : 'Open Menu');
       }
-      panel.setAttribute('aria-hidden', 'true');
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
+
+      setScrollLock(isOpen);
     }
-  });
+
+    function toggleMenu() {
+      if (!sidebarPanel) return;
+      const isOpen = sidebarPanel.classList.contains('active');
+      setMenuState(!isOpen);
+    }
+
+    function closeMenu() {
+      if (!sidebarPanel || !sidebarPanel.classList.contains('active')) return;
+      setMenuState(false);
+    }
+
+    if (menuToggleBtn) {
+      menuToggleBtn.addEventListener('click', toggleMenu);
+    }
+
+    // Tutup saat klik di luar panel & tombol
+    document.addEventListener('click', function (e) {
+      if (!sidebarPanel || !sidebarPanel.classList.contains('active')) return;
+
+      const clickInsidePanel = sidebarPanel.contains(e.target);
+      const clickOnToggle = menuToggleBtn && menuToggleBtn.contains(e.target);
+
+      if (!clickInsidePanel && !clickOnToggle) {
+        closeMenu();
+      }
+    });
+
+    // Tutup saat ESC
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeMenu();
+      }
+    });
+  })();
 </script>
 
 {% schema %}
@@ -468,7 +522,8 @@
         "type": "link_list",
         "id": "selected_menu",
         "label": "Menu"
-      }, {
+      },
+      {
         "type": "image_picker",
         "id": "logo",
         "label": "Logo"
@@ -476,5 +531,3 @@
     ]
   }
 {% endschema %}
-
-

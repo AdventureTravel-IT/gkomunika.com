@@ -229,6 +229,23 @@
     font-weight: bold;
   }
 
+  .info-tooltip {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-info {
+    color: var(--color-primary);
+  }
+
   @media (max-width: 768px) {
     .check-data-usage__wrapper {
       padding: 20px 24px;
@@ -241,14 +258,14 @@
 
 <style>
   /* biar newline kebaca dan teks rata kiri */
-  [role~="tooltip"][data-microtip-bullets]::after {
+  [role~='tooltip'][data-microtip-bullets]::after {
     white-space: pre-line;
     text-align: left;
     line-height: 1.35;
   }
   /* opsional: lebarkan tooltip biar nggak terlalu memanjang */
-  [role~="tooltip"][data-microtip-bullets][data-microtip-size="large"]::after {
-    width: 24rem; 
+  [role~='tooltip'][data-microtip-bullets][data-microtip-size='large']::after {
+    width: 24rem;
   }
 </style>
 
@@ -264,25 +281,26 @@
         <span>Enter your ICCID</span>
 
         <button
+          class="info-tooltip"
           aria-label="• SIM Card: ICCID dapat ditemukan di belakang potongan SIM Card.&#10;&#10;• eSIM: ICCID dapat ditemukan di email pada bagian eSIM Information."
           data-microtip-position="bottom"
           data-microtip-size="large"
           data-microtip-bullets
-          role="tooltip">
-          <div class="text-secondary">
+          role="tooltip"
+        >
+          <div class="icon-info">
             {% render 'icon-info' %}
           </div>
         </button>
-
       </div>
-
     </div>
     <div class="check-data-usage__input">
       <input
         type="number"
         id="iccid"
         placeholder="Input ICCID Number"
-        required>
+        required
+      >
       <button id="check-iccid" type="button">Next</button>
     </div>
     <div class="check-data-usage__result">
@@ -295,7 +313,8 @@
   <div class="invalid-popup__content">
     <h2>ICCID Invalid</h2>
     <p>
-      Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your phone settings.
+      Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
+      phone settings.
     </p>
     <p>Please contact our WhatsApp Customer Service for more information</p>
     <div class="invalid-popup__button">
@@ -315,7 +334,8 @@
 <div
   class="iccid-popup"
   id="iccid-popup"
-  style="display:none;">
+  style="display:none;"
+>
   <div class="invalid-popup__content">
     <h2>Enter ICCID</h2>
     <p>Please input your ICCID to continue to Top Up</p>
@@ -323,11 +343,18 @@
       type="number"
       id="popup-iccid"
       placeholder="Input ICCID Number"
-      style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);">
-    <button id="iccid-popup-submit" style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;">
+      style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);"
+    >
+    <button
+      id="iccid-popup-submit"
+      style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;"
+    >
       Continue
     </button>
-    <button id="iccid-popup-cancel" style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;">
+    <button
+      id="iccid-popup-cancel"
+      style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;"
+    >
       Cancel
     </button>
   </div>
@@ -346,174 +373,202 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-  const iccidInput = document.getElementById('iccid');
-  const checkBtn = document.getElementById('check-iccid');
-  const resultEl = document.getElementById('result');
-  const invalidPopup = document.getElementById('invalid-popup');
-  const btnHidePopup = document.getElementById('invalid-popup__button-hide');
-  const btnBuyEsim = document.getElementById('invalid-popup__buy-button');
-  const btnContactCs = document.getElementById('invalid-popup__contact-button');
-  let lastSubmit = 0;
-  
-  const prefixVendorMap = [
-    { prefix: '89859', vendor: 'AF' },
-    { prefix: '89862', vendor: 'AF' },
-    { prefix: '89810', vendor: 'TE' },
-    { prefix: '2210', vendor: 'BS' },
-  ];
-  
-  const vendorCategoryMap = {
-    BS: 'Top_Up_A',
-    SEM: 'Top_Up_D',
-  };
-  
-  function detectVendor(iccid) {
-    return prefixVendorMap.find((i) => iccid.startsWith(i.prefix))?.vendor || null;
-  }
-  
-  function showInvalidPopup() { invalidPopup.style.display = 'block'; }
-  function hideInvalidPopup() { invalidPopup.style.display = 'none'; }
-  
-  function formatDate(dateStr) {
-    if (!dateStr || dateStr.length !== 8) return dateStr;
-    return `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6)}`;
-  }
-  
-  function formatDataUsage(value, vendor) {
-    value = Number(value) || 0;
-    const KB = 1024;
-    const MB = 1024 * KB;
-    const GB = 1024 * MB;
-    if (vendor === 'BE' || vendor === 'BS') {
-      if (value >= MB) return (value / MB).toFixed(2) + ' GB';
-      if (value >= KB) return (value / KB).toFixed(2) + ' MB';
-      return value.toFixed(2) + ' KB';
+    const iccidInput = document.getElementById('iccid');
+    const checkBtn = document.getElementById('check-iccid');
+    const resultEl = document.getElementById('result');
+    const invalidPopup = document.getElementById('invalid-popup');
+    const btnHidePopup = document.getElementById('invalid-popup__button-hide');
+    const btnBuyEsim = document.getElementById('invalid-popup__buy-button');
+    const btnContactCs = document.getElementById('invalid-popup__contact-button');
+    let lastSubmit = 0;
+
+    const prefixVendorMap = [
+      { prefix: '89859', vendor: 'AF' },
+      { prefix: '89862', vendor: 'AF' },
+      { prefix: '89810', vendor: 'TE' },
+      { prefix: '2210', vendor: 'BS' },
+    ];
+
+    const vendorCategoryMap = {
+      BS: 'Top_Up_A',
+      SEM: 'Top_Up_D',
+    };
+
+    function detectVendor(iccid) {
+      return prefixVendorMap.find((i) => iccid.startsWith(i.prefix))?.vendor || null;
     }
-    if (value >= GB) return (value / GB).toFixed(2) + ' GB';
-    if (value >= MB) return (value / MB).toFixed(2) + ' MB';
-    return (value / KB).toFixed(2) + ' KB';
-  }
-  
-  function renderEsimInfo(item, vendor) {
-    const bundle = item.skuName || item.product_name || '-';
-    const startRaw = vendor === 'AF' ? item.useSDate : item.planStartTime;
-    const endRaw = vendor === 'AF' ? item.useEDate : item.planEndTime;
-    return `
+
+    function showInvalidPopup() {
+      invalidPopup.style.display = 'block';
+    }
+    function hideInvalidPopup() {
+      invalidPopup.style.display = 'none';
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr || dateStr.length !== 8) return dateStr;
+      return `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6)}`;
+    }
+
+    function formatDataUsage(value, vendor) {
+      value = Number(value) || 0;
+      const KB = 1024;
+      const MB = 1024 * KB;
+      const GB = 1024 * MB;
+      if (vendor === 'BE' || vendor === 'BS') {
+        if (value >= MB) return (value / MB).toFixed(2) + ' GB';
+        if (value >= KB) return (value / KB).toFixed(2) + ' MB';
+        return value.toFixed(2) + ' KB';
+      }
+      if (value >= GB) return (value / GB).toFixed(2) + ' GB';
+      if (value >= MB) return (value / MB).toFixed(2) + ' MB';
+      return (value / KB).toFixed(2) + ' KB';
+    }
+
+    function renderEsimInfo(item, vendor) {
+      const bundle = item.skuName || item.product_name || '-';
+      const startRaw = vendor === 'AF' ? item.useSDate : item.planStartTime;
+      const endRaw = vendor === 'AF' ? item.useEDate : item.planEndTime;
+      return `
       <div class="check-data-usage__esim-information">
         <h3>SIM Card Information</h3>
         <div class="esim-information__wrapper"><p>Your Bundle</p><span>${bundle}</span></div>
         <div class="esim-information__wrapper"><p>Active Date</p><span>${formatDate(startRaw)}</span></div>
         <div class="esim-information__wrapper"><p>End Date</p><span>${formatDate(endRaw)}</span></div>
       </div>`;
-  }
-  
-  function renderTopUpButton() { return `<button id="top-up-plan" class="top-up-plan-btn">Top Up</button>`; }
-  function renderBuyEsimButtons() {
-    return `<div class="button-topup__usage-wrapper">
+    }
+
+    function renderTopUpButton() {
+      return `<button id="top-up-plan" class="top-up-plan-btn">Top Up</button>`;
+    }
+    function renderBuyEsimButtons() {
+      return `<div class="button-topup__usage-wrapper">
       <span>Need more data? Buy eSIM from our website.</span>
       <div class="btn-topup-information">
         <button id="btn-topup__contact-button"><span>Contact CS</span></button>
         <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
       </div>
     </div>`;
-  }
-  
-  function attachTopUpButtonListeners() {
-    const btnTopUpBuy = document.getElementById('btn-topup__buy-button');
-    const btnTopUpCs = document.getElementById('btn-topup__contact-button');
-    if (btnTopUpBuy) btnTopUpBuy.onclick = () => window.location.href = 'https://gkomunika.com/pages/all-destination';
-    if (btnTopUpCs) btnTopUpCs.onclick = () => window.location.href = 'https://wa.me/628986454071';
-  }
-  
-  async function checkICCID() {
-    const now = Date.now();
-    if (now - lastSubmit < 3000) return;
-    lastSubmit = now;
-  
-    const iccid = iccidInput.value.trim();
-    if (!iccid || iccid.length < 10) {
-      resultEl.innerHTML = `<p style="color:red;">Invalid ICCID</p>`;
-      return;
     }
-  
-    let vendor = detectVendor(iccid);
-    checkBtn.disabled = true;
-    checkBtn.textContent = 'Loading...';
-  
-    try {
-      const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ iccid }),
-      });
-      const data = await res.json();
-  
-      console.log(data)
-        
-      // Tentukan vendor berdasarkan response backend
-      // Tentukan vendor berdasarkan response backend
-  if (!vendor) {
-  // hanya ubah vendor kalau belum terdeteksi dari prefix
-  if (data.tradeCode && data.tradeData?.subOrderList) {
-    // tambahkan deteksi vendor BS berdasarkan prefix "2210"
-    if (iccid.startsWith('2210')) {
-      vendor = 'BS';
-    } else {
-      vendor = 'BE';
+
+    function attachTopUpButtonListeners() {
+      const btnTopUpBuy = document.getElementById('btn-topup__buy-button');
+      const btnTopUpCs = document.getElementById('btn-topup__contact-button');
+      if (btnTopUpBuy)
+        btnTopUpBuy.onclick = () => (window.location.href = 'https://gkomunika.com/pages/all-destination');
+      if (btnTopUpCs) btnTopUpCs.onclick = () => (window.location.href = 'https://wa.me/628986454071');
     }
-  } else if (data.data_usage?.retCode) {
-    vendor = 'SEM';
-  } else {
-    vendor = null;
-  }
-  }
-  
-  
-      window.lastDetectedVendor = vendor;
-  
-  
-      // === BE ===
-      if (vendor === 'BE') {
-        if (data.tradeCode !== '1000') { showInvalidPopup(); return; }
-        const item = data.tradeData?.subOrderList?.[0];
-        if (!item) { showInvalidPopup(); return; }
-        const usageList = item.usageInfoList || [];
-        let total = 0;
-        const perCountry = {};
-        usageList.forEach(u => {
-          total += Number(u.usedAmount || 0);
-          perCountry[u.country] = (perCountry[u.country] || 0) + Number(u.usedAmount || 0);
+
+    async function checkICCID() {
+      const now = Date.now();
+      if (now - lastSubmit < 3000) return;
+      lastSubmit = now;
+
+      const iccid = iccidInput.value.trim();
+      if (!iccid || iccid.length < 10) {
+        resultEl.innerHTML = `<p style="color:red;">Invalid ICCID</p>`;
+        return;
+      }
+
+      let vendor = detectVendor(iccid);
+      checkBtn.disabled = true;
+      checkBtn.textContent = 'Loading...';
+
+      try {
+        const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ iccid }),
         });
-  
-        const esimHtml = renderEsimInfo(item, vendor);
-        const totalUsageHtml = Object.entries(perCountry).map(([c, v]) => `
-          <div class="total-data-usage__wrapper"><p>${c}</p><p>${formatDataUsage(v, vendor)}</p></div>`).join('');
-        const detailUsageHtml = usageList.map(u => `
-          <div class="data-usage__wrapper"><p>${u.country}</p><p>${formatDate(u.usedDate)}</p><p>${formatDataUsage(u.usedAmount, vendor)}</p></div>`).join('');
-  
-        // BE tanpa Top Up
-        resultEl.innerHTML = `
+        const data = await res.json();
+
+        console.log(data);
+
+        // Tentukan vendor berdasarkan response backend
+        // Tentukan vendor berdasarkan response backend
+        if (!vendor) {
+          // hanya ubah vendor kalau belum terdeteksi dari prefix
+          if (data.tradeCode && data.tradeData?.subOrderList) {
+            // tambahkan deteksi vendor BS berdasarkan prefix "2210"
+            if (iccid.startsWith('2210')) {
+              vendor = 'BS';
+            } else {
+              vendor = 'BE';
+            }
+          } else if (data.data_usage?.retCode) {
+            vendor = 'SEM';
+          } else {
+            vendor = null;
+          }
+        }
+
+        window.lastDetectedVendor = vendor;
+
+        // === BE ===
+        if (vendor === 'BE') {
+          if (data.tradeCode !== '1000') {
+            showInvalidPopup();
+            return;
+          }
+          const item = data.tradeData?.subOrderList?.[0];
+          if (!item) {
+            showInvalidPopup();
+            return;
+          }
+          const usageList = item.usageInfoList || [];
+          let total = 0;
+          const perCountry = {};
+          usageList.forEach((u) => {
+            total += Number(u.usedAmount || 0);
+            perCountry[u.country] = (perCountry[u.country] || 0) + Number(u.usedAmount || 0);
+          });
+
+          const esimHtml = renderEsimInfo(item, vendor);
+          const totalUsageHtml = Object.entries(perCountry)
+            .map(
+              ([c, v]) => `
+          <div class="total-data-usage__wrapper"><p>${c}</p><p>${formatDataUsage(v, vendor)}</p></div>`
+            )
+            .join('');
+          const detailUsageHtml = usageList
+            .map(
+              (u) => `
+          <div class="data-usage__wrapper"><p>${u.country}</p><p>${formatDate(u.usedDate)}</p><p>${formatDataUsage(
+                u.usedAmount,
+                vendor
+              )}</p></div>`
+            )
+            .join('');
+
+          // BE tanpa Top Up
+          resultEl.innerHTML = `
           ${esimHtml}
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage">
-              <div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(total, vendor)}</span></div>
+              <div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
+                total,
+                vendor
+              )}</span></div>
               ${totalUsageHtml}
             </div>
             <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
           </div>`;
-        return;
-      }
-  
-      // === SEM ===
-      if (vendor === 'SEM') {
-        const usage = data.data_usage;
-        if (usage.retCode !== '000000') { showInvalidPopup(); return; }
-        const quota = usage.quotaList?.[0];
-        const used = formatDataUsage(quota.usedQuota, vendor);
-        const remaining = formatDataUsage(quota.remainingQuota, vendor);
-  
-        resultEl.innerHTML = `
+          return;
+        }
+
+        // === SEM ===
+        if (vendor === 'SEM') {
+          const usage = data.data_usage;
+          if (usage.retCode !== '000000') {
+            showInvalidPopup();
+            return;
+          }
+          const quota = usage.quotaList?.[0];
+          const used = formatDataUsage(quota.usedQuota, vendor);
+          const remaining = formatDataUsage(quota.remainingQuota, vendor);
+
+          resultEl.innerHTML = `
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage">
@@ -522,140 +577,177 @@
             ${renderTopUpButton()}
             </div>
           `;
-        attachTopUpButtonListeners();
-        return;
-      }
-  
-      // === AF ===
-      if (vendor === 'AF') {
-        const item = data.data;
-        const usageList = item?.itemList || [];
-        const perCountry = {};
-        let total = 0;
-        usageList.forEach(u => {
-          total += Number(u.usage || 0);
-          perCountry[u.enus] = (perCountry[u.enus] || 0) + Number(u.usage || 0);
-        });
-        const esimHtml = renderEsimInfo(item, vendor);
-        const totalUsageHtml = Object.entries(perCountry).map(([c, v]) => `
-          <div class="total-data-usage__wrapper"><p>${c}</p><p>${formatDataUsage(v, vendor)}</p></div>`).join('');
-        const detailUsageHtml = usageList.map(u => `
-          <div class="data-usage__wrapper"><p>${u.enus}</p><p>${formatDate(u.usageDate)}</p><p>${formatDataUsage(u.usage, vendor)}</p></div>`).join('');
-        resultEl.innerHTML = `
+          attachTopUpButtonListeners();
+          return;
+        }
+
+        // === AF ===
+        if (vendor === 'AF') {
+          const item = data.data;
+          const usageList = item?.itemList || [];
+          const perCountry = {};
+          let total = 0;
+          usageList.forEach((u) => {
+            total += Number(u.usage || 0);
+            perCountry[u.enus] = (perCountry[u.enus] || 0) + Number(u.usage || 0);
+          });
+          const esimHtml = renderEsimInfo(item, vendor);
+          const totalUsageHtml = Object.entries(perCountry)
+            .map(
+              ([c, v]) => `
+          <div class="total-data-usage__wrapper"><p>${c}</p><p>${formatDataUsage(v, vendor)}</p></div>`
+            )
+            .join('');
+          const detailUsageHtml = usageList
+            .map(
+              (u) => `
+          <div class="data-usage__wrapper"><p>${u.enus}</p><p>${formatDate(u.usageDate)}</p><p>${formatDataUsage(
+                u.usage,
+                vendor
+              )}</p></div>`
+            )
+            .join('');
+          resultEl.innerHTML = `
           ${esimHtml}
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
-            <div class="check-data-usage__total-usage"><div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(total, vendor)}</span></div>${totalUsageHtml}</div>
+            <div class="check-data-usage__total-usage"><div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
+              total,
+              vendor
+            )}</span></div>${totalUsageHtml}</div>
             <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
             ${renderTopUpButton()}
           </div>`;
-        attachTopUpButtonListeners();
-        return;
-      }
-  
-      // === TE ===
-      if (vendor === 'TE') {
-        if (data.code !== '0000') { showInvalidPopup(); return; }
-        const detail = data.data.detail || {};
-        const usage = data.data.usage || {};
-        const total = usage.dataTotal || 0;
-        const used = usage.dataUsage || 0;
-        const remain = usage.dataResidual || 0;
-  
-        const esimHtml = `
+          attachTopUpButtonListeners();
+          return;
+        }
+
+        // === TE ===
+        if (vendor === 'TE') {
+          if (data.code !== '0000') {
+            showInvalidPopup();
+            return;
+          }
+          const detail = data.data.detail || {};
+          const usage = data.data.usage || {};
+          const total = usage.dataTotal || 0;
+          const used = usage.dataUsage || 0;
+          const remain = usage.dataResidual || 0;
+
+          const esimHtml = `
           <div class="check-data-usage__esim-information">
             <h3>SIM Card Information</h3>
             <div class="esim-information__wrapper"><p>Your Bundle</p><span>${data.data.product_name || '-'}</span></div>
             <div class="esim-information__wrapper"><p>Device</p><span>${detail.installDevice || '-'}</span></div>
             <div class="esim-information__wrapper"><p>Status</p><span>${detail.state || '-'}</span></div>
           </div>`;
-        resultEl.innerHTML = `
+          resultEl.innerHTML = `
           ${esimHtml}
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage">
-              <div style="display:flex;justify-content:space-between;"><h3>Total:</h3><span>${formatDataUsage(total, vendor)}</span></div>
-              <div style="display:flex;justify-content:space-between;"><h3>Used:</h3><span>${formatDataUsage(used, vendor)}</span></div>
-              <div style="display:flex;justify-content:space-between;"><h3>Remaining:</h3><span>${formatDataUsage(remain, vendor)}</span></div>
+              <div style="display:flex;justify-content:space-between;"><h3>Total:</h3><span>${formatDataUsage(
+                total,
+                vendor
+              )}</span></div>
+              <div style="display:flex;justify-content:space-between;"><h3>Used:</h3><span>${formatDataUsage(
+                used,
+                vendor
+              )}</span></div>
+              <div style="display:flex;justify-content:space-between;"><h3>Remaining:</h3><span>${formatDataUsage(
+                remain,
+                vendor
+              )}</span></div>
             </div>
           </div>
           ${renderTopUpButton()}`;
-        attachTopUpButtonListeners();
-        return;
-      }
-  
-      // === BS ===
-      if (vendor === 'BS') {
-        const item = data.tradeData?.subOrderList?.[0];
-        const usageList = item?.usageInfoList || [];
-        const perCountry = {};
-        let total = 0;
-        usageList.forEach(u => {
-          total += Number(u.usedAmount || 0);
-          perCountry[u.country] = (perCountry[u.country] || 0) + Number(u.usedAmount || 0);
-        });
-        const esimHtml = renderEsimInfo(item, vendor);
-        const totalUsageHtml = Object.entries(perCountry).map(([c, v]) => `
-          <div class="total-data-usage__wrapper"><p>${c}</p><p>${formatDataUsage(v, vendor)}</p></div>`).join('');
-        const detailUsageHtml = usageList.map(u => `
-          <div class="data-usage__wrapper"><p>${u.country}</p><p>${formatDate(u.usedDate)}</p><p>${formatDataUsage(u.usedAmount, vendor)}</p></div>`).join('');
-        resultEl.innerHTML = `
+          attachTopUpButtonListeners();
+          return;
+        }
+
+        // === BS ===
+        if (vendor === 'BS') {
+          const item = data.tradeData?.subOrderList?.[0];
+          const usageList = item?.usageInfoList || [];
+          const perCountry = {};
+          let total = 0;
+          usageList.forEach((u) => {
+            total += Number(u.usedAmount || 0);
+            perCountry[u.country] = (perCountry[u.country] || 0) + Number(u.usedAmount || 0);
+          });
+          const esimHtml = renderEsimInfo(item, vendor);
+          const totalUsageHtml = Object.entries(perCountry)
+            .map(
+              ([c, v]) => `
+          <div class="total-data-usage__wrapper"><p>${c}</p><p>${formatDataUsage(v, vendor)}</p></div>`
+            )
+            .join('');
+          const detailUsageHtml = usageList
+            .map(
+              (u) => `
+          <div class="data-usage__wrapper"><p>${u.country}</p><p>${formatDate(u.usedDate)}</p><p>${formatDataUsage(
+                u.usedAmount,
+                vendor
+              )}</p></div>`
+            )
+            .join('');
+          resultEl.innerHTML = `
           ${esimHtml}
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
-            <div class="check-data-usage__total-usage"><div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(total, vendor)}</span></div>${totalUsageHtml}</div>
+            <div class="check-data-usage__total-usage"><div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
+              total,
+              vendor
+            )}</span></div>${totalUsageHtml}</div>
             <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
             ${renderTopUpButton()}
           </div>`;
-        attachTopUpButtonListeners();
-        return;
+          attachTopUpButtonListeners();
+          return;
+        }
+
+        showInvalidPopup();
+      } catch (err) {
+        console.error(err);
+        resultEl.innerHTML = `<p style="color:red;">Connection error.</p>`;
+      } finally {
+        checkBtn.disabled = false;
+        checkBtn.textContent = 'Next';
       }
-  
-      showInvalidPopup();
-    } catch (err) {
-      console.error(err);
-      resultEl.innerHTML = `<p style="color:red;">Connection error.</p>`;
-    } finally {
-      checkBtn.disabled = false;
-      checkBtn.textContent = 'Next';
     }
-  }
-  
-  checkBtn.addEventListener('click', checkICCID);
-  btnHidePopup.addEventListener('click', hideInvalidPopup);
-  btnBuyEsim.addEventListener('click', () => window.location.href = 'https://gkomunika.com/pages/all-destination');
-  btnContactCs.addEventListener('click', () => window.location.href = 'https://wa.me/628986454071');
-  document.addEventListener('click', (e) => {
-  if (e.target?.id === 'top-up-plan') {
-    const iccidValue = iccidInput.value.trim();
-    if (iccidValue) sessionStorage.setItem('iccid', iccidValue);
-  
-    // --- Tambahkan logika vendor SEM untuk simpan kategori ---
-    const lastVendor = window.lastDetectedVendor; // ambil vendor terakhir
-    if (lastVendor === 'SEM') {
-  sessionStorage.setItem('category', 'Top_Up_D');
-  } else if (lastVendor === 'BS') {
-  sessionStorage.setItem('category', 'Top_Up_A');
-  }
-  
-  
-    window.location.href = '/pages/top-up';
-  }
-  });
-  
+
+    checkBtn.addEventListener('click', checkICCID);
+    btnHidePopup.addEventListener('click', hideInvalidPopup);
+    btnBuyEsim.addEventListener('click', () => (window.location.href = 'https://gkomunika.com/pages/all-destination'));
+    btnContactCs.addEventListener('click', () => (window.location.href = 'https://wa.me/628986454071'));
+    document.addEventListener('click', (e) => {
+      if (e.target?.id === 'top-up-plan') {
+        const iccidValue = iccidInput.value.trim();
+        if (iccidValue) sessionStorage.setItem('iccid', iccidValue);
+
+        // --- Tambahkan logika vendor SEM untuk simpan kategori ---
+        const lastVendor = window.lastDetectedVendor; // ambil vendor terakhir
+        if (lastVendor === 'SEM') {
+          sessionStorage.setItem('category', 'Top_Up_D');
+        } else if (lastVendor === 'BS') {
+          sessionStorage.setItem('category', 'Top_Up_A');
+        }
+
+        window.location.href = '/pages/top-up';
+      }
+    });
   });
 </script>
 
-
 {% schema %}
-  {
-    "name": "Check Data Usage",
-    "settings": [],
-    "presets": [
-      {
-        "name": "Check Data Usage",
-        "category": "Custom"
-      }
-    ]
-  }
+{
+  "name": "Check Data Usage",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Check Data Usage",
+      "category": "Custom"
+    }
+  ]
+}
 {% endschema %}

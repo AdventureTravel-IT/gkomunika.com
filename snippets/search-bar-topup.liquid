@@ -24,6 +24,11 @@
   .search__input::placeholder {
     color: var(--color-primary);
     font-size: var(--font-large);
+    opacity: 1;
+    transition: opacity 0.2s ease;
+  }
+  .search__input:focus::placeholder {
+    opacity: 0.3;
   }
   .search__button-submit {
     position: absolute;
@@ -45,7 +50,6 @@
   }
 {% endstyle %}
 
-
 <div class="search-bar">
   <form action="{{ routes.search_url }}" method="get" class="search-form" onsubmit="return false;">
     <div class="search__field">
@@ -58,7 +62,7 @@
         oninput="filterCountries()"
         placeholder="Search Your Destination"
         aria-label="Search"
-      />
+      >
 
       <button
         type="reset"
@@ -84,54 +88,54 @@
 </div>
 
 <script>
-function filterCountries() {
-  const input = document.getElementById("search-input-category").value.trim().toLowerCase();
-  const productCards = document.querySelectorAll(".product-card-container");
-  const message = document.getElementById("no-results-message");
-  const title = document.querySelector(".main-search-collection.title");
+  function filterCountries() {
+    const input = document.getElementById('search-input-category').value.trim().toLowerCase();
+    const productCards = document.querySelectorAll('.product-card-container');
+    const message = document.getElementById('no-results-message');
+    const title = document.querySelector('.main-search-collection.title');
 
-  // Ambil kategori dari sessionStorage
-  const desiredCategory = sessionStorage.getItem('category')?.trim()?.toUpperCase() || '';
+    // Ambil kategori dari sessionStorage
+    const desiredCategory = sessionStorage.getItem('category')?.trim()?.toUpperCase() || '';
 
-  if (input === "") {
-    // Reset → tampilkan semua produk + judul
-    productCards.forEach(card => {
-      // Hanya tampilkan produk yang sesuai dengan kategori yang dipilih
-      if (desiredCategory === '' || card.dataset.category.toUpperCase() === desiredCategory) {
-        card.style.display = "";
+    if (input === '') {
+      // Reset → tampilkan semua produk + judul
+      productCards.forEach((card) => {
+        // Hanya tampilkan produk yang sesuai dengan kategori yang dipilih
+        if (desiredCategory === '' || card.dataset.category.toUpperCase() === desiredCategory) {
+          card.style.display = '';
+        }
+      });
+      message.style.display = 'none';
+      if (title) title.style.display = '';
+      return;
+    }
+
+    let foundAny = false;
+
+    productCards.forEach((card) => {
+      const country = (card.dataset.coverageCountry || '').toLowerCase();
+      const alias = (card.dataset.coverageAlias || '').toLowerCase();
+      const region = (card.dataset.coverageRegion || '').toLowerCase();
+      const category = (card.dataset.category || '').toUpperCase(); // Ambil kategori produk
+
+      // Jika kategori sesuai dengan kategori yang ada di sessionStorage
+      if (
+        (desiredCategory === '' || category === desiredCategory) &&
+        (country.includes(input) || alias.includes(input) || region.includes(input))
+      ) {
+        card.style.display = '';
+        foundAny = true;
+      } else {
+        card.style.display = 'none';
       }
     });
-    message.style.display = "none";
-    if (title) title.style.display = "";
-    return;
-  }
 
-  let foundAny = false;
-
-  productCards.forEach((card) => {
-    const country = (card.dataset.coverageCountry || "").toLowerCase();
-    const alias = (card.dataset.coverageAlias || "").toLowerCase();
-    const region = (card.dataset.coverageRegion || "").toLowerCase();
-    const category = (card.dataset.category || "").toUpperCase(); // Ambil kategori produk
-
-    // Jika kategori sesuai dengan kategori yang ada di sessionStorage
-    if (
-      (desiredCategory === '' || category === desiredCategory) &&
-      (country.includes(input) || alias.includes(input) || region.includes(input))
-    ) {
-      card.style.display = "";
-      foundAny = true;
+    if (!foundAny) {
+      message.style.display = 'flex';
+      if (title) title.style.display = 'none';
     } else {
-      card.style.display = "none";
+      message.style.display = 'none';
+      if (title) title.style.display = '';
     }
-  });
-
-  if (!foundAny) {
-    message.style.display = "flex";
-    if (title) title.style.display = "none";
-  } else {
-    message.style.display = "none";
-    if (title) title.style.display = "";
   }
-}
 </script>

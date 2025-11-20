@@ -210,9 +210,7 @@
       max-height: 0;
       opacity: 0;
       transform: translateY(-8px);
-      transition: max-height 0.35s ease,
-        opacity 0.25s ease,
-        transform 0.25s ease;
+      transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease;
       border-top: 1px solid #eaeaea;
       background: var(--color-neutral);
       will-change: max-height, opacity, transform;
@@ -252,6 +250,17 @@
     .sidebar-mobile-block .localization-form {
       margin-left: 4px;
     }
+
+    .menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      position: relative;
+      z-index: 50;
+      -webkit-tap-highlight-color: transparent;
+    }
   }
 </style>
 
@@ -263,7 +272,8 @@
           class="menu-toggle"
           type="button"
           aria-label="Open Menu"
-          aria-expanded="false">
+          aria-expanded="false"
+        >
           <div class="animated-icon" id="menu-icon">
             <span></span>
             <span></span>
@@ -284,7 +294,8 @@
               width="120"
               height="40"
               alt="Global Komunika"
-              loading="eager">
+              loading="eager"
+            >
           </a>
         {% endif %}
       </div>
@@ -310,10 +321,7 @@
           </div>
 
           <localization-form>
-            {%- form 'localization',
-              id: 'FooterLanguageForm',
-              class: 'localization-form'
-            -%}
+            {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
               <div class="localization-inner">
                 {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
               </div>
@@ -325,20 +333,22 @@
           id="navbar"
           role="navigation"
           aria-label="Main navigation"
-          data-icons='{
-            "home": "{{ 'header-home.svg' | asset_url }}",
-            "esim": "{{ 'header-esim.svg' | asset_url }}",
-            "simcard": "{{ 'header-simcard.svg' | asset_url }}",
-            "insurance": "{{ 'header-insurance.svg' | asset_url }}",
-            "usage": "{{ 'header-usage.svg' | asset_url }}",
-            "topup": "{{ 'icon-plus.svg' | asset_url }}",
-            "about": "{{ 'header-about.svg' | asset_url }}",
-            "faq": "{{ 'header-faq.svg' | asset_url }}",
-            "news": "{{ 'header-news.svg' | asset_url }}",
-            "cart": "{{ 'header-cart.svg' | asset_url }}",
-            "profile": "{{ 'header-profile.svg' | asset_url }}"
-          }'>
-        </div>
+          data-icons='
+            {
+              "home": "{{ 'header-home.svg' | asset_url }}",
+              "esim": "{{ 'header-esim.svg' | asset_url }}",
+              "simcard": "{{ 'header-simcard.svg' | asset_url }}",
+              "insurance": "{{ 'header-insurance.svg' | asset_url }}",
+              "usage": "{{ 'header-usage.svg' | asset_url }}",
+              "topup": "{{ 'icon-plus.svg' | asset_url }}",
+              "about": "{{ 'header-about.svg' | asset_url }}",
+              "faq": "{{ 'header-faq.svg' | asset_url }}",
+              "news": "{{ 'header-news.svg' | asset_url }}",
+              "cart": "{{ 'header-cart.svg' | asset_url }}",
+              "profile": "{{ 'header-profile.svg' | asset_url }}"
+            }
+          '
+        ></div>
       </div>
     </div>
 
@@ -359,10 +369,7 @@
             </div>
 
             <localization-form>
-              {%- form 'localization',
-                id: 'FooterLanguageFormSidebar',
-                class: 'localization-form'
-              -%}
+              {%- form 'localization', id: 'FooterLanguageFormSidebar', class: 'localization-form' -%}
                 <div class="localization-inner">
                   {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
                 </div>
@@ -394,11 +401,10 @@
       { label: 'Top Up', icon: icons.topup, link: '/pages/check-data-usage-topup' },
       { label: 'About Us', icon: icons.about, link: '/pages/about-us' },
       { label: 'FAQ', icon: icons.faq, link: '/pages/faq' },
-      { label: 'News', icon: icons.news, link: '/pages/news' }
+      { label: 'News', icon: icons.news, link: '/pages/news' },
     ];
 
-    const normalizeLink = (link) =>
-      link && link.startsWith('/') ? link : `/${link || ''}`;
+    const normalizeLink = (link) => (link && link.startsWith('/') ? link : `/${link || ''}`);
 
     function renderMenuList(items) {
       const itemsHtml = items
@@ -419,7 +425,7 @@
     function renderHeaderMenu({ container, items }) {
       const fullItems = items.concat([
         { label: 'Cart', icon: icons.cart, link: '/cart' },
-        { label: 'Profile', icon: icons.profile, link: '/account' }
+        { label: 'Profile', icon: icons.profile, link: '/account' },
       ]);
 
       const itemsHtml = fullItems
@@ -515,19 +521,19 @@
 </script>
 
 {% schema %}
-  {
-    "name": "Header Settings",
-    "settings": [
-      {
-        "type": "link_list",
-        "id": "selected_menu",
-        "label": "Menu"
-      },
-      {
-        "type": "image_picker",
-        "id": "logo",
-        "label": "Logo"
-      }
-    ]
-  }
+{
+  "name": "Header Settings",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "selected_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    }
+  ]
+}
 {% endschema %}

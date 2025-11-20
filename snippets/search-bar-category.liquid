@@ -24,6 +24,11 @@
   .search__input::placeholder {
     color: var(--color-primary);
     font-size: var(--font-large);
+    opacity: 1;
+    transition: opacity 0.2s ease;
+  }
+  .search__input:focus::placeholder {
+    opacity: 0.3;
   }
   .search__button-submit {
     position: absolute;
@@ -45,7 +50,6 @@
   }
 {% endstyle %}
 
-
 <div class="search-bar">
   <form action="{{ routes.search_url }}" method="get" class="search-form" onsubmit="return false;">
     <div class="search__field">
@@ -58,7 +62,7 @@
         oninput="filterCountries()"
         placeholder="Search Your Destination"
         aria-label="Search"
-      />
+      >
 
       <button
         type="submit"
@@ -74,42 +78,42 @@
 </div>
 
 <script>
-function filterCountries() {
-  const keyword = document.getElementById('search-input-category').value.toLowerCase().trim();
-  const simActiveBtn = document.querySelector('.sim-filter-buttons button.active');
-  const simFilter = simActiveBtn ? simActiveBtn.getAttribute('data-filter') : 'all';
+  function filterCountries() {
+    const keyword = document.getElementById('search-input-category').value.toLowerCase().trim();
+    const simActiveBtn = document.querySelector('.sim-filter-buttons button.active');
+    const simFilter = simActiveBtn ? simActiveBtn.getAttribute('data-filter') : 'all';
 
-  const productCards = document.querySelectorAll('.product-card-container');
-  const collectionWrappers = document.querySelectorAll('.main-search-collection-wrapper');
+    const productCards = document.querySelectorAll('.product-card-container');
+    const collectionWrappers = document.querySelectorAll('.main-search-collection-wrapper');
 
-  productCards.forEach(card => {
-    const countryData = card.getAttribute('data-country') || '';
-    const aliasData = card.getAttribute('data-alias') || '';
+    productCards.forEach((card) => {
+      const countryData = card.getAttribute('data-country') || '';
+      const aliasData = card.getAttribute('data-alias') || '';
 
-    let matchKeyword = false;
+      let matchKeyword = false;
 
-    if (!keyword) {
-      matchKeyword = true; // Jika keyword kosong, match semua
-    } else {
-      if (countryData.includes(keyword) || aliasData.includes(keyword)) {
-        matchKeyword = true;
+      if (!keyword) {
+        matchKeyword = true; // Jika keyword kosong, match semua
+      } else {
+        if (countryData.includes(keyword) || aliasData.includes(keyword)) {
+          matchKeyword = true;
+        }
       }
-    }
 
-    let matchSim = (simFilter === 'all') || card.classList.contains('sim-type-' + simFilter);
+      let matchSim = simFilter === 'all' || card.classList.contains('sim-type-' + simFilter);
 
-    if (matchKeyword && matchSim) {
-      card.style.display = 'flex';
-    } else {
-      card.style.display = 'none';
-    }
-  });
+      if (matchKeyword && matchSim) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
 
-  // Update visibility collection wrapper
-  collectionWrappers.forEach(wrapper => {
-    const products = wrapper.querySelectorAll('.product-card-container');
-    const anyVisible = Array.from(products).some(p => p.style.display !== 'none');
-    wrapper.style.display = anyVisible ? 'block' : 'none';
-  });
-}
+    // Update visibility collection wrapper
+    collectionWrappers.forEach((wrapper) => {
+      const products = wrapper.querySelectorAll('.product-card-container');
+      const anyVisible = Array.from(products).some((p) => p.style.display !== 'none');
+      wrapper.style.display = anyVisible ? 'block' : 'none';
+    });
+  }
 </script>

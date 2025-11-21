@@ -734,6 +734,15 @@ video {
 
 .gap-3 {
   gap: 0.75rem;
+<<<<<<< HEAD
+=======
+}
+
+.space-x-5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(1.25rem * var(--tw-space-x-reverse));
+  margin-left: calc(1.25rem * calc(1 - var(--tw-space-x-reverse)));
+>>>>>>> 0ac8c8971c4a31b164a1174aee061eeeb1504895
 }
 
 .overflow-hidden {
@@ -757,6 +766,7 @@ video {
 .bg-red-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(153 27 27 / var(--tw-bg-opacity, 1));
+<<<<<<< HEAD
 }
 
 .bg-red-400 {
@@ -764,8 +774,36 @@ video {
   background-color: rgb(248 113 113 / var(--tw-bg-opacity, 1));
 }
 
+=======
+}
+
+.bg-red-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 113 113 / var(--tw-bg-opacity, 1));
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+>>>>>>> 0ac8c8971c4a31b164a1174aee061eeeb1504895
 .p-5 {
   padding: 1.25rem;
+}
+
+<<<<<<< HEAD
+.px-5 {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+=======
+.p-\[15px\] {
+  padding: 15px;
+>>>>>>> 0ac8c8971c4a31b164a1174aee061eeeb1504895
 }
 
 .px-5 {
@@ -783,6 +821,13 @@ video {
   line-height: 2.25rem;
 }
 
+<<<<<<< HEAD
+=======
+.font-bold {
+  font-weight: 700;
+}
+
+>>>>>>> 0ac8c8971c4a31b164a1174aee061eeeb1504895
 .uppercase {
   text-transform: uppercase;
 }
@@ -806,6 +851,10 @@ video {
 
 .text-secondary {
   color: var(--color-secondary);
+}
+
+.text-neutral {
+  color: var(--color-neutral);
 }
 
 .underline {

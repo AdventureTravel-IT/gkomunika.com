@@ -19,11 +19,10 @@
             "category": "news",
             "hero-title": "News",
             "hero-description": "<p>Stay up to date with the latest developments in travel, including <strong>airline updates</strong>, airport regulations, <strong>visa policies</strong>, and <strong>tourism trends</strong>. Perfect for keeping informed before and during your journey.</p>",
-            "first-page": "new-flight-routes-by-scoot-airlines-in-indonesia-from-padang-to-balikpapan",
-            "second-page": "several-local-airlines-launch-new-flight-routes-here-are-the-destinations",
+            "first-page": "check-data-usage",
+            "second-page": "what-is-sim-card-recycling-and-its-process",
             "thrid-page": "airport-regulations-for-flights-to-dubai-have-changed-here-s-what-you-need-to-know",
-            "show-button": true,
-            "hero-background": "shopify://shop_images/news_1.jpg"
+            "show-button": true
           }
         },
         "news_block_EGEeC3": {
@@ -36,8 +35,7 @@
             "first-page": "don-t-miss-the-cathay-pacific-travel-fair-july-2025-the-best-travel-deals-of-the-year",
             "second-page": "enjoy-various-exciting-deals-at-singapore-airlines-travel-fair-august-2025",
             "thrid-page": "get-exclusive-flight-deals-and-tour-packages-at-astindo-travel-fair-august-2025",
-            "show-button": true,
-            "hero-background": "shopify://shop_images/miguel-bernardo-lAT-Z6uLYew-unsplash.jpg"
+            "show-button": true
           }
         },
         "news_block_dbChQJ": {
@@ -50,8 +48,7 @@
             "first-page": "blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how",
             "second-page": "bca-poket-valas-a-convenient-solution-for-foreign-currency-transactions-abroad",
             "thrid-page": "how-to-choose-comfortable-and-stylish-spring-outfits",
-            "show-button": true,
-            "hero-background": "shopify://shop_images/kristina-zykova-5n-Os-7qitE-unsplash.jpg"
+            "show-button": true
           }
         },
         "news_block_AyHEdg": {
@@ -64,8 +61,7 @@
             "first-page": "eurail-pass-guide-price-how-to-use-this-train-ticket-across-europe",
             "second-page": "best-seasons-and-months-to-witness-the-aurora-borealis-phenomenon",
             "thrid-page": "the-beauty-of-garden-rhapsody-gardens-by-the-bay-s-night-light-show-in-singapore",
-            "show-button": true,
-            "hero-background": "shopify://shop_images/annika-k2dh4qZ2o_I-unsplash.jpg"
+            "show-button": true
           }
         }
       },
@@ -76,7 +72,6 @@
         "news_block_AyHEdg"
       ],
       "settings": {
-        "news_hero_background": "shopify://shop_images/andrei-mike-N1ufEF8ukmI-unsplash.jpg",
         "main-heading": "Stay Connected, Travel Smarter",
         "main-description": "Global Komunika shares essential travel tips, destination insights, and the latest updates on eSIM and SIM card solutions, helping travelers stay connected with ease wherever they go.",
         "main-first-page": "blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how",

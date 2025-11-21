@@ -23,7 +23,7 @@
             "second-page": "several-local-airlines-launch-new-flight-routes-here-are-the-destinations",
             "thrid-page": "airport-regulations-for-flights-to-dubai-have-changed-here-s-what-you-need-to-know",
             "show-button": true,
-            "hero-background": "shopify://shop_images/news_1.jpg"
+            "hero-background": "shopify://shop_images/news_1.webp"
           }
         },
         "news_block_EGEeC3": {
@@ -67,13 +67,27 @@
             "show-button": true,
             "hero-background": "shopify://shop_images/annika-k2dh4qZ2o_I-unsplash.jpg"
           }
+        },
+        "news_block_wQRfkB": {
+          "type": "news_block",
+          "settings": {
+            "category": "tech-guide",
+            "hero-title": "Tech Guide",
+            "hero-description": "<p>Break down complex tech topics into simple, traveler-friendly guides. Learn how to <strong>maximize your eSIM, optimize your device, and solve common connectivity issues</strong>, helping you stay online anywhere in the world.</p>",
+            "first-page": "can-my-esim-be-used-for-calls-or-sms",
+            "second-page": "",
+            "thrid-page": "",
+            "show-button": true,
+            "hero-background": "shopify://shop_images/WhatsApp_Image_2025-11-20_at_16.05.04_32a9aae1.jpg"
+          }
         }
       },
       "block_order": [
         "news_block_R4Mzgt",
         "news_block_EGEeC3",
         "news_block_dbChQJ",
-        "news_block_AyHEdg"
+        "news_block_AyHEdg",
+        "news_block_wQRfkB"
       ],
       "settings": {
         "news_hero_background": "shopify://shop_images/andrei-mike-N1ufEF8ukmI-unsplash.jpg",
@@ -89,5 +103,7 @@
       }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }

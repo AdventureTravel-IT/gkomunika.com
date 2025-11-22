@@ -1,4 +1,8 @@
 {% style %}
+  :root {
+    --header-height: 80px;
+  }
+
   .pages-container {
     max-width: 1920px;
     margin: 0 auto;
@@ -12,10 +16,10 @@
   }
 
   .pages-summary {
+    position: sticky;
     width: 100%;
     flex-shrink: 0;
-    position: sticky;
-    top: 20px;
+    top: calc(var(--header-height) + 20px);
     align-self: flex-start;
     height: fit-content;
   }
@@ -56,6 +60,12 @@
     display: flex;
     gap: 20px;
     margin-top: 50px;
+  }
+
+  .pages-content__latest > .pages-content__prev-container:only-child,
+  .pages-content__latest > .pages-content__next-container:only-child {
+    flex: 0 0 55%;
+    max-width: 700px;
   }
 
   .pages-content__prev-container,

@@ -379,6 +379,7 @@
     <section class="pages-content">
       <div class="pages-content__wrapper">
         <h1 class="page-content__title">{{ page.title | escape }}</h1>
+        <h2 class="pages-article__date">{{ page.published_at | date: '%d %B %Y' }}</h2>
         <div class="page-content__wrapper">{{ page.content }}</div>
       </div>
 

@@ -136,7 +136,6 @@
     background-position: center;
     display: flex;
     align-items: center;
-    /* Vertically center content */
     padding: 0 10%;
   }
 
@@ -200,9 +199,7 @@
   }
 {% endstyle %}
 
-
 <div class="news-container">
-
   <section class="news-hero" style="background-image: url({{ section.settings.news_hero_background | image_url }});">
     <div class="news-hero__content">
       <h2>Global Komunika Blog & News</h2>
@@ -210,10 +207,13 @@
     </div>
   </section>
 
-
   <section class="news-main">
-    {% comment %} Top 3 content pages from main section settings {% endcomment %}
-    {% assign main_pages = section.settings['main-first-page'] | append: ',' | append: section.settings['main-second-page'] | append: ',' | append: section.settings['main-third-page'] | split: ','
+    {% assign main_pages = section.settings['main-first-page']
+      | append: ','
+      | append: section.settings['main-second-page']
+      | append: ','
+      | append: section.settings['main-third-page']
+      | split: ','
     %}
     {% if template.suffix == 'news' %}
       <div class="news__content-top">
@@ -250,12 +250,20 @@
   </section>
 
   {% for block in section.blocks %}
-    {% assign page_ids = block.settings['first-page'] | append: ',' | append: block.settings['second-page'] | append: ',' | append: block.settings['thrid-page'] | split: ','
+    {% assign page_ids = block.settings['first-page']
+      | append: ','
+      | append: block.settings['second-page']
+      | append: ','
+      | append: block.settings['thrid-page']
+      | split: ','
     %}
 
     <section class="news-content">
       <div class="news__hero-shoot">
-        <div class="news__hero-wrapper" style="background-image: url({{ block.settings.hero-background | image_url }}); background-size: cover; background-position: center;">
+        <div
+          class="news__hero-wrapper"
+          style="background-image: url({{ block.settings.hero-background | image_url }}); background-size: cover; background-position: center;"
+        >
           <h2>{{ block.settings['hero-title'] }}</h2>
           <span>{{ block.settings['hero-description'] }}</span>
           {% if block.settings['show-button'] %}
@@ -271,7 +279,6 @@
           {% for page_id in page_ids %}
             {% assign page = pages[page_id] %}
             {% if page %}
-
               <section class="news-content__card">
                 <a class="new-content__link" href="{{ page.url }}">
                   {% assign img_parts = page.content | split: '<img' %}
@@ -290,32 +297,43 @@
                   </div>
                 </a>
               </section>
-
             {% endif %}
           {% endfor %}
         </div>
       </div>
     </section>
-{% endfor %}
+  {% endfor %}
 
-
-  {% comment %} Section untuk category (news-category) {% endcomment %}
   {% assign path_parts = request.path | split: '/' %}
-  {% assign category_slug = path_parts.last %}
-  {% assign has_articles = false %}
-  {% for page in pages %}
-    {% if page.metafields.pages.category.value == category_slug %}
-      {% assign has_articles = true %}
-      {% break %}
+  {% assign category_slug_raw = path_parts.last %}
+  {% assign category_slug = category_slug_raw | downcase | handleize %}
+
+  {% assign category_pages_raw = '' %}
+  {% for p in pages %}
+    {% assign page_category = p.metafields.pages.category.value | downcase | handleize %}
+    {% if page_category == category_slug %}
+      {% assign date_key = p.published_at | date: '%Y-%m-%d-%H-%M-%S' %}
+      {% assign key = date_key | append: '|' | append: p.handle %}
+      {% if category_pages_raw == '' %}
+        {% assign category_pages_raw = key %}
+      {% else %}
+        {% assign category_pages_raw = category_pages_raw | append: ',' | append: key %}
+      {% endif %}
     {% endif %}
   {% endfor %}
 
+  {% if category_pages_raw != '' %}
+    {% assign category_pages_array = category_pages_raw | split: ',' | sort | reverse %}
+  {% else %}
+    {% assign category_pages_array = '' | split: ',' %}
+  {% endif %}
+
   {% unless template.suffix == 'news' %}
-    {% if has_articles %}
+    {% if category_pages_array.size > 0 %}
       <section class="news-content">
         <div class="news__hero-shoot">
           <div class="news__hero-wrapper">
-            <h2>{{ category_slug | capitalize }}</h2>
+            <h2>{{ category_slug | replace: '-', ' ' | capitalize }}</h2>
             {% case category_slug %}
               {% when 'news' %}
                 <span>{{ section.settings['news-heading'] }}</span>
@@ -333,8 +351,12 @@
       <section class="news__content-top">
         <h2 class="news__latest-article" style="font-weight:bold;">Latest Article</h2>
         <div class="news-content__wrapper-category">
-          {% for page in pages %}
-            {% if page.metafields.pages.category.value == category_slug %}
+          {% for item in category_pages_array %}
+            {% assign parts = item | split: '|' %}
+            {% assign page_handle = parts[1] %}
+            {% assign page = pages[page_handle] %}
+
+            {% if page %}
               <a class="new-content__link" href="{{ page.url }}">
                 <div class="news-content__card">
                   {% assign img_parts = page.content | split: '<img' %}
@@ -358,138 +380,152 @@
         </div>
       </section>
     {% else %}
-      <h2 class="news__latest-article" style=" margin: 10% 0;">Article Not Found</h2>
+      <h2 class="news__latest-article" style="margin: 10% 0;">Article Not Found</h2>
     {% endif %}
   {% endunless %}
 </div>
 
 {% schema %}
-  {
-    "name": "News Section",
-    "settings": [
-      {
-        "type": "image_picker",
-        "id": "news_hero_background",
-        "label": "News Hero Background Image"
-      },
-      {
-        "type": "text",
-        "id": "main-heading",
-        "label": "Main Heading",
-        "default": "Latest News"
-      },
-      {
-        "type": "textarea",
-        "id": "main-description",
-        "label": "Main Description",
-        "default": "Check out the latest updates from our blog or news section."
-      },
-      {
-        "type": "page",
-        "id": "main-first-page",
-        "label": "Main First Page"
-      }, {
-        "type": "page",
-        "id": "main-second-page",
-        "label": "Main Second Page"
-      }, {
-        "type": "page",
-        "id": "main-third-page",
-        "label": "Main Third Page"
-      }, {
-        "type": "richtext",
-        "id": "news-heading",
-        "label": "Description for news"
-      }, {
-        "type": "richtext",
-        "id": "event-heading",
-        "label": "Description for event"
-      }, {
-        "type": "richtext",
-        "id": "travel-guide-heading",
-        "label": "Description for travel guide"
-      }, {
-        "type": "richtext",
-        "id": "travel-tips-heading",
-        "label": "Description for travel tips"
-      }
-    ],
-    "blocks": [
-      {
-        "type": "news_block",
-        "name": "News Block",
-        "settings": [
-          {
-            "type": "select",
-            "id": "category",
-            "label": "Kategori tombol Readmore",
-            "options": [
-              {
-                "value": "news",
-                "label": "News"
-              }, {
-                "value": "event",
-                "label": "Event"
-              }, {
-                "value": "travel-tips",
-                "label": "Travel Tips"
-              }, {
-                "value": "travel-guide",
-                "label": "Travel Guide"
-              }, {
-                "value": "tech-guide",
-                "label": "Tech Guide"
-              }
-            ],
-            "default": "news"
-          },
-          {
-            "type": "text",
-            "id": "hero-title",
-            "label": "Hero Title",
-            "default": "Featured News"
-          },
-          {
-            "type": "richtext",
-            "id": "hero-description",
-            "label": "Hero Description",
-            "default": "<p>Read our most highlighted content here.</p>"
-          },
-          {
-            "type": "page",
-            "id": "first-page",
-            "label": "First Page"
-          }, {
-            "type": "page",
-            "id": "second-page",
-            "label": "Second Page"
-          }, {
-            "type": "page",
-            "id": "thrid-page",
-            "label": "Third Page"
-          }, {
-            "type": "checkbox",
-            "id": "show-button",
-            "label": "Tampilkan tombol Readmore",
-            "default": true
-          }, {
-            "type": "image_picker",
-            "id": "hero-background",
-            "label": "Hero Background Image"
-          }
-        ]
-      }
-    ],
-    "presets": [
-      {
-        "name": "News Section",
-        "category": "Custom",
-        "blocks": [
-          {
-            "type": "news_block"
-          }
-        ]
-      }
-    ]
-  }
+{
+  "name": "News Section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "news_hero_background",
+      "label": "News Hero Background Image"
+    },
+    {
+      "type": "text",
+      "id": "main-heading",
+      "label": "Main Heading",
+      "default": "Latest News"
+    },
+    {
+      "type": "textarea",
+      "id": "main-description",
+      "label": "Main Description",
+      "default": "Check out the latest updates from our blog or news section."
+    },
+    {
+      "type": "page",
+      "id": "main-first-page",
+      "label": "Main First Page"
+    },
+    {
+      "type": "page",
+      "id": "main-second-page",
+      "label": "Main Second Page"
+    },
+    {
+      "type": "page",
+      "id": "main-third-page",
+      "label": "Main Third Page"
+    },
+    {
+      "type": "richtext",
+      "id": "news-heading",
+      "label": "Description for news"
+    },
+    {
+      "type": "richtext",
+      "id": "event-heading",
+      "label": "Description for event"
+    },
+    {
+      "type": "richtext",
+      "id": "travel-guide-heading",
+      "label": "Description for travel guide"
+    },
+    {
+      "type": "richtext",
+      "id": "travel-tips-heading",
+      "label": "Description for travel tips"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "news_block",
+      "name": "News Block",
+      "settings": [
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Kategori tombol Readmore",
+          "options": [
+            {
+              "value": "news",
+              "label": "News"
+            },
+            {
+              "value": "event",
+              "label": "Event"
+            },
+            {
+              "value": "travel-tips",
+              "label": "Travel Tips"
+            },
+            {
+              "value": "travel-guide",
+              "label": "Travel Guide"
+            },
+            {
+              "value": "tech-guide",
+              "label": "Tech Guide"
+            }
+          ],
+          "default": "news"
+        },
+        {
+          "type": "text",
+          "id": "hero-title",
+          "label": "Hero Title",
+          "default": "Featured News"
+        },
+        {
+          "type": "richtext",
+          "id": "hero-description",
+          "label": "Hero Description",
+          "default": "<p>Read our most highlighted content here.</p>"
+        },
+        {
+          "type": "page",
+          "id": "first-page",
+          "label": "First Page"
+        },
+        {
+          "type": "page",
+          "id": "second-page",
+          "label": "Second Page"
+        },
+        {
+          "type": "page",
+          "id": "thrid-page",
+          "label": "Third Page"
+        },
+        {
+          "type": "checkbox",
+          "id": "show-button",
+          "label": "Tampilkan tombol Readmore",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "hero-background",
+          "label": "Hero Background Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "News Section",
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "news_block"
+        }
+      ]
+    }
+  ]
+}
 {% endschema %}

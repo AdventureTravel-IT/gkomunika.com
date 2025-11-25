@@ -1,266 +1,295 @@
 {% style %}
   .quantity-input {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid var(--color-primary);
-    border-radius: 24px;
-    overflow: hidden;
-    width: fit-content;
-    padding: 5px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-primary);
+  border-radius: 24px;
+  overflow: hidden;
+  width: fit-content;
+  padding: 5px;
   }
 
   .quantity-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
   }
 
   .quantity-btn {
-    background-color: transparent;
-    border: none;
-    padding: 8px 12px;
-    font-size: 16px;
-    color: var(--color-primary);
-    cursor: pointer;
-    user-select: none;
+  background-color: transparent;
+  border: none;
+  padding: 8px 12px;
+  font-size: 16px;
+  color: var(--color-primary);
+  cursor: pointer;
+  user-select: none;
   }
 
   .quantity-number {
-    width: 40px;
-    text-align: center;
-    border: none;
-    font-size: 16px;
-    outline: none;
-    color: var(--color-primary);
+  width: 40px;
+  text-align: center;
+  border: none;
+  font-size: 16px;
+  outline: none;
+  color: var(--color-primary);
   }
 
   .quantity-btn:disabled {
-    color: var(--color-primary);
-    cursor: not-allowed;
+  color: var(--color-primary);
+  cursor: not-allowed;
   }
 
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
   }
 
   input[type="number"] {
-    -moz-appearance: textfield;
+  -moz-appearance: textfield;
   }
 
   .quantity-btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.4;
+  cursor: not-allowed;
+  opacity: 0.4;
   }
 
   .disabled-option {
-    color: #bbb;
+  color: #bbb;
   }
 
   .variant-option__wrapper {
-    display: flex;
-    gap: 10px;
-    width: 100%;
+  display: flex;
+  gap: 10px;
+  width: 100%;
   }
   .variant-option {
-    display: flex;
+  display: flex;
 
-    flex-direction: column;
-    min-width: 0;
+  flex-direction: column;
+  min-width: 0;
   }
 
   .variant-picker__label {
-    font-weight: bold;
-    color: var(--color-primary);
+  font-weight: bold;
+  color: var(--color-primary);
   }
 
   .variant-dropdown {
-    padding: 15px 35px 15px 15px;
-    border-radius: 15px;
-    border: 1px solid var(--color-primary);
-    font-size: var(--font-large);
-    color: var(--color-primary);
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 15px;
-    background-color: var(--color-neutral);
+  padding: 15px 35px 15px 15px;
+  border-radius: 15px;
+  border: 1px solid var(--color-primary);
+  font-size: var(--font-large);
+  color: var(--color-primary);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('{{ 'icon-dropdown.svg' | asset_url }}');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 15px;
+  background-color: var(--color-neutral);
   }
 
   #reset-plan {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    gap: 7px;
-    width: auto;
-    padding: 8px 12px 8px 8px;
-    border-radius: 15px;
-    cursor: pointer;
-    color: var(--color-primary);
-    font-size: 14px;
-    font-weight: bold;
-    text-align: left;
-    background: transparent;
-    text-decoration: none;
-    background-color: var(--color-background-third);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  gap: 7px;
+  width: auto;
+  padding: 8px 12px 8px 8px;
+  border-radius: 15px;
+  cursor: pointer;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: bold;
+  text-align: left;
+  background: transparent;
+  text-decoration: none;
+  background-color: var(--color-background-third);
   }
 
   #reset-plan .reset-text {
-    line-height: 1;
+  line-height: 1;
   }
 
   #reset-plan svg {
-    vertical-align: middle;
-    transition: transform 0.5s ease;
+  vertical-align: middle;
+  transition: transform 0.5s ease;
   }
 
   #reset-plan svg.rotated {
-    transform: rotate(360deg);
+  transform: rotate(360deg);
   }
   .variant-picker-btn__mobile,
   .variant-picker-btn {
-    display: flex;
-    gap: 15px;
-    width: 500px;
+  display: flex;
+  gap: 15px;
+  width: 500px;
   }
   .variant-picker-btn__mobile button,
   .variant-picker-btn button {
-    width: 100%;
-    border-radius: 15px;
-    font-size: var(--font-large);
-    font-weight: bold;
-    color: var(--color-neutral);
-    transition: transform 0.3s ease
-    , box-shadow 0.3s ease;
-    cursor: pointer;
+  width: 100%;
+  border-radius: 15px;
+  font-size: var(--font-large);
+  font-weight: bold;
+  color: var(--color-neutral);
+  transition: transform 0.3s ease
+  , box-shadow 0.3s ease;
+  cursor: pointer;
   }
 
+  .variant-picker-btn button,
+  .variant-picker-btn__mobile button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  }
+
+  .btn-loading-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: rgba(255,255,255,1);
+  animation: button-spin 0.8s linear infinite;
+  flex-shrink: 0;
+  }
+
+  .btn-loading-text {
+  line-height: 1;
+  white-space: nowrap;
+  }
+
+  @keyframes button-spin {
+  to {
+  transform: rotate(360deg);
+  }
+  }
 
   .variant-picker-btn__mobile button:active,
   .variant-picker-btn button:active {
-    transform: scale(0.96);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: scale(0.96);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .variant-picker-btn__mobile .cart,
   .variant-picker-btn .cart {
-    border: 1px groove var(--secondary);
-    background-color: var(--color-secondary);
+  border: 1px groove var(--secondary);
+  background-color: var(--color-secondary);
   }
 
   .variant-picker-btn__mobile .buy,
   .variant-picker-btn .buy {
-    border: 1px groove var(--color-primary);
-    background-color: var(--color-primary);
+  border: 1px groove var(--color-primary);
+  background-color: var(--color-primary);
   }
   .variant-picker-btn__mobile h2 {
-    font-size: 22px;
-    font-weight: normal;
+  font-size: 22px;
+  font-weight: normal;
   }
   #variant-price {
-    color: var(--color-secondary) !important;
-    margin-top: 7px;
+  color: var(--color-secondary) !important;
+  margin-top: 7px;
   }
   .money,
   .buckscc-money {
-    color: var(--color-secondary) !important;
-    font-weight: bold;
+  color: var(--color-secondary) !important;
+  font-weight: bold;
   }
   #variant-price-desktop {
-    font-size: 22px;
+  font-size: 22px;
   }
   #variant-price-mobile {
-    font-size: 20px;
+  font-size: 20px;
   }
   .variant-dropdown.variant-warning {
-    border-color: red;
-    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
-    position: relative;
+  border-color: red;
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
+  position: relative;
   }
 
   .variant-dropdown.variant-warning::after {
-    content: "Please select this option";
-    position: absolute;
-    left: 10px;
-    top: 100%;
-    margin-top: 4px;
-    background: red;
-    color: white;
-    padding: 4px 8px;
-    font-size: 12px;
-    border-radius: 5px;
-    white-space: nowrap;
-    z-index: 1000;
+  content: "Please select this option";
+  position: absolute;
+  left: 10px;
+  top: 100%;
+  margin-top: 4px;
+  background: red;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  white-space: nowrap;
+  z-index: 1000;
   }
   .insurance-addon__wrapper {
-    margin-top: 10px;
+  margin-top: 10px;
   }
   .insurance-addon__wrapper label{
-    font-weight: bold;
-    color: var(--color-primary);
+  font-weight: bold;
+  color: var(--color-primary);
   }
   #selected-variant-display {
-    color: var(--color-primary);
+  color: var(--color-primary);
   }
   .tooltip-label {
-    position: relative;
-    display: inline-block;
-    cursor: help;
-    margin-left: 6px;
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  margin-left: 6px;
   }
   .tooltip-label .tooltip-text {
-    visibility: hidden;
-    width: 350px;
-    background-color: var(--color-background-third);
-    color: var(--color-primary);
-    text-align: left;
-    padding: 8px 10px;
-    border-radius: 6px;
-    position: absolute;
-    left: 50%;           /* Posisikan horizontal di tengah elemen */
-    top: 100%;           /* Posisikan tepat di bawah elemen */
-    margin-top: 8px;     /* Jarak antara elemen & tooltip */
-    transform: translateX(-50%); /* Pusatkan secara horizontal */
-    white-space: normal;
-    opacity: 0;
-    transition: opacity 0.3s;
-    z-index: 10;
-    font-size: 14px;
+  visibility: hidden;
+  width: 350px;
+  background-color: var(--color-background-third);
+  color: var(--color-primary);
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 6px;
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  margin-top: 8px;
+  transform: translateX(-50%);
+  white-space: normal;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 10;
+  font-size: 14px;
   }
 
   .tooltip-label .tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: -10px; /* Panah di atas tooltip */
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 6px;
-    border-style: solid;
-    border-color: transparent transparent var(--color-background-third) transparent;
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent var(--color-background-third) transparent;
   }
 
   .tooltip-label:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
   }
   .iccid-popup {
-    position: fixed;
-    width: 400px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--color-neutral);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: var(--box-shadow);
-    z-index: 9999;
+  position: fixed;
+  width: 400px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-neutral);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: var(--box-shadow);
+  z-index: 9999;
   }
 {% endstyle %}
 
@@ -330,9 +359,7 @@
   {% assign min_price = product.variants.first.price %}
   {% assign max_price = product.variants.first.price %}
   {% for variant in product.variants %}
-    {% if variant.price < min_price %}
-      {% assign min_price = variant.price %}
-    {% endif %}
+    {% if variant.price < min_price %} {% assign min_price = variant.price %} {% endif %}
     {% if variant.price > max_price %}
       {% assign max_price = variant.price %}
     {% endif %}
@@ -358,9 +385,14 @@
   ></div>
 
   <div style="display: flex; align-items: center;">
-    <div class="variant-option__wrapper {% if product.metafields.product.category.value == "Insurance" %}insurance-product{% endif %}">
+    <div
+      class="
+        variant-option__wrapper {% if product.metafields.product.category.value == " Insurance" %}insurance-product{%
+        endif %}
+      "
+    >
       {% for option in product.options_with_values %}
-        <div class="variant-option" data-option-index="{{ forloop.index0 }}">
+        <div class=" variant-option" data-option-index="{{ forloop.index0 }}">
           <label class="variant-picker__label">
             {{ option.name }}
             {% if forloop.index0 == 1
@@ -383,14 +415,7 @@
             {% endif %}
           </label>
           <select class="variant-dropdown" data-option-name="{{ option.name }}">
-            <option
-              value=""
-              disabled
-              selected
-              hidden
-            >
-              Choose Option
-            </option>
+            <option value="" disabled selected hidden>Choose Option</option>
             {% assign values_seen = '' %}
             {% for value in option.values %}
               {% unless values_seen contains value %}
@@ -402,7 +427,6 @@
         </div>
       {% endfor %}
 
-      <!-- Tombol reset -->
       {% if product.metafields.product.category.value != 'Insurance' %}
         <button id="reset-plan" type="button" style="margin: 27px 0 0 0;">
           {{- 'reset.svg' | inline_asset_content -}}
@@ -421,7 +445,6 @@
 
   {% endif %}
 
-  <!-- Quantity -->
   <div
     class="quantity-wrapper"
     {% if product.metafields.product.category.value == 'Top_Up_A'
@@ -443,12 +466,7 @@
         hidden
       {% endif %}
     >
-      <label
-        class="variant-picker__label"
-        for="quantity"
-        style="display: block; margin-bottom: 4px;"
-        >Quantity</label
-      >
+      <label class="variant-picker__label" for="quantity" style="display: block; margin-bottom: 4px;">Quantity</label>
       <div class="quantity-input">
         <button
           type="button"
@@ -458,14 +476,7 @@
         >
           <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
         </button>
-        <input
-          type="number"
-          id="quantity"
-          name="quantity"
-          min="1"
-          value="1"
-          class="quantity-number"
-        >
+        <input type="number" id="quantity" name="quantity" min="1" value="1" class="quantity-number">
         <button
           type="button"
           class="quantity-btn"
@@ -490,42 +501,28 @@
 
   <div style="max-height: 200px; overflow-y: auto; margin-bottom: 25px;">{{ product.description }}</div>
 
-  <!-- Tombol cart dan buy -->
   <div class="variant-picker-btn">
     {% if product.metafields.product.category.value == 'Top_Up_A'
       or product.metafields.product.category.value == 'Top_Up_B'
       or product.metafields.product.category.value == 'Top_Up_C'
       or product.metafields.product.category.value == 'Top_Up_D'
     %}
-      <button
-        class="buy py-3 px-5"
-        type="button"
-        id="buy-topup-button"
-      >
+      <button class="buy py-3 px-5" type="button" id="buy-topup-button">
         <p>Top Up</p>
       </button>
     {% else %}
-      <button
-        class="cart py-3 px-5"
-        type="button"
-        id="add-to-cart"
-      >
+      <button class="cart py-3 px-5" type="button" id="add-to-cart">
         <p>Add to Cart</p>
       </button>
       {% if product.metafields.product.category.value == 'Insurance' %}
       {% endif %}
-      <button
-        class="buy py-3 px-5"
-        type="button"
-        id="buy-now-button"
-      >
+      <button class="buy py-3 px-5" type="button" id="buy-now-button">
         <p>Buy Now</p>
       </button>
     {% endif %}
   </div>
 </div>
 
-<!-- Harga varian tersembunyi -->
 <div id="variant-prices" style="display: none;">
   {% for variant in product.variants %}
     <span class="money price" data-variant-id="{{ variant.id }}" data-price="{{ variant.price }}">
@@ -534,7 +531,6 @@
   {% endfor %}
 </div>
 
-<!-- Versi mobile -->
 <div class="variant-picker-btn__mobile">
   <div id="bucks-mobile" style="margin-left: 11px;"></div>
   <div style="padding: 20px 24px; background-color: var(--color-neutral);">
@@ -553,26 +549,14 @@
         or product.metafields.product.category.value == 'Top_Up_C'
         or product.metafields.product.category.value == 'Top_Up_D'
       %}
-        <button
-          class="buy"
-          type="button"
-          id="buy-topup-button-mobile"
-        >
+        <button class="buy" type="button" id="buy-topup-button-mobile">
           <p>Buy Top Up</p>
         </button>
       {% else %}
-        <button
-          class="cart"
-          type="button"
-          id="add-to-cart-mobile"
-        >
+        <button class="cart" type="button" id="add-to-cart-mobile">
           <p>Add to Cart</p>
         </button>
-        <button
-          class="buy"
-          type="button"
-          id="buy-now-button-mobile"
-        >
+        <button class="buy" type="button" id="buy-now-button-mobile">
           <p>Buy Now</p>
         </button>
       {% endif %}
@@ -580,11 +564,7 @@
   </div>
 </div>
 
-<div
-  class="variant-picker-popup"
-  id="variant-popup"
-  style="display: none;"
->
+<div class="variant-picker-popup" id="variant-popup" style="display: none;">
   <span id="variant-popup-message"></span>
 </div>
 
@@ -607,840 +587,860 @@
 {% endstyle %}
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const scrollTarget = document.querySelector('.variant-option__wrapper'); // Bagian variant selector
-    const scrollTrigger = document.getElementById('selected-variant-display'); // Elemen yang diklik
-
-    if (scrollTrigger && scrollTarget) {
-      scrollTrigger.style.cursor = 'pointer'; // opsional: bikin kelihatan bisa diklik
-      scrollTrigger.addEventListener('click', function () {
-        scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      });
-    }
-  });
-</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var btn = document.getElementById('reset-plan');
-    var svg = btn?.querySelector('svg');
-    if (btn && svg) {
-      let currentRotation = 0;
-
-      btn.addEventListener('click', function () {
-        currentRotation += 360;
-        svg.style.transform = `rotate(${currentRotation}deg)`;
-      });
-    }
-  });
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const variantDropdowns = document.querySelectorAll('.variant-dropdown');
-    const metafieldDisplay = document.getElementById('variant-metafield-display');
-
-    // Data semua variant dengan metafield variant.type
-    const variantsData = [
-    {% for variant in product.variants %}
-      {
-        id: {{ variant.id }},
-        title: "{{ variant.title | escape }}",
-        type: {{ variant.metafields.variant.type | json }},
-        coverage: {{ variant.metafields.variant.coverage.value | json }},
-        options: [
-          {% for option in variant.options %}
-            "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
-          {% endfor %}
-        ]
-      }{% unless forloop.last %},{% endunless %}
-    {% endfor %}
-  ];
-    });
-</script>
-
-<script>
-  // Fungsi untuk membersihkan nama negara (replace _ dengan spasi)
   function cleanCoverageData(coverageArray) {
     if (!coverageArray || !Array.isArray(coverageArray)) return [];
 
     return coverageArray.map(country => {
       if (typeof country === 'string') {
-        // Replace semua underscore dengan spasi
         return country.replace(/_/g, ' ');
       }
       return country;
     });
   }
 
-  // Data coverage mentah
   const rawCoverage = [].concat(
     {% if product.metafields.coverage.country.value %}
-      {{ product.metafields.coverage.country.value | json }},
-    {% else %}
-      [],
+  { { product.metafields.coverage.country.value | json } },
+  {% else %}
+  [],
     {% endif %}
-    {% if product.metafields.coverage.country_1.value %}
-      {{ product.metafields.coverage.country_1.value | json }},
-    {% else %}
-      [],
+  {% if product.metafields.coverage.country_1.value %}
+  { { product.metafields.coverage.country_1.value | json } },
+  {% else %}
+  [],
     {% endif %}
-    {% if product.metafields.coverage.country_2.value %}
-      {{ product.metafields.coverage.country_2.value | json }}
-    {% else %}
-      []
-    {% endif %}
+  {% if product.metafields.coverage.country_2.value %}
+  { { product.metafields.coverage.country_2.value | json } }
+  {% else %}
+  []
+  {% endif %}
   );
 
-  // Simpan data yang sudah dibersihkan
   window.productCoverage = cleanCoverageData(rawCoverage);
 </script>
 
 <script>
-window.TopUp = (() => {
-  const vendorPrefixes = [
-    { prefix: '8985234202227', vendor: 'BE' },
-    { prefix: '8981200', vendor: 'BE' },
-    { prefix: '89859', vendor: 'AF' },
-    { prefix: '89862', vendor: 'AF' },
-    { prefix: '89810', vendor: 'TE' },
-    { prefix: '2210', vendor: 'BS' },
-  ];
+  window.TopUp = (() => {
+    const vendorPrefixes = [
+      { prefix: '8985234202227', vendor: 'BE' },
+      { prefix: '8981200', vendor: 'BE' },
+      { prefix: '89859', vendor: 'AF' },
+      { prefix: '89862', vendor: 'AF' },
+      { prefix: '89810', vendor: 'TE' },
+      { prefix: '2210', vendor: 'BS' },
+    ];
 
-  const vendorCategories = {
-    SEM: 'Top_Up_D',
-    AF: 'Top_Up_B',
-    TE: 'Top_Up_C',
-    BS: 'Top_Up_A',
-    BE: 'Top_Up_A',
-  };
+    const vendorCategories = {
+      SEM: 'Top_Up_D',
+      AF: 'Top_Up_B',
+      TE: 'Top_Up_C',
+      BS: 'Top_Up_A',
+      BE: 'Top_Up_A',
+    };
 
-  function resolveVendorByPrefix(iccidRaw) {
-    const iccid = (iccidRaw || '').trim();
-    if (!iccid) return null;
-    const best = vendorPrefixes
-      .filter((v) => iccid.startsWith(v.prefix))
-      .sort((a, b) => b.prefix.length - a.prefix.length)[0];
-    return best ? best.vendor : null;
-  }
-
-  function expectedCategoryFromICCID(iccid) {
-    const vendor = resolveVendorByPrefix(iccid);
-    return vendor ? vendorCategories[vendor] : null;
-  }
-
-  // 🔹 Validasi SEM via API
-  async function validateSemIccid(iccid) {
-    try {
-      const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ iccid }),
-      });
-      const data = await res.json();
-      return data?.data_usage?.retCode === '000000';
-    } catch (err) {
-      console.error('SEM validation failed:', err);
-      return false;
-    }
-  }
-
-  // 🔹 Fungsi utama validasi kategori ICCID
-  async function isIccidCategoryMatch(iccid, productCategory) {
-    iccid = (iccid || '').trim();
-    if (!iccid) return false;
-
-    const vendor = resolveVendorByPrefix(iccid);
-
-    // Jika prefix tidak terdeteksi, cek apakah ICCID valid SEM
-    if (!vendor) {
-      const isSem = await validateSemIccid(iccid);
-      if (isSem) return productCategory === vendorCategories.SEM;
-      return false;
+    function resolveVendorByPrefix(iccidRaw) {
+      const iccid = (iccidRaw || '').trim();
+      if (!iccid) return null;
+      const best = vendorPrefixes
+        .filter((v) => iccid.startsWith(v.prefix))
+        .sort((a, b) => b.prefix.length - a.prefix.length)[0];
+      return best ? best.vendor : null;
     }
 
-    const expected = vendorCategories[vendor];
-    return expected === productCategory;
-  }
+    function expectedCategoryFromICCID(iccid) {
+      const vendor = resolveVendorByPrefix(iccid);
+      return vendor ? vendorCategories[vendor] : null;
+    }
 
-  return {
-    resolveVendorByPrefix,
-    expectedCategoryFromICCID,
-    isIccidCategoryMatch,
-    vendorPrefixes,
-    vendorCategories,
-    validateSemIccid,
-  };
-})();
+    async function validateSemIccid(iccid) {
+      try {
+        const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ iccid }),
+        });
+        const data = await res.json();
+        return data?.data_usage?.retCode === '000000';
+      } catch (err) {
+        console.error('SEM validation failed:', err);
+        return false;
+      }
+    }
+
+    async function isIccidCategoryMatch(iccid, productCategory) {
+      iccid = (iccid || '').trim();
+      if (!iccid) return false;
+
+      const vendor = resolveVendorByPrefix(iccid);
+
+      if (!vendor) {
+        const isSem = await validateSemIccid(iccid);
+        if (isSem) return productCategory === vendorCategories.SEM;
+        return false;
+      }
+
+      const expected = vendorCategories[vendor];
+      return expected === productCategory;
+    }
+
+    return {
+      resolveVendorByPrefix,
+      expectedCategoryFromICCID,
+      isIccidCategoryMatch,
+      vendorPrefixes,
+      vendorCategories,
+      validateSemIccid,
+    };
+  })();
 </script>
 
 <script>
-  const productVariants = {{ product.variants | json }};
-  const variantDropdowns = document.querySelectorAll('.variant-dropdown');
-  const priceDivDesktop = document.getElementById('variant-price-desktop');
-  const priceDivMobile = document.getElementById('variant-price-mobile');
-  const resetBtn = document.getElementById('reset-plan');
-  const quantityInput = document.getElementById('quantity');
-  const minusBtn = document.getElementById('quantity-decrease');
-  const plusBtn = document.getElementById('quantity-increase');
-  const addToCartButton = document.getElementById('add-to-cart');
-  const buyNowButton = document.getElementById('buy-now-button');
-  const selectedVariantDisplay = document.getElementById('selected-variant-display');
+  document.addEventListener('DOMContentLoaded', function () {
+    const productVariants = {{ product.variants | json }};
+    const variantDropdowns = document.querySelectorAll('.variant-dropdown');
+    const priceDivDesktop = document.getElementById('variant-price-desktop');
+    const priceDivMobile = document.getElementById('variant-price-mobile');
+    const resetBtn = document.getElementById('reset-plan');
+    const quantityInput = document.getElementById('quantity');
+    const minusBtn = document.getElementById('quantity-decrease');
+    const plusBtn = document.getElementById('quantity-increase');
+    const selectedVariantDisplay = document.getElementById('selected-variant-display');
 
-  // Tambahkan elemen untuk menampilkan title varian yang dipilih
-  const selectedVariantTitleDisplay = document.getElementById('selected-variant-title');
+    const addToCartButtonDesktop = document.getElementById('add-to-cart');
+    const buyNowButtonDesktop = document.getElementById('buy-now-button');
+    const addToCartButtonMobile = document.getElementById('add-to-cart-mobile');
+    const buyNowButtonMobile = document.getElementById('buy-now-button-mobile');
 
-  const addToCartButtonDesktop = document.getElementById('add-to-cart');
-  const buyNowButtonDesktop = document.getElementById('buy-now-button');
-  const addToCartButtonMobile = document.getElementById('add-to-cart-mobile');
-  const buyNowButtonMobile = document.getElementById('buy-now-button-mobile');
+    const defaultPriceHTML = priceDivDesktop?.innerHTML || "";
+    const defaultPriceMobileHTML = priceDivMobile?.innerHTML || "";
 
-  addToCartButtonDesktop?.addEventListener("click", () => handleCartAction("add"));
-  buyNowButtonDesktop?.addEventListener("click", () => handleCartAction("buy"));
-  addToCartButtonMobile?.addEventListener("click", () => handleCartAction("add"));
-  buyNowButtonMobile?.addEventListener("click", () => handleCartAction("buy"));
+    let currentMinusHandler = null;
+    let cachedUSDRate = null;
+    let firstSelectWarned = false;
+    let secondSelectWarned = false;
+    let lastCurrency = sessionStorage.getItem('buckscc_customer_currency');
 
-  const defaultPriceHTML = priceDivDesktop?.innerHTML || "";
-  const defaultPriceMobileHTML = priceDivMobile?.innerHTML || "";
+    /* ===========================
+       Quantity minus handler
+    ============================ */
+    function updateMinusButtonHandler(minQty) {
+      if (!minusBtn || !quantityInput) return;
 
-  let currentMinusHandler = null;
+      if (currentMinusHandler) {
+        minusBtn.removeEventListener('click', currentMinusHandler);
+      }
 
-  function updateMinusButtonHandler(minQty) {
-    if (!minusBtn) return;
+      currentMinusHandler = function () {
+        if (parseInt(quantityInput.value, 10) <= minQty) {
+          quantityInput.value = minQty;
+        }
+      };
 
-    if (currentMinusHandler) {
-      minusBtn.removeEventListener('click', currentMinusHandler);
+      minusBtn.addEventListener('click', currentMinusHandler);
     }
 
-    currentMinusHandler = function() {
-      if (parseInt(quantityInput.value) <= minQty) {
-        quantityInput.value = minQty;
-      }
-    };
+    /* ===========================
+       Variant helpers
+    ============================ */
+    function getSelectedOptions() {
+      return Array.from(variantDropdowns).map(select => select.value);
+    }
 
-    minusBtn.addEventListener('click', currentMinusHandler);
-  }
+    function updateVariantTitle() {
+      const selectedOptions = getSelectedOptions();
+      const matchedVariant = productVariants.find(variant =>
+        variant.options.every((opt, index) => opt === selectedOptions[index])
+      );
 
-  function getSelectedOptions() {
-    return Array.from(variantDropdowns).map(select => select.value);
-  }
+      const selectedVariantTitleDisplay = document.getElementById('selected-variant-title');
+      if (!selectedVariantTitleDisplay) return;
 
-  function updateVariantTitle() {
-    const selectedOptions = getSelectedOptions();
-    // Temukan variant yang cocok berdasarkan opsi yang dipilih
-    const matchedVariant = productVariants.find(variant =>
-      variant.options.every((opt, index) => opt === selectedOptions[index])
-    );
-
-    // Jika variant ditemukan, simpan judulnya ke dalam data-variant-title
-    const selectedVariantTitleDisplay = document.getElementById('selected-variant-title');
-    if (matchedVariant) {
-      if (selectedVariantTitleDisplay) {
+      if (matchedVariant) {
         selectedVariantTitleDisplay.setAttribute('data-variant-title', matchedVariant.title);
-      }
-    } else {
-      if (selectedVariantTitleDisplay) {
+      } else {
         selectedVariantTitleDisplay.setAttribute('data-variant-title', "Not Available");
       }
     }
-  }
 
-  function updateDropdownOptions() {
-  const selectedOptions = getSelectedOptions();
+    function updateDropdownOptions() {
+      const selectedOptions = getSelectedOptions();
 
-  variantDropdowns.forEach((select, index) => {
-    Array.from(select.options).forEach(option => {
-      if (option.value === "") {
-        option.disabled = false;
-        option.classList.remove('disabled-option');
-        return;
+      variantDropdowns.forEach((select, index) => {
+        Array.from(select.options).forEach(option => {
+          if (option.value === "") {
+            option.disabled = false;
+            option.classList.remove('disabled-option');
+            return;
+          }
+
+          const testOptions = [...selectedOptions];
+          testOptions[index] = option.value;
+
+          const match = productVariants.some(variant =>
+            variant.options.every((opt, i) =>
+              testOptions[i] === "" || testOptions[i] === opt
+            )
+          );
+
+          if (!match) {
+            option.disabled = true;
+            option.classList.add('disabled-option');
+          } else {
+            option.disabled = false;
+            option.classList.remove('disabled-option');
+          }
+        });
+
+        if (select.options[select.selectedIndex]?.disabled) {
+          select.selectedIndex = 0;
+        }
+      });
+
+      setupWarningLogic();
+    }
+
+    /* ===========================
+       Warning logic (abu-abu)
+    ============================ */
+    function setupWarningLogic() {
+      const warningMessage = document.getElementById('variant-warning-message');
+      const firstSelect = variantDropdowns[0];
+      const secondSelect = variantDropdowns[1];
+      const resetBtnLocal = document.getElementById('reset-plan');
+
+      if (!warningMessage || !firstSelect || !secondSelect) return;
+
+      function getWarningText() {
+        const isID =
+          location.hostname.includes('gkomunika.com') &&
+          location.pathname === '/id/products/esim-saudi-arabia';
+        return isID
+          ? 'Opsi abu-abu artinya kombinasi hari/kuota tidak tersedia. Klik Reset, lalu pilih hari/kuota yang diinginkan lebih dulu.'
+          : 'Greyed-out means the day/plan combo’s unavailable. Click Reset, then pick your preferred day/plan first.';
       }
 
-      const testOptions = [...selectedOptions];
-      testOptions[index] = option.value;
+      function showWarning(message) {
+        warningMessage.textContent = message;
+        warningMessage.style.display = 'block';
+      }
 
-      const match = productVariants.some(variant =>
-        variant.options.every((opt, i) =>
-          testOptions[i] === "" || testOptions[i] === opt
-        )
+      function hideWarning() {
+        warningMessage.style.display = 'none';
+      }
+
+      secondSelect.addEventListener('click', () => {
+        if (secondSelectWarned) return;
+
+        const firstSelected = firstSelect.value !== "";
+        const secondSelected = secondSelect.value !== "";
+
+        if (firstSelected && !secondSelected) {
+          const anyDisabled = Array.from(secondSelect.options).some(opt => opt.disabled && opt.value !== "");
+          if (anyDisabled) {
+            showWarning(getWarningText());
+            secondSelectWarned = true;
+          } else {
+            hideWarning();
+          }
+        } else {
+          hideWarning();
+        }
+      });
+
+      firstSelect.addEventListener('click', () => {
+        if (firstSelectWarned) return;
+
+        const firstSelected = firstSelect.value !== "";
+        const secondSelected = secondSelect.value !== "";
+
+        if (secondSelected && !firstSelected) {
+          const anyDisabled = Array.from(firstSelect.options).some(opt => opt.disabled && opt.value !== "");
+          if (anyDisabled) {
+            showWarning(getWarningText());
+            firstSelectWarned = true;
+          } else {
+            hideWarning();
+          }
+        } else {
+          hideWarning();
+        }
+      });
+
+      [firstSelect, secondSelect].forEach(select => {
+        select.addEventListener('change', () => {
+          if (firstSelect.value === "" || secondSelect.value === "") {
+            firstSelectWarned = false;
+            secondSelectWarned = false;
+          } else {
+            hideWarning();
+          }
+        });
+      });
+
+      if (resetBtnLocal) {
+        resetBtnLocal.addEventListener('click', () => {
+          hideWarning();
+          firstSelectWarned = false;
+          secondSelectWarned = false;
+        });
+      }
+    }
+
+    /* ===========================
+       Currency & price
+    ============================ */
+    async function getExchangeRate() {
+      if (cachedUSDRate) return cachedUSDRate;
+      try {
+        const response = await fetch('https://api.exchangerate-api.com/v4/latest/IDR');
+        const data = await response.json();
+        cachedUSDRate = data.rates.USD;
+        return cachedUSDRate;
+      } catch (error) {
+        console.error('Gagal ambil kurs USD:', error);
+        cachedUSDRate = 0.000066;
+        return cachedUSDRate;
+      }
+    }
+
+    function convertIDRtoUSDInstant(idrAmount) {
+      const rate = cachedUSDRate || 0.000066;
+      return (idrAmount * rate).toFixed(2);
+    }
+
+    async function updateUSDPrice(variantPrice, quantity) {
+      const totalIDR = (variantPrice / 100) * quantity;
+      const usdPriceInstant = convertIDRtoUSDInstant(totalIDR);
+
+      let usdElementDesktop = document.getElementById('usd-price-desktop');
+      let usdElementMobile = document.getElementById('usd-price-mobile');
+
+      if (!usdElementDesktop) {
+        const desktopContainer = document.getElementById('variant-price-desktop');
+        if (!desktopContainer) return;
+        usdElementDesktop = document.createElement('div');
+        usdElementDesktop.id = 'usd-price-desktop';
+        usdElementDesktop.className = 'money';
+        desktopContainer.appendChild(usdElementDesktop);
+      }
+      usdElementDesktop.textContent = `$${usdPriceInstant}`;
+
+      if (!usdElementMobile) {
+        const mobileContainer = document.getElementById('variant-price-mobile');
+        if (!mobileContainer) return;
+        usdElementMobile = document.createElement('div');
+        usdElementMobile.id = 'usd-price-mobile';
+        usdElementMobile.className = 'money';
+        mobileContainer.appendChild(usdElementMobile);
+      }
+      usdElementMobile.textContent = `USD $${usdPriceInstant}`;
+
+      toggleCurrencyDisplay();
+
+      if (!cachedUSDRate) {
+        const rate = await getExchangeRate();
+        const usdPriceFinal = (totalIDR * rate).toFixed(2);
+        usdElementDesktop.textContent = `$${usdPriceFinal}`;
+        usdElementMobile.textContent = `USD $${usdPriceFinal}`;
+      }
+    }
+
+    function updateIDRPrice(variantPrice, quantity) {
+      const totalIDR = (variantPrice / 100) * quantity;
+      const formattedIDR = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR'
+      }).format(totalIDR);
+
+      let idrElementDesktop = document.getElementById('idr-price-desktop');
+      let idrElementMobile = document.getElementById('idr-price-mobile');
+
+      if (!idrElementDesktop) {
+        const desktopContainer = document.getElementById('variant-price-desktop');
+        if (!desktopContainer) return;
+        idrElementDesktop = document.createElement('div');
+        idrElementDesktop.id = 'idr-price-desktop';
+        idrElementDesktop.className = 'money';
+        desktopContainer.appendChild(idrElementDesktop);
+      }
+      idrElementDesktop.textContent = formattedIDR;
+
+      if (!idrElementMobile) {
+        const mobileContainer = document.getElementById('variant-price-mobile');
+        if (!mobileContainer) return;
+        idrElementMobile = document.createElement('div');
+        idrElementMobile.id = 'idr-price-mobile';
+        idrElementMobile.className = 'money';
+        mobileContainer.appendChild(idrElementMobile);
+      }
+      idrElementMobile.textContent = formattedIDR;
+
+      toggleCurrencyDisplay();
+    }
+
+    function toggleCurrencyDisplay() {
+      let userCurrency = sessionStorage.getItem('buckscc_customer_currency');
+      if (userCurrency) {
+        userCurrency = userCurrency.replace(/"/g, '');
+      }
+
+      const idrPriceDesktop = document.getElementById('idr-price-desktop');
+      const usdPriceDesktop = document.getElementById('usd-price-desktop');
+      const idrPriceMobile = document.getElementById('idr-price-mobile');
+      const usdPriceMobile = document.getElementById('usd-price-mobile');
+
+      if (userCurrency === 'USD') {
+        if (idrPriceDesktop) idrPriceDesktop.style.display = 'none';
+        if (usdPriceDesktop) usdPriceDesktop.style.display = 'block';
+        if (idrPriceMobile) idrPriceMobile.style.display = 'none';
+        if (usdPriceMobile) usdPriceMobile.style.display = 'block';
+      } else {
+        if (idrPriceDesktop) idrPriceDesktop.style.display = 'block';
+        if (usdPriceDesktop) usdPriceDesktop.style.display = 'none';
+        if (idrPriceMobile) idrPriceMobile.style.display = 'block';
+        if (usdPriceMobile) usdPriceMobile.style.display = 'none';
+      }
+    }
+
+    toggleCurrencyDisplay();
+
+    setInterval(() => {
+      const currentCurrency = sessionStorage.getItem('buckscc_customer_currency');
+      if (currentCurrency !== lastCurrency) {
+        lastCurrency = currentCurrency;
+        handleCurrencyChange();
+      }
+    }, 500);
+
+    function handleCurrencyChange() {
+      const variant = findVariant();
+      if (variant) {
+        const qty = parseInt(quantityInput.value, 10) || 1;
+        updateUSDPrice(variant.price, qty);
+        updateIDRPrice(variant.price, qty);
+        toggleCurrencyDisplay();
+      } else {
+        toggleCurrencyDisplay();
+      }
+    }
+
+    /* ===========================
+       Insurance match
+    ============================ */
+    function matchInsuranceVariant(mainVariant) {
+      if (!mainVariant) return;
+
+      const qtyInput = document.getElementById('quantity');
+      const currentQuantity = qtyInput ? parseInt(qtyInput.value, 10) || 1 : 1;
+
+      const insuranceVariants = document.querySelectorAll('.insurance-addon__wrapper [data-title]');
+      const matchedInsuranceList = [];
+
+      insuranceVariants.forEach((el) => {
+        const option1 = el.dataset.option1?.trim();
+        const option2 = el.dataset.option2?.trim();
+        const option3 = el.dataset.option3?.trim();
+        const addonType = el.dataset.addonType?.trim()?.toLowerCase();
+
+        const mainOption1 = mainVariant.options[0]?.trim();
+        const mainOption2 = mainVariant.options[1]?.trim();
+        const mainOption3 = mainVariant.options[2]?.trim();
+
+        let isMatch = false;
+
+        if (addonType === 'covid') {
+          isMatch = (option1 === mainOption1 && option2 === mainOption2 && option3 === mainOption3);
+        } else if (addonType === 'general') {
+          isMatch = (option1 === mainOption1 && option2 === mainOption2);
+        }
+
+        if (isMatch) {
+          let displayTitle = '';
+          if (addonType === 'covid') {
+            displayTitle = 'Covid-19 Protection';
+          } else if (addonType === 'general') {
+            displayTitle = option3 || el.dataset.title;
+          }
+
+          let benefits = [];
+          if (addonType === 'covid') {
+            benefits = [
+              'Trip Cancellation',
+              'Medical Expenses Including Emergency Medical Evacuation',
+              'Additional Expenses',
+              'Trip Curtailment or Return of Children',
+              'Automatic extension of Cover'
+            ];
+          } else if (addonType === 'general') {
+            if (option3 === 'Business Travel') {
+              benefits = [
+                'Staff Replacement',
+                'Business Equipment',
+                'Missed Events Fee'
+              ];
+            } else if (option3 === 'Cruise Cover') {
+              benefits = [
+                'Cabin Confinement',
+                'Itinerary Change',
+                'Unused Excursion',
+                'Cruise Trip Interruption'
+              ];
+            } else if (option3 === 'Winter Sport' || option3 === 'Winter Sports') {
+              benefits = [
+                'Winter Sport Pack',
+                'On piste Closure'
+              ];
+            }
+          }
+
+          matchedInsuranceList.push({
+            title: displayTitle,
+            addonType: addonType,
+            price: el.dataset.price,
+            id: el.dataset.variantId,
+            option1: el.dataset.option1,
+            option2: el.dataset.option2,
+            option3: el.dataset.option3,
+            quantity: currentQuantity,
+            benefits: benefits
+          });
+        }
+      });
+
+      const selectedVariantTitleDisplay = document.getElementById('selected-variant-title');
+
+      if (selectedVariantTitleDisplay) {
+        if (matchedInsuranceList.length > 0) {
+          const rows = matchedInsuranceList.map(item => {
+            const benefitList = item.benefits.map(benefit => `<li>${benefit}</li>`).join('');
+            return `
+              <div class="insurance__product-addon">
+                <div class="insurance_product-addon_header">
+                  <div class="insurance_product-addon_title-wrapper"> 
+                    <h1 class="insurance_product-addon_title">${item.title}</h1>
+                    <span class="insurance_product-addon_price">${item.price}</span>
+                  </div>
+                  <div class="addon-checkbox">
+                    <input 
+                      type="checkbox" 
+                      data-id="${item.id}" 
+                      data-variant-title="${item.title}" 
+                      data-option1="${item.option1}" 
+                      data-option2="${item.option2}" 
+                      data-option3="${item.option3}"
+                      data-quantity="${item.quantity}"
+                    >
+                    <span>select</span>
+                  </div>
+                </div>
+                <div class="insurance_product-addon_list-benefits">
+                  <ul>
+                    ${benefitList}
+                  </ul>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          selectedVariantTitleDisplay.innerHTML = rows;
+        } else {
+          selectedVariantTitleDisplay.innerHTML = `No matching insurance`;
+        }
+      }
+    }
+
+    /* ===========================
+       Find variant + update UI
+    ============================ */
+    function findVariant() {
+      const selectedOptions = getSelectedOptions();
+
+      const popupVariantTitleEl = document.getElementById('popup-variant-title');
+      const popupVariantOptionsEl = document.getElementById('popup-variant-options');
+      const option1El = document.getElementById('display-option1');
+      const option2El = document.getElementById('display-option2');
+      const option3El = document.getElementById('display-option3');
+
+      if (selectedOptions.includes("")) {
+        if (priceDivDesktop) priceDivDesktop.innerHTML = defaultPriceHTML;
+        if (priceDivMobile) priceDivMobile.innerHTML = defaultPriceMobileHTML;
+        if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Pilih varian";
+
+        if (popupVariantTitleEl) popupVariantTitleEl.textContent = "";
+        if (popupVariantOptionsEl) popupVariantOptionsEl.textContent = "";
+
+        if (option1El) option1El.textContent = "-";
+        if (option2El) option2El.textContent = "-";
+        if (option3El) option3El.textContent = "-";
+
+        updateDropdownOptions();
+        updateVariantTitle();
+        updateMinusButtonHandler(1);
+        return null;
+      }
+
+      const matchedVariant = productVariants.find(variant =>
+        variant.options.every((opt, index) => opt === selectedOptions[index])
       );
 
-      if (!match) {
-        option.disabled = true;
-        option.classList.add('disabled-option');
+      if (matchedVariant) {
+        if (matchedVariant.available) {
+          const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
+          if (moneySpan) {
+            if (priceDivDesktop) priceDivDesktop.innerHTML = '';
+            if (priceDivMobile) priceDivMobile.innerHTML = '';
+
+            const quantity = parseInt(quantityInput.value, 10) || 1;
+            updateUSDPrice(matchedVariant.price, quantity);
+            updateIDRPrice(matchedVariant.price, quantity);
+          }
+        } else {
+          if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak tersedia";
+          if (priceDivMobile) priceDivMobile.textContent = "Varian tidak tersedia";
+        }
+
+        const variantType = getVariantType(matchedVariant);
+
+        if (variantType === "Duo Plus") {
+          quantityInput.min = 2;
+          quantityInput.value = Math.max(2, parseInt(quantityInput.value, 10) || 2);
+          updateMinusButtonHandler(2);
+        } else {
+          quantityInput.min = 1;
+          updateMinusButtonHandler(1);
+        }
+
+        if (popupVariantTitleEl) popupVariantTitleEl.textContent = matchedVariant.title;
+        if (popupVariantOptionsEl) popupVariantOptionsEl.textContent = matchedVariant.options.join(" / ");
+
+        if (option1El) option1El.textContent = matchedVariant.options[0] || "-";
+        if (option2El) option2El.textContent = matchedVariant.options[1] || "-";
+        if (option3El) option3El.textContent = matchedVariant.options[2] || "-";
+
       } else {
-        option.disabled = false;
-        option.classList.remove('disabled-option');
+        if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak ditemukan";
+        if (priceDivMobile) priceDivMobile.textContent = "Varian tidak ditemukan";
+        quantityInput.min = 1;
+        updateMinusButtonHandler(1);
+
+        if (popupVariantTitleEl) popupVariantTitleEl.textContent = "";
+        if (popupVariantOptionsEl) popupVariantOptionsEl.textContent = "";
+
+        if (option1El) option1El.textContent = "-";
+        if (option2El) option2El.textContent = "-";
+        if (option3El) option3El.textContent = "-";
       }
-    });
 
-    if (select.options[select.selectedIndex]?.disabled) {
-      select.selectedIndex = 0;
-    }
-  });
-
-  // ✅ Hapus logic warning otomatis, kita pindahkan ke event click
-  setupWarningLogic();
-}
-
-  let firstSelectWarned = false;
-  let secondSelectWarned = false;
-
-  function setupWarningLogic() {
-  const warningMessage = document.getElementById('variant-warning-message');
-  const firstSelect = variantDropdowns[0]; // Days
-  const secondSelect = variantDropdowns[1]; // Data Plan
-  const resetBtn = document.getElementById('reset-plan'); // Tombol reset
-
-  if (!warningMessage || !firstSelect || !secondSelect) return;
-
-  // Fungsi untuk tampilkan warning
-  let popupTimeout; // simpan timer agar bisa di-clear kalau user close manual
-
-  function getWarningText() {
-    const isID =
-      location.hostname.includes('gkomunika.com') &&
-      location.pathname === '/id/products/esim-saudi-arabia';
-    return isID
-      ? 'Opsi abu-abu artinya kombinasi hari/kuota tidak tersedia. Klik Reset, lalu pilih hari/kuota yang diinginkan lebih dulu.'
-      : 'Greyed-out means the day/plan combo’s unavailable. Click Reset, then pick your preferred day/plan first.';
-  }
-
-  function showWarning(message) {
-    // Tampilkan warning di elemen utama
-    warningMessage.textContent = message;
-    warningMessage.style.display = 'block';
-  }
-
-  function hideWarning() {
-    // Sembunyikan warning
-    warningMessage.style.display = 'none';
-  }
-
-  // Event: klik Data Plan (dropdown kedua)
-  secondSelect.addEventListener('click', () => {
-    if (secondSelectWarned) return; // Sudah tampilkan warning sebelumnya
-
-    const firstSelected = firstSelect.value !== "";
-    const secondSelected = secondSelect.value !== "";
-
-    if (firstSelected && !secondSelected) {
-      const anyDisabled = Array.from(secondSelect.options).some(opt => opt.disabled && opt.value !== "");
-      if (anyDisabled) {
-        showWarning(getWarningText());
-        secondSelectWarned = true; // Tandai sudah tampilkan
-      } else {
-        hideWarning();
+      if (selectedVariantDisplay) {
+        const selected = selectedOptions.filter(v => v !== "").join(" - ");
+        selectedVariantDisplay.textContent = selected || "Choose Variant";
       }
-    } else {
-      hideWarning();
-    }
-  });
-
-  // Event: klik Days (dropdown pertama)
-  firstSelect.addEventListener('click', () => {
-    if (firstSelectWarned) return; // Sudah tampilkan warning sebelumnya
-
-    const firstSelected = firstSelect.value !== "";
-    const secondSelected = secondSelect.value !== "";
-
-    if (secondSelected && !firstSelected) {
-      const anyDisabled = Array.from(firstSelect.options).some(opt => opt.disabled && opt.value !== "");
-      if (anyDisabled) {
-        // Pakai pesan yang sama (disesuaikan bahasa via URL)
-        showWarning(getWarningText());
-        firstSelectWarned = true; // Tandai sudah tampilkan
-      } else {
-        hideWarning();
-      }
-    } else {
-      hideWarning();
-    }
-  });
-
-  // Jika kedua dropdown sudah terisi, sembunyikan warning saat ada perubahan
-  [firstSelect, secondSelect].forEach(select => {
-    select.addEventListener('change', () => {
-      if (firstSelect.value === "" || secondSelect.value === "") {
-        // Jika ada yang kosong lagi → reset flags
-        firstSelectWarned = false;
-        secondSelectWarned = false;
-      } else {
-        hideWarning();
-      }
-    });
-  });
-
-  // Klik tombol reset → warning hilang & reset flags
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      hideWarning();
-      firstSelectWarned = false;
-      secondSelectWarned = false;
-    });
-  }
-}
-
-
-  function findVariant() {
-    const selectedOptions = getSelectedOptions();
-
-    const popupVariantTitleEl = document.getElementById('popup-variant-title');
-    const popupVariantOptionsEl = document.getElementById('popup-variant-options');
-    const option1El = document.getElementById('display-option1');
-    const option2El = document.getElementById('display-option2');
-    const option3El = document.getElementById('display-option3');
-
-    if (selectedOptions.includes("")) {
-      if (priceDivDesktop) priceDivDesktop.innerHTML = defaultPriceHTML;
-      if (priceDivMobile) priceDivMobile.innerHTML = defaultPriceMobileHTML;
-      if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Pilih varian";
-
-      // Clear display elements
-      if (popupVariantTitleEl) popupVariantTitleEl.textContent = "";
-      if (popupVariantOptionsEl) popupVariantOptionsEl.textContent = "";
-
-      if (option1El) option1El.textContent = "-";
-      if (option2El) option2El.textContent = "-";
-      if (option3El) option3El.textContent = "-";
 
       updateDropdownOptions();
       updateVariantTitle();
-      updateMinusButtonHandler(1);
-      return null;
-    }
+      matchInsuranceVariant(matchedVariant);
 
-    const matchedVariant = productVariants.find(variant =>
-      variant.options.every((opt, index) => opt === selectedOptions[index])
-    );
-
-    if (matchedVariant) {
-      if (matchedVariant.available) {
-        const moneySpan = document.querySelector(`#variant-prices span[data-variant-id="${matchedVariant.id}"]`);
-       if (moneySpan) {
-  if (priceDivDesktop) priceDivDesktop.innerHTML = ''; 
-  if (priceDivMobile) priceDivMobile.innerHTML = '';
-
-  const quantity = parseInt(quantityInput.value) || 1;
-  updateUSDPrice(matchedVariant.price, quantity);
-  updateIDRPrice(matchedVariant.price, quantity);
-}
-
-
-      } else {
-        if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak tersedia";
-        if (priceDivMobile) priceDivMobile.textContent = "Varian tidak tersedia";
+      if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
+        Currency.convertAll(shopCurrency, Currency.currentCurrency);
       }
 
-      const variantType = getVariantType(matchedVariant);
+      return matchedVariant;
+    }
 
-      if (variantType === "Duo Plus") {
-        quantityInput.min = 2;
-        quantityInput.value = Math.max(2, parseInt(quantityInput.value) || 2);
-        updateMinusButtonHandler(2);
-      } else {
-        quantityInput.min = 1;
-        updateMinusButtonHandler(1);
+    /* ===========================
+       Quantity +/- & input
+    ============================ */
+    function adjustQuantity(delta) {
+      const current = parseInt(quantityInput.value, 10) || 1;
+      quantityInput.value = Math.max(quantityInput.min, current + delta);
+      findVariant();
+    }
+
+    minusBtn?.addEventListener('click', () => adjustQuantity(-1));
+    plusBtn?.addEventListener('click', () => adjustQuantity(1));
+
+    quantityInput?.addEventListener('input', () => {
+      const variant = findVariant();
+      if (variant) {
+        updateUSDPrice(variant.price, parseInt(quantityInput.value, 10) || 1);
+        updateIDRPrice(variant.price, parseInt(quantityInput.value, 10) || 1);
       }
-
-      // ✅ Update tampilkan variant title & option di popup
-      if (popupVariantTitleEl) popupVariantTitleEl.textContent = matchedVariant.title;
-      if (popupVariantOptionsEl) popupVariantOptionsEl.textContent = matchedVariant.options.join(" / ");
-
-      // ✅ Update dropdown-style option displays
-      if (option1El) option1El.textContent = matchedVariant.options[0] || "-";
-      if (option2El) option2El.textContent = matchedVariant.options[1] || "-";
-      if (option3El) option3El.textContent = matchedVariant.options[2] || "-";
-
-    } else {
-      if (priceDivDesktop) priceDivDesktop.textContent = "Varian tidak ditemukan";
-      if (priceDivMobile) priceDivMobile.textContent = "Varian tidak ditemukan";
-      quantityInput.min = 1;
-      updateMinusButtonHandler(1);
-
-      // Clear variant display
-      if (popupVariantTitleEl) popupVariantTitleEl.textContent = "";
-      if (popupVariantOptionsEl) popupVariantOptionsEl.textContent = "";
-
-      if (option1El) option1El.textContent = "-";
-      if (option2El) option2El.textContent = "-";
-      if (option3El) option3El.textContent = "-";
-    }
-
-    if (selectedVariantDisplay) {
-      const selected = selectedOptions.filter(v => v !== "").join(" - ");
-      selectedVariantDisplay.textContent = selected || "Choose Variant";
-    }
-
-    updateDropdownOptions();
-    updateVariantTitle();
-    matchInsuranceVariant(matchedVariant);
-
-    if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
-      Currency.convertAll(shopCurrency, Currency.currentCurrency);
-    }
-
-    return matchedVariant;
-  }
-
-let cachedUSDRate = null; // Simpan kurs agar tidak fetch berkali-kali
-
-async function getExchangeRate() {
-  if (cachedUSDRate) return cachedUSDRate; // Jika sudah ada, pakai yang lama
-  try {
-    const response = await fetch('https://api.exchangerate-api.com/v4/latest/IDR');
-    const data = await response.json();
-    cachedUSDRate = data.rates.USD;
-    return cachedUSDRate;
-  } catch (error) {
-    console.error('Gagal ambil kurs USD:', error);
-    cachedUSDRate = 0.000066; // fallback
-    return cachedUSDRate;
-  }
-}
-
-function convertIDRtoUSDInstant(idrAmount) {
-  const rate = cachedUSDRate || 0.000066; // Gunakan cache kalau ada
-  return (idrAmount * rate).toFixed(2);
-}
-
-async function updateUSDPrice(variantPrice, quantity) {
-  const totalIDR = (variantPrice / 100) * quantity;
-
-  // ✅ Hitung langsung tanpa nunggu fetch
-  const usdPriceInstant = convertIDRtoUSDInstant(totalIDR);
-
-  let usdElementDesktop = document.getElementById('usd-price-desktop');
-  let usdElementMobile = document.getElementById('usd-price-mobile');
-
-  if (!usdElementDesktop) {
-    const desktopContainer = document.getElementById('variant-price-desktop');
-    usdElementDesktop = document.createElement('div');
-    usdElementDesktop.id = 'usd-price-desktop';
-    usdElementDesktop.className = 'money';
-    desktopContainer.appendChild(usdElementDesktop);
-  }
-  usdElementDesktop.textContent = `$${usdPriceInstant}`;
-
-  if (!usdElementMobile) {
-    const mobileContainer = document.getElementById('variant-price-mobile');
-    usdElementMobile = document.createElement('div');
-    usdElementMobile.id = 'usd-price-mobile';
-    mobileContainer.appendChild(usdElementMobile);
-  }
-  usdElementMobile.textContent = `USD $${usdPriceInstant}`;
-
-  toggleCurrencyDisplay();
-
-  // ✅ Ambil kurs terbaru di background (sekali saja)
-  if (!cachedUSDRate) {
-    const rate = await getExchangeRate();
-    const usdPriceFinal = (totalIDR * rate).toFixed(2);
-    usdElementDesktop.textContent = `$${usdPriceFinal}`;
-    usdElementMobile.textContent = `USD $${usdPriceFinal}`;
-  }
-}
-
-function updateIDRPrice(variantPrice, quantity) {
-  const totalIDR = (variantPrice / 100) * quantity; // Shopify pakai cent
-  const formattedIDR = new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR'
-  }).format(totalIDR);
-
-  let idrElementDesktop = document.getElementById('idr-price-desktop');
-  let idrElementMobile = document.getElementById('idr-price-mobile');
-
-  if (!idrElementDesktop) {
-    const desktopContainer = document.getElementById('variant-price-desktop');
-    idrElementDesktop = document.createElement('div');
-    idrElementDesktop.id = 'idr-price-desktop';
-    idrElementDesktop.className = 'money';
-    desktopContainer.appendChild(idrElementDesktop);
-  }
-  idrElementDesktop.textContent = formattedIDR;
-
-  if (!idrElementMobile) {
-    const mobileContainer = document.getElementById('variant-price-mobile');
-    idrElementMobile = document.createElement('div');
-    idrElementMobile.className = 'money';
-    idrElementMobile.id = 'idr-price-mobile';
-    mobileContainer.appendChild(idrElementMobile);
-  }
-  idrElementMobile.textContent = formattedIDR;
-
-  // ✅ Panggil toggle setelah update
-  toggleCurrencyDisplay();
-}
-
-function toggleCurrencyDisplay() {
-  let userCurrency = sessionStorage.getItem('buckscc_customer_currency');
-  if (userCurrency) {
-    userCurrency = userCurrency.replace(/"/g, ''); // Bersihkan tanda kutip
-  }
-
-  const idrPriceDesktop = document.getElementById('idr-price-desktop');
-  const usdPriceDesktop = document.getElementById('usd-price-desktop');
-  const idrPriceMobile = document.getElementById('idr-price-mobile');
-  const usdPriceMobile = document.getElementById('usd-price-mobile');
-
-  console.log("toggleCurrencyDisplay → Currency:", userCurrency);
-
-  if (userCurrency === 'USD') {
-    if (idrPriceDesktop) idrPriceDesktop.style.display = 'none';
-    if (usdPriceDesktop) usdPriceDesktop.style.display = 'block';
-    if (idrPriceMobile) idrPriceMobile.style.display = 'none';
-    if (usdPriceMobile) usdPriceMobile.style.display = 'block';
-  } else {
-    // Default atau IDR
-    if (idrPriceDesktop) idrPriceDesktop.style.display = 'block';
-    if (usdPriceDesktop) usdPriceDesktop.style.display = 'none';
-    if (idrPriceMobile) idrPriceMobile.style.display = 'block';
-    if (usdPriceMobile) usdPriceMobile.style.display = 'none';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  toggleCurrencyDisplay();
-});
-
-
-let lastCurrency = sessionStorage.getItem('buckscc_customer_currency');
-
-// Jalankan pengecekan setiap 500ms (bisa dioptimasi)
-setInterval(() => {
-  const currentCurrency = sessionStorage.getItem('buckscc_customer_currency');
-  if (currentCurrency !== lastCurrency) {
-    lastCurrency = currentCurrency;
-    console.log("Currency berubah →", currentCurrency);
-    handleCurrencyChange();
-  }
-}, 500);
-
-function handleCurrencyChange() {
-  const variant = findVariant();
-  if (variant) {
-    const quantity = parseInt(document.getElementById('quantity').value) || 1;
-    updateUSDPrice(variant.price, quantity);
-    updateIDRPrice(variant.price, quantity);
-    toggleCurrencyDisplay();
-  } else {
-    toggleCurrencyDisplay();
-  }
-}
-
-
-
-  function matchInsuranceVariant(mainVariant) {
-    const quantityInput = document.getElementById('quantity');
-    const currentQuantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
-
-    const insuranceVariants = document.querySelectorAll('.insurance-addon__wrapper [data-title]');
-    const matchedInsuranceList = [];
-
-    insuranceVariants.forEach((el) => {
-      const option1 = el.dataset.option1?.trim();
-      const option2 = el.dataset.option2?.trim();
-      const option3 = el.dataset.option3?.trim();
-      const addonType = el.dataset.addonType?.trim()?.toLowerCase(); // 'covid' or 'general'
-
-      const mainOption1 = mainVariant.options[0]?.trim();
-      const mainOption2 = mainVariant.options[1]?.trim();
-      const mainOption3 = mainVariant.options[2]?.trim();
-
-      let isMatch = false;
-
-      if (addonType === 'covid') {
-        isMatch = (option1 === mainOption1 && option2 === mainOption2 && option3 === mainOption3);
-      } else if (addonType === 'general') {
-        isMatch = (option1 === mainOption1 && option2 === mainOption2);
-      }
-
-    if (isMatch) {
-      // Tentukan judul tampil
-      let displayTitle = '';
-      if (addonType === 'covid') {
-        displayTitle = 'Covid-19 Protection';
-      } else if (addonType === 'general') {
-        displayTitle = option3 || el.dataset.title;
-      }
-
-      // Tentukan isi <li>
-      let benefits = [];
-      if (addonType === 'covid') {
-        benefits = [
-          'Trip Cancellation',
-          'Medical Expenses Including Emergency Medical Evacuation',
-          'Additional Expenses',
-          'Trip Curtailment or Return of Children',
-          'Automatic extension of Cover'
-        ];
-      } else if (addonType === 'general') {
-        if (option3 === 'Business Travel') {
-          benefits = [
-            'Staff Replacement',
-            'Business Equipment',
-            'Missed Events Fee'
-          ];
-        } else if (option3 === 'Cruise Cover') {
-          benefits = [
-            'Cabin Confinement',
-            'Itinerary Change',
-            'Unused Excursion',
-            'Cruise Trip Interruption'
-          ];
-        } else if (option3 === 'Winter Sport' || option3 === 'Winter Sports') {
-          benefits = [
-            'Winter Sport Pack',
-            'On piste Closure'
-          ];
-        } else {
-          benefits = [];
-        }
-      }
-
-      matchedInsuranceList.push({
-        title: displayTitle,
-        addonType: addonType,
-        price: el.dataset.price,
-        id: el.dataset.variantId,
-        option1: el.dataset.option1,
-        option2: el.dataset.option2,
-        option3: el.dataset.option3,
-        quantity: currentQuantity,
-        benefits: benefits
-      });
-    }
-  });
-
-  const selectedVariantTitleDisplay = document.getElementById('selected-variant-title');
-
-  if (selectedVariantTitleDisplay) {
-    if (matchedInsuranceList.length > 0) {
-      const rows = matchedInsuranceList.map(item => {
-        const benefitList = item.benefits.map(benefit => `<li>${benefit}</li>`).join('');
-        return `
-        <div class="insurance__product-addon">
-          <div class="insurance_product-addon_header">
-            <div class="insurance_product-addon_title-wrapper"> 
-              <h1 class="insurance_product-addon_title">${item.title}</h1>
-              <span class="insurance_product-addon_price">${item.price}</span>
-            </div>
-            <div class="addon-checkbox">
-              <input 
-                type="checkbox" 
-                data-id="${item.id}" 
-                data-variant-title="${item.title}" 
-                data-option1="${item.option1}" 
-                data-option2="${item.option2}" 
-                data-option3="${item.option3}"
-                data-quantity="${item.quantity}"
-              >
-              <span>select</span>
-            </div>
-            </div>
-          </div>
-          <div class="insurance_product-addon_list-benefits">
-            <ul>
-                ${benefitList}
-            </ul>
-          </div>
-        </div>
-        `;
-      }).join('');
-
-      selectedVariantTitleDisplay.innerHTML = rows;
-    } else {
-      selectedVariantTitleDisplay.innerHTML = `No matching insurance`;
-    }
-  }
-}
-
-  function adjustQuantity(delta) {
-    const current = parseInt(quantityInput.value) || 1;
-    quantityInput.value = Math.max(quantityInput.min, current + delta);
-    findVariant(); // Sudah memanggil updateUSDPrice()
-  }
-
-  minusBtn?.addEventListener('click', () => adjustQuantity(-1));
-  plusBtn?.addEventListener('click', () => adjustQuantity(1));
-
-  // ✅ Perubahan manual qty update harga
-  // ✅ Update USD price saat quantity diketik manual (tanpa kedip)
-quantityInput?.addEventListener('input', () => {
-  const variant = findVariant();
-  if (variant) {
-    updateUSDPrice(variant.price, parseInt(quantityInput.value) || 1);
-    updateIDRPrice(variant.price, parseInt(quantityInput.value) || 1);
-  }
-});
-
-
-  resetBtn?.addEventListener('click', () => {
-    variantDropdowns.forEach(select => {
-      select.selectedIndex = 0;
     });
-    quantityInput.min = 1;
-    quantityInput.value = 1;
-    updateMinusButtonHandler(1);
 
-    if (priceDivDesktop) priceDivDesktop.innerHTML = defaultPriceHTML;
-    if (priceDivMobile) priceDivMobile.innerHTML = defaultPriceMobileHTML;
-
-    if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Selected Variant";
-    updateDropdownOptions();
-    updateVariantTitle(); // Reset variant title saat reset
-
-    if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
-      Currency.convertAll(shopCurrency, Currency.currentCurrency);
-    }
-  });
-
-  function updateCartCount() {
-    fetch('/cart.js')
-      .then(response => response.json())
-      .then(cart => {
-        const countEl = document.getElementById('cart-count');
-        if (countEl) {
-          countEl.textContent = cart.item_count;
-        }
-      })
-      .catch(error => {
-        console.error("Failed to update cart count:", error);
+    /* ===========================
+       Reset button
+    ============================ */
+    resetBtn?.addEventListener('click', () => {
+      variantDropdowns.forEach(select => {
+        select.selectedIndex = 0;
       });
-  }
+      quantityInput.min = 1;
+      quantityInput.value = 1;
+      updateMinusButtonHandler(1);
 
-  function handleCartAction(action) {
+      if (priceDivDesktop) priceDivDesktop.innerHTML = defaultPriceHTML;
+      if (priceDivMobile) priceDivMobile.innerHTML = defaultPriceMobileHTML;
+
+      if (selectedVariantDisplay) selectedVariantDisplay.textContent = "Selected Variant";
+      updateDropdownOptions();
+      updateVariantTitle();
+
+      if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
+        Currency.convertAll(shopCurrency, Currency.currentCurrency);
+      }
+    });
+
+    /* ===========================
+       Popup & cart count
+    ============================ */
+    function updateCartCount() {
+      fetch('/cart.js')
+        .then(response => response.json())
+        .then(cart => {
+          const countEl = document.getElementById('cart-count');
+          if (countEl) {
+            countEl.textContent = cart.item_count;
+          }
+        })
+        .catch(error => {
+          console.error("Failed to update cart count:", error);
+        });
+    }
+
+    function showPopupMessage(message) {
+      const popup = document.getElementById("variant-popup");
+      const messageEl = document.getElementById("variant-popup-message");
+      if (popup && messageEl) {
+        messageEl.textContent = message;
+        popup.style.display = "block";
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 2000);
+      }
+    }
+
+    /* ===========================
+       Loading state tombol
+       (FIX: reset saat kembali dari checkout)
+    ============================ */
+    function setButtonLoadingState(button, isLoading, text = "Processing...") {
+      if (!button) return;
+
+      if (isLoading) {
+        if (!button.dataset.originalHtml) {
+          button.dataset.originalHtml = button.innerHTML;
+        }
+
+        button.innerHTML = `
+          <span class="btn-loading-spinner" aria-hidden="true"></span>
+          <span class="btn-loading-text">${text}</span>
+        `;
+        button.disabled = true;
+        button.style.opacity = "0.6";
+        button.style.cursor = "not-allowed";
+      } else {
+        if (button.dataset.originalHtml) {
+          button.innerHTML = button.dataset.originalHtml;
+          delete button.dataset.originalHtml;
+        }
+        button.disabled = false;
+        button.style.opacity = "1";
+        button.style.cursor = "pointer";
+      }
+    }
+
+    function resetAllButtons() {
+      const buttons = [
+        document.getElementById('add-to-cart'),
+        document.getElementById('buy-now-button'),
+        document.getElementById('add-to-cart-mobile'),
+        document.getElementById('buy-now-button-mobile'),
+        document.getElementById('buy-topup-button'),
+        document.getElementById('buy-topup-button-mobile'),
+      ].filter(Boolean);
+
+      buttons.forEach(btn => {
+        if (btn.dataset.originalHtml) {
+          btn.innerHTML = btn.dataset.originalHtml;
+          delete btn.dataset.originalHtml;
+        }
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+      });
+    }
+
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted) {
+        resetAllButtons();
+      }
+    });
+
+    /* ===========================
+       Variant type
+    ============================ */
+    function getVariantType(variant) {
+      const variantsData = [
+        {% for v in product.variants %}
+          {
+            id: {{ v.id }},
+            title: "{{ v.title | escape }}",
+            type: {{ v.metafields.variant.type | json }},
+            options: [
+              {% for option in v.options %}
+                "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
+              {% endfor %}
+            ]
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ];
+
+      const matchedVariant = variantsData.find(v => v.id === variant.id);
+      if (matchedVariant && matchedVariant.type) {
+        if (Array.isArray(matchedVariant.type)) {
+          return matchedVariant.type.join(', ');
+        } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
+          return matchedVariant.type.value;
+        } else {
+          return matchedVariant.type;
+        }
+      }
+      return '';
+    }
+
+    /* ===========================
+       Handle Add to Cart / Buy Now
+       (FIX: Buy Now tidak clear cart)
+    ============================ */
+    function handleCartAction(action, buttonEl) {
     const variant = findVariant();
-    const quantity = parseInt(quantityInput.value) || 1;
-
+    const quantity = parseInt(quantityInput.value, 10) || 1;
     const variantCoverage = window.productCoverage || [];
 
     if (!variant || !variant.available) {
-      let hasEmpty = false;
-      variantDropdowns.forEach(select => {
-        if (select.value === "") {
-          select.classList.add("variant-warning");
-          hasEmpty = true;
-        }
-      });
-
-      if (hasEmpty) {
-        const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
-        if (firstEmpty) {
-          firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+    let hasEmpty = false;
+    variantDropdowns.forEach(select => {
+      if (select.value === "") {
+        select.classList.add("variant-warning");
+        hasEmpty = true;
       }
+    });
 
+    if (hasEmpty) {
+      const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
+      if (firstEmpty) {
+        firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
       return;
     }
 
     const productCategory = "{{ product.metafields.product.category.value }}";
 
     if (action === "buy" && productCategory === "Insurance") {
-      const variantType = getVariantType(variant);
+    const variantType = getVariantType(variant);
 
-      sessionStorage.removeItem('ProductItems');
+    sessionStorage.removeItem('ProductItems');
 
     const selectedAddons = JSON.parse(sessionStorage.getItem('SelectedAddons') || '[]');
 
@@ -1462,188 +1462,131 @@ quantityInput?.addEventListener('input', () => {
         option3: addon.option3
       }))
     };
-  
-  const ProductItems = [newItem];
-  sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
 
-        if (customerLoggedIn) {
-          window.location.href = "/pages/form-insurance";
-        } else {
-          window.location.href = "/account/login?return_url=/pages/form-insurance";
-        }
+    const ProductItems = [newItem];
+    sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
 
-        return;
-      }
-
-      const payload = { id: variant.id, quantity: quantity };
-      const popup = document.getElementById("variant-popup");
-
-      function showPopup(message) {
-        const messageEl = document.getElementById("variant-popup-message");
-        if (messageEl) {
-          messageEl.textContent = message;
-        }
-
-        popup.style.display = "block";
-        setTimeout(() => {
-          popup.style.display = "none";
-        }, 2000);
-      }
-
-      if (action === "buy") {
-        fetch("/cart/clear.js", { method: "POST" }).then(() => {
-          fetch("/cart/add.js", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          }).then(() => {
-            window.location.href = "/checkout";
-          });
-        });
-      } else {
-        fetch("/cart/add.js", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest"
-          },
-          body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(() => {
-          showPopup("Item successfully added to cart.");
-          updateCartCount();
-        })
-        .catch(err => {
-          console.error("Add to cart failed:", err);
-          showPopup("Failed to add product");
-        });
-      }
+    if (typeof customerLoggedIn !== 'undefined' && customerLoggedIn) {
+      window.location.href = "/pages/form-insurance";
+    } else {
+      window.location.href = "/account/login?return_url=/pages/form-insurance";
     }
-
-
-    // Simple modal untuk mismatch ICCID
-function showIccidMismatchDialog(iccid, {
-  message = "Your ICCID doesn’t match this product type. Click OK to go to a compatible top-up product.",
-  okText = "OK"
-} = {}) {
-  // jika sudah ada, hapus dulu biar tidak dobel
-  const old = document.getElementById("iccid-mismatch-popup");
-  if (old) old.remove();
-
-  const wrapper = document.createElement("div");
-  wrapper.id = "iccid-mismatch-popup";
-  wrapper.style.cssText = `
-    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-    background:rgba(0,0,0,.35); z-index:10000;
-  `;
-
-  const box = document.createElement("div");
-  box.style.cssText = `
-    width:min(480px,90%); background:var(--color-neutral); color:var(--color-primary);
-    border-radius:12px; box-shadow:var(--box-shadow); padding:18px 16px;
-  `;
-  box.innerHTML = `
-    <h3 style="margin:0 0 8px 0; font-size:var(--font-large); font-weight:700; color: var(--color-primary)">
-      ICCID Invalid.
-    </h3>
-    <p style="margin:0 0 14px 0; line-height:1.5;">${message}</p>
-    <div style="display:flex; justify-content:flex-end; gap:10px;">
-      <button id="iccid-mismatch-ok"
-        style="padding:10px 16px; border:none; border-radius:10px;
-               background:var(--color-primary); color:var(--color-neutral); cursor:pointer;">
-        ${okText}
-      </button>
-    </div>
-  `;
-  wrapper.appendChild(box);
-  document.body.appendChild(wrapper);
-
-  document.getElementById("iccid-mismatch-ok").onclick = () => {
-    // simpan ICCID supaya prefill di halaman /pages/top-up
-    sessionStorage.setItem("iccid", (iccid || "").trim());
-    // redirect
-    window.location.href = "/pages/top-up";
-  };
-}
-
-
-    const buyTopUpDesktop = document.getElementById("buy-topup-button");
-    const buyTopUpMobile = document.getElementById("buy-topup-button-mobile");
-
-    buyTopUpDesktop?.addEventListener("click", handleBuyTopUp);
-    buyTopUpMobile?.addEventListener("click", handleBuyTopUp);
-    
-
-    async function handleBuyTopUp() {
-  const variant = findVariant();
-  const quantity = 1;
-  let iccid = sessionStorage.getItem("iccid");
-
-  const buyTopUpDesktop = document.getElementById("buy-topup-button");
-  const buyTopUpMobile = document.getElementById("buy-topup-button-mobile");
-
-  // Gabung dua tombol (desktop & mobile)
-  const clickedBtn = event?.currentTarget || buyTopUpDesktop || buyTopUpMobile;
-
-  // Validasi varian
-  if (!variant || !variant.available) {
-    let hasEmpty = false;
-    variantDropdowns.forEach(select => {
-      if (select.value === "") {
-        select.classList.add("variant-warning");
-        hasEmpty = true;
-      }
-    });
-    if (hasEmpty) {
-      const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
-      if (firstEmpty) firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-    return;
-  }
-
-  const productCategory = "{{ product.metafields.product.category.value }}";
-
-  // ICCID belum ada → buka popup input
-  if (!iccid || iccid.trim() === "") {
-    showICCIDPopup();
-    return;
-  }
-
-  iccid = iccid.trim();
-
-  try {
-    // 🌀 Set tombol jadi loading
-    setButtonLoadingState(clickedBtn, true);
-
-    const match = await TopUp.isIccidCategoryMatch(iccid, productCategory);
-
-    if (!match) {
-      showIccidMismatchDialog(iccid, {
-        message: "Your ICCID doesn’t match this product type. Click OK to go to a compatible top-up product.",
-        okText: "OK"
-      });
-      setButtonLoadingState(clickedBtn, false); // kembalikan tombol
       return;
     }
 
-    // ✅ Match → lanjut checkout
-    await proceedToCheckout(iccid, variant, quantity);
+    const payload = { id: variant.id, quantity: quantity };
+    const popup = document.getElementById("variant-popup");
 
-  } catch (err) {
-    console.error("Error processing Top-Up:", err);
-    showPopupMessage("Failed to process Top Up. Please try again.");
-  } finally {
-    // 🔄 Pastikan tombol di-reset kalau gagal
-    setButtonLoadingState(clickedBtn, false);
+    function showPopup(message) {
+    const messageEl = document.getElementById("variant-popup-message");
+    if (messageEl) {
+      messageEl.textContent = message;
+    }
+
+    popup.style.display = "block";
+    setTimeout(() => {
+      popup.style.display = "none";
+    }, 2000);
   }
-}
 
+    if (action === "buy") {
+    if (buttonEl) {
+      setButtonLoadingState(buttonEl, true, "Processing...");
+    }
 
+    fetch("/cart/clear.js", { method: "POST" })
+      .then(() => {
+        fetch("/cart/add.js", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+          .then(res => res.json())
+          .then(() => {
+            window.location.href = "/checkout";
+          })
+          .catch((err) => {
+            console.error("Buy now failed:", err);
+            showPopup("Failed to process checkout.");
+            if (buttonEl) {
+              setButtonLoadingState(buttonEl, false);
+            }
+          });
+      });
+    } else {
+      if (buttonEl) {
+        setButtonLoadingState(buttonEl, true, "Adding...");
+      }
 
+    fetch("/cart/add.js", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(res => res.json())
+      .then(() => {
+        showPopup("Item successfully added to cart.");
+        updateCartCount();
+      })
+      .catch(err => {
+        console.error("Add to cart failed:", err);
+        showPopup("Failed to add product");
+      })
+      .finally(() => {
+        if (buttonEl) {
+          setButtonLoadingState(buttonEl, false);
+        }
+      });
+    }
+  }
 
+    /* ===========================
+       Top Up / ICCID (tetap sama)
+    ============================ */
+    function showIccidMismatchDialog(iccid, {
+      message = "Your ICCID doesn’t match this product type. Click OK to go to a compatible top-up product.",
+      okText = "OK"
+    } = {}) {
+      const old = document.getElementById("iccid-mismatch-popup");
+      if (old) old.remove();
 
-    // ✅ Fungsi untuk memproses ke checkout
+      const wrapper = document.createElement("div");
+      wrapper.id = "iccid-mismatch-popup";
+      wrapper.style.cssText = `
+        position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+        background:rgba(0,0,0,.35); z-index:10000;
+      `;
+
+      const box = document.createElement("div");
+      box.style.cssText = `
+        width:min(480px,90%); background:var(--color-neutral); color:var(--color-primary);
+        border-radius:12px; box-shadow:var(--box-shadow); padding:18px 16px;
+      `;
+      box.innerHTML = `
+        <h3 style="margin:0 0 8px 0; font-size:var(--font-large); font-weight:700; color: var(--color-primary)">
+          ICCID Invalid.
+        </h3>
+        <p style="margin:0 0 14px 0; line-height:1.5;">${message}</p>
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button id="iccid-mismatch-ok"
+            style="padding:10px 16px; border:none; border-radius:10px;
+                   background:var(--color-primary); color:var(--color-neutral); cursor:pointer;">
+            ${okText}
+          </button>
+        </div>
+      `;
+      wrapper.appendChild(box);
+      document.body.appendChild(wrapper);
+
+      document.getElementById("iccid-mismatch-ok").onclick = () => {
+        sessionStorage.setItem("iccid", (iccid || "").trim());
+        window.location.href = "/pages/top-up";
+      };
+    }
+
     function proceedToCheckout(iccid, variant, quantity) {
       const payload = {
         id: variant.id,
@@ -1661,154 +1604,133 @@ function showIccidMismatchDialog(iccid, {
           },
           body: JSON.stringify(payload)
         })
-        .then(() => {
-          window.location.href = "/checkout";
-        })
-        .catch(err => {
-          console.error("Failed to add top up product:", err);
-          showPopupMessage("Failed to buy top up.");
-        });
+          .then(() => {
+            window.location.href = "/checkout";
+          })
+          .catch(err => {
+            console.error("Failed to add top up product:", err);
+            showPopupMessage("Failed to buy top up.");
+          });
       });
     }
 
-    
-    // ✅ Popup Input ICCID
     function showICCIDPopup() {
-  let popup = document.getElementById("iccid-popup");
-  if (!popup) {
-    popup = document.createElement("div");
-    popup.id = "iccid-popup";
-    popup.classList.add("iccid-popup");
-    popup.innerHTML = `
-      <style>
-        #iccid-input::placeholder { color: var(--color-primary); }
-      </style>
-      <h3 style="margin:0;line-height:1.3;font-size:var(--font-extra-large);font-weight:bold;color:var(--color-primary);">
-        Enter Your ICCID
-      </h3>
-      <input type="text" id="iccid-input" placeholder="Input ICCID Number"
-             style="width:100%;padding:15px 10px;border-radius:10px;outline:none;border:1px solid var(--color-primary);background-color:var(--color-background);margin:10px 0;">
-      <div style="display:flex;justify-content:flex-end;">
-        <button id="iccid-submit"
-                style="padding:10px 20px;border-radius:10px;border:none;cursor:pointer;background-color:var(--color-primary);color:var(--color-neutral);font-size:var(--font-large);">
-          Next
-        </button>
-      </div>
-    `;
-    document.body.appendChild(popup);
+      let popup = document.getElementById("iccid-popup");
+      if (!popup) {
+        popup = document.createElement("div");
+        popup.id = "iccid-popup";
+        popup.classList.add("iccid-popup");
+        popup.innerHTML = `
+          <style>
+            #iccid-input::placeholder { color: var(--color-primary); }
+          </style>
+          <h3 style="margin:0;line-height:1.3;font-size:var(--font-extra-large);font-weight:bold;color:var(--color-primary);">
+            Enter Your ICCID
+          </h3>
+          <input type="text" id="iccid-input" placeholder="Input ICCID Number"
+                 style="width:100%;padding:15px 10px;border-radius:10px;outline:none;border:1px solid var(--color-primary);background-color:var(--color-background);margin:10px 0;">
+          <div style="display:flex;justify-content:flex-end;">
+            <button id="iccid-submit"
+                    style="padding:10px 20px;border-radius:10px;border:none;cursor:pointer;background-color:var(--color-primary);color:var(--color-neutral);font-size:var(--font-large);">
+              Next
+            </button>
+          </div>
+        `;
+        document.body.appendChild(popup);
+        document.getElementById("iccid-submit").addEventListener("click", async () => {
+          const inputEl = document.getElementById("iccid-input");
+          const iccidValue = (inputEl?.value || "").trim();
 
-    // ✅ Handler submit baru (asynchronous)
-    document.getElementById("iccid-submit").addEventListener("click", async () => {
-      const inputEl = document.getElementById("iccid-input");
-      const iccidValue = (inputEl?.value || "").trim();
+          if (!iccidValue) {
+            alert("Please enter ICCID");
+            return;
+          }
 
-      if (!iccidValue) {
-        alert("Please enter ICCID");
+          sessionStorage.setItem("iccid", iccidValue);
+          const productCategory = "{{ product.metafields.product.category.value }}";
+
+          const isMatch = window.TopUp
+            ? await TopUp.isIccidCategoryMatch(iccidValue, productCategory)
+            : false;
+
+          if (!isMatch) {
+            popup.remove();
+            window.location.href = "/pages/top-up";
+            return;
+          }
+
+          popup.remove();
+          const variant = findVariant();
+          if (!variant || !variant.available) {
+            showPopupMessage("Please select a valid variant first.");
+            return;
+          }
+          proceedToCheckout(iccidValue, variant, 1);
+        }, { once: true });
+      }
+    }
+
+    async function handleBuyTopUp() {
+      const variant = findVariant();
+      const quantity = 1;
+      let iccid = sessionStorage.getItem("iccid");
+
+      const buyTopUpDesktop = document.getElementById("buy-topup-button");
+      const buyTopUpMobile = document.getElementById("buy-topup-button-mobile");
+      const clickedBtn = event?.currentTarget || buyTopUpDesktop || buyTopUpMobile;
+
+      if (!variant || !variant.available) {
+        let hasEmpty = false;
+        variantDropdowns.forEach(select => {
+          if (select.value === "") {
+            select.classList.add("variant-warning");
+            hasEmpty = true;
+          }
+        });
+        if (hasEmpty) {
+          const firstEmpty = Array.from(variantDropdowns).find(select => select.value === "");
+          if (firstEmpty) firstEmpty.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
         return;
       }
 
-      sessionStorage.setItem("iccid", iccidValue);
       const productCategory = "{{ product.metafields.product.category.value }}";
 
-      const isMatch = window.TopUp
-        ? await TopUp.isIccidCategoryMatch(iccidValue, productCategory)
-        : false;
-
-      if (!isMatch) {
-        popup.remove();
-        window.location.href = "/pages/top-up";
+      if (!iccid || iccid.trim() === "") {
+        showICCIDPopup();
         return;
       }
 
-      popup.remove();
-      const variant = findVariant();
-      if (!variant || !variant.available) {
-        showPopupMessage("Please select a valid variant first.");
-        return;
-      }
-      proceedToCheckout(iccidValue, variant, 1);
-    }, { once: true });
-  }
-}
+      iccid = iccid.trim();
 
-// 🔹 Utility: set tombol ke state loading / normal
-function setButtonLoadingState(button, isLoading, text = "Processing...") {
-  if (!button) return;
+      try {
+        setButtonLoadingState(clickedBtn, true);
 
-  if (isLoading) {
-    button.dataset.originalText = button.innerHTML;
-    button.innerHTML = `<p>${text}</p>`;
-    button.disabled = true;
-    button.style.opacity = "0.6";
-    button.style.cursor = "not-allowed";
-  } else {
-    if (button.dataset.originalText) {
-      button.innerHTML = button.dataset.originalText;
-    }
-    button.disabled = false;
-    button.style.opacity = "1";
-    button.style.cursor = "pointer";
-  }
-}
+        const match = window.TopUp
+          ? await TopUp.isIccidCategoryMatch(iccid, productCategory)
+          : false;
 
-
-    function showPopupMessage(message) {
-      const popup = document.getElementById("variant-popup");
-      const messageEl = document.getElementById("variant-popup-message");
-      if (popup && messageEl) {
-        messageEl.textContent = message;
-        popup.style.display = "block";
-        setTimeout(() => {
-          popup.style.display = "none";
-        }, 2000);
-      }
-    }
-
-
-    function getVariantType(variant) {
-      window.variantsData = [
-        {% for variant in product.variants %}
-          {
-            id: {{ variant.id }},
-            title: "{{ variant.title | escape }}",
-            type: {{ variant.metafields.variant.type | json }},
-            options: [
-              {% for option in variant.options %}
-                "{{ option | escape }}"{% unless forloop.last %},{% endunless %}
-              {% endfor %}
-            ]
-          }{% unless forloop.last %},{% endunless %}
-        {% endfor %}
-      ];
-
-      const matchedVariant = variantsData.find(v => v.id === variant.id);
-      if (matchedVariant && matchedVariant.type) {
-        if (Array.isArray(matchedVariant.type)) {
-          return matchedVariant.type.join(', ');
-        } else if (typeof matchedVariant.type === 'object' && matchedVariant.type.value) {
-          return matchedVariant.type.value;
-        } else {
-          return matchedVariant.type;
+        if (!match) {
+          showIccidMismatchDialog(iccid, {
+            message: "Your ICCID doesn’t match this product type. Click OK to go to a compatible top-up product.",
+            okText: "OK"
+          });
+          setButtonLoadingState(clickedBtn, false);
+          return;
         }
+        await proceedToCheckout(iccid, variant, quantity);
+
+      } catch (err) {
+        console.error("Error processing Top-Up:", err);
+        showPopupMessage("Failed to process Top Up. Please try again.");
+      } finally {
+        setButtonLoadingState(clickedBtn, false);
       }
-      return '';
     }
 
-    variantDropdowns.forEach(select => {
-      select.addEventListener('change', function () {
-        // Hapus border merah jika user memilih value
-        if (select.value !== "") {
-          select.classList.remove('variant-warning');
-        }
-
-        findVariant();
-      });
-    });
-
-
-    updateDropdownOptions();
-    updateMinusButtonHandler(1);
-        // 🟢 Simpan addon yang dipilih ke sessionStorage
+    /* ===========================
+       Addon session storage
+    ============================ */
     function updateAddonSessionStorage() {
       const addonCheckboxes = document.querySelectorAll('.addon-checkbox input[type="checkbox"]');
       const selectedAddons = [];
@@ -1821,7 +1743,7 @@ function setButtonLoadingState(button, isLoading, text = "Processing...") {
             option1: checkbox.dataset.option1,
             option2: checkbox.dataset.option2,
             option3: checkbox.dataset.option3,
-            quantity: parseInt(checkbox.dataset.quantity || '1'),
+            quantity: parseInt(checkbox.dataset.quantity || '1', 10),
           });
         }
       });
@@ -1829,10 +1751,70 @@ function setButtonLoadingState(button, isLoading, text = "Processing...") {
       sessionStorage.setItem('SelectedAddons', JSON.stringify(selectedAddons));
     }
 
-    // 🟢 Update sessionStorage setiap kali checkbox diubah
     document.addEventListener('change', function (e) {
       if (e.target.matches('.addon-checkbox input[type="checkbox"]')) {
         updateAddonSessionStorage();
       }
     });
+
+    /* ===========================
+       Variant dropdown change
+    ============================ */
+    variantDropdowns.forEach(select => {
+      select.addEventListener('change', function () {
+        if (select.value !== "") {
+          select.classList.remove('variant-warning');
+        }
+
+        findVariant();
+      });
+    });
+
+  (function setupSelectedVariantScroll() {
+  const scrollTarget = document.querySelector('.variant-option__wrapper');
+  const scrollTrigger = document.getElementById('selected-variant-display');
+
+  if (scrollTrigger && scrollTarget) {
+    scrollTrigger.style.cursor = 'pointer';
+    scrollTrigger.addEventListener('click', function () {
+      scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+  })();
+
+  (function setupResetRotation() {
+  const btn = document.getElementById('reset-plan');
+  const svg = btn?.querySelector('svg');
+  if (!btn || !svg) return;
+
+  let currentRotation = 0;
+  btn.addEventListener('click', function () {
+    currentRotation += 360;
+    svg.style.transform = `rotate(${currentRotation}deg)`;
+    svg.style.transition = 'transform 0.5s ease';
+  });
+  })();
+
+
+    /* ===========================
+       Initial run
+    ============================ */
+    updateDropdownOptions();
+    updateMinusButtonHandler(1);
+    resetAllButtons();
+
+    /* ===========================
+       Button click listeners
+    ============================ */
+    addToCartButtonDesktop?.addEventListener("click", (e) => handleCartAction("add", e.currentTarget));
+    buyNowButtonDesktop?.addEventListener("click", (e) => handleCartAction("buy", e.currentTarget));
+    addToCartButtonMobile?.addEventListener("click", (e) => handleCartAction("add", e.currentTarget));
+    buyNowButtonMobile?.addEventListener("click", (e) => handleCartAction("buy", e.currentTarget));
+
+    const buyTopUpDesktop = document.getElementById("buy-topup-button");
+    const buyTopUpMobile = document.getElementById("buy-topup-button-mobile");
+
+    buyTopUpDesktop?.addEventListener("click", handleBuyTopUp);
+    buyTopUpMobile?.addEventListener("click", handleBuyTopUp);
+  });
 </script>

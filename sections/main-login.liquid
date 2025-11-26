@@ -1,59 +1,11 @@
 <style>
-  .field-error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-    display: block;
-  }
-
-  .email-error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-    display: none;
-  }
-
-  .password-strength-message {
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  .field-auth input.invalid,
-  .field-auth input[aria-invalid='true'] {
-    border: 1px solid red !important;
-  }
-
-  .field-error {
-    color: red;
-    font-size: 0.875rem;
-    margin-top: 4px;
-  }
-  .custom-auth-divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 15px 0;
-  }
-  .custom-auth-divider::before,
-  .custom-auth-divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #005496; /* Warna biru seperti teks */
-    margin: 0 10px;
-  }
-  .custom-auth-divider span {
-    font-size: 14px;
-    color: #005496; /* Sesuaikan warna teks */
-  }
-</style>
-
-<style>
   .login {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
     max-width: 1920px;
-    height: 100dvh;
+    height: 100 dvh;
   }
 
   .MainLogin-container {
@@ -102,20 +54,13 @@
     transition: border-radius 0.3s ease;
   }
 
-  .MainLogin-TabButton[onclick="showForm('register')"].active ~ .MainLogin-form,
-  .MainLogin-form.register-active {
-    border-radius: 15px 0 15px 15px !important;
-  }
-
   .FormLogin,
-  .FormRegister,
   .FormRecover {
     display: none;
     width: 100%;
   }
 
   .FormLogin.active,
-  .FormRegister.active,
   .FormRecover.active {
     display: block;
   }
@@ -156,7 +101,8 @@
     flex-direction: column;
     width: 100%;
     justify-content: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease
+    , box-shadow 0.3s ease;
     cursor: pointer;
   }
 
@@ -168,14 +114,31 @@
   }
 
   .button-form {
-    padding: 15px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 120px;
+    padding: 12px 16px;
+    border: none;
     border-radius: 10px;
     background-color: var(--color-primary);
-    border: none;
-    cursor: pointer;
     color: var(--color-neutral);
     font-size: var(--font-large);
-    font-weight: bold;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .button-form:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+  }
+
+  .button-form:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .form-error-message {
@@ -188,38 +151,6 @@
     text-align: center;
   }
 
-  .email-error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-    display: none;
-  }
-
-  .password-strength-message {
-    font-size: 12px;
-    margin-top: 5px;
-  }
-
-  .terms-checkbox {
-    display: flex;
-    align-items: center;
-    margin: 15px 0;
-    font-size: 12px;
-  }
-
-  .terms-checkbox input {
-    width: auto !important;
-    margin-right: 10px;
-  }
-
-  .terms-checkbox a {
-    color: var(--color-primary);
-  }
-  .button-form:disabled {
-    background-color: #ccc;
-    color: #666;
-    cursor: not-allowed;
-  }
   .field-error-message {
     color: red;
     font-size: 12px;
@@ -227,7 +158,6 @@
     display: block;
   }
 
-  /* Autofill tweaks */
   .field-auth input:-webkit-autofill {
     -webkit-text-fill-color: var(--color-primary);
     transition: background-color 9999s ease-in-out 0s;
@@ -238,19 +168,24 @@
     color: var(--color-neutral);
   }
 
-  .button-form:active {
-    transform: scale(0.96);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  .button-form-icon {
+  .custom-auth-divider {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    text-align: center;
+    margin: 15px 0;
   }
 
-  .button-form-icon svg {
-    transform: rotate(180deg);
+  .custom-auth-divider::before,
+  .custom-auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #005496;
+    margin: 0 10px;
+  }
+
+  .custom-auth-divider span {
+    font-size: 14px;
+    color: #005496;
   }
 
   @media (max-width: 768px) {
@@ -262,7 +197,6 @@
 
 <div class="login">
   <div class="MainLogin-container">
-    <!-- Bagian Logo -->
     <section class="MainLogin-logo">
       {% if section.settings.logo != blank %}
         <a href="/">
@@ -271,173 +205,99 @@
             src="{{ section.settings.logo | img_url: 'master' }}"
             width="auto"
             height="80"
-            alt="Site Logo"
-          >
+            alt="Site Logo">
         </a>
       {% endif %}
     </section>
 
-    <!-- Tab Login/Register -->
     <section class="MainLogin-Tabs" id="MainLogin-Tabs">
-      <a class="MainLogin-TabButton {% if request.path == '/account/login' %}active{% endif %}" href="/account/login"
-        >Login</a
-      >
-      <a
-        class="MainLogin-TabButton {% if request.path == '/account/register' %}active{% endif %}"
-        href="/account/register"
-        >Sign Up</a
-      >
+      <a class="MainLogin-TabButton active" href="/account/login">Login</a>
+      <a class="MainLogin-TabButton" href="/account/register">Register</a>
     </section>
 
-    <!-- Form Section -->
     <section class="MainLogin-form">
-      <div class="FormSuccess" id="FormSuccess" style="display: none;">
+      <div
+        class="FormSuccess"
+        id="FormSuccess"
+        style="display: none;">
         <div class="recovery-popup">
           <p style="color: var(--color-primary); margin: 0 0 10px 0;">
-            The link to reset your email has been sent to <span id="recovery-email"></span>
+            The link to reset your email has been sent to
+            <span id="recovery-email"></span>
           </p>
           <div class="WrapperButton-form">
-            <button type="submit" class="button-form" id="go-to-login">
-              <a href="/account/login" style="color: var(--color-neutral);">go to login page</a>
+            <button
+              type="button"
+              class="button-form"
+              id="go-to-login">
+              go to login page
             </button>
           </div>
         </div>
       </div>
-      {% if request.path == '/account/login' %}
-        <!-- Form Login -->
-        <div class="FormLogin active" id="FormLogin">
-          {%- form 'customer_login', novalidate: 'novalidate', return_to: '/' -%}
-            {% if form.errors %}
-              <div class="form-error-message">Incorrect email or password. Please try again.</div>
-            {% endif %}
 
-            <div class="field-auth">
-              <input
-                type="email"
-                name="customer[email]"
-                id="Login-Email"
-                placeholder="Email"
-                value="{{ form.email }}"
-                required
-                {% if form.errors %}
-                  aria-invalid="true"
-                {% endif %}
-              >
-              <span class="field-error-message" id="LoginEmailError"></span>
+      <div class="FormLogin active" id="FormLogin">
+        {%- form 'customer_login'
+          , novalidate: 'novalidate'
+          , return_to: '/' -%}
+
+          {% if form.errors %}
+            <div class="form-error-message">
+              Incorrect email or password. Please try again.
             </div>
+          {% endif %}
 
-            <div class="field-auth">
-              <input
-                type="password"
-                name="customer[password]"
-                id="Login-Password"
-                placeholder="Password"
-                required
-                {% if form.errors %}
-                  aria-invalid="true"
-                {% endif %}
-              >
-              <span class="field-error-message" id="LoginPasswordError"></span>
-            </div>
+          <div class="field-auth">
+            <input
+              type="email"
+              name="customer[email]"
+              id="Login-Email"
+              placeholder="Email"
+              value="{{ form.email }}"
+              required
+              {% if form.errors %}
+              aria-invalid="true"
+              {% endif %}>
+            <span class="field-error-message" id="LoginEmailError"></span>
+          </div>
 
-            <div class="WrapperButton-form">
-              <a href="javascript:void(0)" class="link-recover" onclick="showRecoveryForm()">Forgot Password?</a>
-              <button class="button-form" id="login-button" type="submit">Log In</button>
-            </div>
+          <div class="field-auth">
+            <input
+              type="password"
+              name="customer[password]"
+              id="Login-Password"
+              placeholder="Password"
+              required
+              {% if form.errors %}
+              aria-invalid="true"
+              {% endif %}>
+            <span class="field-error-message" id="LoginPasswordError"></span>
+          </div>
 
-            <div class="custom-auth-divider">
-              <span>OR LOGIN WITH</span>
-            </div>
+          <div class="WrapperButton-form">
+            <a
+              href="javascript:void(0)"
+              class="link-recover"
+              onclick="showRecoveryForm()">Forgot Password?</a>
+            <button
+              class="button-form"
+              id="login-button"
+              type="button">
+              <span class="login-button-text">Log In</span>
+            </button>
+          </div>
 
-            <div class="oxi-social-login" style="margin-top: 15px"></div>
-          {%- endform -%}
-        </div>
+          <div class="custom-auth-divider">
+            <span>OR LOGIN WITH</span>
+          </div>
 
-        <!-- Form Recovery -->
-        <div class="FormRecover" id="FormRecovery">{% render 'form-recovery' %}</div>
-      {% elsif request.path == '/account/register' %}
-        <!-- Form Register -->
-        <div class="FormRegister active" id="FormRegister">
-          {%- form 'create_customer', novalidate: 'novalidate', class: 'customer-register-form' -%}
-            {% if form.errors %}
-              <div class="form-error-message">
-                {% for field in form.errors %}
-                  {{ form.errors.messages[field] }}
-                {% endfor %}
-              </div>
-            {% endif %}
+          <div class="oxi-social-login" style="margin-top: 15px"></div>
+        {%- endform -%}
+      </div>
 
-            <div class="wrapper-field">
-              <div class="field-auth">
-                <input
-                  type="text"
-                  name="customer[first_name]"
-                  id="Register-FirstName"
-                  placeholder="First Name"
-                  required
-                  minlength="2"
-                  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
-                >
-              </div>
-
-              <div class="field-auth">
-                <input
-                  type="text"
-                  name="customer[last_name]"
-                  id="Register-LastName"
-                  placeholder="Last Name"
-                  minlength="2"
-                  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
-                >
-              </div>
-            </div>
-
-            <div class="field-auth">
-              <input
-                type="email"
-                name="customer[email]"
-                id="RegisterForm-email"
-                placeholder="Email"
-                required
-                value="{{ form.email }}"
-                onblur="validateEmail(this)"
-                {% if form.errors contains 'email' %}
-                  aria-invalid="true"
-                {% endif %}
-              >
-              <span class="email-error-message">Invalid email format</span>
-            </div>
-
-            <div class="field-auth">
-              <input
-                type="password"
-                name="customer[password]"
-                id="RegisterForm-password"
-                placeholder="Password"
-                required
-                minlength="8"
-              >
-              <span class="password-strength-message"></span>
-            </div>
-
-            <div class="field-auth terms-checkbox">
-              <input
-                type="checkbox"
-                id="terms-checkbox"
-                name="terms"
-                required
-              >
-              <label for="terms-checkbox">
-                I agree <a href="/pages/terms-of-use" target="_blank">Terms & Conditions</a>
-              </label>
-            </div>
-
-            <div class="WrapperButton-form">
-              <button class="button-form" id="register-button" type="submit" disabled>Register</button>
-            </div>
-          {%- endform -%}
-        </div>
-      {% endif %}
+      <div class="FormRecover" id="FormRecovery">
+        {% render 'form-recovery' %}
+      </div>
     </section>
   </div>
 </div>
@@ -450,21 +310,16 @@
     document.getElementById('FormRecovery').classList.add('active');
     document.querySelector('.MainLogin-Tabs').style.display = 'none';
   }
-
+  
   document.addEventListener('DOMContentLoaded', function () {
     if (sessionStorage.getItem('login') === 'true') {
-      // Sembunyikan semua form
       document.querySelectorAll('.MainLogin-form > div').forEach((form) => {
         form.style.display = 'none';
       });
-
-      // Sembunyikan tab login/register
       document.querySelector('.MainLogin-Tabs').style.display = 'none';
-
-      // Tampilkan pesan sukses
       document.getElementById('FormSuccess').style.display = 'block';
     }
-
+  
     const btn = document.getElementById('go-to-login');
     if (btn) {
       btn.addEventListener('click', function () {
@@ -472,71 +327,54 @@
         window.location.href = '/account/login';
       });
     }
-    // Validasi sebelum submit untuk login form
+  
     const loginForm = document.querySelector('#FormLogin form');
-    if (loginForm) {
-      loginForm.addEventListener('submit', function (e) {
+    const loginButton = document.getElementById('login-button');
+  
+    if (loginForm && loginButton) {
+      loginButton.addEventListener('click', function () {
+        if (loginButton.disabled) return;
+  
         const email = document.getElementById('Login-Email');
         const password = document.getElementById('Login-Password');
-
-        if (!email.value || !password.value) {
-          e.preventDefault();
-          if (!email.value) {
-            document.getElementById('LoginEmailError').textContent = 'Email is required.';
-          }
-          if (!password.value) {
-            document.getElementById('LoginPasswordError').textContent = 'Password is required.';
-          }
+        const emailError = document.getElementById('LoginEmailError');
+        const passwordError = document.getElementById('LoginPasswordError');
+  
+        emailError.textContent = '';
+        passwordError.textContent = '';
+  
+        let hasError = false;
+  
+        if (!email.value.trim()) {
+          emailError.textContent = 'Email is required.';
+          hasError = true;
         }
-      });
-    }
-
-    // Validasi sebelum submit untuk register form
-    const registerForm = document.querySelector('.customer-register-form');
-    if (registerForm) {
-      registerForm.addEventListener('submit', function (e) {
-        const emailValid = validateEmail(document.getElementById('RegisterForm-email'));
-        const termsChecked = document.getElementById('terms-checkbox').checked;
-        const firstName = document.getElementById('Register-FirstName');
-        const lastName = document.getElementById('Register-LastName');
-        const password = document.getElementById('RegisterForm-password');
-
-        if (!emailValid || !termsChecked || !firstName.value || !lastName.value || !password.value) {
-          e.preventDefault();
-          if (!emailValid) {
-            document.querySelector('.email-error-message').style.display = 'block';
-          }
-          if (!termsChecked) {
-            alert('Please accept the terms and conditions.');
-          }
+  
+        if (!password.value.trim()) {
+          passwordError.textContent = 'Password is required.';
+          hasError = true;
         }
-      });
-
-      // Atur tombol Register berdasarkan checkbox terms
-      const termsCheckbox = document.getElementById('terms-checkbox');
-      const registerButton = document.getElementById('register-button');
-      registerButton.disabled = !termsCheckbox.checked;
-      termsCheckbox.addEventListener('change', function () {
-        registerButton.disabled = !this.checked;
+  
+        if (hasError) return;
+  
+        loginButton.disabled = true;
+        loginButton.querySelector('.login-button-text').textContent = 'Logging in...';
+  
+        loginForm.submit();
       });
     }
   });
-
-  function validateEmail(input) {
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return pattern.test(input.value);
-  }
 </script>
 
 {% schema %}
-{
-  "name": "main login",
-  "settings": [
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Insert Logo"
-    }
-  ]
-}
+  {
+    "name": "main login",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Insert Logo"
+      }
+    ]
+  }
 {% endschema %}

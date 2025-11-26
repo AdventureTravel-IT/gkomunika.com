@@ -59,7 +59,6 @@
   margin-top: 0;
 }
 
-/* Customer Table */
 .customer table {
   table-layout: auto;
   border-collapse: collapse;
@@ -207,7 +206,6 @@
   }
 }
 
-/* works around colspan phantom border issues */
 .customer thead::after,
 .customer tfoot::before {
   content: ' ';
@@ -226,7 +224,6 @@
   }
 }
 
-/* mobile table overrides */
 @media screen and (max-width: 749px) {
   .customer thead,
   .customer th,
@@ -262,7 +259,6 @@
   }
 }
 
-/* Pagination */
 .customer .pagination {
   margin-top: 5rem;
   margin-bottom: 7rem;
@@ -328,7 +324,6 @@
   background-color: currentColor;
 }
 
-/* Login */
 .login a {
   display: block;
   margin: 0 auto;
@@ -399,7 +394,6 @@
   }
 }
 
-/* Account/Order */
 :is(.account, .order) {
   margin: 0 auto;
   max-width: var(--page-width);
@@ -652,7 +646,6 @@
   font-size: 1.3rem;
 }
 
-/* Addresses */
 .addresses li > button {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -752,4 +745,81 @@ li[data-address] > h2 {
 .addresses form > div:nth-of-type(7),
 .addresses form > div:nth-of-type(7) + div[id] {
   margin-top: 1.5rem;
+}
+
+.customer.reset-password button {
+  background-color: #1e3a8a;
+  color: white;
+}
+
+.customer.reset-password .field input {
+  background-color: #dbeafe;
+  border: 0.1rem solid #93c5fd;
+  color: #1e3a8a;
+}
+
+.customer.reset-password .field input:focus {
+  border-color: #1e3a8a;
+  outline: none;
+  background-color: #bfdbfe;
+}
+
+.customer.reset-password .field input::placeholder {
+  color: #60a5fa;
+}
+
+.customer.reset-password .field label {
+  color: #1e3a8a;
+}
+
+.customer.reset-password > h1 {
+  color: #1e3a8a;
+}
+
+.customer.reset-password > p {
+  color: #1e3a8a;
+}
+
+.customer.reset-password .validation-error {
+  background-color: #fee2e2;
+  border: 0.1rem solid #fca5a5;
+  border-radius: 0.8rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  color: #dc2626;
+  font-size: 1.4rem;
+  display: none;
+  text-align: left;
+}
+
+.customer.reset-password .success-message {
+  background-color: #d1fae5;
+  border: 0.1rem solid #6ee7b7;
+  border-radius: 0.8rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  color: #065f46;
+  font-size: 1.4rem;
+  display: none;
+}
+
+.customer input:hover,
+.customer textarea:hover,
+.customer select:hover,
+.customer .field input:hover {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 0.1rem rgb(0, 68, 255);
+  outline: none;
+}
+
+.customer input:focus,
+.customer textarea:focus,
+.customer select:focus,
+.customer .field input:focus,
+.customer input:focus-visible,
+.customer textarea:focus-visible,
+.customer select:focus-visible {
+  outline: none;
+  border-color: #1e3a8a;
+  box-shadow: 0 0 0 0.1rem rgb(0, 68, 255);
 }

@@ -1,11 +1,4 @@
-{% comment %}
-  Improved and validated Shopify section with SIM Type filter buttons
-  Fix: Heading collection hanya muncul kalau produk ada / match filter
-{% endcomment %}
-
-{% comment %} # STYLES SECTION {% endcomment %}
 {% style %}
-  /* (Styles as you provided, plus filter buttons styles) */
   .main-search {
     max-width: 1920px;
     margin: 0 auto;
@@ -39,7 +32,6 @@
     background-color: var(--color-primary);
   }
 
-  /* Keep your original styles unchanged below */
   .main-search-collection-wrapper {
     margin-bottom: 30px;
   }
@@ -257,7 +249,6 @@
     opacity: 1;
   }
 
-  /* NEW: helper class to hide wrappers when empty */
   .hidden {
     display: none !important;
   }
@@ -290,10 +281,8 @@
   }
 {% endstyle %}
 
-{% comment %} # JAVASCRIPT SECTION {% endcomment %}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    /*** Flip Card Functionality ***/
     document.querySelectorAll('.flipped-trigger').forEach(function (button) {
       button.addEventListener('click', function (event) {
         event.stopPropagation();
@@ -301,7 +290,7 @@
         card.classList.toggle('flipped');
       });
     });
-
+  
     document.addEventListener('click', function (event) {
       document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
         if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
@@ -309,16 +298,14 @@
         }
       });
     });
-
-    /*** SIM Type Filter Buttons with URL Param Handling ***/
+  
     const params = new URLSearchParams(window.location.search);
-    const simTypeParam = params.get('sim_type'); // contoh: esim, sim-card, insurance
-
+    const simTypeParam = params.get('sim_type');
+  
     const filterButtonsContainer = document.querySelector('.sim-filter-buttons');
     const buttons = filterButtonsContainer ? filterButtonsContainer.querySelectorAll('button') : [];
     const productCards = document.querySelectorAll('.product-card-container');
-
-    // NEW: Sembunyikan wrapper koleksi yang kosong (tidak ada kartu yang terlihat)
+  
     function updateCollectionVisibility() {
       const wrappers = document.querySelectorAll('.main-search-collection-wrapper');
       wrappers.forEach((wrapper) => {
@@ -326,8 +313,7 @@
         const hasVisible = Array.from(cards).some((c) => c.style.display !== 'none');
         wrapper.classList.toggle('hidden', !hasVisible);
       });
-
-      // Tampilkan pesan saat semua wrapper tersembunyi (tidak ada match)
+  
       const anyVisibleWrapper = Array.from(document.querySelectorAll('.main-search-collection-wrapper')).some(
         (w) => !w.classList.contains('hidden')
       );
@@ -344,8 +330,7 @@
         emptyMsg.remove();
       }
     }
-
-    // Fungsi untuk filter produk
+  
     function filterProducts(activeFilter) {
       productCards.forEach((card) => {
         if (activeFilter === 'all') {
@@ -355,51 +340,49 @@
         const show = card.classList.contains('sim-type-' + activeFilter);
         card.style.display = show ? 'flex' : 'none';
       });
-
-      // NEW: periksa wrapper setelah filter
       updateCollectionVisibility();
     }
-
-    // Tentukan filter awal
+  
     let activeFilter = 'all';
     if (simTypeParam) {
-      // Normalisasi param: lowercase & ganti spasi/underscore jadi dash
       activeFilter = simTypeParam.toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
     }
-
-    // Set tombol active sesuai param
+  
     buttons.forEach((btn) => {
       btn.classList.remove('active');
       if (btn.getAttribute('data-filter') === activeFilter) {
         btn.classList.add('active');
       }
     });
-
-    // Jalankan filter pertama kali
+  
     filterProducts(activeFilter);
     document.body.classList.add('loaded');
-
-    // Klik tombol manual untuk ganti filter
+  
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
         buttons.forEach((btn) => btn.classList.remove('active'));
         button.classList.add('active');
-
+  
         const selectedFilter = button.getAttribute('data-filter');
         filterProducts(selectedFilter);
       });
     });
+  
+    document.querySelectorAll('.product-card-container').forEach(function (card) {
+      const labelEl = card.querySelector('.product-card-btn p');
+      if (!labelEl) return;
+      labelEl.textContent = 'Choose Plan';
+    });
   });
 </script>
 
-{% comment %} # TEMPLATE SECTION {% endcomment %}
+
 <div class="main-search">
   <div class="main-search-container">
     {% assign collections_to_check = 'single-country,multi-country' | split: ',' %}
     {% assign found_any_product = false %}
     {% assign sim_types = '' %}
 
-    {%- comment -%} Loop pertama: kumpulkan semua tipe SIM unik {%- endcomment -%}
     {% for collection_key in collections_to_check %}
       {% assign collection = collections[collection_key] %}
       {% if collection %}
@@ -407,7 +390,6 @@
           {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
 
           {% if product_category == 'gSIM' %}
-            {%- comment -%} gSIM tidak dijadikan tombol; masukkan ke eSIM & SIM_Card {%- endcomment -%}
             {% assign sim_types = sim_types | append: 'eSIM,' | append: 'SIM_Card,' %}
           {% else %}
             {% assign sim_types = sim_types | append: product_category | append: ',' %}
@@ -418,17 +400,13 @@
 
     {% assign sim_types_array_sorted = sim_types | split: ',' | uniq | sort %}
 
-    {%- comment -%} Render filter buttons {%- endcomment -%}
     <div class="sim-filter-buttons">
       <button class="filter-btn active" data-filter="all">All</button>
       {% for sim_type in sim_types_array_sorted %}
         {% assign sim_type_trim = sim_type | strip %}
         {% if sim_type_trim != '' and sim_type_trim != 'Undefined' %}
           {% if sim_type_trim != 'Insurance' %}
-            <button
-              class="filter-btn"
-              data-filter="{{ sim_type_trim | replace: '_', ' ' | downcase | replace: ' ', '-' }}"
-            >
+            <button class="filter-btn" data-filter="{{ sim_type_trim | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
               {{ sim_type_trim | replace: '_', ' ' }}
             </button>
           {% endif %}
@@ -444,7 +422,6 @@
       {% endfor %}
     </div>
 
-    {%- comment -%} Render produk dari collection hardcode {%- endcomment -%}
     {% for collection_key in collections_to_check %}
       {% assign collection = collections[collection_key] %}
       {% if collection %}
@@ -583,14 +560,21 @@
     </div>
   </div>
 
+  {% comment %} Perubahan Sementara {% endcomment %}
   <div class="product-card-button">
-    <a class="product-url-link" href="{{ product.url }}">
-      <button class="product-card-btn">
-        <p>Buy Now</p>
-      </button>
-    </a>
-  </div>
+  <a class="product-url-link" href="{{ product.url }}">
+    <button class="product-card-btn">
+      <p>
+        {% if product_category == "gSIM" %}
+          Choose Plan
+        {% else %}
+          Buy Now
+        {% endif %}
+      </p>
+    </button>
+  </a>
 </div>
+  </div>
 {% endcapture %}
           {% assign product_output = product_output | append: product_card %}
         {% endfor %}
@@ -617,14 +601,14 @@
 </div>
 
 {% schema %}
-{
-  "name": "Product Category Pages",
-  "settings": [],
-  "presets": [
-    {
-      "name": "Product Category Pages",
-      "category": "Custom"
-    }
-  ]
-}
+  {
+    "name": "Product Category Pages",
+    "settings": [],
+    "presets": [
+      {
+        "name": "Product Category Pages",
+        "category": "Custom"
+      }
+    ]
+  }
 {% endschema %}

@@ -578,5 +578,33 @@
       "signup_form_success": "We will send you an email right before we open!",
       "password_link": "Enter using password"
     }
+  },
+  "search": {
+    "filter": {
+      "all": "All"
+    },
+    "no_match_filter": "No products match this filter.",
+    "no_products": "No products found."
+  },
+  "product": {
+    "sim_type": {
+      "sim_card": "SIM Card",
+      "esim": "eSIM"
+    },
+    "card": {
+      "insurance_label": "Insurance",
+      "sim_type_prefix": "SIM Type:",
+      "coverage": "Coverage",
+      "countries": "{{ count }} Countries",
+      "including": "Including",
+      "data": "Data",
+      "days": "Days",
+      "days_insurance": "Up to 31 Days",
+      "price": "Price",
+      "price_from_prefix": "From",
+      "button_gsim": "Choose Plan",
+      "button_default": "Buy Now"
+    }
   }
+
 }

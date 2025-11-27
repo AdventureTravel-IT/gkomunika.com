@@ -323,7 +323,7 @@
           emptyMsg = document.createElement('div');
           emptyMsg.id = 'no-match-msg';
           emptyMsg.className = 'main-search__error';
-          emptyMsg.innerHTML = '<p>No products match this filter.</p>';
+          emptyMsg.innerHTML = '<p>{{ "search.no_match_filter" | t }}</p>';
           document.querySelector('.main-search-container').appendChild(emptyMsg);
         }
       } else if (emptyMsg) {
@@ -367,59 +367,30 @@
         filterProducts(selectedFilter);
       });
     });
-  
-    document.querySelectorAll('.product-card-container').forEach(function (card) {
-      const labelEl = card.querySelector('.product-card-btn p');
-      if (!labelEl) return;
-      labelEl.textContent = 'Choose Plan';
-    });
   });
 </script>
-
 
 <div class="main-search">
   <div class="main-search-container">
     {% assign collections_to_check = 'single-country,multi-country' | split: ',' %}
     {% assign found_any_product = false %}
-    {% assign sim_types = '' %}
-
-    {% for collection_key in collections_to_check %}
-      {% assign collection = collections[collection_key] %}
-      {% if collection %}
-        {% for product in collection.products %}
-          {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-
-          {% if product_category == 'gSIM' %}
-            {% assign sim_types = sim_types | append: 'eSIM,' | append: 'SIM_Card,' %}
-          {% else %}
-            {% assign sim_types = sim_types | append: product_category | append: ',' %}
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
-
-    {% assign sim_types_array_sorted = sim_types | split: ',' | uniq | sort %}
 
     <div class="sim-filter-buttons">
-      <button class="filter-btn active" data-filter="all">All</button>
-      {% for sim_type in sim_types_array_sorted %}
-        {% assign sim_type_trim = sim_type | strip %}
-        {% if sim_type_trim != '' and sim_type_trim != 'Undefined' %}
-          {% if sim_type_trim != 'Insurance' %}
-            <button class="filter-btn" data-filter="{{ sim_type_trim | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
-              {{ sim_type_trim | replace: '_', ' ' }}
-            </button>
-          {% endif %}
-        {% endif %}
-      {% endfor %}
+      <button class="filter-btn active" data-filter="all">
+        {{ 'search.filter.all' | t }}
+      </button>
 
-      {% for sim_type in sim_types_array_sorted %}
-        {% if sim_type == 'Insurance' %}
-          <button class="filter-btn" data-filter="{{ sim_type | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
-            {{ sim_type | replace: '_', ' ' }}
-          </button>
-        {% endif %}
-      {% endfor %}
+      <button class="filter-btn" data-filter="sim-card">
+        {{ 'product.sim_type.sim_card' | t }}
+      </button>
+
+      <button class="filter-btn" data-filter="esim">
+        {{ 'product.sim_type.esim' | t }}
+      </button>
+
+      <button class="filter-btn" data-filter="insurance">
+        {{ 'product.card.insurance_label' | t }}
+      </button>
     </div>
 
     {% for collection_key in collections_to_check %}
@@ -432,150 +403,149 @@
           {% assign product_countries = product.metafields.coverage.country.value %}
 
           {% capture product_card %}
-{% assign search_keys = product.metafields.search.key.value %}
-{% assign country_name = '' %}
-{% assign alias_string = '' %}
+    {% assign search_keys = product.metafields.search.key.value %}
+    {% assign country_name = '' %}
+    {% assign alias_string = '' %}
 
-{% if search_keys != blank %}
-  {% for search_key in search_keys %}
+    {% if search_keys != blank %}
+    {% for search_key in search_keys %}
     {% assign country_name = country_name | append: search_key.country.value | append: ',' %}
     {% if search_key.alias.value %}
-      {% assign alias_clean = search_key.alias.value | join: ',' %}
-      {% assign alias_string = alias_string | append: alias_clean | append: ',' %}
+    {% assign alias_clean = search_key.alias.value | join: ',' %}
+    {% assign alias_string = alias_string | append: alias_clean | append: ',' %}
     {% endif %}
-  {% endfor %}
-{% endif %}
+    {% endfor %}
+    {% endif %}
 
-{% assign product_category_raw = product.metafields.product.category.value | default: 'Undefined' %}
-{% assign cat_norm = product_category_raw | replace: '_',' ' | downcase | replace: ' ','-' %}
+    {% assign product_category_raw = product.metafields.product.category.value | default: 'Undefined' %}
+    {% assign cat_norm = product_category_raw | replace: '_',' ' | downcase | replace: ' ','-' %}
 
-{% if cat_norm == 'gsim' %}
-  {% assign sim_type_classes = 'sim-type-esim sim-type-sim-card' %}
-{% else %}
-  {% assign sim_type_classes = 'sim-type-' | append: cat_norm %}
-{% endif %}
+    {% if cat_norm == 'gsim' %}
+    {% assign sim_type_classes = 'sim-type-esim sim-type-sim-card' %}
+    {% else %}
+    {% assign sim_type_classes = 'sim-type-' | append: cat_norm %}
+    {% endif %}
 
-<div class="product-card-container {{ sim_type_classes }}"
-     data-country="{{ country_name | strip | downcase }}"
-     data-alias="{{ alias_string | strip | downcase }}">
+    <div class="product-card-container {{ sim_type_classes }}" data-country="{{ country_name | strip | downcase }}"
+      data-alias="{{ alias_string | strip | downcase }}">
 
-  <a class="product-url-link" href="{{ product.url }}">
-    <div class="product-card-country">
-      {% assign total_countries = product_countries.size %}
-      {% if total_countries == 1 %}
-        {% assign country_trimmed = product_countries.first | strip %}
-        {% assign country_filename = country_trimmed | replace: ' ', '-' | append: '.svg' %}
-        <img class="product-card-icon-single-flag" src="{{ country_filename | file_url }}" alt="{{ country_trimmed }}" width="50" height="50">
-      {% else %}
-        <div class="product-card-multi-flag">
-          {% for country in product_countries limit: 3 %}
+      <a class="product-url-link" href="{{ product.url }}">
+        <div class="product-card-country">
+          {% assign total_countries = product_countries.size %}
+          {% if total_countries == 1 %}
+          {% assign country_trimmed = product_countries.first | strip %}
+          {% assign country_filename = country_trimmed | replace: ' ', '-' | append: '.svg' %}
+          <img class="product-card-icon-single-flag" src="{{ country_filename | file_url }}" alt="{{ country_trimmed }}"
+            width="50" height="50">
+          {% else %}
+          <div class="product-card-multi-flag">
+            {% for country in product_countries limit: 3 %}
             {% assign country_parts = country | split: '_' %}
             {% assign country_processed = country_parts | join: '_' | replace: ' ', '-' %}
             {% assign country_filename = country_processed | append: '.svg' %}
-            <img class="product-card-icon-multi-flag" src="{{ country_filename | file_url }}" alt="{{ country_processed }}" width="25" height="25">
-          {% endfor %}
-          {% if total_countries > 3 %}
+            <img class="product-card-icon-multi-flag" src="{{ country_filename | file_url }}"
+              alt="{{ country_processed }}" width="25" height="25">
+            {% endfor %}
+            {% if total_countries > 3 %}
             <div class="product-card-flag-count"><span>+{{ total_countries | minus: 3 }}</span></div>
-          {% endif %}
-        </div>
-      {% endif %}
-      <div class="main-search__product">
-        {% if product_category == "Insurance" %}
-  <span class="main-search__product-type">Insurance</span>
-{% else %}
-  {% assign product_category_label = product_category | replace: '_', ' ' %}
-  {% if product_category == "gSIM" %}
-    {% assign product_category_label = "SIM Card & eSIM " %}
-  {% endif %}
-  <span class="main-search__product-type" {% if product_category == "SIM_Card" %}style="background-color: var(--color-secondary);" {% endif %}>
-    SIM Type: {{ product_category_label }}
-  </span>
-{% endif %}
-
-        <h1>{{ product.title }}</h1>
-      </div>
-    </div>
-  </a>
-
-  <div class="product-card-content">
-    <div class="product-card-content-flip-front">
-      {% if product_countries.size > 1 %}
-      <div class="product-card-field" style="border-top: 1px ridge;">
-        <div class="product-card-field-icons">
-          <img class="field-icon" src="{{ 'icon-park-outline_world.svg' | asset_url }}" alt="Icon">
-          <h1>Coverage</h1>
-        </div>
-        <div class="country-total-atribut-wrapper">
-          <div class="country-total-atribut">
-            <button class="flipped-trigger"><span>{{ product_countries.size }} Countries</span></button>
+            {% endif %}
           </div>
-          {% assign alias_array = alias_string | split: ',' | uniq %}
-          {% if alias_array.size > 0 %}
-            <div class="country-total-including-atribut hidden">
-              <p>Including {{ alias_array | join: ', ' }}</p>
+          {% endif %}
+          <div class="main-search__product">
+            {% if product_category == "Insurance" %}
+            <span class="main-search__product-type">
+              {{ 'product.card.insurance_label' | t }}
+            </span>
+            {% else %}
+            {% assign product_category_label = product_category | replace: '_', ' ' %}
+            {% if product_category == "gSIM" %}
+            {% assign product_category_label = "SIM Card & eSIM " %}
+            {% endif %}
+            <span class="main-search__product-type" {% if product_category=="SIM_Card"
+              %}style="background-color: var(--color-secondary);" {% endif %}>
+              {{ 'product.card.sim_type_prefix' | t }} {{ product_category_label }}
+            </span>
+            {% endif %}
+
+            <h1>{{ product.title }}</h1>
+          </div>
+        </div>
+      </a>
+
+      <div class="product-card-content">
+        <div class="product-card-content-flip-front">
+          {% if product_countries.size > 1 %}
+          <div class="product-card-field" style="border-top: 1px ridge;">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-park-outline_world.svg' | asset_url }}" alt="Icon">
+              <h1>{{ 'product.card.coverage' | t }}</h1>
             </div>
+            <div class="country-total-atribut-wrapper">
+              <div class="country-total-atribut">
+                <button class="flipped-trigger">
+                  <span>{{ 'product.card.countries' | t: count: product_countries.size }}</span>
+                </button>
+              </div>
+              {% assign alias_array = alias_string | split: ',' | uniq %}
+              {% if alias_array.size > 0 %}
+              <div class="country-total-including-atribut hidden">
+                <p>{{ 'product.card.including' | t }} {{ alias_array | join: ', ' }}</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
           {% endif %}
+
+          {% if product.variants.size > 0 %}
+          {% assign first_optiondays = product.variants.first.option1 | replace: ' Days', '' %}
+          {% assign last_optiondays = product.variants.last.option1 | strip %}
+          {% assign last_optionquota = product.variants.last.option2 | strip %}
+
+          {% unless product_category == 'Insurance' %}
+          <div class="product-card-field">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" alt="Icon">
+              <h1>{{ 'product.card.data' | t }}</h1>
+            </div>
+            <h2>{{ last_optionquota }}</h2>
+          </div>
+          {% endunless %}
+
+          <div class="product-card-field">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" alt="Icon">
+              <h1>{{ 'product.card.days' | t }}</h1>
+            </div>
+            {% if product.metafields.product.category.value == "Insurance" %}
+            <h2>{{ 'product.card.days_insurance' | t }}</h2>
+            {% else %}
+            <h2>{{ first_optiondays }} - {{ last_optiondays }}</h2>
+            {% endif %}
+          </div>
+
+          <div class="product-card-field">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-dollar.svg' | asset_url }}" alt="Icon">
+              <h1>{{ 'product.card.price' | t }}</h1>
+            </div>
+            <h2>{{ 'product.card.price_from_prefix' | t }} {{ product.price | money_with_currency }}</h2>
+          </div>
+          {% endif %}
+        </div>
+        <div class="product-card-content-flip-back">
+          {% render 'coverage', product: product %}
         </div>
       </div>
-      {% endif %}
 
-      {% if product.variants.size > 0 %}
-        {% assign first_optiondays = product.variants.first.option1 | replace: ' Days', '' %}
-        {% assign last_optiondays = product.variants.last.option1 | strip %}
-        {% assign last_optionquota = product.variants.last.option2 | strip %}
-
-        {% unless product_category == 'Insurance' %}
-        <div class="product-card-field">
-          <div class="product-card-field-icons">
-            <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" alt="Icon">
-            <h1>Data</h1>
-          </div>
-          <h2>{{ last_optionquota }}</h2>
-        </div>
-        {% endunless %}
-
-        <div class="product-card-field">
-          <div class="product-card-field-icons">
-            <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" alt="Icon">
-            <h1>Days</h1>
-          </div>
-          {% if product.metafields.product.category.value == "Insurance" %}
-            <h2>Up to 31 Days</h2>
-          {% else %}
-            <h2>{{ first_optiondays }} - {{ last_optiondays }}</h2>
-          {% endif %}
-        </div>
-
-        <div class="product-card-field">
-          <div class="product-card-field-icons">
-            <img class="field-icon" src="{{ 'icon-dollar.svg' | asset_url }}" alt="Icon">
-            <h1>Price</h1>
-          </div>
-          <h2>From {{ product.price | money_with_currency }}</h2>
-        </div>
-      {% endif %}
+      <div class="product-card-button">
+        <a class="product-url-link" href="{{ product.url }}">
+          <button class="product-card-btn">
+            <p>{{ 'product.card.button_gsim' | t }}</p>
+          </button>
+        </a>
+      </div>
     </div>
-    <div class="product-card-content-flip-back">
-      {% render 'coverage', product: product %}
-    </div>
-  </div>
-
-  {% comment %} Perubahan Sementara {% endcomment %}
-  <div class="product-card-button">
-  <a class="product-url-link" href="{{ product.url }}">
-    <button class="product-card-btn">
-      <p>
-        {% if product_category == "gSIM" %}
-          Choose Plan
-        {% else %}
-          Buy Now
-        {% endif %}
-      </p>
-    </button>
-  </a>
-</div>
-  </div>
-{% endcapture %}
+    {% endcapture %}
           {% assign product_output = product_output | append: product_card %}
         {% endfor %}
 
@@ -594,7 +564,7 @@
 
     {% unless found_any_product %}
       <div class="main-search__error">
-        <p>No products found.</p>
+        <p>{{ 'search.no_products' | t }}</p>
       </div>
     {% endunless %}
   </div>

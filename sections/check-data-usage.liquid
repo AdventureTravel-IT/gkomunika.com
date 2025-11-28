@@ -286,8 +286,7 @@
           data-microtip-position="bottom"
           data-microtip-size="large"
           data-microtip-bullets
-          role="tooltip"
-        >
+          role="tooltip">
           <div class="icon-info">
             {% render 'icon-info' %}
           </div>
@@ -299,8 +298,7 @@
         type="number"
         id="iccid"
         placeholder="Input ICCID Number"
-        required
-      >
+        required>
       <button id="check-iccid" type="button">Next</button>
     </div>
     <div class="check-data-usage__result">
@@ -314,6 +312,7 @@
     <h2>ICCID Invalid</h2>
     <p>
       Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
+ 
       phone settings.
     </p>
     <p>Please contact our WhatsApp Customer Service for more information</p>
@@ -334,8 +333,7 @@
 <div
   class="iccid-popup"
   id="iccid-popup"
-  style="display:none;"
->
+  style="display:none;">
   <div class="invalid-popup__content">
     <h2>Enter ICCID</h2>
     <p>Please input your ICCID to continue to Top Up</p>
@@ -343,18 +341,11 @@
       type="number"
       id="popup-iccid"
       placeholder="Input ICCID Number"
-      style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);"
-    >
-    <button
-      id="iccid-popup-submit"
-      style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;"
-    >
+      style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);">
+    <button id="iccid-popup-submit" style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;">
       Continue
     </button>
-    <button
-      id="iccid-popup-cancel"
-      style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;"
-    >
+    <button id="iccid-popup-cancel" style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;">
       Cancel
     </button>
   </div>
@@ -381,35 +372,35 @@
     const btnBuyEsim = document.getElementById('invalid-popup__buy-button');
     const btnContactCs = document.getElementById('invalid-popup__contact-button');
     let lastSubmit = 0;
-
+  
     const prefixVendorMap = [
       { prefix: '89859', vendor: 'AF' },
       { prefix: '89862', vendor: 'AF' },
       { prefix: '89810', vendor: 'TE' },
       { prefix: '2210', vendor: 'BS' },
     ];
-
+  
     const vendorCategoryMap = {
       BS: 'Top_Up_A',
       SEM: 'Top_Up_D',
     };
-
+  
     function detectVendor(iccid) {
       return prefixVendorMap.find((i) => iccid.startsWith(i.prefix))?.vendor || null;
     }
-
+  
     function showInvalidPopup() {
       invalidPopup.style.display = 'block';
     }
     function hideInvalidPopup() {
       invalidPopup.style.display = 'none';
     }
-
+  
     function formatDate(dateStr) {
       if (!dateStr || dateStr.length !== 8) return dateStr;
       return `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6)}`;
     }
-
+  
     function formatDataUsage(value, vendor) {
       value = Number(value) || 0;
       const KB = 1024;
@@ -424,7 +415,7 @@
       if (value >= MB) return (value / MB).toFixed(2) + ' MB';
       return (value / KB).toFixed(2) + ' KB';
     }
-
+  
     function renderEsimInfo(item, vendor) {
       const bundle = item.skuName || item.product_name || '-';
       const startRaw = vendor === 'AF' ? item.useSDate : item.planStartTime;
@@ -437,7 +428,7 @@
         <div class="esim-information__wrapper"><p>End Date</p><span>${formatDate(endRaw)}</span></div>
       </div>`;
     }
-
+  
     function renderTopUpButton() {
       return `<button id="top-up-plan" class="top-up-plan-btn">Top Up</button>`;
     }
@@ -450,7 +441,7 @@
       </div>
     </div>`;
     }
-
+  
     function attachTopUpButtonListeners() {
       const btnTopUpBuy = document.getElementById('btn-topup__buy-button');
       const btnTopUpCs = document.getElementById('btn-topup__contact-button');
@@ -458,22 +449,22 @@
         btnTopUpBuy.onclick = () => (window.location.href = 'https://gkomunika.com/pages/all-destination');
       if (btnTopUpCs) btnTopUpCs.onclick = () => (window.location.href = 'https://wa.me/628986454071');
     }
-
+  
     async function checkICCID() {
       const now = Date.now();
       if (now - lastSubmit < 3000) return;
       lastSubmit = now;
-
+  
       const iccid = iccidInput.value.trim();
       if (!iccid || iccid.length < 10) {
         resultEl.innerHTML = `<p style="color:red;">Invalid ICCID</p>`;
         return;
       }
-
+  
       let vendor = detectVendor(iccid);
       checkBtn.disabled = true;
       checkBtn.textContent = 'Loading...';
-
+  
       try {
         const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
           method: 'POST',
@@ -481,11 +472,10 @@
           body: new URLSearchParams({ iccid }),
         });
         const data = await res.json();
-
+  
         console.log(data);
-
-        // Tentukan vendor berdasarkan response backend
-        // Tentukan vendor berdasarkan response backend
+  
+        
         if (!vendor) {
           // hanya ubah vendor kalau belum terdeteksi dari prefix
           if (data.tradeCode && data.tradeData?.subOrderList) {
@@ -501,9 +491,9 @@
             vendor = null;
           }
         }
-
+  
         window.lastDetectedVendor = vendor;
-
+  
         // === BE ===
         if (vendor === 'BE') {
           if (data.tradeCode !== '1000') {
@@ -522,7 +512,7 @@
             total += Number(u.usedAmount || 0);
             perCountry[u.country] = (perCountry[u.country] || 0) + Number(u.usedAmount || 0);
           });
-
+  
           const esimHtml = renderEsimInfo(item, vendor);
           const totalUsageHtml = Object.entries(perCountry)
             .map(
@@ -539,7 +529,7 @@
               )}</p></div>`
             )
             .join('');
-
+  
           // BE tanpa Top Up
           resultEl.innerHTML = `
           ${esimHtml}
@@ -556,31 +546,101 @@
           </div>`;
           return;
         }
-
+  
         // === SEM ===
-        if (vendor === 'SEM') {
-          const usage = data.data_usage;
-          if (usage.retCode !== '000000') {
-            showInvalidPopup();
-            return;
-          }
-          const quota = usage.quotaList?.[0];
-          const used = formatDataUsage(quota.usedQuota, vendor);
-          const remaining = formatDataUsage(quota.remainingQuota, vendor);
-
-          resultEl.innerHTML = `
-          <div class="check-data-usage__usage-content">
-            <div style="text-align:center;"><h2>Data Usage</h2></div>
-            <div class="check-data-usage__total-usage">
-              <div style="display:flex;justify-content:space-between;"><h3>Used:</h3><span style="font-weight:bold;">${used}</span></div>
-            </div>
-            ${renderTopUpButton()}
-            </div>
-          `;
-          attachTopUpButtonListeners();
-          return;
-        }
-
+        // === SEM ===
+  if (vendor === 'SEM') {
+  
+  const usage = data.data_usage;
+  if (usage.retCode !== '000000') {
+    showInvalidPopup();
+    return;
+  }
+  
+  const quotaList = usage.quotaList || [];
+  const productName = data.product_name || "-";
+  const now = new Date();
+  
+  // convert date
+  const toDate = (str) =>
+    str ? new Date(str.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, "$1-$2-$3T$4:$5:$6")) : null;
+  
+  // Ambil quota Activated (3)
+  const activated = quotaList.find(q => q.status === "3");
+  // Ambil quota Inactive (2)
+  const inactive = quotaList.find(q => q.status === "2");
+  
+  let bundle = "-";
+  let startDate = "-";
+  let endDate = "-";
+  let statusText = "";
+  
+  // 1️⃣ Activated & belum expired
+  if (activated) {
+    const exp = toDate(activated.expTime);
+    if (exp && exp >= now) {
+      bundle = productName;
+      startDate = activated.effTime.slice(0,8);
+      endDate = activated.expTime.slice(0,8);
+      statusText = "Activated";
+    } else {
+      // 2️⃣ Activated tapi expired
+      bundle = "-";
+      startDate = "-";
+      endDate = "-";
+      statusText = "No active package";
+    }
+  }
+  // 3️⃣ Ada Inactive (2)
+  else if (inactive) {
+    bundle = productName;
+    startDate = "-";
+    endDate = "-";
+    statusText = "The package is not active yet";
+  }
+  // 4️⃣ Tidak ada paket (status 2/3 tidak ada)
+  else {
+    bundle = "No Active Package";
+    startDate = "-";
+    endDate = "-";
+    statusText = "Inactive";
+  }
+  
+  // FORMAT TANGGAL
+  const formatDateShort = (str) => {
+    if (!str || str === "-") return "-";
+    return `${str.slice(0,4)}-${str.slice(4,6)}-${str.slice(6,8)}`;
+  };
+  
+  const quota = quotaList?.[0] || {};
+  const used = formatDataUsage(quota.usedQuota || 0, vendor);
+  
+  resultEl.innerHTML = `
+    <div>
+      <div class="check-data-usage__esim-information">
+        <h3>SIM Card Information</h3>
+        <div class="esim-information__wrapper"><p>Your Bundle</p><span>${bundle}</span></div>
+        <div class="esim-information__wrapper"><p>Active Date</p><span>${formatDateShort(startDate)}</span></div>
+        <div class="esim-information__wrapper"><p>End Date</p><span>${formatDateShort(endDate)}</span></div>
+        <div class="esim-information__wrapper"><p>Status</p><span>${statusText}</span></div>
+      </div>
+    </div>
+    <div class="check-data-usage__usage-content">
+      <div style="text-align:center;"><h2>Data Usage</h2></div>
+      <div class="check-data-usage__total-usage">
+        <div style="display:flex;justify-content:space-between;">
+          <h3>Used:</h3><span style="font-weight:bold;">${used}</span>
+        </div>
+      </div>
+      ${renderTopUpButton()}
+    </div>
+  `;
+  
+  attachTopUpButtonListeners();
+  return;
+  }
+  
+  
         // === AF ===
         if (vendor === 'AF') {
           const item = data.data;
@@ -621,7 +681,7 @@
           attachTopUpButtonListeners();
           return;
         }
-
+  
         // === TE ===
         if (vendor === 'TE') {
           if (data.code !== '0000') {
@@ -633,7 +693,7 @@
           const total = usage.dataTotal || 0;
           const used = usage.dataUsage || 0;
           const remain = usage.dataResidual || 0;
-
+  
           const esimHtml = `
           <div class="check-data-usage__esim-information">
             <h3>SIM Card Information</h3>
@@ -664,7 +724,7 @@
           attachTopUpButtonListeners();
           return;
         }
-
+  
         // === BS ===
         if (vendor === 'BS') {
           const item = data.tradeData?.subOrderList?.[0];
@@ -705,17 +765,19 @@
           attachTopUpButtonListeners();
           return;
         }
-
+  
         showInvalidPopup();
       } catch (err) {
         console.error(err);
-        resultEl.innerHTML = `<p style="color:red;">Connection error.</p>`;
+        showInvalidPopup();
+
+        
       } finally {
         checkBtn.disabled = false;
         checkBtn.textContent = 'Next';
       }
     }
-
+  
     checkBtn.addEventListener('click', checkICCID);
     btnHidePopup.addEventListener('click', hideInvalidPopup);
     btnBuyEsim.addEventListener('click', () => (window.location.href = 'https://gkomunika.com/pages/all-destination'));
@@ -724,7 +786,7 @@
       if (e.target?.id === 'top-up-plan') {
         const iccidValue = iccidInput.value.trim();
         if (iccidValue) sessionStorage.setItem('iccid', iccidValue);
-
+  
         // --- Tambahkan logika vendor SEM untuk simpan kategori ---
         const lastVendor = window.lastDetectedVendor; // ambil vendor terakhir
         if (lastVendor === 'SEM') {
@@ -732,7 +794,7 @@
         } else if (lastVendor === 'BS') {
           sessionStorage.setItem('category', 'Top_Up_A');
         }
-
+  
         window.location.href = '/pages/top-up';
       }
     });
@@ -740,14 +802,14 @@
 </script>
 
 {% schema %}
-{
-  "name": "Check Data Usage",
-  "settings": [],
-  "presets": [
-    {
-      "name": "Check Data Usage",
-      "category": "Custom"
-    }
-  ]
-}
+  {
+    "name": "Check Data Usage",
+    "settings": [],
+    "presets": [
+      {
+        "name": "Check Data Usage",
+        "category": "Custom"
+      }
+    ]
+  }
 {% endschema %}

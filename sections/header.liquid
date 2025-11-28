@@ -222,10 +222,14 @@
       max-height: 0;
       opacity: 0;
       transform: translateY(-8px);
-      transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease;
+      transition: max-height 0.35s ease
+      , opacity 0.25s ease
+      , transform 0.25s ease;
       border-top: 1px solid #eaeaea;
       background: var(--color-neutral);
-      will-change: max-height, opacity, transform;
+      will-change: max-height
+      , opacity
+      , transform;
     }
 
     .sidebar-panel.active {
@@ -284,8 +288,7 @@
           class="menu-toggle"
           type="button"
           aria-label="Open Menu"
-          aria-expanded="false"
-        >
+          aria-expanded="false">
           <div class="animated-icon" id="menu-icon">
             <span></span>
             <span></span>
@@ -306,29 +309,38 @@
               width="120"
               height="40"
               alt="Global Komunika"
-              loading="eager"
-            >
+              loading="eager">
           </a>
         {% endif %}
       </div>
 
-      <!-- IKON KANAN KHUSUS MOBILE -->
       <div class="header-mobile-right" aria-label="Quick actions">
-        <a href="/cart" class="header-mobile-icon header-cart" aria-label="Cart">
+        <a
+          href="{{ routes.cart_url }}"
+          class="header-mobile-icon header-cart"
+          aria-label="Cart">
           <span class="header-cart-icon-wrapper">
-            <img src="{{ 'header-cart.svg' | asset_url }}" alt="Cart" class="icon-24">
+            <img
+              src="{{ 'header-cart.svg' | asset_url }}"
+              alt="Cart"
+              class="icon-24">
             {% if cart.items.size > 0 %}
               <span class="header-cart__badge">{{ cart.items.size }}</span>
             {% endif %}
           </span>
         </a>
-        <a href="/account/login" class="header-mobile-icon" aria-label="Profile">
-          <img src="{{ 'header-profile.svg' | asset_url }}" alt="Profile" class="icon-24">
+        <a
+          href="{{ routes.account_login_url }}"
+          class="header-mobile-icon"
+          aria-label="Profile">
+          <img
+            src="{{ 'header-profile.svg' | asset_url }}"
+            alt="Profile"
+            class="icon-24">
         </a>
       </div>
 
       <div class="header-right">
-        <!-- Versi DESKTOP -->
         <div class="currency-language">
           <div class="currency-language-group">
             <div class="inline-flex-center">
@@ -338,9 +350,12 @@
           </div>
 
           <localization-form>
-            {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
+            {%- form 'localization'
+              , id: 'FooterLanguageForm'
+              , class: 'localization-form' -%}
               <div class="localization-inner">
-                {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
+                {%- render 'language-localization'
+                  , localPosition: 'FooterLanguage' -%}
               </div>
             {%- endform -%}
           </localization-form>
@@ -350,32 +365,30 @@
           id="navbar"
           role="navigation"
           aria-label="Main navigation"
+          data-root-url="{{ routes.root_url }}"
           data-icons='
-            {
-              "home": "{{ 'header-home.svg' | asset_url }}",
-              "esim": "{{ 'header-esim.svg' | asset_url }}",
-              "simcard": "{{ 'header-simcard.svg' | asset_url }}",
-              "insurance": "{{ 'header-insurance.svg' | asset_url }}",
-              "usage": "{{ 'header-usage.svg' | asset_url }}",
-              "topup": "{{ 'icon-plus.svg' | asset_url }}",
-              "about": "{{ 'header-about.svg' | asset_url }}",
-              "faq": "{{ 'header-faq.svg' | asset_url }}",
-              "news": "{{ 'header-news.svg' | asset_url }}",
-              "cart": "{{ 'header-cart.svg' | asset_url }}",
-              "profile": "{{ 'header-profile.svg' | asset_url }}"
-            }
-          '
-        ></div>
+    {
+      "home": "{{ 'header-home.svg' | asset_url }}",
+      "esim": "{{ 'header-esim.svg' | asset_url }}",
+      "simcard": "{{ 'header-simcard.svg' | asset_url }}",
+      "insurance": "{{ 'header-insurance.svg' | asset_url }}",
+      "usage": "{{ 'header-usage.svg' | asset_url }}",
+      "topup": "{{ 'icon-plus.svg' | asset_url }}",
+      "about": "{{ 'header-about.svg' | asset_url }}",
+      "faq": "{{ 'header-faq.svg' | asset_url }}",
+      "news": "{{ 'header-news.svg' | asset_url }}",
+      "cart": "{{ 'header-cart.svg' | asset_url }}",
+      "profile": "{{ 'header-profile.svg' | asset_url }}"
+    }
+  '>
+</div>
       </div>
     </div>
 
-    <!-- SIDEBAR (Mobile) -->
     <div id="sidebar">
       <div class="sidebar-panel" aria-hidden="true">
-        <!-- daftar menu akan dirender ke sini -->
         <div id="sidebar-list"></div>
 
-        <!-- Blok currency-language untuk MOBILE -->
         <div class="sidebar-mobile-block">
           <div class="currency-language">
             <div class="currency-language-group">
@@ -386,9 +399,12 @@
             </div>
 
             <localization-form>
-              {%- form 'localization', id: 'FooterLanguageFormSidebar', class: 'localization-form' -%}
+              {%- form 'localization'
+                , id: 'FooterLanguageFormSidebar'
+                , class: 'localization-form' -%}
                 <div class="localization-inner">
-                  {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
+                  {%- render 'language-localization'
+                    , localPosition: 'FooterLanguage' -%}
                 </div>
               {%- endform -%}
             </localization-form>
@@ -401,66 +417,73 @@
 
 <script>
   window.cartItemCount = {{ cart.items | size | default: 0 | plus: 0 }};
-
+  
   (function () {
     const nav = document.getElementById('navbar');
     if (!nav) return;
-
+  
     const iconsData = nav.getAttribute('data-icons');
     if (!iconsData) return;
-
+  
     const icons = JSON.parse(iconsData);
-
+  
+    const rawRootUrl = nav.getAttribute('data-root-url') || '';
+    const cleanRoot  = rawRootUrl.replace(/\/$/, '');
+  
+    function makeUrl(path) {
+      if (!path || path === '/') {
+        return cleanRoot || '/';
+      }
+      const cleanPath = path.startsWith('/') ? path : '/' + path;
+      return cleanRoot + cleanPath;
+    }
+  
     const menu = [
-      { label: 'Home',        icon: icons.home,      link: '/' },
-      { label: 'eSIM',        icon: icons.esim,      link: '/pages/product-category?sim_type=esim' },
-      { label: 'SIM Card',    icon: icons.simcard,   link: '/pages/product-category?sim_type=sim-card' },
-      { label: 'Insurance',   icon: icons.insurance, link: '/pages/product-category?sim_type=insurance' },
-      { label: 'Data Usage',  icon: icons.usage,     link: '/pages/check-data-usage' },
-      { label: 'Top Up',      icon: icons.topup,     link: '/pages/check-data-usage-topup' },
-      { label: 'About Us',    icon: icons.about,     link: '/pages/about-us' },
-      { label: 'FAQ',         icon: icons.faq,       link: '/pages/faq' },
-      { label: 'News',        icon: icons.news,      link: '/pages/news' },
+      { label: 'Home',       icon: icons.home,      link: makeUrl('/') },
+      { label: 'eSIM',       icon: icons.esim,      link: makeUrl('pages/product-category?sim_type=esim') },
+      { label: 'SIM Card',   icon: icons.simcard,   link: makeUrl('pages/product-category?sim_type=sim-card') },
+      { label: 'Insurance',  icon: icons.insurance, link: makeUrl('pages/product-category?sim_type=insurance') },
+      { label: 'Data Usage', icon: icons.usage,     link: makeUrl('pages/check-data-usage') },
+      { label: 'Top Up',     icon: icons.topup,     link: makeUrl('pages/check-data-usage-topup') },
+      { label: 'About Us',   icon: icons.about,     link: makeUrl('pages/about-us') },
+      { label: 'FAQ',        icon: icons.faq,       link: makeUrl('pages/faq') },
+      { label: 'News',       icon: icons.news,      link: makeUrl('pages/news') },
     ];
-
-    const normalizeLink = (link) =>
-      link && link.startsWith('/') ? link : `/${link || ''}`;
-
+  
     function renderMenuList(items) {
       const itemsHtml = items
         .map(
           (item) => `
             <li>
-              <a href="${normalizeLink(item.link)}" class="sidebar-link">
+              <a href="${item.link}" class="sidebar-link">
                 <img src="${item.icon}" alt="${item.label} icon" class="icon-24" />
                 <span style="font-weight:bold;">${item.label}</span>
               </a>
             </li>`
         )
         .join('');
-
       return `<ul class="sidebar-list">${itemsHtml}</ul>`;
     }
-
+  
     function renderHeaderMenu({ container, items }) {
       const fullItems = items.concat([
-        { label: 'Cart',    icon: icons.cart,    link: '/cart' },
-        { label: 'Profile', icon: icons.profile, link: '/account' },
+        { label: 'Cart',    icon: icons.cart,    link: "{{ routes.cart_url }}" },
+        { label: 'Profile', icon: icons.profile, link: "{{ routes.account_url }}" },
       ]);
-
+  
+      const count = window.cartItemCount || 0;
+  
       const itemsHtml = fullItems
         .map((item) => {
           const isCart = item.label === 'Cart';
-          const count  = window.cartItemCount || 0;
-
           const badge =
             isCart && count > 0
               ? `<span class="header-cart__badge">${count}</span>`
               : '';
-
+  
           return `
             <li>
-              <a href="${normalizeLink(item.link)}"
+              <a href="${item.link}"
                  class="menu-list ${isCart ? 'header-cart-link' : ''}">
                 <span class="header-cart-icon-wrapper">
                   <img src="${item.icon}" alt="${item.label} icon" class="icon-24" />
@@ -471,34 +494,33 @@
             </li>`;
         })
         .join('');
-
       container.innerHTML = `<ul class="header-menu">${itemsHtml}</ul>`;
     }
-
+  
     renderHeaderMenu({ container: nav, items: menu });
-
+  
     const sidebarListMount = document.getElementById('sidebar-list');
     if (sidebarListMount) {
       sidebarListMount.innerHTML = renderMenuList(menu);
     }
-
+  
     const sidebarPanel  = document.querySelector('.sidebar-panel');
     const menuToggleBtn = document.querySelector('.menu-toggle');
     const menuIcon      = document.getElementById('menu-icon');
     const root          = document.documentElement;
-
+  
     function setScrollLock(locked) {
       const value = locked ? 'hidden' : '';
       root.style.overflow = value;
       document.body.style.overflow = value;
     }
-
+  
     function setMenuState(isOpen) {
       if (!sidebarPanel) return;
-
+  
       sidebarPanel.classList.toggle('active', isOpen);
       sidebarPanel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-
+  
       if (menuIcon) {
         menuIcon.classList.toggle('open', isOpen);
       }
@@ -508,32 +530,33 @@
       }
       setScrollLock(isOpen);
     }
-
+  
     function toggleMenu() {
       if (!sidebarPanel) return;
       const isOpen = sidebarPanel.classList.contains('active');
       setMenuState(!isOpen);
     }
-
+  
     function closeMenu() {
       if (!sidebarPanel || !sidebarPanel.classList.contains('active')) return;
       setMenuState(false);
     }
+  
     if (menuToggleBtn) {
       menuToggleBtn.addEventListener('click', toggleMenu);
     }
-
+  
     document.addEventListener('click', function (e) {
       if (!sidebarPanel || !sidebarPanel.classList.contains('active')) return;
-
+  
       const clickInsidePanel = sidebarPanel.contains(e.target);
       const clickOnToggle    = menuToggleBtn && menuToggleBtn.contains(e.target);
-
+  
       if (!clickInsidePanel && !clickOnToggle) {
         closeMenu();
       }
     });
-
+  
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         closeMenu();
@@ -543,19 +566,18 @@
 </script>
 
 {% schema %}
-{
-  "name": "Header Settings",
-  "settings": [
-    {
-      "type": "link_list",
-      "id": "selected_menu",
-      "label": "Menu"
-    },
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo"
-    }
-  ]
-}
+  {
+    "name": "Header Settings",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "selected_menu",
+        "label": "Menu"
+      }, {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      }
+    ]
+  }
 {% endschema %}

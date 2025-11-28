@@ -579,7 +579,7 @@
       "password_link": "Enter using password"
     }
   },
-    "search": {
+  "search": {
     "filter": {
       "all": "Semua"
     },
@@ -603,7 +603,16 @@
       "price": "Harga",
       "price_from_prefix": "Mulai dari",
       "button_gsim": "Pilih Paket",
-      "button_default": "Beli Sekarang"
+      "button_default": "Beli Sekarang",
+      "esim_label": "eSIM"
     }
+  },
+  "popular_countries": {
+    "title": "Negara Populer",
+    "all_destination_title": "Semua Destinasi",
+    "show_all": "Semua Destinasi",
+    "tab_land": "Negara",
+    "tab_region": "Wilayah",
+    "start_from": "Mulai dari",
   }
 }

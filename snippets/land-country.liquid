@@ -1,35 +1,35 @@
 {% comment %} 
-{% if collection and collection.products.size > 0 %}
-  {% for product in collection.products %}
-    <a href="{{ product.url | default: product.canonical_url }}">
-      <div class="country">
-        <div class="text-content">
-          {% assign country_name = product.metafields.coverage.country.value | first %}
-          <img
-            src="{{ country_name | append: '.svg' | file_url }}"
-            alt="{{ country_name }}"
-            width="100"
-            height="100"
-            loading="lazy"
-          >
-          <div class="collection-pick">
-            <p>
-              {{ product.metafields.coverage.country.value | default: product.title | first | replace: '_', ' ' }}
-            </p>
-            <span>Start From {{ product.price | money }}</span>
+  {% if collection and collection.products.size > 0 %}
+    {% for product in collection.products %}
+      <a href="{{ product.url | default: product.canonical_url }}">
+        <div class="country">
+          <div class="text-content">
+            {% assign country_name = product.metafields.coverage.country.value | first %}
+            <img
+              src="{{ country_name | append: '.svg' | file_url }}"
+              alt="{{ country_name }}"
+              width="100"
+              height="100"
+              loading="lazy"
+            >
+            <div class="collection-pick">
+              <p>
+                {{ product.metafields.coverage.country.value | default: product.title | first | replace: '_', ' ' }}
+              </p>
+              <span>Start From {{ product.price | money }}</span>
+            </div>
+          </div>
+          <div class="country-icon">
+            {{- 'icon-arrow-back.svg' | inline_asset_content -}}
           </div>
         </div>
-        <div class="country-icon">
-          {{- 'icon-arrow-back.svg' | inline_asset_content -}}
-        </div>
-      </div>
-    </a>
-  {% endfor %}
-{% endif %}
+      </a>
+    {% endfor %}
+  {% endif %}
  {% endcomment %}
 
 
- {% if request.locale.iso_code == 'id' %}
+{% if request.locale.iso_code == 'id' %}
   {% assign allowed_countries = "Singapura,Malaysia,Thailand,China,Jepang,Korea_Selatan,Amerika_Serikat,Eropa,Arab_Saudi,Hong_Kong,Vietnam,Taiwan" | split: "," %}
 {% else %}
   {% assign allowed_countries = "Singapore,Malaysia,Thailand,China,Japan,South_Korea,USA,Europe,Saudi_Arabia,Hong_Kong,Vietnam,Taiwan" | split: "," %}
@@ -74,11 +74,13 @@
               src="{{ image_country | append: '.svg' | file_url }}"
               alt="{{ allowed_country | upcase }} Flag"
               width="50"
-              height="50"
-            >
+              height="50">
             <div class="collection-pick">
               <p>{{ normalized_country }}</p>
-              <span class="money">Start From {{ min_price | money }}</span>
+              <span class="money">
+                {{ 'popular_countries.start_from' | t }}
+                {{ min_price | money }}
+              </span>
             </div>
           </div>
           <div class="country-icon">

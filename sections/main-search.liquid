@@ -1,11 +1,4 @@
-{% comment %} 
-                            Improved and validated Shopify section with SIM Type filter buttons
-                            Fix: Heading collection hanya muncul kalau produk ada 
-{% endcomment %}
-
-{% comment %} # STYLES SECTION {% endcomment %}
 {% style %}
-  /* (Styles as you provided, plus filter buttons styles) */
   .main-search {
     max-width: 1920px;
     margin: 0 auto;
@@ -39,7 +32,6 @@
     background-color: var(--color-primary);
   }
 
-  /* Keep your original styles unchanged below */
   .main-search-collection-wrapper {
     margin-bottom: 30px;
   }
@@ -218,7 +210,6 @@
     top: 0;
     left: 0;
     overflow-y: hidden;
-    /* default: tidak bisa scroll */
     background: var(--color-neutral);
     text-align: center;
     cursor: pointer;
@@ -227,7 +218,6 @@
 
   .product-card-container.flipped .product-card-content-flip-back {
     overflow-y: auto;
-    /* aktifkan scroll hanya ketika flipped */
   }
 
   .country-total-atribut-wrapper {
@@ -311,20 +301,8 @@
   }
 {% endstyle %}
 
-{% comment %} # JAVASCRIPT SECTION {% endcomment %}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const currentUrl = window.location.href;
-  
-    document.querySelectorAll('.product-card-btn p').forEach((button) => {
-      if (currentUrl.includes('/id/')) {
-        button.textContent = 'Pilih Paket';
-      } else {
-        button.textContent = 'Choose Plan';
-      }
-    });
-  
-    // Flip card functionality (existing)
     document.querySelectorAll('.flipped-trigger').forEach(function (button) {
       button.addEventListener('click', function (event) {
         event.stopPropagation();
@@ -339,22 +317,20 @@
         }
       });
     });
-  
-    // SIM Type Filter buttons
+
     const filterButtonsContainer = document.querySelector('.sim-filter-buttons');
     if (!filterButtonsContainer) return;
-  
+
     const buttons = filterButtonsContainer.querySelectorAll('button');
     const collectionWrappers = document.querySelectorAll('.main-search-collection-wrapper');
-  
+
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
         buttons.forEach((btn) => btn.classList.remove('active'));
         button.classList.add('active');
-  
+
         const filter = button.getAttribute('data-filter');
-  
-        // Show/hide products
+
         document.querySelectorAll('.product-card-container').forEach((productCard) => {
           if (filter === 'all') {
             productCard.style.display = 'flex';
@@ -366,8 +342,7 @@
             }
           }
         });
-  
-        // Show/hide collection wrappers based on visible products inside them
+
         collectionWrappers.forEach((wrapper) => {
           const products = wrapper.querySelectorAll('.product-card-container');
           const anyVisible = Array.from(products).some((p) => p.style.display !== 'none');
@@ -378,18 +353,15 @@
   });
 </script>
 
-{% comment %} # TEMPLATE SECTION {% endcomment %}
 <div class="main-search">
   <div class="main-search-container">
     {% assign search_term = search.terms | downcase | strip %}
     {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection'
- | split: ','
+      | split: ','
     %}
     {% assign found_any_product = false %}
     {% assign single_product_url = '' %}
-  {% assign product_count = 0 %}
-
-    {%- comment -%} Loop pertama: kumpulkan semua tipe SIM unik dari produk hasil pencarian {%- endcomment -%}
+    {% assign product_count = 0 %}
     {% assign sim_types = '' %}
 
     {% for collection_key in collections_to_check %}
@@ -434,11 +406,11 @@
           {% endif %}
 
           {% if product_alias contains search_term
- or product_alias_2 contains search_term
- or product_title contains search_term
- or matched_countries != ''
- or matched_countries_2 != ''
- or match_region
+            or product_alias_2 contains search_term
+            or product_title contains search_term
+            or matched_countries != ''
+            or matched_countries_2 != ''
+            or match_region
           %}
             {% assign found_any_product = true %}
             {% unless sim_types contains product_category %}
@@ -451,34 +423,51 @@
 
     {% assign sim_types_array = sim_types | split: ',' %}
 
-    {%- comment -%} Render filter buttons {%- endcomment -%}
     <div class="sim-filter-buttons">
-      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn active" data-filter="all">
+        {{ 'search.filter.all' | t }}
+      </button>
 
-      {% assign sim_types_array_sorted = sim_types_array | sort %}
-
-      {% for sim_type in sim_types_array_sorted %}
-        {% assign sim_type_trim = sim_type | strip %}
-        {% if sim_type_trim != '' and sim_type_trim != 'Undefined' %}
-          {% if sim_type_trim != 'Insurance' %}
-            <button class="filter-btn" data-filter="{{ sim_type_trim | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
-              {{ sim_type_trim | replace: '_', ' ' }}
-            </button>
-          {% endif %}
+      {% assign available_types = ',' %}
+      {% for sim_type in sim_types_array %}
+        {% assign type_code = sim_type | strip | downcase %}
+        {% if type_code == '' or type_code == 'undefined' %}
+          {% continue %}
         {% endif %}
+
+        {% assign lookup = ',' | append: type_code | append: ',' %}
+        {% unless available_types contains lookup %}
+          {% assign available_types = available_types | append: type_code | append: ',' %}
+        {% endunless %}
       {% endfor %}
 
-      <!-- Now add the "Insurance" button at the end -->
-      {% for sim_type in sim_types_array_sorted %}
-        {% if sim_type == 'Insurance' %}
-          <button class="filter-btn" data-filter="{{ sim_type | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
-            {{ sim_type | replace: '_', ' ' }}
-          </button>
-        {% endif %}
+      {% assign desired_order = 'sim_card,esim,gsim,insurance' | split: ',' %}
+
+      {% for type_code in desired_order %}
+        {% assign lookup = ',' | append: type_code | append: ',' %}
+        {% unless available_types contains lookup %}
+          {% continue %}
+        {% endunless %}
+
+        {% assign filter_value = type_code | replace: '_', ' ' | replace: ' ', '-' %}
+
+        {% case type_code %}
+          {% when 'sim_card' %}
+            {% assign label = 'product.sim_type.sim_card' | t %}
+          {% when 'esim' %}
+            {% assign label = 'product.sim_type.esim' | t %}
+          {% when 'gsim' %}
+            {% assign label = 'gSIM' %}
+          {% when 'insurance' %}
+            {% assign label = 'product.card.insurance_label' | t %}
+        {% endcase %}
+
+        <button class="filter-btn" data-filter="{{ filter_value }}">
+          {{ label }}
+        </button>
       {% endfor %}
     </div>
 
-    {%- comment -%} Loop kedua: render produk dan heading collection hanya jika ada produk {%- endcomment -%}
     {% for collection_key in collections_to_check %}
       {% assign collection = collections[section.settings[collection_key]] %}
       {% assign found_product = false %}
@@ -524,127 +513,152 @@
           {% endif %}
 
           {% if product_alias contains search_term
- or product_alias_2 contains search_term
- or product_title contains search_term
- or matched_countries != ''
- or matched_countries_2 != ''
- or match_region
+            or product_alias_2 contains search_term
+            or product_title contains search_term
+            or matched_countries != ''
+            or matched_countries_2 != ''
+            or match_region
           %}
             {% assign found_product = true %}
             {% assign found_any_product = true %}
             {% assign product_count = product_count | plus: 1 %}
             {% assign single_product_url = product.url %}
-
             {% assign all_matched_countries = matched_countries | append: matched_countries_2 %}
 
             {% capture product_card %}
-<div class="product-card-container sim-type-{{ product_category | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
-  <a class="product-url-link" href="{{ product.url }}">
-    <div class="product-card-country">
-      {% assign total_countries = product_countries.size %}
-      {% if total_countries == 1 %}
-        {% assign country_trimmed = product_countries.first | strip %}
-        {% assign country_filename = country_trimmed | replace: ' ', '-' | append: '.svg' %}
-        <img class="product-card-icon-single-flag" src="{{ country_filename | file_url }}" alt="{{ country_trimmed }}" width="50" height="50">
-      {% else %}
-        <div class="product-card-multi-flag">
-          {% for country in product_countries limit: 3 %}
+    <div
+      class="product-card-container sim-type-{{ product_category | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
+      <a class="product-url-link" href="{{ product.url }}">
+        <div class="product-card-country">
+          {% assign total_countries = product_countries.size %}
+          {% if total_countries == 1 %}
+          {% assign country_trimmed = product_countries.first | strip %}
+          {% assign country_filename = country_trimmed | replace: ' ', '-' | append: '.svg' %}
+          <img class="product-card-icon-single-flag" src="{{ country_filename | file_url }}" alt="{{ country_trimmed }}"
+            width="50" height="50">
+          {% else %}
+          <div class="product-card-multi-flag">
+            {% for country in product_countries limit: 3 %}
             {% assign country_parts = country | split: '_' %}
             {% assign country_processed = country_parts | join: '_' | replace: ' ', '-' %}
             {% assign country_filename = country_processed | append: '.svg' %}
-            <img class="product-card-icon-multi-flag" src="{{ country_filename | file_url }}" alt="{{ country_processed }}" width="25" height="25">
-          {% endfor %}
-          {% if total_countries > 3 %}
+            <img class="product-card-icon-multi-flag" src="{{ country_filename | file_url }}"
+              alt="{{ country_processed }}" width="25" height="25">
+            {% endfor %}
+            {% if total_countries > 3 %}
             <div class="product-card-flag-count"><span>+{{ total_countries | minus: 3 }}</span></div>
-          {% endif %}
-        </div>
-      {% endif %}
-      <div class="main-search__product">
-        {% if product_category == "Insurance" %}
-          <span class="main-search__product-type">Insurance</span>
-        {% else %}
-          <span class="main-search__product-type" {% if product_category == "SIM_Card" %}style="background-color: var(--color-secondary);" {% endif %}>
-            SIM Type: {{ product_category | replace: '_', ' ' }}
-          </span>
-        {% endif %}
-        <h1>{{ product.title }}</h1>
-      </div>
-    </div>
-  </a>
-
-  <div class="product-card-content">
-    <div class="product-card-content-flip-front">
-      {% if product_countries.size > 1 %}
-      <div class="product-card-field" style="border-top: 1px ridge;">
-        <div class="product-card-field-icons">
-          <img class="field-icon" src="{{ 'icon-park-outline_world.svg' | asset_url }}" alt="Icon">
-          <h1>Coverage</h1>
-        </div>
-        <div class="country-total-atribut-wrapper">
-          <div class="country-total-atribut">
-            <button class="flipped-trigger"><span>{{ product_countries.size }} Countries</span></button>
+            {% endif %}
           </div>
-          {% assign alias_array = alias_string | split: ',' | uniq %}
-          {% if alias_array.size > 0 %}
-            <div class="country-total-including-atribut hidden">
-              <p>Including {{ alias_array | join: ', ' }}</p>
+          {% endif %}
+          <div class="main-search__product">
+            {% if product_category == "Insurance" %}
+            <span class="main-search__product-type">
+              {{ 'product.card.insurance_label' | t }}
+            </span>
+            {% else %}
+            {%- assign category_key = product_category | downcase -%}
+            {%- case category_key -%}
+            {%- when 'sim_card' -%}
+            {%- assign sim_type_label = 'product.sim_type.sim_card' | t -%}
+            {%- when 'esim' -%}
+            {%- assign sim_type_label = 'product.card.esim_label' | t -%}
+            {%- else -%}
+            {%- assign sim_type_label = product_category | replace: '_', ' ' -%}
+            {%- endcase -%}
+
+            <span class="main-search__product-type" {% if product_category=="SIM_Card" %}
+              style="background-color: var(--color-secondary);" {% endif %}>
+              {{ 'product.card.sim_type_prefix' | t }}
+              {{ sim_type_label }}
+            </span>
+            {% endif %}
+
+            <h1>{{ product.title }}</h1>
+          </div>
+        </div>
+      </a>
+
+      <div class="product-card-content">
+        <div class="product-card-content-flip-front">
+          {% if product_countries.size > 1 %}
+          <div class="product-card-field" style="border-top: 1px ridge;">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-park-outline_world.svg' | asset_url }}" alt="Icon">
+              <h1>{{ 'product.card.coverage' | t }}</h1>
             </div>
+            <div class="country-total-atribut-wrapper">
+              <div class="country-total-atribut">
+                <button class="flipped-trigger"><span>
+                    {{ 'product.card.countries' | t: count: product_countries.size }}
+                  </span></button>
+              </div>
+              {% assign alias_array = alias_string | split: ',' | uniq %}
+              {% if alias_array.size > 0 %}
+              <div class="country-total-including-atribut hidden">
+                <p>
+                  {{ 'product.card.including' | t }}
+                  {{ alias_array | join: ', ' }}
+                </p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
           {% endif %}
+
+          {% if product.variants.size > 0 %}
+          {% assign first_optiondays = product.variants.first.option1 | replace: ' Days', '' %}
+          {% assign last_optiondays = product.variants.last.option1 | strip %}
+          {% assign last_optionquota = product.variants.last.option2 | strip %}
+
+          {% unless product_category == 'Insurance' %}
+          <div class="product-card-field">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" alt="Icon">
+              <h1>{{ 'product.card.data' | t }}</h1>
+            </div>
+            <h2>{{ last_optionquota }}</h2>
+          </div>
+          {% endunless %}
+
+          <div class="product-card-field">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" alt="Icon">
+              <h1>{{ 'product.card.days' | t }}</h1>
+            </div>
+            {% if product.metafields.product.category.value == "Insurance" %}
+            <h2>{{ 'product.card.days_insurance' | t }}</h2>
+            {% else %}
+            <h2>{{ first_optiondays }} - {{ last_optiondays }}</h2>
+            {% endif %}
+          </div>
+
+          <div class="product-card-field">
+            <div class="product-card-field-icons">
+              <img class="field-icon" src="{{ 'icon-dollar.svg' | asset_url }}" alt="Icon">
+              <h1>{{ 'product.card.price' | t }}</h1>
+            </div>
+            <h2>
+              {{ 'product.card.price_from_prefix' | t }}
+              {{ product.price | money_with_currency }}
+            </h2>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="product-card-content-flip-back">
+          {% render 'coverage', product: product %}
         </div>
       </div>
-      {% endif %}
 
-      {% if product.variants.size > 0 %}
-        {% assign first_optiondays = product.variants.first.option1 | replace: ' Days', '' %}
-        {% assign last_optiondays = product.variants.last.option1 | strip %}
-        {% assign last_optionquota = product.variants.last.option2 | strip %}
-
-        {% unless product_category == 'Insurance' %}
-        <div class="product-card-field">
-          <div class="product-card-field-icons">
-            <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" alt="Icon">
-            <h1>Data</h1>
-          </div>
-          <h2>{{ last_optionquota }}</h2>
-        </div>
-        {% endunless %}
-
-        <div class="product-card-field">
-          <div class="product-card-field-icons">
-            <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" alt="Icon">
-            <h1>Days</h1>
-          </div>
-          {% if product.metafields.product.category.value == "Insurance" %}
-            <h2>Up to 31 Days</h2>
-          {% else %}
-            <h2>{{ first_optiondays }} - {{ last_optiondays }}</h2>
-          {% endif %}
-        </div>
-
-        <div class="product-card-field">
-          <div class="product-card-field-icons">
-            <img class="field-icon" src="{{ 'icon-dollar.svg' | asset_url }}" alt="Icon">
-            <h1>Price</h1>
-          </div>
-          <h2>From {{ product.price | money_with_currency }}</h2>
-        </div>
-      {% endif %}
+      <div class="product-card-button">
+        <a class="product-url-link" href="{{ product.url }}">
+          <button class="product-card-btn">
+            <p>{{ 'product.card.button_gsim' | t }}</p>
+          </button>
+        </a>
+      </div>
     </div>
-    <div class="product-card-content-flip-back">
-      {% render 'coverage', product: product %}
-    </div>
-  </div>
-
-  <div class="product-card-button">
-    <a class="product-url-link" href="{{ product.url }}">
-      <button class="product-card-btn">
-        <p></p>
-      </button>
-    </a>
-  </div>
-</div>
-{% endcapture %}
-
+    {% endcapture %}
             {% assign product_output = product_output | append: product_card %}
           {% endif %}
         {% endfor %}
@@ -676,42 +690,43 @@
   </div>
 </div>
 
-{% comment %} # SCHEMA SECTION {% endcomment %}
 {% schema %}
-  {
-    "name": "Main Search",
-    "settings": [
-      {
-        "type": "text",
-        "label": "Single Country Title",
-        "id": "title_single",
-        "default": "Single Country"
-      },
-      {
-        "type": "collection",
-        "label": "Single Country Collection",
-        "id": "single_country_collection"
-      },
-      {
-        "type": "text",
-        "label": "Multi Country Title",
-        "id": "title_multi",
-        "default": "Multi Country"
-      },
-      {
-        "type": "collection",
-        "label": "Multi Country Collection",
-        "id": "multi_country_collection"
-      }, {
-        "type": "text",
-        "label": "Global Country Title",
-        "id": "title_global",
-        "default": "Global Country"
-      }, {
-        "type": "collection",
-        "label": "Global Country Collection",
-        "id": "global_country_collection"
-      }
-    ]
-  }
+{
+  "name": "Main Search",
+  "settings": [
+    {
+      "type": "text",
+      "label": "Single Country Title",
+      "id": "title_single",
+      "default": "Single Country"
+    },
+    {
+      "type": "collection",
+      "label": "Single Country Collection",
+      "id": "single_country_collection"
+    },
+    {
+      "type": "text",
+      "label": "Multi Country Title",
+      "id": "title_multi",
+      "default": "Multi Country"
+    },
+    {
+      "type": "collection",
+      "label": "Multi Country Collection",
+      "id": "multi_country_collection"
+    },
+    {
+      "type": "text",
+      "label": "Global Country Title",
+      "id": "title_global",
+      "default": "Global Country"
+    },
+    {
+      "type": "collection",
+      "label": "Global Country Collection",
+      "id": "global_country_collection"
+    }
+  ]
+}
 {% endschema %}

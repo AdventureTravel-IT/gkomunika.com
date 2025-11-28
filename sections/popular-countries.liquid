@@ -2,18 +2,20 @@
 <script src="{{ 'popular-countries__tabs.js' | asset_url }}" defer="defer"></script>
 <div class="container-popular-countries">
   <div class="popular-countries">
-    <h2>{{ section.settings.title }}</h2>
+    {% if request.page_type == 'collection' and collection.handle == 'all' %}
+      <h2>{{ 'popular_countries.all_destination_title' | t }}</h2>
+    {% else %}
+      <h2>{{ 'popular_countries.title' | t }}</h2>
+    {% endif %}
     <div class="tabs">
       <button class="tab-button active" data-tab="land">
-        <span>Land</span>
+        <span>{{ 'popular_countries.tab_land' | t }}</span>
       </button>
       <button class="tab-button" data-tab="region">
-        <span>Region</span>
+        <span>{{ 'popular_countries.tab_region' | t }}</span>
       </button>
-    <!-- <button class="tab-button" data-tab="global"><span>Global</span></button> -->
     </div>
 
-    <!-- LAND TAB -->
     <div
       class="tab-content"
       id="land"
@@ -34,7 +36,6 @@
       {% endcase %}
     </div>
 
-    <!-- REGION TAB -->
     <div
       class="tab-content"
       id="region"
@@ -52,7 +53,7 @@
             {% unless displayed_regions contains country_name %}
               {% assign displayed_regions = displayed_regions | append: ',' | append: country_name %}
 
-              <a href="/search?q={{ country_name | url_encode }}">
+              <a href="{{ routes.search_url }}?q={{ country_name | url_encode }}">
                 <div class="country">
                   <div class="text-content">
                     <img
@@ -64,7 +65,10 @@
                       style="border: none;">
                     <div class="collection-pick">
                       <p>{{ country_name | replace: '_', ' ' }}</p>
-                      <span>Start From {{ product.price_min | money }}</span>
+                      <span>
+                        {{ 'popular_countries.start_from' | t }}
+                        {{ product.price_min | money }}
+                      </span>
                     </div>
                   </div>
 
@@ -80,21 +84,20 @@
 
     </div>
 
-    <!-- GLOBAL TAB -->
-    <div
-      class="tab-content"
-      id="global"
-      style="display: none; visibility: hidden;">
-      {% assign collection = collections[section.settings.global_collection] %}
-      {% render 'global-country'
-        , collection: collection
-        , product: product %}
-    {% comment %}
-      {% for product in collection.products %}
-      {% render 'global-country', collection: collection, product: product %}
-      {% endfor %}
-    {% endcomment %}
-    </div>
+    {% comment %} <div
+            class="tab-content"
+            id="global"
+            style="display: none; visibility: hidden;">
+            {% assign collection = collections[section.settings.global_collection] %}
+            {% render 'global-country'
+              , collection: collection
+              , product: product %}
+            {% for product in collection.products %}
+              {% render 'global-country'
+                , collection: collection
+                , product: product %}
+            {% endfor %}
+        </div> {% endcomment %}
 
     <div class="show-all-wrapper">
       {% if section.settings.show_button %}
@@ -103,7 +106,7 @@
             href="{{ routes.collections_url }}/all?tab={{ active_tab }}"
             class="show-all-destination"
             data-active-tab="{{ active_tab }}">
-            <span>{{ section.settings.show_all_text }}</span>
+            <span>{{ 'popular_countries.show_all' | t }}</span>
           </a>
         </div>
       {% endif %}

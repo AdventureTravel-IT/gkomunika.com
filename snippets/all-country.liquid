@@ -1,7 +1,7 @@
- {% if countries != blank and countries.size > 0 %}
+{% if countries != blank and countries.size > 0 %}
   {% for country in countries %}
     {% assign normalized_country = country | replace: '_', ' ' %}
-    {% assign min_price = blank %}
+  {% assign min_price = blank %}
 
     <!-- Variabel khusus untuk file gambar -->
     {% assign image_country = country %}
@@ -35,11 +35,13 @@
               src="{{ image_country | append: '.svg' | file_url }}"
               alt="{{ country | upcase }} Flag"
               width="50"
-              height="50"
-            >
+              height="50">
             <div class="collection-pick">
               <p>{{ normalized_country }}</p>
-              <span class="money">Start From {{ min_price | money }}</span>
+              <span class="money">
+                {{ 'popular_countries.start_from' | t }}
+                {{ min_price | money }}
+              </span>
             </div>
           </div>
           <div class="country-icon">

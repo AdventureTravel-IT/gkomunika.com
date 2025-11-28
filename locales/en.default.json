@@ -603,8 +603,16 @@
       "price": "Price",
       "price_from_prefix": "From",
       "button_gsim": "Choose Plan",
-      "button_default": "Buy Now"
+      "button_default": "Buy Now",
+      "esim_label": "eSIM"
     }
+  },
+  "popular_countries": {
+    "title": "Popular Countries",
+    "all_destination_title": "All Destinations",
+    "show_all": "All Destinations",
+    "tab_land": "Land",
+    "tab_region": "Region",
+    "start_from": "Start From"
   }
-
 }

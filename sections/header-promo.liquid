@@ -1,0 +1,32 @@
+{% style %}
+  .header-promo {
+    background-color: var(--color-primary);
+    text-align: center;
+  }
+
+  .header-promo h2 {
+    color: var(--color-neutral);
+    margin: 0;
+    padding: 10px 20px;
+    font-size: 20px;
+  }
+{% endstyle %}
+
+<section class="header-promo">
+  <h2 class="text-promo">
+    Enjoy <strong>10% off</strong> with promo code <strong>GSIMXMAS</strong> on purchases over IDR 100,000 — Valid until <strong>December</strong>!
+  </h2>
+</section>
+
+{% schema %}
+{
+  "name": "Header Promo",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Header Promo",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

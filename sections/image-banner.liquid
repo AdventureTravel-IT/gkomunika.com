@@ -1,44 +1,175 @@
 {% style %}
-  /* BANNER STYLE */
-.banner-container {
+.hero-container {
   position: relative;
-  width: 100%;
-  max-width: 1920px;
-  margin: 0 auto;
-  height: 100%;
-  background: transparent;
-  display: flex;
-  justify-content: center;
+  height: 580px;
+  overflow: hidden;
 }
 
-.banner__wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 900px;
-  overflow: visible;
+/* Desktop height fix */
+@media (min-width: 768px) {
+  .hero-container {
+    height: 700px;
+  }
+}
+@media (min-width: 1024px) {
+  .hero-container {
+    height: 600px;
+  }
 }
 
-.banner__image {
+/* GAMBAR */
+.img-mobile,
+.img-desktop {
   position: absolute;
-  bottom: 0;
-  left: 70%;
+  inset: 0;
   width: 100%;
   height: 100%;
-  transform: translateX(-70%);
   object-fit: cover;
-  z-index: 0;
-  pointer-events: none;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
+
+.img-mobile {
+  object-position: 89% 100%;
+}
+
+.img-desktop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .img-mobile {
+    display: none;
+  }
+  .img-desktop {
+    display: block;
+  }
+}
+
+/* TEXT + SEARCH */
+.hero-content {
+  position: absolute;
+  top: 150px;
+  left: 0;
+  width: 100%;
+  transform: translateY(-0%);
+}
+
+@media (min-width: 768px) {
+  .hero-content {
+    top: 50%;
+    width: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.hero-text {
+  padding: 0 16px;
+  margin-bottom: 10px;
+}
+
+@media (min-width: 768px) {
+  .hero-text {
+    padding: 0;
+  }
+}
+
+.hero-text h3 {
+  color: #fff;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+}
+
+.hero-text h2 {
+  color: #fff;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+@media (min-width: 768px) {
+  .hero-text h2 {
+    font-size: 40px;
+  }
+}
+
+.hero-text span {
+  color: #fff;
+  font-size: 16px;
+}
+
+/* CTA MOBILE */
+.cta-mobile {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 350px;
+  padding: 10px 16px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 999px;
+
+  border: 3px solid #fff;
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+  color: #fff;
+  display: block;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.cta-mobile:hover {
+  transform: translateX(-50%) translateY(-3px);
+}
+
+/* HIDE MOBILE ON DESKTOP */
+@media (min-width: 768px) {
+  .cta-mobile {
+    display: none;
+  }
+}
+
+/* CTA DESKTOP */
+.cta-desktop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .cta-desktop {
+    display: block;
+    position: absolute;
+    bottom: 80px;
+    left: 900px;
+    padding: 10px 30px;
+    width: 450px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+
+    border-radius: 999px;
+    border: 3px solid #fff;
+    background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+    color: #fff;
+    transition: all .2s ease;
+  }
+
+  .cta-desktop:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  }
+}
+
+/* ============================
+   BANNER CONTENT WRAPPER ONLY
+   ============================ */
 
 .banner__content--wrapper {
   position: absolute;
   width: 50%;
-  padding: 0 5% 0 10%;
+  padding: 130px 5% 0 10%;
   z-index: 1;
 }
 
+/* CHILD ELEMENTS */
 .banner__heading--text p,
 .banner__heading--desc p {
   color: var(--color-neutral);
@@ -63,23 +194,9 @@
   margin-top: 10px;
 }
 
+
+/* ======= MOBILE (≤768px) ======= */
 @media (max-width: 768px) {
-  .banner__wrapper {
-    height: 800px;
-    overflow: hidden;
-  }
-
-  .banner__image {
-    width: 100%;
-    height: 800px;
-    top: 0;
-    bottom: auto;
-    left: 70%;
-    transform: translateX(-70%);
-    object-fit: cover;
-    object-position: 70% bottom;
-  }
-
   .banner__content--wrapper {
     width: 100%;
     padding: 0 24px;
@@ -103,16 +220,28 @@
   }
 }
 
+
 {% endstyle %}
 
-<div class="banner-container">
-  <div class="banner__wrapper">
-    <img 
-      class="banner__image"
-      src="{{ section.settings.image | img_url: 'master' }}" 
-      alt="Banner Image"
+<div class="hero-container">
+
+    <!-- GAMBAR MOBILE -->
+    <img
+      src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/banner-winter-mobile.webp?v=1764416410"
+      class="img-mobile"
       loading="lazy"
+      format="webp"
     />
+
+    <!-- GAMBAR DESKTOP -->
+    <img
+      src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/banner-winter-desktop.webp?v=1764416284"
+      class="img-desktop"
+      loading="lazy"
+      format="webp"
+    />
+
+    <!-- TEXT + SEARCH CHECKPOINT-->
     <div class="banner__content--wrapper">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
@@ -148,8 +277,19 @@
         {%- endcase -%}
       {%- endfor -%}
     </div>
+
+
+    <!-- CTA MOBILE -->
+    <button class="cta-mobile">
+      Learn more our latest product gSIM!
+    </button>
+
+    <!-- CTA DESKTOP -->
+    <button @click="LearnGsim" class="cta-desktop">
+      Learn more our latest product gSIM!
+    </button>
+
   </div>
-</div>
 
 {% schema %}
 {

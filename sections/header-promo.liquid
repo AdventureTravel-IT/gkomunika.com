@@ -1,5 +1,9 @@
 {% style %}
   .header-promo {
+    position: fixed;
+    top: 80px;
+    width: 100%;
+    z-index: 1000;
     background-color: var(--color-primary);
     text-align: center;
   }
@@ -10,6 +14,12 @@
     padding: 10px 20px;
     font-size: 20px;
   }
+
+ @media (max-width: 768px) {
+  .header-promo {
+    top: 45px;
+  }
+ }
 {% endstyle %}
 
 <section class="header-promo">

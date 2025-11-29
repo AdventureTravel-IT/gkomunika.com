@@ -1,81 +1,16 @@
-<!-- Modal Pop-up -->
-<div
-  id="dataIncompleteModal"
-  class="modal"
-  style="display: none;">
-  <div class="modal-content">
-    <p>Please fill out all required fields to continue.</p>
-    <span class="close-btn" id="closeModalBtn">×</span>
-  </div>
-</div>
-
-<style>
-  /* Gaya border merah untuk field yang belum diisi */
-  input:invalid,
-  select:invalid,
-  textarea:invalid {
-    border: 2px solid red;
-  }
-
-  input:focus:invalid,
-  select:focus:invalid,
-  textarea:focus:invalid {
-    outline: none;
-    box-shadow: 0 0 5px red;
-  }
-
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    color: var(--color-neutra);
-    background-color: rgba(0, 0, 0, 0.4);
-
-    /* Tambahan ini yang penting */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-  }
-
-  .modal-content {
-    background-color: var(--color-neutral);
-    padding: 20px;
-    border-radius: 15px;
-    border: 1px solid var(--color-border);
-    min-width: 350px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: flex;
-    align-items: center;
-    color: var(--color-primary);
-    font-size: var(--font-large);
-    transform: translate(-50%, -50%);
-  }
-
-  .close-btn {
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    height: 100%;
-    margin-left: 15px;
-  }
-
-  .close-btn:hover,
-  .close-btn:focus {
-    color: var(--color-primary);
-    text-decoration: none;
-    cursor: pointer;
-  }
-  @media (max-width: 425px) {}
-</style>
-
 {% style %}
+  .error-message {
+    color: #d32f2f;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+  }
+
+  #checkout-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   label::after {
     content: var(--label-info, '');
     font-size: 1.4em;
@@ -86,89 +21,32 @@
     --label-info: '*';
     --label-info-color: red;
   }
+
   .form-insurance__container {
     max-width: 1920px;
     margin: 0 auto;
   }
+
   .form-insurance__content-wrapper {
     padding: 20px 20%;
   }
+
   .form-insurance {
     display: flex;
     gap: 10px;
-  }
-  .form-insurance__label-wrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    background-color: var(--color-primary);
-    color: var(--color-neutral);
-    padding: 0 15px;
-    height: 45px;
-  }
-  .form-insurance__label-index {
-    border-radius: 15px;
-    background-color: var(--color-secondary);
-    padding: 5px 15px;
-    line-height: 1;
-    margin: 0 10px 0 0;
-    display: flex;
-    align-items: center;
-    width: 55px;
-    height: 26px;
-  }
-  .form-insurance__label-title {
-    display: flex;
-  }
-
-  .form-insurance__form {
-    padding: 15px;
-    border-radius: 0 0 15px 15px;
-    background-color: var(--color-neutral);
-    margin-bottom: 20px;
-  }
-
-  .form-index {
-    color: var(--color-neutral);
-    border-radius: 15px 15px 0 0;
-  }
-
-  .form-insurance__checkout {
-    width: 100%;
     background-color: var(--color-neutral);
     padding: 15px;
-    position: relative;
+    margin-bottom: 15px;
     border-radius: 15px;
-    color: var(--color-primary);
   }
-  .form-insurance__checkout-button,
-  .insurance-form__add-form {
-    border-radius: 15px;
-    padding: 10px 15px;
-    color: var(--color-neutral);
-    font-size: var(--font-large);
-    outline: none;
-    border: none;
-    width: 130px;
-    transition: transform 0.3s ease
-    , box-shadow 0.3s ease;
-  }
-  .form-insurance__checkout-button {
-    background-color: var(--color-primary);
-  }
-  .insurance-form__add-form {
-    background-color: var(--color-secondary);
-  }
-  .form-insurance__checkout-button:hover {
-    transform: translateY(2px);
-    box-shadow: var(--box-shadow);
-  }
+
   .form-insurance__right {
     width: 80%;
     display: flex;
     flex-direction: column;
     gap: 5px;
   }
+
   .form-insurance__wrapper {
     display: flex;
     gap: 15px;
@@ -177,10 +55,36 @@
     box-sizing: border-box;
     flex-wrap: wrap;
   }
+
+  .form-insurance__wrapper-item {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+  }
+
+  .form-insurance__wrapper-item .form-insurance__field {
+    flex: 1;
+  }
+
+  .form-insurance__field {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-width: 100%;
+  }
+
   .form-insurance__field label,
   .form-insurance__wrapper label {
     color: var(--color-primary);
     font-size: 16px;
+  }
+
+  .form-insurance__field input,
+  .form-insurance__field select,
+  .form-insurance__field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
   }
 
   .form-insurance__field select,
@@ -198,42 +102,98 @@
     letter-spacing: 0.5px;
     font-size: 14px;
   }
-  .form-insurance__field {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    max-width: 100%;
-  }
-  .form-insurance__wrapper-item {
-    display: flex;
-    flex: 1;
-    gap: 10px;
-  }
-  .form-insurance__wrapper-item .form-insurance__field {
-    flex: 1;
-  }
-  .form-insurance__field input,
-  .form-insurance__field select,
-  .form-insurance__field textarea {
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 14px;
-  }
+
   .form-insurance__field textarea {
     color: var(--color-primary);
     min-height: 100px;
-    width: 100%;
     max-width: 100%;
-    box-sizing: border-box;
     outline: none;
     border-radius: 15px;
     border: 1px solid var(--color-border);
     padding: 10px;
+    box-sizing: border-box;
   }
+
   .form-insurance__field textarea::placeholder {
     color: var(--color-primary);
     font-size: 14px;
   }
+
+  .form-insurance__label-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+    padding: 0 15px;
+    height: 45px;
+    border-radius: 15px 15px 0 0;
+  }
+
+  .form-insurance__label-title {
+    display: flex;
+  }
+
+  .form-insurance__label-index {
+    border-radius: 15px;
+    background-color: var(--color-secondary);
+    padding: 5px 15px;
+    line-height: 1;
+    margin: 0 10px 0 0;
+    display: flex;
+    align-items: center;
+    width: 55px;
+    height: 26px;
+  }
+
+  .form-insurance__section-top {
+    padding: 15px;
+    border-radius: 15px;
+    background-color: var(--color-neutral);
+    margin-bottom: 15px;
+  }
+
+  .form-insurance__form {
+    padding: 15px;
+    border-radius: 0 0 15px 15px;
+    background-color: var(--color-neutral);
+    margin-bottom: 20px;
+  }
+
+  .form-insurance__checkout {
+    width: 100%;
+    background-color: var(--color-neutral);
+    padding: 15px;
+    position: relative;
+    border-radius: 15px;
+    color: var(--color-primary);
+  }
+
+  .form-insurance__checkout-button,
+  .insurance-form__add-form {
+    border-radius: 15px;
+    padding: 10px 15px;
+    color: var(--color-neutral);
+    font-size: var(--font-large);
+    outline: none;
+    border: none;
+    width: 130px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .form-insurance__checkout-button {
+    background-color: var(--color-primary);
+  }
+
+  .insurance-form__add-form {
+    background-color: var(--color-secondary);
+  }
+
+  .form-insurance__checkout-button:hover {
+    transform: translateY(2px);
+    box-shadow: var(--box-shadow);
+  }
+
   #add-form-button,
   #checkout-button {
     margin-left: auto;
@@ -245,6 +205,7 @@
     display: flex;
     align-items: center;
   }
+
   .insurance-form__remove-form {
     border-radius: 15px;
     background-color: red;
@@ -254,102 +215,42 @@
     color: var(--color-neutral);
     font-size: var(--font-large);
   }
-  .form-insurance__section-top {
-    padding: 15px;
-    border-radius: 15px;
-    background-color: var(--color-neutral);
-    margin-bottom: 15px;
-  }
-  .form-insurance__section-bottom {}
 
-.form-insurance.form-family {
-  background-color: var(--color-neutral);
-  padding: 10px 15px 15px;
-  margin-bottom: 20px;
-  border-radius: 15px;
-}
-.product-title,
-.variant-title {
-  margin: 0;
-  line-height: 1.5;
-  color: var(--color-primary);
-  font-size: var(--font-extra-large);
-}
-.form-insurance__label-wrapper {
-  border-radius: 15px 15px 0 0;
-}
-.form-itinerary-container {
-  margin-top: 10px;
-}
-.form-insurance {
-  background-color: var(--color-neutral);
-  padding: 15px;
-  margin-bottom: 15px;
-}
-.form-insurance__same-checkbox {
-  display: flex;
-  margin-top: 10px;
-  color: var(--color-primary);
-}
-
-.form-insurance__field input[type='date']::-webkit-calendar-picker-indicator {
-  filter: brightness(0) saturate(100%) invert(31%) sepia(95%) saturate(746%) hue-rotate(175deg) brightness(96%) contrast(102%);
-}
-.add-traveler__button {
-  margin-top: 10px;
-  display: flex;
-  justify-content: flex-end;
-}
-.variant-dropdown {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-@media (max-width: 768px) {
-  .form-insurance__content-wrapper {
-    padding: 20px 24px;
+  .product-title,
+  .variant-title {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--color-primary);
+    font-size: var(--font-extra-large);
   }
-}
-@media (max-width: 426px) {
-  .form-insurance {
+
+  .form-itinerary-container {
+    margin-top: 10px;
+  }
+
+  .form-insurance__same-checkbox {
     display: flex;
-    flex-direction: column;
+    margin-top: 10px;
+    color: var(--color-primary);
   }
-  .form-insurance__right {
-    width: 100%;
-  }
-}
-@media (max-width: 376px) {
-  .form-insurance__field {
-    flex-grow: 1;
-    flex-shrink: initial;
-    flex-basis: auto;
-  }
-}
-@media (max-width: 768px) {
-  .form-insurance__content-wrapper {
-    padding: 20px 24px;
-  }
-}
-@media (max-width: 426px) {
-  .form-insurance {
-    display: flex;
-    flex-direction: column;
-  }
-  .form-insurance__right {
-    width: 100%;
-  }
-}
-@media (max-width: 376px) {
-  .form-insurance__field {
-    flex-grow: 1;
-    flex-shrink: initial;
-    flex-basis: auto;
-  }
-}
-{% endstyle %}
 
-{% style %}
+  .form-insurance__field input[type='date']::-webkit-calendar-picker-indicator {
+    filter: brightness(0) saturate(100%) invert(31%) sepia(95%) saturate(746%) hue-rotate(175deg) brightness(96%)
+      contrast(102%);
+  }
+
+  .add-traveler__button {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .variant-dropdown {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
   .tooltip-label {
     position: relative;
     display: inline-block;
@@ -375,7 +276,7 @@
   }
 
   .tooltip-label .tooltip-text::after {
-    content: "";
+    content: '';
     position: absolute;
     top: 100%;
     left: 50%;
@@ -390,152 +291,175 @@
     opacity: 1;
   }
 
+  @media (max-width: 768px) {
+    .form-insurance__content-wrapper {
+      padding: 20px 24px;
+    }
+  }
+
+  @media (max-width: 426px) {
+    .form-insurance {
+      flex-direction: column;
+    }
+    .form-insurance__right {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 376px) {
+    .form-insurance__field {
+      flex-grow: 1;
+      flex-shrink: initial;
+      flex-basis: auto;
+    }
+  }
 {% endstyle %}
 
 {% capture FormInsurance %}
-  <form class="form-insurance">
-    <div class="form-insurance__field">
-      <label for="salutation">Title</label>
-      <select id="salutation" name="Salutation" required>
-        <option value="Mr">Mr</option>
-        <option value="Mrs">Mrs</option>
-        <option value="Miss">Miss</option>
-      </select>
-    </div>
+<form class="form-insurance">
+  <div class="form-insurance__field">
+    <label for="salutation">Title</label>
+    <select id="salutation" name="Salutation" required>
+      <option value="">Select Title</option>
+      <option value="Mr">Mr</option>
+      <option value="Mrs">Mrs</option>
+      <option value="Miss">Miss</option>
+    </select>
+  </div>
 
-    <section class="form-insurance__right">
-      <div class="form-insurance__wrapper">
-        <div class="form-insurance__field">
-          <label for="first-name">First Name</label>
-          <input type="text" id="first-name" aria-label="First Name" name="First Name" placeholder="First Name" required>
-        </div>
-
-        <div class="form-insurance__field">
-          <label for="last-name">Last Name</label>
-          <input type="text" id="last-name" aria-label="Last Name" name="Last Name" placeholder="Last Name">
-        </div>
-      </div>
-
-      <div class="form-insurance__wrapper">
-        <div class="form-insurance__field">
-          <label for="place-of-birth">Place Of Birth</label>
-          <input type="text" id="place-of-birth" aria-label="Place Of Birth" name="Place Of Birth"
-            placeholder="Place Of Birth" required>
-        </div>
-
-        <div class="form-insurance__wrapper-item">
-          <div class="form-insurance__field">
-            <label for="day">Day</label>
-            <input type="number" id="day" name="Day" placeholder="DD" min="1" max="31" required>
-          </div>
-
-          <div class="form-insurance__field">
-            <label for="month">Month</label>
-            <input type="number" id="month" name="Month" placeholder="MM" min="1" max="12" required>
-          </div>
-
-          <div class="form-insurance__field">
-            <label for="year">Year</label>
-            <input type="number" id="year" name="Year" placeholder="YYYY" min="1900" max="9999" required>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-insurance__wrapper">
-        <div class="form-insurance__field">
-          <label for="passport-number">Passport Number</label>
-          <input type="text" id="passport-number" name="Passport Number" aria-label="passport-number"
-            placeholder="Passport Number" required>
-        </div>
-
-        <div class="form-insurance__field">
-          <label for="mobile-phone">Mobile Phone</label>
-          <input type="number" id="mobile-phone" aria-label="Mobile Phone" name="Mobile Phone" placeholder="Mobile Phone"
-            required>
-        </div>
-      </div>
-
-      <div class="form-insurance__wrapper">
-        <div class="form-insurance__field">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="Email" aria-label="Email" placeholder="Email" required>
-        </div>
-
-        <div class="form-insurance__field">
-          <label for="additional-email">Additional Email</label>
-          <input type="email" id="additional-email" name="Additional Email" aria-label="Additional Email"
-            placeholder="Additional Email">
-        </div>
-      </div>
-
-      <div class="form-insurance__wrapper">
-        <div class="form-insurance__field">
-          <label for="city">City</label>
-          <input type="text" id="city" name="City" aria-label="City" placeholder="City" required>
-        </div>
-
-        <div class="form-insurance__field">
-          <label for="postal-code">Postal Code</label>
-          <input type="text" id="postal-code" name="Postal Code" aria-label="Postal Code" placeholder="Postal Code"
-            required>
-        </div>
-      </div>
-
-      <div class="form-insurance__wrapper">
-        <div class="form-insurance__field">
-          <label for="address">Address</label>
-          <textarea type="text" id="address" name="Address" aria-label="Address" placeholder="Address"
-            required></textarea>
-        </div>
-      </div>
-
-      <div class="form-insurance__wrapper relationship-wrapper">
-        <label>Relationship with Policy Holder</label>
-        <div>
-          <input type="radio" id="relationship-spouse" name="Relationship" value="Spouse" required>
-          <label for="relationship-spouse">Spouse</label>
-        </div>
-        <div>
-          <input type="radio" id="relationship-child" name="Relationship" value="Child" required>
-          <label for="relationship-child">Child</label>
-        </div>
-      </div>
-    </section>
-  </form>
-  {% endcapture %}
-
-{% capture formItinerary %}
-  <div class="form-insurance__itinerary-date">
+  <section class="form-insurance__right">
     <div class="form-insurance__wrapper">
       <div class="form-insurance__field">
-        <div style="display: flex; gap: 5px;">
-          <label for="start-date">Start Date</label>
-          <span class="tooltip-label">
-            {{- 'icon-info.svg' | inline_asset_content -}}
-            <span class="tooltip-text">Start Date is the day you leave your house to begin your trip.</span>
-          </span>
-        </div>
-        <input type="date" id="start-date" name="Start Date" min="{{ "now" | date: "%Y-%m-%d" }}" required>
+        <label for="first-name">First Name</label>
+        <input type="text" id="first-name" aria-label="First Name" name="First Name" placeholder="First Name" required>
       </div>
+
       <div class="form-insurance__field">
-        <div style="display: flex; gap: 5px;">
-          <label for="end-date">End Date</label>
-          <span class="tooltip-label">
-            {{- 'icon-info.svg' | inline_asset_content -}}
-            <span class="tooltip-text">End Date is the day you arrive back home after the trip.</span>
-          </span>
-        </div>
-        <input type="date" id="end-date" name="End Date" min="{{ "now" | date: "%Y-%m-%d" }}" required>
-      </div>
-      <div class="form-insurance__field">
-        <label for="country-destination">Destination Country</label>
-        <select name="Destination Country" class="itinerary-country-dropdown" required>
-          <option value="">Select Country</option>
-        </select>
+        <label for="last-name">Last Name</label>
+        <input type="text" id="last-name" aria-label="Last Name" name="Last Name" placeholder="Last Name">
       </div>
     </div>
+
+    <div class="form-insurance__wrapper">
+      <div class="form-insurance__field">
+        <label for="place-of-birth">Place Of Birth</label>
+        <input type="text" id="place-of-birth" aria-label="Place Of Birth" name="Place Of Birth"
+          placeholder="Place Of Birth" required>
+      </div>
+
+      <div class="form-insurance__wrapper-item">
+        <div class="form-insurance__field">
+          <label for="day">Day</label>
+          <input type="number" id="day" name="Day" placeholder="DD" min="1" max="31" required>
+        </div>
+
+        <div class="form-insurance__field">
+          <label for="month">Month</label>
+          <input type="number" id="month" name="Month" placeholder="MM" min="1" max="12" required>
+        </div>
+
+        <div class="form-insurance__field">
+          <label for="year">Year</label>
+          <input type="number" id="year" name="Year" placeholder="YYYY" min="1900" max="9999" required>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-insurance__wrapper">
+      <div class="form-insurance__field">
+        <label for="passport-number">Passport Number</label>
+        <input type="text" id="passport-number" name="Passport Number" aria-label="passport-number"
+          placeholder="Passport Number" required>
+      </div>
+
+      <div class="form-insurance__field">
+        <label for="mobile-phone">Mobile Phone</label>
+        <input type="number" id="mobile-phone" aria-label="Mobile Phone" name="Mobile Phone" placeholder="Mobile Phone"
+          required>
+      </div>
+    </div>
+
+    <div class="form-insurance__wrapper">
+      <div class="form-insurance__field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="Email" aria-label="Email" placeholder="Email" required>
+      </div>
+
+      <div class="form-insurance__field">
+        <label for="additional-email">Additional Email</label>
+        <input type="email" id="additional-email" name="Additional Email" aria-label="Additional Email"
+          placeholder="Additional Email">
+      </div>
+    </div>
+
+    <div class="form-insurance__wrapper">
+      <div class="form-insurance__field">
+        <label for="city">City</label>
+        <input type="text" id="city" name="City" aria-label="City" placeholder="City" required>
+      </div>
+
+      <div class="form-insurance__field">
+        <label for="postal-code">Postal Code</label>
+        <input type="text" id="postal-code" name="Postal Code" aria-label="Postal Code" placeholder="Postal Code"
+          required>
+      </div>
+    </div>
+
+    <div class="form-insurance__wrapper">
+      <div class="form-insurance__field">
+        <label for="address">Address</label>
+        <textarea type="text" id="address" name="Address" aria-label="Address" placeholder="Address"
+          required></textarea>
+      </div>
+    </div>
+
+    <div class="form-insurance__wrapper relationship-wrapper">
+      <label>Relationship with Policy Holder</label>
+      <div>
+        <input type="radio" id="relationship-spouse" name="Relationship" value="Spouse" required>
+        <label for="relationship-spouse">Spouse</label>
+      </div>
+      <div>
+        <input type="radio" id="relationship-child" name="Relationship" value="Child" required>
+        <label for="relationship-child">Child</label>
+      </div>
+    </div>
+  </section>
+</form>
+{% endcapture %}
+
+{% capture formItinerary %}
+<div class="form-insurance__itinerary-date">
+  <div class="form-insurance__wrapper">
+    <div class="form-insurance__field">
+      <div style="display: flex; gap: 5px;">
+        <label for="start-date">Start Date</label>
+        <span class="tooltip-label">
+          {{- 'icon-info.svg' | inline_asset_content -}}
+          <span class="tooltip-text">Start Date is the day you leave your house to begin your trip.</span>
+        </span>
+      </div>
+      <input type="date" id="start-date" name="Start Date" min="{{ " now" | date: "%Y-%m-%d" }}" required>
+    </div>
+    <div class="form-insurance__field">
+      <div style="display: flex; gap: 5px;">
+        <label for="end-date">End Date</label>
+        <span class="tooltip-label">
+          {{- 'icon-info.svg' | inline_asset_content -}}
+          <span class="tooltip-text">End Date is the day you arrive back home after the trip.</span>
+        </span>
+      </div>
+      <input type="date" id="end-date" name="End Date" min="{{ " now" | date: "%Y-%m-%d" }}" required>
+    </div>
+    <div class="form-insurance__field">
+      <label for="country-destination">Destination Country</label>
+      <select name="Destination Country" class="itinerary-country-dropdown" required>
+        <option value="">Select Country</option>
+      </select>
+    </div>
   </div>
-  {% endcapture %}
+</div>
+{% endcapture %}
 
 <div class="form-insurance__container">
   <div class="form-insurance__content-wrapper">
@@ -565,31 +489,13 @@
 
     <section class="form-insurance__checkout">
       <div style="display: flex; flex-direction: column;" id="confirmation-checkboxes">
-        {% comment %} 
-                    <label for="check-data"> 
-                    <input 
-                    type="checkbox" 
-                    id="check-data-global" 
-                    required 
-                    > 
-                    Data is correct
-                    </label> 
-                {% endcomment %}
-
         <label for="check-itinerary">
-          <input
-            type="checkbox"
-            id="check-itinerary-global"
-            required>
+          <input type="checkbox" id="check-itinerary-global" required>
           I understand that the data submitted is final and cannot be changed after submission.
         </label>
       </div>
 
-      <button
-        id="checkout-button"
-        type="button"
-        class="form-insurance__checkout-button"
-        onclick="handleCheckout()">
+      <button id="checkout-button" type="button" class="form-insurance__checkout-button" onclick="handleCheckout()">
         Checkout
       </button>
     </section>
@@ -597,806 +503,802 @@
 </div>
 
 <script>
-    // Mengambil data ProductItems dari sessionStorage
-    const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems'));
-  
-    function injectCountryOptions(itineraryContainer, variantCoverage) {
-      const dropdown = itineraryContainer.querySelector('.itinerary-country-dropdown');
-      if (!dropdown) return;
-  
-      // Bersihkan dulu
-      dropdown.innerHTML = '<option value="">Select Country</option>';
-  
-      // Tambahkan opsi
-      variantCoverage.forEach((country) => {
-        const option = document.createElement('option');
-        option.value = country;
-        option.textContent = country;
-        dropdown.appendChild(option);
-      });
-    }
-  
-    if (ProductItems) {
-      console.log('Retrieved ProductItems from sessionStorage:', ProductItems);
-      // Tampilkan productTitle dan variantTitle dalam <pre>
-      const sectionMap = {
-        'form-individual': 'Individual',
-        'form-duoplus': 'Duo Plus',
-        'form-family': 'Family',
-      };
-  
-      Object.entries(sectionMap).forEach(([sectionId, variantType]) => {
-        const wrapper = document.getElementById(sectionId)?.closest('.form-section--wrapper');
-        const product = ProductItems.find((item) => item.variantType === variantType && item.category === 'Insurance');
-  
-        if (wrapper && product) {
-          const titleEl = wrapper.querySelector('.product-title');
-          const variantEl = wrapper.querySelector('.variant-title');
-  
-          if (titleEl) titleEl.innerHTML = `${product.productTitle}`;
-          if (variantEl) variantEl.textContent = product.variantTitle;
-        }
-      });
-  
-      // Membuat container untuk form di masing-masing section
-      const individualContainer = document.getElementById('form-individual');
-      const duoplusContainer = document.getElementById('form-duoplus');
-      const familyContainer = document.getElementById('form-family');
-  
-      // Mengelompokkan produk berdasarkan variantType
-      const insuranceProducts = ProductItems.filter((item) => item.category === 'Insurance');
-  
-      // Proses untuk variantType Individual
-      const individualProducts = insuranceProducts.filter((item) => item.variantType === 'Individual');
-  
-      individualProducts.forEach((product) => {
-        const formTemplate = document.getElementById('form-insurance-template').innerHTML;
-        const formItineraryTemplate = document.getElementById('form-itinerary-template').innerHTML;
-  
-        for (let i = 0; i < product.quantity; i++) {
-          const formWrapper = document.createElement('div');
-          formWrapper.classList.add('form-section--wrapper');
-  
-          const sectionWrapper = document.createElement('div');
-          sectionWrapper.classList.add('form-insurance__section-wrapper');
-          sectionWrapper.setAttribute('data-product-id', product.variantId);
-  
-          // ---------- section-top ----------
-          const sectionTop = document.createElement('div');
-          sectionTop.classList.add('form-insurance__section-top');
-  
-          // Section header
-          const sectionHeader = document.createElement('div');
-          sectionHeader.classList.add('form-insurance__section-header');
-  
-          const productTitle = document.createElement('p');
-          productTitle.classList.add('product-title');
-          productTitle.textContent = product.productTitle || '';
-  
-          const variantTitle = document.createElement('p');
-          variantTitle.classList.add('variant-title');
-          variantTitle.textContent = product.variantTitle || '';
-  
-          sectionHeader.appendChild(productTitle);
-          sectionHeader.appendChild(variantTitle);
-  
-          sectionTop.appendChild(sectionHeader);
-          // Itinerary container
-          const itineraryContainer = document.createElement('div');
-          itineraryContainer.classList.add('form-itinerary-container');
-          itineraryContainer.innerHTML = formItineraryTemplate;
-  
-          // Inject options ke dropdown
-          if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
-            injectCountryOptions(itineraryContainer, product.variantCoverage);
-          }
-  
-          sectionTop.appendChild(itineraryContainer);
-  
-          // Checkbox hanya di form pertama
-          if (i === 0 && product.quantity > 1) {
-            const sameCheckboxDiv = document.createElement('div');
-            sameCheckboxDiv.classList.add('form-insurance__same-checkbox');
-  
-            const labelEl = document.createElement('label');
-            labelEl.innerHTML = `
-          <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-          The travel dates and the destination country are the same for all the insurance plans.
-        `;
-  
-            sameCheckboxDiv.appendChild(labelEl);
-            sectionTop.appendChild(sameCheckboxDiv);
-          }
-  
-          sectionWrapper.appendChild(sectionTop);
-  
-          // ---------- section-bottom ----------
-          const sectionBottom = document.createElement('div');
-          sectionBottom.classList.add('form-insurance__section-bottom');
-  
-          // Label wrapper
-          const labelDivWrapper = document.createElement('div');
-          labelDivWrapper.classList.add('form-insurance__label-wrapper');
-  
-          const labelTitleDiv = document.createElement('div');
-          labelTitleDiv.classList.add('form-insurance__label-title');
-  
-          const spanIndex = document.createElement('span');
-          spanIndex.textContent = getFormIndexText(i + 1);
-          spanIndex.classList.add('form-insurance__label-index');
-  
-          const spanLabel = document.createElement('span');
-          spanLabel.textContent = 'Insured (Policy Holder)';
-  
-          labelTitleDiv.appendChild(spanIndex);
-          labelTitleDiv.appendChild(spanLabel);
-          labelDivWrapper.appendChild(labelTitleDiv);
-  
-          sectionBottom.appendChild(labelDivWrapper);
-  
-          // Form container
-          const formContainer = document.createElement('div');
-          formContainer.innerHTML = formTemplate;
-          sectionBottom.appendChild(formContainer);
-  
-          sectionWrapper.appendChild(sectionBottom);
-  
-          formWrapper.appendChild(sectionWrapper);
-          individualContainer.appendChild(formWrapper);
-        }
-  
-        // Tambahkan event listener hanya jika quantity > 1
-        if (product.quantity > 1) {
-          const checkboxId = `sameInsuranceCheckbox-${product.variantId}`;
-          setTimeout(() => {
-            const sameInsuranceCheckbox = document.getElementById(checkboxId);
-            if (sameInsuranceCheckbox) {
-              const wrappersOfProduct = document.querySelectorAll(
-                `.form-insurance__section-wrapper[data-product-id="${product.variantId}"]`
-              );
-              sameInsuranceCheckbox.addEventListener('change', (e) => {
-                handleSameInsuranceToggle(e.target.checked, wrappersOfProduct, product);
-              });
-            }
-          }, 0);
-        }
-      });
-  
-      function handleSameInsuranceToggle(isChecked, wrappers, product) {
-        wrappers.forEach((wrapper, index) => {
-          if (index === 0) return;
-  
-          const itineraryContainer = wrapper.querySelector('.form-itinerary-container');
-          if (!itineraryContainer) return;
-  
-          if (isChecked) {
-            itineraryContainer.innerHTML = '';
-          } else {
-            const template = document.getElementById('form-itinerary-template');
-            if (template) {
-              itineraryContainer.innerHTML = template.innerHTML;
-  
-              // ⭐ FIX: Inject country options ke dropdown
-              if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
-                injectCountryOptions(itineraryContainer, product.variantCoverage);
-              }
-            }
-          }
-        });
+  const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems'));
+
+  function injectCountryOptions(itineraryContainer, variantCoverage) {
+    const dropdown = itineraryContainer.querySelector('.itinerary-country-dropdown');
+    if (!dropdown) return;
+
+    dropdown.innerHTML = '<option value="">Select Country</option>';
+
+    variantCoverage.forEach((country) => {
+      const option = document.createElement('option');
+      option.value = country;
+      option.textContent = country;
+      dropdown.appendChild(option);
+    });
+  }
+
+  if (ProductItems) {
+    console.log('Retrieved ProductItems from sessionStorage:', ProductItems);
+    const sectionMap = {
+      'form-individual': 'Individual',
+      'form-duoplus': 'Duo Plus',
+      'form-family': 'Family',
+    };
+
+    Object.entries(sectionMap).forEach(([sectionId, variantType]) => {
+      const wrapper = document.getElementById(sectionId)?.closest('.form-section--wrapper');
+      const product = ProductItems.find((item) => item.variantType === variantType && item.category === 'Insurance');
+
+      if (wrapper && product) {
+        const titleEl = wrapper.querySelector('.product-title');
+        const variantEl = wrapper.querySelector('.variant-title');
+
+        if (titleEl) titleEl.innerHTML = `${product.productTitle}`;
+        if (variantEl) variantEl.textContent = product.variantTitle;
       }
-  
-      // Proses untuk variantType DuoPlus
-      const duoplusProducts = insuranceProducts.filter((item) => item.variantType === 'Duo Plus');
-  
-      duoplusProducts.forEach((product) => {
-        const formTemplate = document.getElementById('form-insurance-template').innerHTML;
-        const formItineraryTemplate = document.getElementById('form-itinerary-template').innerHTML;
-  
-        // 🔽 Section wrapper per variant
-        const variantSection = document.createElement('div');
-        variantSection.classList.add('form-section--wrapper');
-        variantSection.id = `duoplus-section-${product.variantId}`;
-        variantSection.setAttribute('data-product-id', product.variantId);
-  
-        duoplusContainer.appendChild(variantSection);
-  
-        for (let i = 0; i < product.quantity; i++) {
-          const formWrapper = document.createElement('div');
-          formWrapper.classList.add('form-section--wrapper');
-  
-          const formElement = document.createElement('div');
-          formElement.classList.add('form-insurance__section-wrapper');
-          formElement.setAttribute('data-product-id', product.variantId);
-  
-          // ------------------------
-          // SECTION TOP
-          // ------------------------
-  
-          // ➡️ Perbaikan di sini:
-          // hanya buat section-top kalau kelipatan 10
-          if (i % 10 === 0) {
-            const sectionTop = document.createElement('div');
-            sectionTop.classList.add('form-insurance__section-top');
-  
-            // header di setiap block
-            const sectionHeader = document.createElement('div');
-            sectionHeader.classList.add('form-insurance__section-header');
-  
-            const productTitle = document.createElement('p');
-            productTitle.classList.add('product-title');
-            productTitle.textContent = product.productTitle || '';
-  
-            const variantTitle = document.createElement('p');
-            variantTitle.classList.add('variant-title');
-            variantTitle.textContent = product.variantTitle || '';
-  
-            sectionHeader.appendChild(productTitle);
-            sectionHeader.appendChild(variantTitle);
-            sectionTop.appendChild(sectionHeader);
-  
-            // itinerary
-            const itineraryContainer = document.createElement('div');
-            itineraryContainer.classList.add('form-itinerary-container');
-            itineraryContainer.innerHTML = formItineraryTemplate;
-  
-            if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
-              injectCountryOptions(itineraryContainer, product.variantCoverage);
-            }
-  
-            sectionTop.appendChild(itineraryContainer);
-  
-            // ➡️ same-insurance checkbox hanya di insured ke-1
-            if (i === 0 && product.quantity > 10) {
-              const sameCheckboxDiv = document.createElement('div');
-              sameCheckboxDiv.classList.add('form-insurance__same-checkbox');
-  
-              const labelEl = document.createElement('label');
-              labelEl.innerHTML = `
-              <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-              The travel dates and the destination country are the same for all the insurance plans.
-            `;
-  
-              sameCheckboxDiv.appendChild(labelEl);
-              sectionTop.appendChild(sameCheckboxDiv);
-            }
-  
-            formElement.appendChild(sectionTop);
-          }
-  
-          // ------------------------
-          // SECTION BOTTOM
-          // ------------------------
-          const sectionBottom = document.createElement('div');
-          sectionBottom.classList.add('form-insurance__section-bottom');
-  
-          // label
-          const labelDivWrapper = document.createElement('div');
-          labelDivWrapper.classList.add('form-insurance__label-wrapper');
-  
-          const labelTitleDiv = document.createElement('div');
-          labelTitleDiv.classList.add('form-insurance__label-title');
-  
-          const spanIndex = document.createElement('span');
-          spanIndex.textContent = getFormIndexText(i + 1);
-          spanIndex.classList.add('form-insurance__label-index');
-  
-          const spanLabel = document.createElement('span');
-          spanLabel.textContent = i === 0 ? 'Insured (Policy Holder)' : 'Traveler';
-  
-          labelTitleDiv.appendChild(spanIndex);
-          labelTitleDiv.appendChild(spanLabel);
-          labelDivWrapper.appendChild(labelTitleDiv);
-  
-          sectionBottom.appendChild(labelDivWrapper);
-  
-          // form
-          const formContainer = document.createElement('div');
-          formContainer.innerHTML = formTemplate;
-          sectionBottom.appendChild(formContainer);
-  
-          formElement.appendChild(sectionBottom);
-  
-          formWrapper.appendChild(formElement);
-          variantSection.appendChild(formWrapper);
-        }
-  
-        // Checkbox listener hanya jika qty > 1
-        if (product.quantity > 1) {
-          const checkboxSelector = `#sameInsuranceCheckbox-${product.variantId}`;
-          setTimeout(() => {
-            const sameInsuranceCheckbox = document.querySelector(
-              `#duoplus-section-${product.variantId} ${checkboxSelector}`
-            );
-            if (sameInsuranceCheckbox) {
-              const wrappersOfProduct = document.querySelectorAll(
-                `#duoplus-section-${product.variantId} .form-insurance__section-wrapper[data-product-id="${product.variantId}"]`
-              );
-              sameInsuranceCheckbox.addEventListener('change', (e) => {
-                handleSameInsuranceToggle(e.target.checked, wrappersOfProduct, product);
-              });
-            }
-          }, 0);
-        }
-      });
-  
-      function handleSameInsuranceToggle(isChecked, wrappers) {
-        wrappers.forEach((wrapper, index) => {
-          if (index === 0) return;
-  
-          const itineraryContainer = wrapper.querySelector('.form-itinerary-container');
-          if (!itineraryContainer) return;
-  
-          if (isChecked) {
-            itineraryContainer.innerHTML = '';
-          } else {
-            const template = document.getElementById('form-itinerary-template');
-            if (template) {
-              itineraryContainer.innerHTML = template.innerHTML;
-            }
-          }
-        });
-      }
-  
-      // Fungsi untuk menentukan urutan teks (1st, 2nd, 3rd, dll)
-      function getFormIndexText(index) {
-        const suffix = ['th', 'st', 'nd', 'rd'];
-        const v = index % 100;
-        return index + (suffix[(v - 20) % 10] || suffix[v] || suffix[0]);
-      }
-  
-      const formTemplateElement = document.getElementById('form-insurance-template');
-      const formTemplate = formTemplateElement.innerHTML;
+    });
+
+    const individualContainer = document.getElementById('form-individual');
+    const duoplusContainer = document.getElementById('form-duoplus');
+    const familyContainer = document.getElementById('form-family');
+
+    const insuranceProducts = ProductItems.filter((item) => item.category === 'Insurance');
+
+    const individualProducts = insuranceProducts.filter((item) => item.variantType === 'Individual');
+
+    individualProducts.forEach((product) => {
+      const formTemplate = document.getElementById('form-insurance-template').innerHTML;
       const formItineraryTemplate = document.getElementById('form-itinerary-template').innerHTML;
-  
-      const familyProducts = insuranceProducts.filter((item) => item.variantType === 'Family');
-  
-      /**
-      * Helper function → pindahkan Add Traveler Button ke form terakhir
-      */
-      function moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper) {
-        const forms = sectionBottom.querySelectorAll('.form-family');
-        const lastForm = forms[forms.length - 1];
-        if (!lastForm) return;
-  
-        const lastFormRight = lastForm.querySelector('.form-insurance__right');
-        if (lastFormRight) {
-          lastFormRight.appendChild(addTravelerButtonWrapper);
-          addTravelerButtonWrapper.style.display = forms.length >= 4 ? 'none' : 'inline-block';
-        }
-      }
-  
-      // ⭐ FIX - helper untuk ordinal suffix
-      function getOrdinalSuffix(i) {
-        const j = i % 10,
-          k = i % 100;
-        if (j == 1 && k != 11) return i + 'st';
-        if (j == 2 && k != 12) return i + 'nd';
-        if (j == 3 && k != 13) return i + 'rd';
-        return i + 'th';
-      }
-  
-      // ⭐ FIX - helper untuk update label indeks & teks
-      function updateFamilyFormIndices(sectionBottom, groupSuffix) {
-        const labelWrappers = sectionBottom.querySelectorAll('.form-insurance__label-wrapper');
-        labelWrappers.forEach((labelWrapper, i) => {
-          const spanIndex = labelWrapper.querySelector('.form-insurance__label-index');
-          if (spanIndex) {
-            spanIndex.textContent = getOrdinalSuffix(i + 1);
-          }
-  
-          const spanLabel = labelWrapper.querySelector('.form-insurance__label-title span:nth-child(2)');
-          const form = labelWrapper.nextElementSibling;
-  
-          if (spanLabel) {
-            if (i === 0) {
-              spanLabel.textContent = 'Insured (Policy Holder)';
-            } else {
-              // PERBAIKAN: Gunakan relationship dari dataset atau default ke 'Traveler'
-              const relationship = form?.dataset?.relationship || '';
-              spanLabel.textContent = relationship ? `Traveler - ${relationship}` : 'Traveler';
-  
-              // PERBAIKAN: Sync radio buttons dengan label
-              if (form?.labelElement) {
-                form.labelElement.textContent = spanLabel.textContent;
-              }
-            }
-          }
-        });
-      }
-  
-      familyProducts.forEach((product) => {
-        console.log(`Processing Family Product: ${product.productTitle} with quantity ${product.quantity}`);
-  
-        const familySectionWrapper = document.createElement('div');
-        familySectionWrapper.classList.add('form-family__section-wrapper');
-        familySectionWrapper.setAttribute('data-product-id', product.variantId);
-  
-        // Buat header (nanti clone ke tiap section-top)
+
+      for (let i = 0; i < product.quantity; i++) {
+        const formWrapper = document.createElement('div');
+        formWrapper.classList.add('form-section--wrapper');
+
+        const sectionWrapper = document.createElement('div');
+        sectionWrapper.classList.add('form-insurance__section-wrapper');
+        sectionWrapper.setAttribute('data-product-id', product.variantId);
+
+        const sectionTop = document.createElement('div');
+        sectionTop.classList.add('form-insurance__section-top');
+
         const sectionHeader = document.createElement('div');
         sectionHeader.classList.add('form-insurance__section-header');
-  
+
         const productTitle = document.createElement('p');
         productTitle.classList.add('product-title');
         productTitle.textContent = product.productTitle || '';
-  
+
         const variantTitle = document.createElement('p');
         variantTitle.classList.add('variant-title');
         variantTitle.textContent = product.variantTitle || '';
-  
+
         sectionHeader.appendChild(productTitle);
         sectionHeader.appendChild(variantTitle);
-  
-        let sameCheckboxDiv = null;
-        if (product.quantity > 1) {
-          sameCheckboxDiv = document.createElement('div');
+
+        sectionTop.appendChild(sectionHeader);
+        const itineraryContainer = document.createElement('div');
+        itineraryContainer.classList.add('form-itinerary-container');
+        itineraryContainer.innerHTML = formItineraryTemplate;
+
+        if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
+          injectCountryOptions(itineraryContainer, product.variantCoverage);
+        }
+
+        sectionTop.appendChild(itineraryContainer);
+
+        if (i === 0 && product.quantity > 1) {
+          const sameCheckboxDiv = document.createElement('div');
           sameCheckboxDiv.classList.add('form-insurance__same-checkbox');
-  
+
           const labelEl = document.createElement('label');
           labelEl.innerHTML = `
-        <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-        The travel dates and the destination country are the same for all the insurance plans.
-      `;
+          <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
+          The travel dates and the destination country are the same for all the insurance plans.
+        `;
+
           sameCheckboxDiv.appendChild(labelEl);
+          sectionTop.appendChild(sameCheckboxDiv);
         }
-  
-        for (let groupIndex = 0; groupIndex < product.quantity; groupIndex++) {
-          const formWrapper = document.createElement('div');
-          formWrapper.classList.add('form-section--wrapper');
-          formWrapper.style.marginBottom = '30px';
-  
-          const sectionWrapper = document.createElement('div');
-          sectionWrapper.classList.add('form-insurance__section-wrapper');
-          sectionWrapper.setAttribute('data-product-id', product.variantId);
-  
-          // ➤ SECTION TOP
+
+        sectionWrapper.appendChild(sectionTop);
+
+        const sectionBottom = document.createElement('div');
+        sectionBottom.classList.add('form-insurance__section-bottom');
+
+        const labelDivWrapper = document.createElement('div');
+        labelDivWrapper.classList.add('form-insurance__label-wrapper');
+
+        const labelTitleDiv = document.createElement('div');
+        labelTitleDiv.classList.add('form-insurance__label-title');
+
+        const spanIndex = document.createElement('span');
+        spanIndex.textContent = getFormIndexText(i + 1);
+        spanIndex.classList.add('form-insurance__label-index');
+
+        const spanLabel = document.createElement('span');
+        spanLabel.textContent = 'Insured (Policy Holder)';
+
+        labelTitleDiv.appendChild(spanIndex);
+        labelTitleDiv.appendChild(spanLabel);
+        labelDivWrapper.appendChild(labelTitleDiv);
+
+        sectionBottom.appendChild(labelDivWrapper);
+
+        const formContainer = document.createElement('div');
+        formContainer.innerHTML = formTemplate;
+        sectionBottom.appendChild(formContainer);
+
+        sectionWrapper.appendChild(sectionBottom);
+
+        formWrapper.appendChild(sectionWrapper);
+        individualContainer.appendChild(formWrapper);
+      }
+
+      if (product.quantity > 1) {
+        const checkboxId = `sameInsuranceCheckbox-${product.variantId}`;
+        setTimeout(() => {
+          const sameInsuranceCheckbox = document.getElementById(checkboxId);
+          if (sameInsuranceCheckbox) {
+            const wrappersOfProduct = document.querySelectorAll(
+              `.form-insurance__section-wrapper[data-product-id="${product.variantId}"]`
+            );
+            sameInsuranceCheckbox.addEventListener('change', (e) => {
+              handleSameInsuranceToggle(e.target.checked, wrappersOfProduct, product);
+            });
+          }
+        }, 0);
+      }
+    });
+
+    function handleSameInsuranceToggle(isChecked, wrappers, product) {
+      wrappers.forEach((wrapper, index) => {
+        if (index === 0) return;
+
+        const itineraryContainer = wrapper.querySelector('.form-itinerary-container');
+        if (!itineraryContainer) return;
+
+        if (isChecked) {
+          itineraryContainer.innerHTML = '';
+        } else {
+          const template = document.getElementById('form-itinerary-template');
+          if (template) {
+            itineraryContainer.innerHTML = template.innerHTML;
+
+            if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
+              injectCountryOptions(itineraryContainer, product.variantCoverage);
+            }
+          }
+        }
+      });
+    }
+
+    const duoplusProducts = insuranceProducts.filter((item) => item.variantType === 'Duo Plus');
+
+    duoplusProducts.forEach((product) => {
+      const formTemplate = document.getElementById('form-insurance-template').innerHTML;
+      const formItineraryTemplate = document.getElementById('form-itinerary-template').innerHTML;
+
+      const variantSection = document.createElement('div');
+      variantSection.classList.add('form-section--wrapper');
+      variantSection.id = `duoplus-section-${product.variantId}`;
+      variantSection.setAttribute('data-product-id', product.variantId);
+
+      duoplusContainer.appendChild(variantSection);
+
+      for (let i = 0; i < product.quantity; i++) {
+        const formWrapper = document.createElement('div');
+        formWrapper.classList.add('form-section--wrapper');
+
+        const formElement = document.createElement('div');
+        formElement.classList.add('form-insurance__section-wrapper');
+        formElement.setAttribute('data-product-id', product.variantId);
+
+        if (i % 10 === 0) {
           const sectionTop = document.createElement('div');
           sectionTop.classList.add('form-insurance__section-top');
-  
-          // clone section header
-          const clonedHeader = sectionHeader.cloneNode(true);
-          sectionTop.appendChild(clonedHeader);
-  
-          if (sameCheckboxDiv && groupIndex === 0) {
-            sectionTop.appendChild(sameCheckboxDiv.cloneNode(true));
-          }
-  
+
+          const sectionHeader = document.createElement('div');
+          sectionHeader.classList.add('form-insurance__section-header');
+
+          const productTitle = document.createElement('p');
+          productTitle.classList.add('product-title');
+          productTitle.textContent = product.productTitle || '';
+
+          const variantTitle = document.createElement('p');
+          variantTitle.classList.add('variant-title');
+          variantTitle.textContent = product.variantTitle || '';
+
+          sectionHeader.appendChild(productTitle);
+          sectionHeader.appendChild(variantTitle);
+          sectionTop.appendChild(sectionHeader);
+
           const itineraryContainer = document.createElement('div');
           itineraryContainer.classList.add('form-itinerary-container');
           itineraryContainer.innerHTML = formItineraryTemplate;
-  
+
           if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
             injectCountryOptions(itineraryContainer, product.variantCoverage);
           }
+
           sectionTop.appendChild(itineraryContainer);
-  
-          sectionWrapper.appendChild(sectionTop);
-  
-          // ➤ SECTION BOTTOM
-          const sectionBottom = document.createElement('div');
-          sectionBottom.classList.add('form-insurance__section-bottom');
-  
-          const formsContainer = document.createElement('div');
-          formsContainer.classList.add('family-forms-container');
-          const uniqueId = `form-family-${Date.now()}-${groupIndex}`;
-          formsContainer.setAttribute('data-section-id', uniqueId);
-  
-          const addTravelerButtonWrapper = document.createElement('div');
-          addTravelerButtonWrapper.classList.add('add-traveler__button');
-  
-          const addTravelerButton = document.createElement('button');
-          addTravelerButton.type = 'button';
-          addTravelerButton.classList.add('insurance-form__add-form');
-          addTravelerButton.textContent = 'Add Traveler';
-  
-          addTravelerButtonWrapper.appendChild(addTravelerButton);
-  
-          const createForm = (fromAdd = false, variantType, product) => {
-            const wrapper = document.createElement('div');
-            wrapper.innerHTML = formTemplate;
-  
-            const formElement = wrapper.querySelector('form');
-            if (!formElement) return null;
-  
-            formElement.classList.add('form-family');
-  
-            const index = sectionBottom.querySelectorAll('form.form-family').length;
-  
-            // label suffix logic
-            const groupSuffix = ` #${groupIndex + 1}`;
-  
-            // Label default
-            let label = '';
-            if (index === 0) {
-              label = 'Insured (Policy Holder)';
-            } else {
-              label = 'Traveler';
-            }
-  
-            const labelDivWrapper = document.createElement('div');
-            labelDivWrapper.classList.add('form-insurance__label-wrapper');
-  
-            const labelTitleDiv = document.createElement('div');
-            labelTitleDiv.classList.add('form-insurance__label-title');
-  
-            const spanIndex = document.createElement('span');
-            spanIndex.textContent = getOrdinalSuffix(index + 1);
-            spanIndex.classList.add('form-insurance__label-index');
-  
-            const spanLabel = document.createElement('span');
-            spanLabel.textContent = label;
-  
-            labelTitleDiv.appendChild(spanIndex);
-            labelTitleDiv.appendChild(spanLabel);
-            labelDivWrapper.appendChild(labelTitleDiv);
-  
-            if (fromAdd || index >= 2) {
-              const removeBtn = document.createElement('button');
-              removeBtn.type = 'button';
-              removeBtn.textContent = 'Remove';
-              removeBtn.classList.add('insurance-form__remove-form');
-  
-              removeBtn.addEventListener('click', () => {
-                formElement.remove();
-                labelDivWrapper.remove();
-                moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper);
-                updateFamilyFormIndices(sectionBottom, groupSuffix);
-              });
-  
-              const removeWrapper = document.createElement('div');
-              removeWrapper.classList.add('form-insurance__button-wrapper');
-              removeWrapper.appendChild(removeBtn);
-              labelDivWrapper.appendChild(removeWrapper);
-            }
-  
-            sectionBottom.appendChild(labelDivWrapper);
-            sectionBottom.appendChild(formElement);
-  
-            const relationshipWrapper = formElement.querySelector('.form-insurance__wrapper.relationship-wrapper');
-            if (relationshipWrapper) {
-              const spouseRadio = relationshipWrapper.querySelector('#relationship-spouse');
-              const childRadio = relationshipWrapper.querySelector('#relationship-child');
-  
-              // PERBAIKAN: Tidak ada yang di-select secara default
-              spouseRadio.checked = false;
-              childRadio.checked = false;
-              spanLabel.textContent = 'Traveler'; // Label default tanpa relationship
-  
-              // PERBAIKAN: Simpan referensi ke spanLabel di form element
-              formElement.labelElement = spanLabel;
-  
-              spouseRadio.addEventListener('change', () => {
-                if (spouseRadio.checked) {
-                  spanLabel.textContent = 'Traveler - Spouse';
-                  formElement.dataset.relationship = 'Spouse';
-                  updateFamilyFormIndices(sectionBottom, groupSuffix);
-                }
-              });
-  
-              childRadio.addEventListener('change', () => {
-                if (childRadio.checked) {
-                  spanLabel.textContent = 'Traveler - Child';
-                  formElement.dataset.relationship = 'Child';
-                  updateFamilyFormIndices(sectionBottom, groupSuffix);
-                }
-              });
-  
-              // PERBAIKAN: Handler untuk ketika radio button di-uncheck
-              const handleRadioChange = () => {
-                if (!spouseRadio.checked && !childRadio.checked) {
-                  spanLabel.textContent = 'Traveler';
-                  delete formElement.dataset.relationship;
-                  updateFamilyFormIndices(sectionBottom, groupSuffix);
-                }
-              };
-  
-              spouseRadio.addEventListener('change', handleRadioChange);
-              childRadio.addEventListener('change', handleRadioChange);
-            }
-  
-            const toRemoveFields = [];
-  
-            if (!fromAdd && index === 0) {
-              toRemoveFields.push('.relationship-wrapper');
-            } else if (!fromAdd && index === 1) {
-              toRemoveFields.push(
-                'input[name="Mobile Phone"]',
-                'input[name="Email"]',
-                'input[name="Additional Email"]',
-                'input[name="City"]',
-                'input[name="Postal Code"]',
-                'textarea[name="Address"]'
-              );
-            } else {
-              toRemoveFields.push(
-                'input[name="Mobile Phone"]',
-                'input[name="Email"]',
-                'input[name="Additional Email"]',
-                'input[name="City"]',
-                'input[name="Postal Code"]',
-                'textarea[name="Address"]',
-                '.relationship-wrapper'
-              );
-            }
-  
-            toRemoveFields.forEach((selector) => {
-              const el = formElement.querySelector(selector);
-              if (el) {
-                const fieldWrapper = el.closest('.form-insurance__field');
-                if (fieldWrapper) {
-                  fieldWrapper.remove();
-                } else {
-                  el.remove();
-                }
-              }
-            });
-  
-            return wrapper;
-          };
-  
-          sectionBottom.appendChild(createForm(false, product.variantType, product));
-          sectionBottom.appendChild(createForm(false, product.variantType, product));
-  
-          addTravelerButton.addEventListener('click', () => {
-            const currentForms = sectionBottom.querySelectorAll('.form-family').length;
-            if (currentForms < 4) {
-              const newForm = createForm(true, product.variantType, product);
-              sectionBottom.appendChild(newForm);
-              moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper);
-              updateFamilyFormIndices(sectionBottom, ` #${groupIndex + 1}`);
-            }
-          });
-  
-          moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper);
-  
-          sectionWrapper.appendChild(sectionBottom);
-          formWrapper.appendChild(sectionWrapper);
-          familySectionWrapper.appendChild(formWrapper);
+
+          if (i === 0 && product.quantity > 10) {
+            const sameCheckboxDiv = document.createElement('div');
+            sameCheckboxDiv.classList.add('form-insurance__same-checkbox');
+
+            const labelEl = document.createElement('label');
+            labelEl.innerHTML = `
+              <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
+              The travel dates and the destination country are the same for all the insurance plans.
+            `;
+
+            sameCheckboxDiv.appendChild(labelEl);
+            sectionTop.appendChild(sameCheckboxDiv);
+          }
+
+          formElement.appendChild(sectionTop);
         }
-  
-        familyContainer.appendChild(familySectionWrapper);
-  
-        if (product.quantity > 1) {
-          const checkboxSelector = `#sameInsuranceCheckbox-${product.variantId}`;
-          setTimeout(() => {
-            const sameInsuranceCheckbox = familySectionWrapper.querySelector(checkboxSelector);
-            if (sameInsuranceCheckbox) {
-              const groups = familySectionWrapper.querySelectorAll(
-                `.form-section--wrapper .form-insurance__section-wrapper`
-              );
-  
-              sameInsuranceCheckbox.addEventListener('change', (e) => {
-                const isChecked = e.target.checked;
-                groups.forEach((group, index) => {
-                  if (index === 0) return;
-  
-                  const itineraryContainer = group.querySelector('.form-itinerary-container');
-                  if (!itineraryContainer) return;
-  
-                  if (isChecked) {
-                    itineraryContainer.innerHTML = '';
-                  } else {
-                    itineraryContainer.innerHTML = formItineraryTemplate;
-  
-                    if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
-                      injectCountryOptions(itineraryContainer, product.variantCoverage);
-                    }
-                  }
-                });
-              });
-            }
-          }, 0);
+
+        const sectionBottom = document.createElement('div');
+        sectionBottom.classList.add('form-insurance__section-bottom');
+
+        const labelDivWrapper = document.createElement('div');
+        labelDivWrapper.classList.add('form-insurance__label-wrapper');
+
+        const labelTitleDiv = document.createElement('div');
+        labelTitleDiv.classList.add('form-insurance__label-title');
+
+        const spanIndex = document.createElement('span');
+        spanIndex.textContent = getFormIndexText(i + 1);
+        spanIndex.classList.add('form-insurance__label-index');
+
+        const spanLabel = document.createElement('span');
+        spanLabel.textContent = i === 0 ? 'Insured (Policy Holder)' : 'Traveler';
+
+        labelTitleDiv.appendChild(spanIndex);
+        labelTitleDiv.appendChild(spanLabel);
+        labelDivWrapper.appendChild(labelTitleDiv);
+
+        sectionBottom.appendChild(labelDivWrapper);
+
+        const formContainer = document.createElement('div');
+        formContainer.innerHTML = formTemplate;
+        sectionBottom.appendChild(formContainer);
+
+        formElement.appendChild(sectionBottom);
+
+        formWrapper.appendChild(formElement);
+        variantSection.appendChild(formWrapper);
+      }
+
+      if (product.quantity > 1) {
+        const checkboxSelector = `#sameInsuranceCheckbox-${product.variantId}`;
+        setTimeout(() => {
+          const sameInsuranceCheckbox = document.querySelector(
+            `#duoplus-section-${product.variantId} ${checkboxSelector}`
+          );
+          if (sameInsuranceCheckbox) {
+            const wrappersOfProduct = document.querySelectorAll(
+              `#duoplus-section-${product.variantId} .form-insurance__section-wrapper[data-product-id="${product.variantId}"]`
+            );
+            sameInsuranceCheckbox.addEventListener('change', (e) => {
+              handleSameInsuranceToggle(e.target.checked, wrappersOfProduct, product);
+            });
+          }
+        }, 0);
+      }
+    });
+
+    function handleSameInsuranceToggle(isChecked, wrappers) {
+      wrappers.forEach((wrapper, index) => {
+        if (index === 0) return;
+
+        const itineraryContainer = wrapper.querySelector('.form-itinerary-container');
+        if (!itineraryContainer) return;
+
+        if (isChecked) {
+          itineraryContainer.innerHTML = '';
+        } else {
+          const template = document.getElementById('form-itinerary-template');
+          if (template) {
+            itineraryContainer.innerHTML = template.innerHTML;
+          }
         }
       });
-    } else {
-      console.log('No ProductItems found in sessionStorage');
     }
+
+    function getFormIndexText(index) {
+      const suffix = ['th', 'st', 'nd', 'rd'];
+      const v = index % 100;
+      return index + (suffix[(v - 20) % 10] || suffix[v] || suffix[0]);
+    }
+
+    const formTemplateElement = document.getElementById('form-insurance-template');
+    const formTemplate = formTemplateElement.innerHTML;
+    const formItineraryTemplate = document.getElementById('form-itinerary-template').innerHTML;
+
+    const familyProducts = insuranceProducts.filter((item) => item.variantType === 'Family');
+
+    function moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper) {
+      const forms = sectionBottom.querySelectorAll('.form-family');
+      const lastForm = forms[forms.length - 1];
+      if (!lastForm) return;
+
+      const lastFormRight = lastForm.querySelector('.form-insurance__right');
+      if (lastFormRight) {
+        lastFormRight.appendChild(addTravelerButtonWrapper);
+        addTravelerButtonWrapper.style.display = forms.length >= 4 ? 'none' : 'inline-block';
+      }
+    }
+
+    function getOrdinalSuffix(i) {
+      const j = i % 10,
+        k = i % 100;
+      if (j == 1 && k != 11) return i + 'st';
+      if (j == 2 && k != 12) return i + 'nd';
+      if (j == 3 && k != 13) return i + 'rd';
+      return i + 'th';
+    }
+
+    function updateFamilyFormIndices(sectionBottom, groupSuffix) {
+      const labelWrappers = sectionBottom.querySelectorAll('.form-insurance__label-wrapper');
+      labelWrappers.forEach((labelWrapper, i) => {
+        const spanIndex = labelWrapper.querySelector('.form-insurance__label-index');
+        if (spanIndex) {
+          spanIndex.textContent = getOrdinalSuffix(i + 1);
+        }
+
+        const spanLabel = labelWrapper.querySelector('.form-insurance__label-title span:nth-child(2)');
+        const form = labelWrapper.nextElementSibling;
+
+        if (spanLabel) {
+          if (i === 0) {
+            spanLabel.textContent = 'Insured (Policy Holder)';
+          } else {
+            const relationship = form?.dataset?.relationship || '';
+            spanLabel.textContent = relationship ? `Traveler - ${relationship}` : 'Traveler';
+
+            if (form?.labelElement) {
+              form.labelElement.textContent = spanLabel.textContent;
+            }
+          }
+        }
+      });
+    }
+
+    familyProducts.forEach((product) => {
+      console.log(`Processing Family Product: ${product.productTitle} with quantity ${product.quantity}`);
+
+      const familySectionWrapper = document.createElement('div');
+      familySectionWrapper.classList.add('form-family__section-wrapper');
+      familySectionWrapper.setAttribute('data-product-id', product.variantId);
+
+      const sectionHeader = document.createElement('div');
+      sectionHeader.classList.add('form-insurance__section-header');
+
+      const productTitle = document.createElement('p');
+      productTitle.classList.add('product-title');
+      productTitle.textContent = product.productTitle || '';
+
+      const variantTitle = document.createElement('p');
+      variantTitle.classList.add('variant-title');
+      variantTitle.textContent = product.variantTitle || '';
+
+      sectionHeader.appendChild(productTitle);
+      sectionHeader.appendChild(variantTitle);
+
+      let sameCheckboxDiv = null;
+      if (product.quantity > 1) {
+        sameCheckboxDiv = document.createElement('div');
+        sameCheckboxDiv.classList.add('form-insurance__same-checkbox');
+
+        const labelEl = document.createElement('label');
+        labelEl.innerHTML = `
+        <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
+        The travel dates and the destination country are the same for all the insurance plans.
+      `;
+        sameCheckboxDiv.appendChild(labelEl);
+      }
+
+      for (let groupIndex = 0; groupIndex < product.quantity; groupIndex++) {
+        const formWrapper = document.createElement('div');
+        formWrapper.classList.add('form-section--wrapper');
+        formWrapper.style.marginBottom = '30px';
+
+        const sectionWrapper = document.createElement('div');
+        sectionWrapper.classList.add('form-insurance__section-wrapper');
+        sectionWrapper.setAttribute('data-product-id', product.variantId);
+
+        const sectionTop = document.createElement('div');
+        sectionTop.classList.add('form-insurance__section-top');
+
+        const clonedHeader = sectionHeader.cloneNode(true);
+        sectionTop.appendChild(clonedHeader);
+
+        if (sameCheckboxDiv && groupIndex === 0) {
+          sectionTop.appendChild(sameCheckboxDiv.cloneNode(true));
+        }
+
+        const itineraryContainer = document.createElement('div');
+        itineraryContainer.classList.add('form-itinerary-container');
+        itineraryContainer.innerHTML = formItineraryTemplate;
+
+        if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
+          injectCountryOptions(itineraryContainer, product.variantCoverage);
+        }
+        sectionTop.appendChild(itineraryContainer);
+
+        sectionWrapper.appendChild(sectionTop);
+
+        const sectionBottom = document.createElement('div');
+        sectionBottom.classList.add('form-insurance__section-bottom');
+
+        const formsContainer = document.createElement('div');
+        formsContainer.classList.add('family-forms-container');
+        const uniqueId = `form-family-${Date.now()}-${groupIndex}`;
+        formsContainer.setAttribute('data-section-id', uniqueId);
+
+        const addTravelerButtonWrapper = document.createElement('div');
+        addTravelerButtonWrapper.classList.add('add-traveler__button');
+
+        const addTravelerButton = document.createElement('button');
+        addTravelerButton.type = 'button';
+        addTravelerButton.classList.add('insurance-form__add-form');
+        addTravelerButton.textContent = 'Add Traveler';
+
+        addTravelerButtonWrapper.appendChild(addTravelerButton);
+
+        const createForm = (fromAdd = false, variantType, product) => {
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = formTemplate;
+
+          const formElement = wrapper.querySelector('form');
+          if (!formElement) return null;
+
+          formElement.classList.add('form-family');
+
+          const index = sectionBottom.querySelectorAll('form.form-family').length;
+
+          const groupSuffix = ` #${groupIndex + 1}`;
+
+          let label = '';
+          if (index === 0) {
+            label = 'Insured (Policy Holder)';
+          } else {
+            label = 'Traveler';
+          }
+
+          const labelDivWrapper = document.createElement('div');
+          labelDivWrapper.classList.add('form-insurance__label-wrapper');
+
+          const labelTitleDiv = document.createElement('div');
+          labelTitleDiv.classList.add('form-insurance__label-title');
+
+          const spanIndex = document.createElement('span');
+          spanIndex.textContent = getOrdinalSuffix(index + 1);
+          spanIndex.classList.add('form-insurance__label-index');
+
+          const spanLabel = document.createElement('span');
+          spanLabel.textContent = label;
+
+          labelTitleDiv.appendChild(spanIndex);
+          labelTitleDiv.appendChild(spanLabel);
+          labelDivWrapper.appendChild(labelTitleDiv);
+
+          if (fromAdd || index >= 2) {
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.textContent = 'Remove';
+            removeBtn.classList.add('insurance-form__remove-form');
+
+            removeBtn.addEventListener('click', () => {
+              formElement.remove();
+              labelDivWrapper.remove();
+              moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper);
+              updateFamilyFormIndices(sectionBottom, groupSuffix);
+            });
+
+            const removeWrapper = document.createElement('div');
+            removeWrapper.classList.add('form-insurance__button-wrapper');
+            removeWrapper.appendChild(removeBtn);
+            labelDivWrapper.appendChild(removeWrapper);
+          }
+
+          sectionBottom.appendChild(labelDivWrapper);
+          sectionBottom.appendChild(formElement);
+
+          const relationshipWrapper = formElement.querySelector('.form-insurance__wrapper.relationship-wrapper');
+          if (relationshipWrapper) {
+            const spouseRadio = relationshipWrapper.querySelector('#relationship-spouse');
+            const childRadio = relationshipWrapper.querySelector('#relationship-child');
+
+            spouseRadio.checked = false;
+            childRadio.checked = false;
+            spanLabel.textContent = 'Traveler';
+
+            formElement.labelElement = spanLabel;
+
+            spouseRadio.addEventListener('change', () => {
+              if (spouseRadio.checked) {
+                spanLabel.textContent = 'Traveler - Spouse';
+                formElement.dataset.relationship = 'Spouse';
+                updateFamilyFormIndices(sectionBottom, groupSuffix);
+              }
+            });
+
+            childRadio.addEventListener('change', () => {
+              if (childRadio.checked) {
+                spanLabel.textContent = 'Traveler - Child';
+                formElement.dataset.relationship = 'Child';
+                updateFamilyFormIndices(sectionBottom, groupSuffix);
+              }
+            });
+
+            const handleRadioChange = () => {
+              if (!spouseRadio.checked && !childRadio.checked) {
+                spanLabel.textContent = 'Traveler';
+                delete formElement.dataset.relationship;
+                updateFamilyFormIndices(sectionBottom, groupSuffix);
+              }
+            };
+
+            spouseRadio.addEventListener('change', handleRadioChange);
+            childRadio.addEventListener('change', handleRadioChange);
+          }
+
+          const toRemoveFields = [];
+
+          if (!fromAdd && index === 0) {
+            toRemoveFields.push('.relationship-wrapper');
+          } else if (!fromAdd && index === 1) {
+            toRemoveFields.push(
+              'input[name="Mobile Phone"]',
+              'input[name="Email"]',
+              'input[name="Additional Email"]',
+              'input[name="City"]',
+              'input[name="Postal Code"]',
+              'textarea[name="Address"]'
+            );
+          } else {
+            toRemoveFields.push(
+              'input[name="Mobile Phone"]',
+              'input[name="Email"]',
+              'input[name="Additional Email"]',
+              'input[name="City"]',
+              'input[name="Postal Code"]',
+              'textarea[name="Address"]',
+              '.relationship-wrapper'
+            );
+          }
+
+          toRemoveFields.forEach((selector) => {
+            const el = formElement.querySelector(selector);
+            if (el) {
+              const fieldWrapper = el.closest('.form-insurance__field');
+              if (fieldWrapper) {
+                fieldWrapper.remove();
+              } else {
+                el.remove();
+              }
+            }
+          });
+
+          return wrapper;
+        };
+
+        sectionBottom.appendChild(createForm(false, product.variantType, product));
+        sectionBottom.appendChild(createForm(false, product.variantType, product));
+
+        addTravelerButton.addEventListener('click', () => {
+          const currentForms = sectionBottom.querySelectorAll('.form-family').length;
+          if (currentForms < 4) {
+            const newForm = createForm(true, product.variantType, product);
+            sectionBottom.appendChild(newForm);
+            moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper);
+            updateFamilyFormIndices(sectionBottom, ` #${groupIndex + 1}`);
+          }
+        });
+
+        moveAddTravelerButtonToLastForm(sectionBottom, addTravelerButtonWrapper);
+
+        sectionWrapper.appendChild(sectionBottom);
+        formWrapper.appendChild(sectionWrapper);
+        familySectionWrapper.appendChild(formWrapper);
+      }
+
+      familyContainer.appendChild(familySectionWrapper);
+
+      if (product.quantity > 1) {
+        const checkboxSelector = `#sameInsuranceCheckbox-${product.variantId}`;
+        setTimeout(() => {
+          const sameInsuranceCheckbox = familySectionWrapper.querySelector(checkboxSelector);
+          if (sameInsuranceCheckbox) {
+            const groups = familySectionWrapper.querySelectorAll(
+              `.form-section--wrapper .form-insurance__section-wrapper`
+            );
+
+            sameInsuranceCheckbox.addEventListener('change', (e) => {
+              const isChecked = e.target.checked;
+              groups.forEach((group, index) => {
+                if (index === 0) return;
+
+                const itineraryContainer = group.querySelector('.form-itinerary-container');
+                if (!itineraryContainer) return;
+
+                if (isChecked) {
+                  itineraryContainer.innerHTML = '';
+                } else {
+                  itineraryContainer.innerHTML = formItineraryTemplate;
+
+                  if (product.variantCoverage && Array.isArray(product.variantCoverage)) {
+                    injectCountryOptions(itineraryContainer, product.variantCoverage);
+                  }
+                }
+              });
+            });
+          }
+        }, 0);
+      }
+    });
+  } else {
+    console.log('No ProductItems found in sessionStorage');
+  }
 </script>
 
 <script>
-  // Fungsi untuk validasi date
-function validateDates() {
-  const today = new Date().toISOString().split('T')[0];
-  const startDateInputs = document.querySelectorAll('input[name="Start Date"]');
-  const endDateInputs = document.querySelectorAll('input[name="End Date"]');
-  let isValid = true;
+  function validateDates() {
+    const today = new Date().toISOString().split('T')[0];
+    const startDateInputs = document.querySelectorAll('input[name="Start Date"]');
+    const endDateInputs = document.querySelectorAll('input[name="End Date"]');
+    let isValid = true;
 
-  // Set minimum date untuk semua input start date
-  startDateInputs.forEach(input => {
-    input.min = today;
-    
-    if (input.value && input.value < today) {
-      input.style.border = '2px solid red';
-      isValid = false;
-    } else if (input.value) {
-      input.style.border = '';
-    }
-  });
+    startDateInputs.forEach((input) => {
+      if (!input) return;
+      clearFieldError(input);
+      input.min = today;
 
-  // Set minimum date untuk semua input end date
-  endDateInputs.forEach(input => {
-    input.min = today;
-    
-    if (input.value && input.value < today) {
-      input.style.border = '2px solid red';
-      isValid = false;
-    } else if (input.value) {
-      input.style.border = '';
-    }
-
-    // Validasi: end date tidak boleh kurang dari start date
-    const startDateInput = input.closest('.form-insurance__wrapper')?.querySelector('input[name="Start Date"]');
-    if (startDateInput?.value && input.value && input.value < startDateInput.value) {
-      input.style.border = '2px solid red';
-      isValid = false;
-      alert('End Date cannot be earlier than Start Date');
-    }
-  });
-
-  return isValid;
-}
-
-// Fungsi untuk update minimum end date berdasarkan start date
-function setupDateValidation() {
-  document.addEventListener('change', function(e) {
-    if (e.target.name === 'Start Date') {
-      const startDate = e.target.value;
-      const wrapper = e.target.closest('.form-insurance__wrapper');
-      const endDateInput = wrapper?.querySelector('input[name="End Date"]');
-      
-      if (endDateInput && startDate) {
-        endDateInput.min = startDate;
-        
-        // Jika end date sudah ada dan kurang dari start date yang baru, reset
-        if (endDateInput.value && endDateInput.value < startDate) {
-          endDateInput.value = '';
-          endDateInput.style.border = '2px solid red';
-        }
+      if (!input.value) {
+        isValid = false;
+        setFieldError(input, 'Start date is required');
+        return;
       }
-    }
-  });
-}
 
-// Panggil setup saat DOM ready
-document.addEventListener('DOMContentLoaded', function() {
-  setupDateValidation();
-  
-  // Juga panggil saat form dynamically ditambahkan
-  const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      if (mutation.addedNodes.length) {
-        setupDateValidation();
-        validateDates();
+      if (input.value < today) {
+        isValid = false;
+        setFieldError(input, 'Start date cannot be in the past');
       }
     });
-  });
-  
-  observer.observe(document.body, { childList: true, subtree: true });
-});
 
-    function customizeInsuranceForms() {
-      // --- INDIVIDUAL SECTION ---
-      const individualForms = document.querySelectorAll('#form-individual form');
-      individualForms.forEach((form) => {
-        const relationshipField = form.querySelector('.relationship-wrapper');
-        if (relationshipField) {
-          relationshipField.remove();
+    endDateInputs.forEach((input) => {
+      if (!input) return;
+      clearFieldError(input);
+      input.min = today;
+
+      const wrapper = input.closest('.form-insurance__wrapper');
+      const startDateInput = wrapper?.querySelector('input[name="Start Date"]');
+
+      if (!input.value) {
+        isValid = false;
+        setFieldError(input, 'End date is required');
+        return;
+      }
+
+      if (input.value < today) {
+        isValid = false;
+        setFieldError(input, 'End date cannot be in the past');
+      }
+
+      if (startDateInput?.value && input.value < startDateInput.value) {
+        isValid = false;
+        setFieldError(input, 'End date cannot be earlier than start date');
+      }
+    });
+    return isValid;
+  }
+
+  function setupDateValidation() {
+    document.addEventListener('change', function (e) {
+      if (e.target.name === 'Start Date') {
+        const startDate = e.target.value;
+        const wrapper = e.target.closest('.form-insurance__wrapper');
+        const endDateInput = wrapper?.querySelector('input[name="End Date"]');
+
+        if (endDateInput && startDate) {
+          endDateInput.min = startDate;
+
+          if (endDateInput.value && endDateInput.value < startDate) {
+            endDateInput.value = '';
+            endDateInput.style.border = '2px solid red';
+          }
+        }
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('input', function (e) {
+      if (e.target.matches('input[required], textarea[required]')) {
+        clearFieldError(e.target);
+      }
+    });
+
+    document.addEventListener('change', function (e) {
+      if (e.target.matches('select[required], input[type="date"][required]')) {
+        clearFieldError(e.target);
+      }
+    });
+    setupDateValidation();
+
+    const observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.addedNodes.length) {
+          setupDateValidation();
+          validateDates();
         }
       });
-  
-      const duoplusForms = document.querySelectorAll('#form-duoplus form');
-  
-      duoplusForms.forEach((form) => {
-        const relationshipField = form.querySelector('.relationship-wrapper');
-        if (relationshipField) {
-          relationshipField.remove();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+  });
+
+  function customizeInsuranceForms() {
+    const individualForms = document.querySelectorAll('#form-individual form');
+    individualForms.forEach((form) => {
+      const relationshipField = form.querySelector('.relationship-wrapper');
+      if (relationshipField) {
+        relationshipField.remove();
+      }
+    });
+
+    const duoplusForms = document.querySelectorAll('#form-duoplus form');
+
+    duoplusForms.forEach((form) => {
+      const relationshipField = form.querySelector('.relationship-wrapper');
+      if (relationshipField) {
+        relationshipField.remove();
+      }
+
+      const labelSpan = form
+        .closest('.form-insurance__section-wrapper')
+        ?.querySelector('.form-insurance__label-wrapper span:nth-child(2)');
+
+      if (labelSpan && labelSpan.textContent.trim().toLowerCase() === 'traveler') {
+        const toRemoveFields = [
+          'input[name="Mobile Phone"]',
+          'input[name="Email"]',
+          'input[name="Additional Email"]',
+          'input[name="City"]',
+          'input[name="Postal Code"]',
+          'textarea[name="Address"]',
+        ];
+
+        toRemoveFields.forEach((selector) => {
+          const el = form.querySelector(selector);
+          if (el) {
+            const wrapper = el.closest('.form-insurance__field');
+            if (wrapper) {
+              wrapper.remove();
+            }
+          }
+        });
+      }
+    });
+
+    const familySections = document.querySelectorAll('[data-section-id^="form-family"]');
+
+    familySections.forEach((section) => {
+      const forms = section.querySelectorAll('form');
+
+      forms.forEach((form, index) => {
+        if (index === 0) {
+          const rel = form.querySelector('.relationship-wrapper');
+          if (rel) rel.remove();
         }
-  
-        const labelSpan = form
-          .closest('.form-insurance__section-wrapper')
-          ?.querySelector('.form-insurance__label-wrapper span:nth-child(2)');
-  
-        if (labelSpan && labelSpan.textContent.trim().toLowerCase() === 'traveler') {
-          const toRemoveFields = [
+
+        if (index === 1) {
+          const toRemove = [
             'input[name="Mobile Phone"]',
             'input[name="Email"]',
             'input[name="Additional Email"]',
@@ -1404,478 +1306,710 @@ document.addEventListener('DOMContentLoaded', function() {
             'input[name="Postal Code"]',
             'textarea[name="Address"]',
           ];
-  
-          toRemoveFields.forEach((selector) => {
+          toRemove.forEach((selector) => {
             const el = form.querySelector(selector);
             if (el) {
               const wrapper = el.closest('.form-insurance__field');
-              if (wrapper) {
-                wrapper.remove();
-              }
+              if (wrapper) wrapper.remove();
+            }
+          });
+        }
+
+        if (index >= 2) {
+          const toRemove = [
+            'input[name="Mobile Phone"]',
+            'input[name="Email"]',
+            'input[name="Additional Email"]',
+            'input[name="City"]',
+            'input[name="Postal Code"]',
+            'textarea[name="Address"]',
+            '.relationship-wrapper',
+          ];
+          toRemove.forEach((selector) => {
+            const el = form.querySelector(selector);
+            if (el) {
+              const wrapper = el.closest('.form-insurance__field') || el;
+              wrapper.remove();
             }
           });
         }
       });
-  
-      // --- FAMILY SECTION ---
-      const familySections = document.querySelectorAll('[data-section-id^="form-family"]');
-  
-      familySections.forEach((section) => {
-        const forms = section.querySelectorAll('form');
-  
-        forms.forEach((form, index) => {
-          // Urutan pertama: hapus relationship saja
-          if (index === 0) {
-            const rel = form.querySelector('.relationship-wrapper');
-            if (rel) rel.remove();
-          }
-  
-          // Urutan kedua: hapus sebagian field
-          if (index === 1) {
-            const toRemove = [
-              'input[name="Mobile Phone"]',
-              'input[name="Email"]',
-              'input[name="Additional Email"]',
-              'input[name="City"]',
-              'input[name="Postal Code"]',
-              'textarea[name="Address"]',
-            ];
-            toRemove.forEach((selector) => {
-              const el = form.querySelector(selector);
-              if (el) {
-                const wrapper = el.closest('.form-insurance__field');
-                if (wrapper) wrapper.remove();
-              }
-            });
-          }
-  
-          // Urutan ketiga dan seterusnya: hapus semua seperti urutan 2 + relationship
-          if (index >= 2) {
-            const toRemove = [
-              'input[name="Mobile Phone"]',
-              'input[name="Email"]',
-              'input[name="Additional Email"]',
-              'input[name="City"]',
-              'input[name="Postal Code"]',
-              'textarea[name="Address"]',
-              '.relationship-wrapper',
-            ];
-            toRemove.forEach((selector) => {
-              const el = form.querySelector(selector);
-              if (el) {
-                const wrapper = el.closest('.form-insurance__field') || el;
-                wrapper.remove();
-              }
-            });
-          }
-        });
-      });
-    }
-  
-    // Jalankan setelah render form selesai
-    window.addEventListener('DOMContentLoaded', () => {
-      customizeInsuranceForms();
     });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    customizeInsuranceForms();
+  });
 </script>
 
 <script>
-    function getSectionSelector(section, variantId) {
-      if (section === 'Duo Plus') {
-        return `#duoplus-section-${variantId}`;
-      }
-      if (section === 'Family') {
-        return `[data-product-id="${variantId}"]`;
-      }
-      return `#form-${section?.toLowerCase()}`;
+  function clearFieldError(field) {
+    if (!field) return;
+
+    const wrapper =
+      field.closest('.form-insurance__field') ||
+      field.closest('.relationship-wrapper') ||
+      field.closest('.form-insurance__wrapper') ||
+      field.parentElement;
+
+    if (!wrapper) return;
+
+    field.classList.remove('field-error');
+    wrapper.classList.remove('field-error');
+
+    const span = wrapper.querySelector('.error-message');
+    if (span) span.textContent = '';
+  }
+
+  function setFieldError(field, message) {
+    if (!field) return;
+
+    const wrapper =
+      field.closest('.form-insurance__field') ||
+      field.closest('.relationship-wrapper') ||
+      field.closest('.form-insurance__wrapper') ||
+      field.parentElement;
+
+    if (!wrapper) return;
+
+    field.classList.add('field-error');
+    wrapper.classList.add('field-error');
+
+    let span = wrapper.querySelector('.error-message');
+    if (!span) {
+      span = document.createElement('span');
+      span.className = 'error-message';
+      wrapper.appendChild(span);
     }
-  
-    function showModalRequiredField() {
-      const modal = document.getElementById('dataIncompleteModal');
-      if (modal) {
-        modal.style.display = 'block'; // Menampilkan modal
-      }
+    span.textContent = message;
+  }
+
+  function setGlobalCheckboxError(message) {
+    const container = document.getElementById('confirmation-checkboxes');
+    if (!container) return;
+
+    container.classList.add('field-error');
+
+    let span = container.querySelector('.error-message');
+    if (!span) {
+      span = document.createElement('span');
+      span.className = 'error-message';
+      container.appendChild(span);
     }
-  
-    // Menutup modal saat tombol close ditekan
-    document.getElementById('closeModalBtn')?.addEventListener('click', function () {
-      const modal = document.getElementById('dataIncompleteModal');
-      if (modal) {
-        modal.style.display = 'none'; // Menutup modal
+    span.textContent = message;
+  }
+
+  function clearGlobalCheckboxError() {
+    const container = document.getElementById('confirmation-checkboxes');
+    if (!container) return;
+
+    container.classList.remove('field-error');
+    const span = container.querySelector('.error-message');
+    if (span) span.textContent = '';
+  }
+
+  function validateDates() {
+    const today = new Date().toISOString().split('T')[0];
+    const startDateInputs = document.querySelectorAll('input[name="Start Date"]');
+    const endDateInputs = document.querySelectorAll('input[name="End Date"]');
+    let isValid = true;
+
+    startDateInputs.forEach((input) => {
+      if (!input) return;
+      clearFieldError(input);
+      input.min = today;
+
+      if (input.value && input.value < today) {
+        isValid = false;
+        setFieldError(input, 'Start date cannot be in the past');
       }
     });
-  
-    async function handleCheckout() {
-      const isItineraryChecked = document.getElementById('check-itinerary-global').checked;
-  
-      if (!isItineraryChecked) {
-        alert('You must confirm that the flight itinerary is the same.');
-        return;
+
+    endDateInputs.forEach((input) => {
+      if (!input) return;
+      clearFieldError(input);
+      input.min = today;
+
+      const wrapper = input.closest('.form-insurance__wrapper');
+      const startDateInput = wrapper?.querySelector('input[name="Start Date"]');
+
+      if (input.value && input.value < today) {
+        isValid = false;
+        setFieldError(input, 'End date cannot be in the past');
       }
 
-        // ✅ Tambahkan validasi date di sini
-      if (!validateDates()) {
-        alert('Please check your dates. Start date and end date cannot be in the past, and end date cannot be earlier than start date.');
-        return;
+      if (startDateInput?.value && input.value && input.value < startDateInput.value) {
+        isValid = false;
+        setFieldError(input, 'End date cannot be earlier than start date');
+      }
+    });
+
+    return isValid;
+  }
+
+  function validateAllFields() {
+    const container = document.querySelector('.form-insurance__container');
+    if (!container) return true;
+
+    const requiredFields = container.querySelectorAll('input[required], select[required], textarea[required]');
+    let isValid = true;
+
+    requiredFields.forEach((field) => {
+      if (field.type === 'radio') return;
+      clearFieldError(field);
+    });
+
+    requiredFields.forEach((field) => {
+      if (field.type === 'radio') return;
+
+      const value = field.value.trim();
+      const fieldName = field.getAttribute('name') || field.id || '';
+      let fieldValid = true;
+      let message = '';
+
+      if (!value) {
+        fieldValid = false;
+        message = 'This field is required';
       }
 
-  
-      const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems')) || [];
-      const insuranceItems = ProductItems.filter((p) => p.category === 'Insurance');
-  
-      if (insuranceItems.length === 0) {
-        alert('No insurance product selected.');
-        return;
-      }
-  
-      const requiredFields = [...document.querySelectorAll('.form-insurance [required]')];
-      let allRequiredFieldsFilled = true;
-  
-      // Cek setiap field required
-      requiredFields.forEach((field) => {
-        if (field.value.trim() === '') {
-          field.style.border = '2px solid red'; // Menambahkan border merah
-          allRequiredFieldsFilled = false;
-        } else {
-          field.style.border = ''; // Menghapus border merah jika field sudah diisi
-        }
-      });
-  
-      if (!allRequiredFieldsFilled) {
-        showModalRequiredField(); // Menampilkan modal pop-up jika ada field yang kosong
-        return;
-      }
-  
-      const collectItineraryFromSectionTop = (sectionTopElement) => {
-        if (!sectionTopElement) return { startDate: '', endDate: '', destinationCountry: '' };
-  
-        const startDate = sectionTopElement.querySelector('#start-date')?.value || '';
-        const endDate = sectionTopElement.querySelector('#end-date')?.value || '';
-        const destCountry = sectionTopElement.querySelector('.itinerary-country-dropdown')?.value || '';
-  
-        return {
-          startDate,
-          endDate,
-          destinationCountry: destCountry,
-        };
-      };
-  
-      const collectFormData = (formList, section, itineraryMapPerForm, groupIndex = null) => {
-        return Array.from(formList).map((form, index) => {
-          const data = new FormData(form);
-  
-          const itinerary = itineraryMapPerForm?.[index] || { startDate: '', endDate: '', destinationCountry: '' };
-  
-          let title = '';
-          let relationshipValue = '';
-  
-          if (section === 'Individual') {
-            title = `Insured (Policy Holder) #${index + 1}`;
-          } else if (section === 'Duo Plus') {
-            title = index === 0 ? 'Insured (Policy Holder)' : 'Traveler';
-          } else if (section === 'Family') {
-            const selectedRelationship = form.querySelector('input[name="Relationship"]:checked');
-            relationshipValue = selectedRelationship ? selectedRelationship.value : '';
-  
-            if (index === 0) {
-              title =
-                groupIndex !== null && groupIndex > 0
-                  ? `Insured (Policy Holder) #${groupIndex + 1}`
-                  : 'Insured (Policy Holder)';
+      if (fieldValid && value) {
+        switch (fieldName) {
+          case 'First Name':
+          case 'Last Name':
+          case 'Place Of Birth':
+          case 'City':
+            if (!/^[A-Za-z\s'.-]{2,}$/.test(value)) {
+              fieldValid = false;
+              message = 'Only letters and spaces, minimum 2 characters';
+            }
+            break;
+
+          case 'Day':
+            if (!/^\d{1,2}$/.test(value) || Number(value) < 1 || Number(value) > 31) {
+              fieldValid = false;
+              message = 'Day must be between 1 and 31';
+            }
+            break;
+
+          case 'Month':
+            if (!/^\d{1,2}$/.test(value) || Number(value) < 1 || Number(value) > 12) {
+              fieldValid = false;
+              message = 'Month must be between 1 and 12';
+            }
+            break;
+
+          case 'Year':
+            if (!/^\d{4}$/.test(value) || Number(value) < 1900 || Number(value) > 9999) {
+              fieldValid = false;
+              message = 'Year must be 4 digits (1900–9999)';
             } else {
-              title = relationshipValue ? `Traveler - ${relationshipValue}` : 'Traveler';
-            }
-          }
-  
-          return {
-            groupIndex,
-            title,
-            salutation: data.get('Salutation'),
-            firstName: data.get('First Name'),
-            lastName: data.get('Last Name'),
-            placeOfBirth: data.get('Place Of Birth'),
-            day: data.get('Day'),
-            month: data.get('Month'),
-            year: data.get('Year'),
-            passportNumber: data.get('Passport Number'),
-            mobilePhone: data.get('Mobile Phone'),
-            email: data.get('Email'),
-            city: data.get('City'),
-            postalCode: data.get('Postal Code'),
-            address: data.get('Address'),
-            relationship: relationshipValue,
-            startDate: itinerary.startDate,
-            endDate: itinerary.endDate,
-            destinationCountry: itinerary.destinationCountry,
-          };
-        });
-      };
-  
-      /**
-      * Format all insured data into attribute string
-      *
-      * For Family:
-      * - itinerary printed ONCE per group
-      *
-      * For others:
-      * - itinerary printed per block if no global
-      */
-      const formatData = (dataArray, globalItinerary = null, section = null, itineraryPerGroup = []) => {
-        let result = '';
-  
-        if (section === 'Family' && itineraryPerGroup?.length) {
-          let currentGroup = 0;
-          let currentIndex = 0;
-  
-          while (currentIndex < dataArray.length) {
-            const groupItinerary = itineraryPerGroup[currentGroup] || {};
-            const groupLines = [];
-  
-            if (groupItinerary.startDate) groupLines.push(`Start Date: ${groupItinerary.startDate}`);
-            if (groupItinerary.endDate) groupLines.push(`End Date: ${groupItinerary.endDate}`);
-            if (groupItinerary.destinationCountry)
-              groupLines.push(`Destination Country: ${groupItinerary.destinationCountry}`);
-  
-            const groupForms = [];
-            while (currentIndex < dataArray.length && dataArray[currentIndex].groupIndex === currentGroup) {
-              const item = dataArray[currentIndex];
-              const lines = [];
-  
-              lines.push(item.title);
-              lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
-              lines.push(
-                `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
-              );
-              if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
-              if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
-              if (item.email) lines.push(`Email: ${item.email}`);
-              if (item.city || item.postalCode)
-                lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
-              if (item.address) lines.push(`Address: ${item.address}`);
-  
-              groupForms.push(lines.join('\n'));
-              currentIndex++;
-            }
-  
-            result += `${groupLines.join('\n')}\n\n${groupForms.join('\n\n')}\n\n`;
-  
-            currentGroup++;
-          }
-        } else {
-          let globalLines = [];
-          if (globalItinerary) {
-            if (globalItinerary.startDate) globalLines.push(`Start Date: ${globalItinerary.startDate}`);
-            if (globalItinerary.endDate) globalLines.push(`End Date: ${globalItinerary.endDate}`);
-            if (globalItinerary.destinationCountry)
-              globalLines.push(`Destination Country: ${globalItinerary.destinationCountry}`);
-          }
-  
-          const insuredBlocks = dataArray.map((item) => {
-            const lines = [];
-  
-            if (!globalItinerary) {
-              if (item.startDate) lines.push(`Start Date: ${item.startDate}`);
-              if (item.endDate) lines.push(`End Date: ${item.endDate}`);
-              if (item.destinationCountry) lines.push(`Destination Country: ${item.destinationCountry}`);
-            }
-  
-            lines.push(item.title);
-            lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
-            lines.push(
-              `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
-            );
-            if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
-            if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
-            if (item.email) lines.push(`Email: ${item.email}`);
-            if (item.city || item.postalCode)
-              lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
-            if (item.address) lines.push(`Address: ${item.address}`);
-  
-            return lines.join('\n');
-          });
-  
-          if (globalLines.length > 0) {
-            result += globalLines.join('\n') + '\n\n';
-          }
-  
-          result += insuredBlocks.join('\n\n');
-        }
-  
-        return result.trim();
-      };
-  
-      const attributes = {};
-      const groupedByVariant = {};
-  
-      ProductItems.forEach((product) => {
-        if (!groupedByVariant[product.variantId]) {
-          groupedByVariant[product.variantId] = [];
-        }
-        groupedByVariant[product.variantId].push(product);
-      });
-  
-      for (const variantId in groupedByVariant) {
-        const variantProducts = groupedByVariant[variantId];
-        const section = variantProducts[0].variantType;
-        const variantTitle = variantProducts[0].variantTitle || '';
-  
-        if (variantProducts[0].category === 'Insurance') {
-          const sectionSelector = getSectionSelector(section, variantId);
-  
-          const wrappers = document.querySelectorAll(
-            `${sectionSelector} .form-insurance__section-wrapper[data-product-id="${variantId}"]`
-          );
-  
-          if (!wrappers.length) continue;
-  
-          let sameInsuranceChecked = false;
-          let globalItinerary = null;
-  
-          if (variantProducts[0].quantity > 1) {
-            const checkbox = document.querySelector(`${sectionSelector} input[id^="sameInsuranceCheckbox-"]`);
-            if (checkbox && checkbox.checked) {
-              sameInsuranceChecked = true;
-              const firstWrapper = wrappers[0];
-              const sectionTop = firstWrapper.querySelector('.form-insurance__section-top');
-              globalItinerary = collectItineraryFromSectionTop(sectionTop);
-            }
-          }
-  
-          if (section === 'Family') {
-            let allFamilyFormsData = [];
-            let itineraryPerGroup = [];
-  
-            wrappers.forEach((wrapper, groupIndex) => {
-              let itinerary = { startDate: '', endDate: '', destinationCountry: '' };
-  
-              if (sameInsuranceChecked && groupIndex > 0) {
-                itinerary = globalItinerary;
-              } else {
-                const sectionTop = wrapper.querySelector('.form-insurance__section-top');
-                itinerary = collectItineraryFromSectionTop(sectionTop);
+              const wrapper = field.closest('.form-insurance__wrapper');
+              const dayVal = wrapper?.querySelector('input[name="Day"]')?.value;
+              const monthVal = wrapper?.querySelector('input[name="Month"]')?.value;
+              if (dayVal && monthVal) {
+                const d = Number(dayVal);
+                const m = Number(monthVal);
+                const y = Number(value);
+                const dateObj = new Date(y, m - 1, d);
+                if (dateObj.getFullYear() !== y || dateObj.getMonth() !== m - 1 || dateObj.getDate() !== d) {
+                  fieldValid = false;
+                  message = 'Date of birth is not a valid calendar date';
+                }
               }
-  
-              itineraryPerGroup.push(itinerary);
-  
-              const forms = wrapper.querySelectorAll('form.form-family');
-  
-              const dataPerGroup = collectFormData(
-                forms,
-                section,
-                forms.length ? Array(forms.length).fill(itinerary) : [],
-                groupIndex
-              );
-  
-              allFamilyFormsData = allFamilyFormsData.concat(dataPerGroup);
-            });
-  
-            const attrKey = `Form ${section} - ${variantTitle}`;
-            attributes[attrKey] = formatData(allFamilyFormsData, null, section, itineraryPerGroup);
-            continue;
-          }
-  
-          let itineraryMapPerForm = [];
-  
-          if (!sameInsuranceChecked) {
-            wrappers.forEach((wrapper) => {
-              const sectionTop = wrapper.querySelector('.form-insurance__section-top');
-              itineraryMapPerForm.push(collectItineraryFromSectionTop(sectionTop));
-            });
-          }
-  
-          const forms = document.querySelectorAll(
-            `${sectionSelector} .form-insurance__section-wrapper[data-product-id="${variantId}"] form`
-          );
-  
-          console.log(`[Checkout] Found ${forms.length} forms for variantId ${variantId}`);
-  
-          const data = collectFormData(forms, section, sameInsuranceChecked ? null : itineraryMapPerForm);
-  
-          const attrKey = `Form ${section} - ${variantTitle}`;
-          attributes[attrKey] = formatData(data, sameInsuranceChecked ? globalItinerary : null);
+            }
+            break;
+
+          case 'Passport Number':
+            if (!/^[A-Za-z0-9]{6,20}$/.test(value)) {
+              fieldValid = false;
+              message = '6–20 characters, letters and numbers only';
+            }
+            break;
+
+          case 'Mobile Phone':
+            if (!/^[0-9]{8,15}$/.test(value)) {
+              fieldValid = false;
+              message = '8–15 digits, numbers only';
+            }
+            break;
+
+          case 'Email':
+          case 'Additional Email':
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+              fieldValid = false;
+              message = 'Invalid email format (example: name@mail.com)';
+            }
+            break;
+
+          case 'Postal Code':
+            if (!/^[0-9]{3,10}$/.test(value)) {
+              fieldValid = false;
+              message = 'Postal code must be 3–10 digits';
+            }
+            break;
+
+          case 'Address':
+            if (value.length < 5) {
+              fieldValid = false;
+              message = 'Address must be at least 5 characters';
+            }
+            break;
+
+          case 'Start Date':
+          case 'End Date':
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+              fieldValid = false;
+              message = 'Invalid date format (YYYY-MM-DD)';
+            }
+            break;
+
+          case 'Destination Country':
+            if (!value) {
+              fieldValid = false;
+              message = 'Please select destination country';
+            }
+            break;
+
+          default:
+            break;
         }
       }
-  
-      if (ProductItems.length === 1) {
-  const product = ProductItems[0];
-  const variantTitle = product.variantTitle || '';
-  const attrKey = `Form ${product.variantType} - ${variantTitle}`;
-  const queryData = {};
-  
-  if (product.category === 'Insurance' && attributes[attrKey]) {
-    queryData[attrKey] = attributes[attrKey];
-  }
-  
-  const queryParams = Object.entries(queryData)
-    .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
-    .join('&');
-  
-  let cartItems = [`${product.variantId}:${product.quantity}`];
-  
-  // ✅ Tambahkan addonItems jika ada
-  if (Array.isArray(product.addonItems)) {
-    product.addonItems.forEach((addon) => {
-      if (addon.variantId && addon.quantity) {
-        cartItems.push(`${addon.variantId}:${addon.quantity}`);
+
+      if (!fieldValid) {
+        isValid = false;
+        setFieldError(field, message || 'Invalid value');
       }
     });
+
+    const radioRequired = container.querySelectorAll('input[type="radio"][required]');
+    const radioGroups = new Set();
+    radioRequired.forEach((r) => radioGroups.add(r.name));
+
+    radioGroups.forEach((groupName) => {
+      const radios = container.querySelectorAll(`input[type="radio"][name="${groupName}"]`);
+      const anyChecked = Array.from(radios).some((r) => r.checked);
+      const anyRadio = radios[0];
+      if (!anyRadio) return;
+
+      const wrapper =
+        anyRadio.closest('.relationship-wrapper') ||
+        anyRadio.closest('.form-insurance__wrapper') ||
+        anyRadio.parentElement;
+
+      if (!anyChecked) {
+        isValid = false;
+        if (wrapper) {
+          wrapper.classList.add('field-error');
+          let span = wrapper.querySelector('.error-message');
+          if (!span) {
+            span = document.createElement('span');
+            span.className = 'error-message';
+            wrapper.appendChild(span);
+          }
+          span.textContent = 'Please choose one option';
+        }
+      } else if (wrapper) {
+        wrapper.classList.remove('field-error');
+        const span = wrapper.querySelector('.error-message');
+        if (span) span.textContent = '';
+      }
+    });
+    return isValid;
   }
-  
-  const checkoutUrl = `/cart/${cartItems.join(',')}${queryParams ? `?${queryParams}` : ''}`;
-  window.location.href = checkoutUrl;
-  return;
+
+  function getSectionSelector(section, variantId) {
+    if (section === 'Duo Plus') return `#duoplus-section-${variantId}`;
+    if (section === 'Family') return `[data-product-id="${variantId}"]`;
+    return `#form-${section?.toLowerCase()}`;
   }
-  
-  
-      try {
-        await fetch('/cart/clear.js', {
+
+  function collectItineraryFromSectionTop(sectionTopElement) {
+    if (!sectionTopElement) {
+      return { startDate: '', endDate: '', destinationCountry: '' };
+    }
+
+    const startDate = sectionTopElement.querySelector('#start-date')?.value || '';
+    const endDate = sectionTopElement.querySelector('#end-date')?.value || '';
+    const destCountry = sectionTopElement.querySelector('.itinerary-country-dropdown')?.value || '';
+
+    return {
+      startDate,
+      endDate,
+      destinationCountry: destCountry,
+    };
+  }
+
+  function collectFormData(formList, section, itineraryMapPerForm, groupIndex = null) {
+    return Array.from(formList).map((form, index) => {
+      const data = new FormData(form);
+      const itinerary = itineraryMapPerForm?.[index] || { startDate: '', endDate: '', destinationCountry: '' };
+
+      let title = '';
+      let relationshipValue = '';
+
+      if (section === 'Individual') {
+        title = `Insured (Policy Holder) #${index + 1}`;
+      } else if (section === 'Duo Plus') {
+        title = index === 0 ? 'Insured (Policy Holder)' : 'Traveler';
+      } else if (section === 'Family') {
+        const selectedRelationship = form.querySelector('input[name="Relationship"]:checked');
+        relationshipValue = selectedRelationship ? selectedRelationship.value : '';
+
+        if (index === 0) {
+          title =
+            groupIndex !== null && groupIndex > 0
+              ? `Insured (Policy Holder) #${groupIndex + 1}`
+              : 'Insured (Policy Holder)';
+        } else {
+          title = relationshipValue ? `Traveler - ${relationshipValue}` : 'Traveler';
+        }
+      }
+
+      return {
+        groupIndex,
+        title,
+        salutation: data.get('Salutation'),
+        firstName: data.get('First Name'),
+        lastName: data.get('Last Name'),
+        placeOfBirth: data.get('Place Of Birth'),
+        day: data.get('Day'),
+        month: data.get('Month'),
+        year: data.get('Year'),
+        passportNumber: data.get('Passport Number'),
+        mobilePhone: data.get('Mobile Phone'),
+        email: data.get('Email'),
+        city: data.get('City'),
+        postalCode: data.get('Postal Code'),
+        address: data.get('Address'),
+        relationship: relationshipValue,
+        startDate: itinerary.startDate,
+        endDate: itinerary.endDate,
+        destinationCountry: itinerary.destinationCountry,
+      };
+    });
+  }
+
+  function formatData(dataArray, globalItinerary = null, section = null, itineraryPerGroup = []) {
+    let result = '';
+
+    if (section === 'Family' && itineraryPerGroup?.length) {
+      let currentGroup = 0;
+      let currentIndex = 0;
+
+      while (currentIndex < dataArray.length) {
+        const groupItinerary = itineraryPerGroup[currentGroup] || {};
+        const groupLines = [];
+
+        if (groupItinerary.startDate) groupLines.push(`Start Date: ${groupItinerary.startDate}`);
+        if (groupItinerary.endDate) groupLines.push(`End Date: ${groupItinerary.endDate}`);
+        if (groupItinerary.destinationCountry)
+          groupLines.push(`Destination Country: ${groupItinerary.destinationCountry}`);
+
+        const groupForms = [];
+        while (currentIndex < dataArray.length && dataArray[currentIndex].groupIndex === currentGroup) {
+          const item = dataArray[currentIndex];
+          const lines = [];
+
+          lines.push(item.title);
+          lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
+          lines.push(
+            `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
+          );
+          if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
+          if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
+          if (item.email) lines.push(`Email: ${item.email}`);
+          if (item.city || item.postalCode)
+            lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
+          if (item.address) lines.push(`Address: ${item.address}`);
+
+          groupForms.push(lines.join('\n'));
+          currentIndex++;
+        }
+
+        result += `${groupLines.join('\n')}\n\n${groupForms.join('\n\n')}\n\n`;
+        currentGroup++;
+      }
+    } else {
+      let globalLines = [];
+      if (globalItinerary) {
+        if (globalItinerary.startDate) globalLines.push(`Start Date: ${globalItinerary.startDate}`);
+        if (globalItinerary.endDate) globalLines.push(`End Date: ${globalItinerary.endDate}`);
+        if (globalItinerary.destinationCountry)
+          globalLines.push(`Destination Country: ${globalItinerary.destinationCountry}`);
+      }
+
+      const insuredBlocks = dataArray.map((item) => {
+        const lines = [];
+
+        if (!globalItinerary) {
+          if (item.startDate) lines.push(`Start Date: ${item.startDate}`);
+          if (item.endDate) lines.push(`End Date: ${item.endDate}`);
+          if (item.destinationCountry) lines.push(`Destination Country: ${item.destinationCountry}`);
+        }
+
+        lines.push(item.title);
+        lines.push(`Full Name: ${[item.salutation, item.firstName, item.lastName].filter(Boolean).join(' ')}`);
+        lines.push(
+          `Place Of Birth: ${item.placeOfBirth} - ${[item.day, item.month, item.year].filter(Boolean).join('-')}`
+        );
+        if (item.passportNumber) lines.push(`Passport Number: ${item.passportNumber}`);
+        if (item.mobilePhone) lines.push(`Mobile Phone: ${item.mobilePhone}`);
+        if (item.email) lines.push(`Email: ${item.email}`);
+        if (item.city || item.postalCode) lines.push(`City: ${[item.city, item.postalCode].filter(Boolean).join(' ')}`);
+        if (item.address) lines.push(`Address: ${item.address}`);
+
+        return lines.join('\n');
+      });
+
+      if (globalLines.length > 0) {
+        result += globalLines.join('\n') + '\n\n';
+      }
+
+      result += insuredBlocks.join('\n\n');
+    }
+
+    return result.trim();
+  }
+
+  async function handleCheckout() {
+    const itineraryCheckbox = document.getElementById('check-itinerary-global');
+
+    clearGlobalCheckboxError();
+
+    if (!itineraryCheckbox.checked) {
+      setGlobalCheckboxError('Please confirm this before continuing.');
+      itineraryCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      itineraryCheckbox.focus();
+      return;
+    }
+
+    if (!validateDates()) {
+      setGlobalCheckboxError('Please check your travel dates. Some of them are not valid.');
+      const firstDateError = document.querySelector(
+        'input[name="Start Date"].field-error, input[name="End Date"].field-error'
+      );
+      if (firstDateError) {
+        firstDateError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstDateError.focus();
+      }
+      return;
+    }
+
+    const isValid = validateAllFields();
+    if (!isValid) {
+      const firstError =
+        document.querySelector('.field-error input, .field-error select, .field-error textarea') ||
+        document.querySelector('.field-error');
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (firstError.focus) firstError.focus();
+      }
+      return;
+    }
+
+    const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems')) || [];
+    const insuranceItems = ProductItems.filter((p) => p.category === 'Insurance');
+
+    if (insuranceItems.length === 0) {
+      setGlobalCheckboxError('No insurance product selected.');
+      return;
+    }
+
+    const attributes = {};
+    const groupedByVariant = {};
+
+    ProductItems.forEach((product) => {
+      if (!groupedByVariant[product.variantId]) {
+        groupedByVariant[product.variantId] = [];
+      }
+      groupedByVariant[product.variantId].push(product);
+    });
+
+    for (const variantId in groupedByVariant) {
+      const variantProducts = groupedByVariant[variantId];
+      const section = variantProducts[0].variantType;
+      const variantTitle = variantProducts[0].variantTitle || '';
+
+      if (variantProducts[0].category === 'Insurance') {
+        const sectionSelector = getSectionSelector(section, variantId);
+
+        const wrappers = document.querySelectorAll(
+          `${sectionSelector} .form-insurance__section-wrapper[data-product-id="${variantId}"]`
+        );
+
+        if (!wrappers.length) continue;
+
+        let sameInsuranceChecked = false;
+        let globalItinerary = null;
+
+        if (variantProducts[0].quantity > 1) {
+          const checkbox = document.querySelector(`${sectionSelector} input[id^="sameInsuranceCheckbox-"]`);
+          if (checkbox && checkbox.checked) {
+            sameInsuranceChecked = true;
+            const firstWrapper = wrappers[0];
+            const sectionTop = firstWrapper.querySelector('.form-insurance__section-top');
+            globalItinerary = collectItineraryFromSectionTop(sectionTop);
+          }
+        }
+
+        if (section === 'Family') {
+          let allFamilyFormsData = [];
+          let itineraryPerGroup = [];
+
+          wrappers.forEach((wrapper, groupIndex) => {
+            let itinerary = { startDate: '', endDate: '', destinationCountry: '' };
+
+            if (sameInsuranceChecked && groupIndex > 0) {
+              itinerary = globalItinerary;
+            } else {
+              const sectionTop = wrapper.querySelector('.form-insurance__section-top');
+              itinerary = collectItineraryFromSectionTop(sectionTop);
+            }
+
+            itineraryPerGroup.push(itinerary);
+
+            const forms = wrapper.querySelectorAll('form.form-family');
+
+            const dataPerGroup = collectFormData(
+              forms,
+              section,
+              forms.length ? Array(forms.length).fill(itinerary) : [],
+              groupIndex
+            );
+
+            allFamilyFormsData = allFamilyFormsData.concat(dataPerGroup);
+          });
+
+          const attrKey = `Form ${section} - ${variantTitle}`;
+          attributes[attrKey] = formatData(allFamilyFormsData, null, section, itineraryPerGroup);
+          continue;
+        }
+
+        let itineraryMapPerForm = [];
+
+        if (!sameInsuranceChecked) {
+          wrappers.forEach((wrapper) => {
+            const sectionTop = wrapper.querySelector('.form-insurance__section-top');
+            itineraryMapPerForm.push(collectItineraryFromSectionTop(sectionTop));
+          });
+        }
+
+        const forms = document.querySelectorAll(
+          `${sectionSelector} .form-insurance__section-wrapper[data-product-id="${variantId}"] form`
+        );
+
+        const data = collectFormData(forms, section, sameInsuranceChecked ? null : itineraryMapPerForm);
+
+        const attrKey = `Form ${section} - ${variantTitle}`;
+        attributes[attrKey] = formatData(data, sameInsuranceChecked ? globalItinerary : null);
+      }
+    }
+
+    if (ProductItems.length === 1) {
+      const product = ProductItems[0];
+      const variantTitle = product.variantTitle || '';
+      const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+      const queryData = {};
+
+      if (product.category === 'Insurance' && attributes[attrKey]) {
+        queryData[attrKey] = attributes[attrKey];
+      }
+
+      const queryParams = Object.entries(queryData)
+        .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
+        .join('&');
+
+      let cartItems = [`${product.variantId}:${product.quantity}`];
+
+      if (Array.isArray(product.addonItems)) {
+        product.addonItems.forEach((addon) => {
+          if (addon.variantId && addon.quantity) {
+            cartItems.push(`${addon.variantId}:${addon.quantity}`);
+          }
+        });
+      }
+
+      const checkoutUrl = `/cart/${cartItems.join(',')}${queryParams ? `?${queryParams}` : ''}`;
+      window.location.href = checkoutUrl;
+      return;
+    }
+
+    try {
+      await fetch('/cart/clear.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      for (const product of ProductItems) {
+        const variantTitle = product.variantTitle || '';
+        const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+
+        let itemAttributes = {};
+        if (product.category === 'Insurance' && attributes[attrKey]) {
+          itemAttributes = { [attrKey]: attributes[attrKey] };
+        }
+
+        await fetch('/cart/add.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-        });
-  
-        for (const product of ProductItems) {
-          const variantTitle = product.variantTitle || '';
-          const attrKey = `Form ${product.variantType} - ${variantTitle}`;
-  
-          let itemAttributes = {};
-  
-          if (product.category === 'Insurance' && attributes[attrKey]) {
-            itemAttributes = { [attrKey]: attributes[attrKey] };
-          }
-  
-          console.log('🛒 Adding to cart:', {
+          body: JSON.stringify({
             id: product.variantId,
             quantity: product.quantity,
             attributes: itemAttributes,
-          });
-  
-          await fetch('/cart/add.js', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id: product.variantId,
-              quantity: product.quantity,
-              attributes: itemAttributes,
-            }),
-          });
-        }
-  
-        window.location.href = '/checkout';
-      } catch (error) {
-        console.error('Checkout error:', error);
-        alert('There was an error during checkout. Please try again.');
+          }),
+        });
       }
+
+      window.location.href = '/checkout';
+    } catch (error) {
+      console.error('Checkout error:', error);
+      setGlobalCheckboxError('There was an error during checkout. Please try again.');
     }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('change', function (e) {
+      if (e.target.name === 'Start Date') {
+        const startDate = e.target.value;
+        const wrapper = e.target.closest('.form-insurance__wrapper');
+        const endDateInput = wrapper?.querySelector('input[name="End Date"]');
+
+        if (endDateInput && startDate) {
+          endDateInput.min = startDate;
+
+          if (endDateInput.value && endDateInput.value < startDate) {
+            endDateInput.value = '';
+            setFieldError(endDateInput, 'End date cannot be earlier than start date');
+          } else {
+            clearFieldError(endDateInput);
+          }
+        }
+      }
+    });
+
+    const itineraryCheckbox = document.getElementById('check-itinerary-global');
+    const checkoutBtn = document.getElementById('checkout-button');
+
+    if (itineraryCheckbox && checkoutBtn) {
+      checkoutBtn.disabled = !itineraryCheckbox.checked;
+
+      itineraryCheckbox.addEventListener('change', () => {
+        clearGlobalCheckboxError();
+        checkoutBtn.disabled = !itineraryCheckbox.checked;
+      });
+    }
+  });
 </script>
 
 {% schema %}
-  {
-    "name": "form insurance",
-    "settings": [],
-    "presets": [
-      {
-        "name": "form insurance",
-        "category": "Custom"
-      }
-    ]
-  }
+{
+  "name": "form insurance",
+  "settings": [],
+  "presets": [
+    {
+      "name": "form insurance",
+      "category": "Custom"
+    }
+  ]
+}
 {% endschema %}

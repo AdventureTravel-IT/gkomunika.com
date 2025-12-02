@@ -374,6 +374,25 @@ width: 100%;
       SEM: 'Top_Up_D',
     };
 
+
+    function formatDateLong(str) {
+      if (!str || str === "-" || str.length < 8) return "-";
+
+      const year = str.slice(0, 4);
+      const month = str.slice(4, 6);
+      const day = str.slice(6, 8);
+
+      const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+
+      const monthName = monthNames[Number(month) - 1];
+
+      return `${day} ${monthName} ${year}`;
+    }
+
+
     function detectVendor(iccid) {
       return prefixVendorMap.find((i) => iccid.startsWith(i.prefix))?.vendor || null;
     }
@@ -548,7 +567,7 @@ width: 100%;
           const quotaList = usage.quotaList || [];
           const productName = data.product_name || "-";
 
-          // Map status sesuai permintaan
+          // Mapping status
           const statusMap = {
             "0": "No Package.",
             "1": "Your eSIM hasn’t been activated yet.",
@@ -557,7 +576,6 @@ width: 100%;
             "4": "No Package."
           };
 
-          // Ambil quota utama (paket aktif / last)
           const q = quotaList[0] || {};
           const statusCode = q.status || "0";
           const statusText = statusMap[statusCode] || "-";
@@ -566,16 +584,17 @@ width: 100%;
           let startDate = "-";
           let endDate = "-";
 
-          // Jika status == 3 → tampilkan semua informasi paket
-          if (statusCode === "3") {
+          // === RULE BARU ===
+          // Jika status == 2 (ACTIVE) → tampilkan data lengkap
+          if (statusCode === "2") {
             bundle = productName;
             startDate = q.effTime ? q.effTime.slice(0, 8) : "-";
             endDate = q.expTime ? q.expTime.slice(0, 8) : "-";
           }
 
+          // Format usage
           const used = formatDataUsage(q.usedQuota || 0, vendor);
 
-          // Format tanggal pendek
           const formatDateShort = (str) =>
             (!str || str === "-") ? "-" :
               `${str.slice(0, 4)}-${str.slice(4, 6)}-${str.slice(6, 8)}`;
@@ -586,8 +605,8 @@ width: 100%;
         <h3>SIM Card Information</h3>
         <div class="esim-information__wrapper"><p>Status</p><span>${statusText}</span></div>
         <div class="esim-information__wrapper"><p>Your Bundle</p><span>${bundle}</span></div>
-        <div class="esim-information__wrapper"><p>Active Date</p><span>${formatDateShort(startDate)}</span></div>
-        <div class="esim-information__wrapper"><p>End Date</p><span>${formatDateShort(endDate)}</span></div>
+        <div class="esim-information__wrapper"><p>Active Date</p><span>${formatDateLong(startDate)}</span></div>
+        <div class="esim-information__wrapper"><p>End Date</p><span>${formatDateLong(endDate)}</span></div>
       </div>
     </div>
     <div class="check-data-usage__usage-content">

@@ -1,259 +1,259 @@
 {% style %}
-  .invalid-popup {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
+.invalid-popup {
+display: none;
+position: fixed;
+z-index: 9999;
+inset: 0;
+background-color: rgba(0, 0, 0, 0.5);
+}
 
-  .invalid-popup__content {
-    background-color: var(--color-neutral);
-    padding: 30px;
-    max-width: 450px;
-    width: 100%;
-    border-radius: 10px;
-    text-align: center;
-    color: var(--color-primary);
-    font-size: var(--font-extra-large);
-    margin: 50px auto;
-  }
+.invalid-popup__content {
+background-color: var(--color-neutral);
+padding: 30px;
+max-width: 450px;
+width: 100%;
+border-radius: 10px;
+text-align: center;
+color: var(--color-primary);
+font-size: var(--font-extra-large);
+margin: 50px auto;
+}
 
-  .invalid-popup__content h2 {
-    font-size: 34px;
-    font-weight: bold;
-    line-height: 1.5;
-    margin: 10px 0;
-    color: var(--color-primary);
-  }
+.invalid-popup__content h2 {
+font-size: 34px;
+font-weight: bold;
+line-height: 1.5;
+margin: 10px 0;
+color: var(--color-primary);
+}
 
-  .invalid-popup__button {
-    display: flex;
-    gap: 15px;
-  }
+.invalid-popup__button {
+display: flex;
+gap: 15px;
+}
 
-  .invalid-popup__button button,
-  #invalid-popup__button-hide,
-  #btn-topup__contact-button,
-  #btn-topup__buy-button {
-    width: 100%;
-    padding: 15px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    font-size: var(--font-large);
-  }
+.invalid-popup__button button,
+#invalid-popup__button-hide,
+#btn-topup__contact-button,
+#btn-topup__buy-button {
+width: 100%;
+padding: 15px;
+border-radius: 10px;
+border: none;
+cursor: pointer;
+font-size: var(--font-large);
+}
 
-  #invalid-popup__buy-button,
-  #btn-topup__buy-button {
-    background-color: var(--color-secondary);
-    color: var(--color-neutral);
-  }
+#invalid-popup__buy-button,
+#btn-topup__buy-button {
+background-color: var(--color-secondary);
+color: var(--color-neutral);
+}
 
-  #invalid-popup__contact-button,
-  #btn-topup__contact-button {
-    background-color: #25d366;
-    color: var(--color-neutral);
-  }
+#invalid-popup__contact-button,
+#btn-topup__contact-button {
+background-color: #25d366;
+color: var(--color-neutral);
+}
 
-  #invalid-popup__button-hide {
-    margin-top: 15px;
-    background-color: var(--color-primary);
-    color: var(--color-neutral);
-  }
+#invalid-popup__button-hide {
+margin-top: 15px;
+background-color: var(--color-primary);
+color: var(--color-neutral);
+}
 
-  #iccid {
-    padding: 15px;
-    border-radius: 15px;
-    width: 100%;
-    border: 1px solid var(--color-primary);
-    background-color: var(--color-neutral);
-    color: var(--color-primary);
-    font-size: var(--font-large);
-  }
+#iccid {
+padding: 15px;
+border-radius: 15px;
+width: 100%;
+border: 1px solid var(--color-primary);
+background-color: var(--color-neutral);
+color: var(--color-primary);
+font-size: var(--font-large);
+}
 
-  #iccid:focus {
-    outline: none;
-  }
+#iccid:focus {
+outline: none;
+}
 
-  #iccid::placeholder {
-    color: var(--color-primary);
-  }
+#iccid::placeholder {
+color: var(--color-primary);
+}
 
-  #check-iccid {
-    padding: 15px;
-    border-radius: 15px;
-    width: 100%;
-    border: 1px solid var(--color-primary);
-    background-color: var(--color-primary);
-    color: var(--color-neutral);
-    font-size: var(--font-large);
-    font-weight: bold;
-    margin-top: 20px;
-    cursor: pointer;
-  }
+#check-iccid {
+padding: 15px;
+border-radius: 15px;
+width: 100%;
+border: 1px solid var(--color-primary);
+background-color: var(--color-primary);
+color: var(--color-neutral);
+font-size: var(--font-large);
+font-weight: bold;
+margin-top: 20px;
+cursor: pointer;
+}
 
-  .check-data-usage__container {
-    margin: 0 auto;
-    max-width: 1920px;
-  }
+.check-data-usage__container {
+margin: 0 auto;
+max-width: 1920px;
+}
 
-  .check-data-usage__wrapper {
-    padding: 20px 20%;
-  }
+.check-data-usage__wrapper {
+padding: 20px 20%;
+}
 
-  .btn-topup-information {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-  }
+.btn-topup-information {
+display: flex;
+gap: 10px;
+margin-top: 15px;
+}
 
-  .check-data-usage__esim-information,
-  .check-data-usage__usage-content {
-    background-color: var(--color-neutral);
-    border-radius: 15px;
-    padding: 15px;
-    color: var(--color-primary);
-    margin-top: 20px;
-    font-size: var(--font-large);
-  }
+.check-data-usage__esim-information,
+.check-data-usage__usage-content {
+background-color: var(--color-neutral);
+border-radius: 15px;
+padding: 15px;
+color: var(--color-primary);
+margin-top: 20px;
+font-size: var(--font-large);
+}
 
-  .button-topup__usage-wrapper {
-    padding: 15px 0;
-    border-radius: 15px;
-    background-color: var(--color-neutral);
-    margin-top: 20px;
-    font-size: var(--font-extra-large);
-    color: var(--color-primary);
-    text-align: center;
-  }
+.button-topup__usage-wrapper {
+padding: 15px 0;
+border-radius: 15px;
+background-color: var(--color-neutral);
+margin-top: 20px;
+font-size: var(--font-extra-large);
+color: var(--color-primary);
+text-align: center;
+}
 
-  .check-data-usage__esim-information {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    text-align: center;
-  }
+.check-data-usage__esim-information {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 10px;
+text-align: center;
+}
 
-  .check-data-usage__esim-information h3,
-  .check-data-usage__usage-content h2,
-  .check-data-usage__usage-content h3 {
-    color: var(--color-primary);
-    font-weight: bold;
-    margin: 10px 0;
-    line-height: 1.3;
-  }
+.check-data-usage__esim-information h3,
+.check-data-usage__usage-content h2,
+.check-data-usage__usage-content h3 {
+color: var(--color-primary);
+font-weight: bold;
+margin: 10px 0;
+line-height: 1.3;
+}
 
-  .esim-information__wrapper p {
-    margin: 0;
-    line-height: 1.3;
-  }
+.esim-information__wrapper p {
+margin: 0;
+line-height: 1.3;
+}
 
-  .esim-information__wrapper span {
-    font-weight: bold;
-  }
+.esim-information__wrapper span {
+font-weight: bold;
+}
 
-  .data-usage__wrapper {
-    display: flex;
-    justify-content: space-between;
-  }
+.data-usage__wrapper {
+display: flex;
+justify-content: space-between;
+}
 
-  .data-usage__wrapper p {
-    margin: 0;
-    width: 150px;
-  }
+.data-usage__wrapper p {
+margin: 0;
+width: 150px;
+}
 
-  .data-usage__wrapper p:nth-child(3) {
-    justify-content: flex-end;
-  }
+.data-usage__wrapper p:nth-child(3) {
+justify-content: flex-end;
+}
 
-  .data-usage__wrapper p:nth-child(2) {
-    text-align: center;
-  }
+.data-usage__wrapper p:nth-child(2) {
+text-align: center;
+}
 
-  .check-data-usage__total-usage {
-    margin-bottom: 15px;
-  }
+.check-data-usage__total-usage {
+margin-bottom: 15px;
+}
 
-  .total-data-usage__wrapper {
-    padding: 15px;
-    border-radius: 15px;
-    border: 1px solid var(--color-border);
-    display: flex;
-    width: 30%;
-    justify-content: space-between;
-    margin-bottom: 15px;
-  }
+.total-data-usage__wrapper {
+padding: 15px;
+border-radius: 15px;
+border: 1px solid var(--color-border);
+display: flex;
+width: 30%;
+justify-content: space-between;
+margin-bottom: 15px;
+}
 
-  .total-data-usage__wrapper p {
-    margin: 0;
-  }
+.total-data-usage__wrapper p {
+margin: 0;
+}
 
-  .check-data-usage__header p {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--color-primary);
-    margin: 0;
-  }
+.check-data-usage__header p {
+font-size: 24px;
+font-weight: bold;
+color: var(--color-primary);
+margin: 0;
+}
 
-  .check-data-usage__header span {
-    font-size: var(--font-large);
-    color: var(--color-primary);
-  }
-  .data-usage__wrapper p:nth-child(3) {
-    display: flex;
-    justify-content: flex-end;
-  }
-  input[type='number']::-webkit-outer-spin-button,
-  input[type='number']::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  /* Firefox */
-  input[type='number'] {
-    -moz-appearance: textfield;
-  }
+.check-data-usage__header span {
+font-size: var(--font-large);
+color: var(--color-primary);
+}
+.data-usage__wrapper p:nth-child(3) {
+display: flex;
+justify-content: flex-end;
+}
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+/* Firefox */
+input[type='number'] {
+-moz-appearance: textfield;
+}
 
-  .top-up-plan-btn {
-    margin-top: 20px;
-    background-color: var(--color-primary);
-    color: var(--color-neutral);
-    border: none;
-    padding: 15px 30px;
-    border-radius: 10px;
-    font-size: var(--font-large);
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    font-weight: bold;
-  }
+.top-up-plan-btn {
+margin-top: 20px;
+background-color: var(--color-primary);
+color: var(--color-neutral);
+border: none;
+padding: 15px 30px;
+border-radius: 10px;
+font-size: var(--font-large);
+cursor: pointer;
+width: 100%;
+text-align: center;
+font-weight: bold;
+}
 
-  .info-tooltip {
-    background-color: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-    cursor: pointer;
+.info-tooltip {
+background-color: transparent;
+border: none;
+padding: 0;
+margin: 0;
+box-shadow: none;
+cursor: pointer;
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
+display: inline-flex;
+align-items: center;
+justify-content: center;
+}
 
-  .icon-info {
-    color: var(--color-primary);
-  }
+.icon-info {
+color: var(--color-primary);
+}
 
-  @media (max-width: 768px) {
-    .check-data-usage__wrapper {
-      padding: 20px 24px;
-    }
-    .total-data-usage__wrapper {
-      width: 100%;
-    }
-  }
+@media (max-width: 768px) {
+.check-data-usage__wrapper {
+padding: 20px 24px;
+}
+.total-data-usage__wrapper {
+width: 100%;
+}
+}
 {% endstyle %}
 
 <style>
@@ -263,6 +263,7 @@
     text-align: left;
     line-height: 1.35;
   }
+
   /* opsional: lebarkan tooltip biar nggak terlalu memanjang */
   [role~='tooltip'][data-microtip-bullets][data-microtip-size='large']::after {
     width: 24rem;
@@ -273,20 +274,16 @@
   <div class="check-data-usage__wrapper">
     <div class="check-data-usage__header">
       {% if template.suffix == 'check-data-usage' %}
-        <p>Check Data Usage</p>
+      <p>Check Data Usage</p>
       {% else %}
-        <p>Check Data Usage / Top Up</p>
+      <p>Check Data Usage / Top Up</p>
       {% endif %}
       <div class="flex items-center gap-2.5">
         <span>Enter your ICCID</span>
 
-        <button
-          class="info-tooltip"
+        <button class="info-tooltip"
           aria-label="• SIM Card: ICCID dapat ditemukan di belakang potongan SIM Card.&#10;&#10;• eSIM: ICCID dapat ditemukan di email pada bagian eSIM Information."
-          data-microtip-position="bottom"
-          data-microtip-size="large"
-          data-microtip-bullets
-          role="tooltip">
+          data-microtip-position="bottom" data-microtip-size="large" data-microtip-bullets role="tooltip">
           <div class="icon-info">
             {% render 'icon-info' %}
           </div>
@@ -294,11 +291,7 @@
       </div>
     </div>
     <div class="check-data-usage__input">
-      <input
-        type="number"
-        id="iccid"
-        placeholder="Input ICCID Number"
-        required>
+      <input type="number" id="iccid" placeholder="Input ICCID Number" required>
       <button id="check-iccid" type="button">Next</button>
     </div>
     <div class="check-data-usage__result">
@@ -312,7 +305,7 @@
     <h2>ICCID Invalid</h2>
     <p>
       Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
- 
+
       phone settings.
     </p>
     <p>Please contact our WhatsApp Customer Service for more information</p>
@@ -330,22 +323,18 @@
   </div>
 </div>
 
-<div
-  class="iccid-popup"
-  id="iccid-popup"
-  style="display:none;">
+<div class="iccid-popup" id="iccid-popup" style="display:none;">
   <div class="invalid-popup__content">
     <h2>Enter ICCID</h2>
     <p>Please input your ICCID to continue to Top Up</p>
-    <input
-      type="number"
-      id="popup-iccid"
-      placeholder="Input ICCID Number"
+    <input type="number" id="popup-iccid" placeholder="Input ICCID Number"
       style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);">
-    <button id="iccid-popup-submit" style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;">
+    <button id="iccid-popup-submit"
+      style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;">
       Continue
     </button>
-    <button id="iccid-popup-cancel" style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;">
+    <button id="iccid-popup-cancel"
+      style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;">
       Cancel
     </button>
   </div>
@@ -355,10 +344,10 @@
 <script>
   const productCategories = [
     {% for product in collection.products %}
-      {% if product.metafields.product.category %}
-        "{{ product.metafields.product.category.value }}",
-      {% endif %}
-    {% endfor %}
+  {% if product.metafields.product.category %}
+  "{{ product.metafields.product.category.value }}",
+    {% endif %}
+  {% endfor %}
   ];
 </script>
 
@@ -372,35 +361,35 @@
     const btnBuyEsim = document.getElementById('invalid-popup__buy-button');
     const btnContactCs = document.getElementById('invalid-popup__contact-button');
     let lastSubmit = 0;
-  
+
     const prefixVendorMap = [
       { prefix: '89859', vendor: 'AF' },
       { prefix: '89862', vendor: 'AF' },
       { prefix: '89810', vendor: 'TE' },
       { prefix: '2210', vendor: 'BS' },
     ];
-  
+
     const vendorCategoryMap = {
       BS: 'Top_Up_A',
       SEM: 'Top_Up_D',
     };
-  
+
     function detectVendor(iccid) {
       return prefixVendorMap.find((i) => iccid.startsWith(i.prefix))?.vendor || null;
     }
-  
+
     function showInvalidPopup() {
       invalidPopup.style.display = 'block';
     }
     function hideInvalidPopup() {
       invalidPopup.style.display = 'none';
     }
-  
+
     function formatDate(dateStr) {
       if (!dateStr || dateStr.length !== 8) return dateStr;
       return `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6)}`;
     }
-  
+
     function formatDataUsage(value, vendor) {
       value = Number(value) || 0;
       const KB = 1024;
@@ -415,7 +404,7 @@
       if (value >= MB) return (value / MB).toFixed(2) + ' MB';
       return (value / KB).toFixed(2) + ' KB';
     }
-  
+
     function renderEsimInfo(item, vendor) {
       const bundle = item.skuName || item.product_name || '-';
       const startRaw = vendor === 'AF' ? item.useSDate : item.planStartTime;
@@ -428,7 +417,7 @@
         <div class="esim-information__wrapper"><p>End Date</p><span>${formatDate(endRaw)}</span></div>
       </div>`;
     }
-  
+
     function renderTopUpButton() {
       return `<button id="top-up-plan" class="top-up-plan-btn">Top Up</button>`;
     }
@@ -441,7 +430,7 @@
       </div>
     </div>`;
     }
-  
+
     function attachTopUpButtonListeners() {
       const btnTopUpBuy = document.getElementById('btn-topup__buy-button');
       const btnTopUpCs = document.getElementById('btn-topup__contact-button');
@@ -449,22 +438,22 @@
         btnTopUpBuy.onclick = () => (window.location.href = 'https://gkomunika.com/pages/all-destination');
       if (btnTopUpCs) btnTopUpCs.onclick = () => (window.location.href = 'https://wa.me/628986454071');
     }
-  
+
     async function checkICCID() {
       const now = Date.now();
       if (now - lastSubmit < 3000) return;
       lastSubmit = now;
-  
+
       const iccid = iccidInput.value.trim();
       if (!iccid || iccid.length < 10) {
         resultEl.innerHTML = `<p style="color:red;">Invalid ICCID</p>`;
         return;
       }
-  
+
       let vendor = detectVendor(iccid);
       checkBtn.disabled = true;
       checkBtn.textContent = 'Loading...';
-  
+
       try {
         const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
           method: 'POST',
@@ -472,10 +461,10 @@
           body: new URLSearchParams({ iccid }),
         });
         const data = await res.json();
-  
+
         console.log(data);
-  
-        
+
+
         if (!vendor) {
           // hanya ubah vendor kalau belum terdeteksi dari prefix
           if (data.tradeCode && data.tradeData?.subOrderList) {
@@ -491,9 +480,9 @@
             vendor = null;
           }
         }
-  
+
         window.lastDetectedVendor = vendor;
-  
+
         // === BE ===
         if (vendor === 'BE') {
           if (data.tradeCode !== '1000') {
@@ -512,7 +501,7 @@
             total += Number(u.usedAmount || 0);
             perCountry[u.country] = (perCountry[u.country] || 0) + Number(u.usedAmount || 0);
           });
-  
+
           const esimHtml = renderEsimInfo(item, vendor);
           const totalUsageHtml = Object.entries(perCountry)
             .map(
@@ -529,7 +518,7 @@
               )}</p></div>`
             )
             .join('');
-  
+
           // BE tanpa Top Up
           resultEl.innerHTML = `
           ${esimHtml}
@@ -537,92 +526,68 @@
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage">
               <div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
-                total,
-                vendor
-              )}</span></div>
+            total,
+            vendor
+          )}</span></div>
               ${totalUsageHtml}
             </div>
             <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
           </div>`;
           return;
         }
-  
+
         // === SEM ===
-        // === SEM ===
-  if (vendor === 'SEM') {
-  
-  const usage = data.data_usage;
-  if (usage.retCode !== '000000') {
-    showInvalidPopup();
-    return;
-  }
-  
-  const quotaList = usage.quotaList || [];
-  const productName = data.product_name || "-";
-  const now = new Date();
-  
-  // convert date
-  const toDate = (str) =>
-    str ? new Date(str.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, "$1-$2-$3T$4:$5:$6")) : null;
-  
-  // Ambil quota Activated (3)
-  const activated = quotaList.find(q => q.status === "3");
-  // Ambil quota Inactive (2)
-  const inactive = quotaList.find(q => q.status === "2");
-  
-  let bundle = "-";
-  let startDate = "-";
-  let endDate = "-";
-  let statusText = "";
-  
-  // 1️⃣ Activated & belum expired
-  if (activated) {
-    const exp = toDate(activated.expTime);
-    if (exp && exp >= now) {
-      bundle = productName;
-      startDate = activated.effTime.slice(0,8);
-      endDate = activated.expTime.slice(0,8);
-      statusText = "Activated";
-    } else {
-      // 2️⃣ Activated tapi expired
-      bundle = "-";
-      startDate = "-";
-      endDate = "-";
-      statusText = "No active package";
-    }
-  }
-  // 3️⃣ Ada Inactive (2)
-  else if (inactive) {
-    bundle = productName;
-    startDate = "-";
-    endDate = "-";
-    statusText = "The package is not active yet";
-  }
-  // 4️⃣ Tidak ada paket (status 2/3 tidak ada)
-  else {
-    bundle = "No Active Package";
-    startDate = "-";
-    endDate = "-";
-    statusText = "Inactive";
-  }
-  
-  // FORMAT TANGGAL
-  const formatDateShort = (str) => {
-    if (!str || str === "-") return "-";
-    return `${str.slice(0,4)}-${str.slice(4,6)}-${str.slice(6,8)}`;
-  };
-  
-  const quota = quotaList?.[0] || {};
-  const used = formatDataUsage(quota.usedQuota || 0, vendor);
-  
-  resultEl.innerHTML = `
+        if (vendor === 'SEM') {
+
+          const usage = data.data_usage;
+          if (usage.retCode !== '000000') {
+            showInvalidPopup();
+            return;
+          }
+
+          const quotaList = usage.quotaList || [];
+          const productName = data.product_name || "-";
+
+          // Map status sesuai permintaan
+          const statusMap = {
+            "0": "No Package.",
+            "1": "Your eSIM hasn’t been activated yet.",
+            "2": "Active.",
+            "3": "Your eSIM has no active plan, please top up to continue.",
+            "4": "No Package."
+          };
+
+          // Ambil quota utama (paket aktif / last)
+          const q = quotaList[0] || {};
+          const statusCode = q.status || "0";
+          const statusText = statusMap[statusCode] || "-";
+
+          let bundle = "-";
+          let startDate = "-";
+          let endDate = "-";
+
+          // Jika status == 3 → tampilkan semua informasi paket
+          if (statusCode === "3") {
+            bundle = productName;
+            startDate = q.effTime ? q.effTime.slice(0, 8) : "-";
+            endDate = q.expTime ? q.expTime.slice(0, 8) : "-";
+          }
+
+          const used = formatDataUsage(q.usedQuota || 0, vendor);
+
+          // Format tanggal pendek
+          const formatDateShort = (str) =>
+            (!str || str === "-") ? "-" :
+              `${str.slice(0, 4)}-${str.slice(4, 6)}-${str.slice(6, 8)}`;
+
+          resultEl.innerHTML = `
     <div>
       <div class="check-data-usage__esim-information">
         <h3>SIM Card Information</h3>
+        <div class="esim-information__wrapper"><p>Status</p><span>${statusText}</span></div>
         <div class="esim-information__wrapper"><p>Your Bundle</p><span>${bundle}</span></div>
         <div class="esim-information__wrapper"><p>Active Date</p><span>${formatDateShort(startDate)}</span></div>
         <div class="esim-information__wrapper"><p>End Date</p><span>${formatDateShort(endDate)}</span></div>
-        <div class="esim-information__wrapper"><p>Status</p><span>${statusText}</span></div>
       </div>
     </div>
     <div class="check-data-usage__usage-content">
@@ -635,12 +600,12 @@
       ${renderTopUpButton()}
     </div>
   `;
-  
-  attachTopUpButtonListeners();
-  return;
-  }
-  
-  
+
+          attachTopUpButtonListeners();
+          return;
+        }
+
+
         // === AF ===
         if (vendor === 'AF') {
           const item = data.data;
@@ -672,16 +637,16 @@
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage"><div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
-              total,
-              vendor
-            )}</span></div>${totalUsageHtml}</div>
+            total,
+            vendor
+          )}</span></div>${totalUsageHtml}</div>
             <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
             ${renderTopUpButton()}
           </div>`;
           attachTopUpButtonListeners();
           return;
         }
-  
+
         // === TE ===
         if (vendor === 'TE') {
           if (data.code !== '0000') {
@@ -693,7 +658,7 @@
           const total = usage.dataTotal || 0;
           const used = usage.dataUsage || 0;
           const remain = usage.dataResidual || 0;
-  
+
           const esimHtml = `
           <div class="check-data-usage__esim-information">
             <h3>SIM Card Information</h3>
@@ -707,24 +672,24 @@
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage">
               <div style="display:flex;justify-content:space-between;"><h3>Total:</h3><span>${formatDataUsage(
-                total,
-                vendor
-              )}</span></div>
+            total,
+            vendor
+          )}</span></div>
               <div style="display:flex;justify-content:space-between;"><h3>Used:</h3><span>${formatDataUsage(
-                used,
-                vendor
-              )}</span></div>
+            used,
+            vendor
+          )}</span></div>
               <div style="display:flex;justify-content:space-between;"><h3>Remaining:</h3><span>${formatDataUsage(
-                remain,
-                vendor
-              )}</span></div>
+            remain,
+            vendor
+          )}</span></div>
             </div>
           </div>
           ${renderTopUpButton()}`;
           attachTopUpButtonListeners();
           return;
         }
-  
+
         // === BS ===
         if (vendor === 'BS') {
           const item = data.tradeData?.subOrderList?.[0];
@@ -756,28 +721,28 @@
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage"><div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
-              total,
-              vendor
-            )}</span></div>${totalUsageHtml}</div>
+            total,
+            vendor
+          )}</span></div>${totalUsageHtml}</div>
             <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
             ${renderTopUpButton()}
           </div>`;
           attachTopUpButtonListeners();
           return;
         }
-  
+
         showInvalidPopup();
       } catch (err) {
         console.error(err);
         showInvalidPopup();
 
-        
+
       } finally {
         checkBtn.disabled = false;
         checkBtn.textContent = 'Next';
       }
     }
-  
+
     checkBtn.addEventListener('click', checkICCID);
     btnHidePopup.addEventListener('click', hideInvalidPopup);
     btnBuyEsim.addEventListener('click', () => (window.location.href = 'https://gkomunika.com/pages/all-destination'));
@@ -786,7 +751,7 @@
       if (e.target?.id === 'top-up-plan') {
         const iccidValue = iccidInput.value.trim();
         if (iccidValue) sessionStorage.setItem('iccid', iccidValue);
-  
+
         // --- Tambahkan logika vendor SEM untuk simpan kategori ---
         const lastVendor = window.lastDetectedVendor; // ambil vendor terakhir
         if (lastVendor === 'SEM') {
@@ -794,7 +759,7 @@
         } else if (lastVendor === 'BS') {
           sessionStorage.setItem('category', 'Top_Up_A');
         }
-  
+
         window.location.href = '/pages/top-up';
       }
     });
@@ -802,14 +767,14 @@
 </script>
 
 {% schema %}
-  {
-    "name": "Check Data Usage",
-    "settings": [],
-    "presets": [
-      {
-        "name": "Check Data Usage",
-        "category": "Custom"
-      }
-    ]
-  }
+{
+"name": "Check Data Usage",
+"settings": [],
+"presets": [
+{
+"name": "Check Data Usage",
+"category": "Custom"
+}
+]
+}
 {% endschema %}

@@ -59,7 +59,6 @@
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        currentIndex = 0;
         recalc();
       }, 200);
     });

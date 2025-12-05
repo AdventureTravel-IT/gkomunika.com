@@ -469,11 +469,11 @@
       "submit": "Buat"
     },
     "reset_password": {
-      "title": "Reset sandi akun",
-      "subtext": "Masukkan sandi baru",
-      "password": "Sandi",
-      "password_confirm": "Konfirmasi sandi",
-      "submit": "Reset sandi"
+      "title": "Atur Ulang Kata Sandi",
+      "subtext": "Masukkan kata sandi baru",
+      "password": "Kata Sandi",
+      "password_confirm": "Konfirmasi Kata Sandi",
+      "submit": "Reset Kata Sandi"
     },
     "order": {
       "title": "Pesanan {{ name }}",

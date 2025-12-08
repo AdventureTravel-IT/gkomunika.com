@@ -151,15 +151,15 @@
 
 {%- style -%}
   .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+  padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
   }
 
   @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
+  .section-{{ section.id }}-padding {
+  padding-top: {{ section.settings.padding_top }}px;
+  padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
   }
 {%- endstyle -%}
 
@@ -260,7 +260,6 @@
                 {% endfor %}
 
                 {% if hasInsuranceProduct %}
-                  <!-- Display the "Insurance Checkout" button -->
                   {% if customer %}
                     <button
                       type="button"
@@ -281,11 +280,10 @@
                       class="cart__checkout-button button"
                       style="background-color: var(--color-primary); color: var(--color-neutral)"
                     >
-                      UN LOGIN
+                      Check out
                     </button>
                   {% endif %}
                 {% else %}
-                  <!-- Display the regular "Checkout" button -->
                   <button
                     type="submit"
                     id="checkout"
@@ -318,69 +316,57 @@
 
 <script>
   document.getElementById('unlogin-checkout-button')?.addEventListener('click', function () {
-    // Clear sessionStorage data if it exists
-    sessionStorage.removeItem('ProductItems'); // or sessionStorage.clear();
+    sessionStorage.removeItem('ProductItems');
 
     const ProductItems = [];
 
     {% for item in cart.items %}
-      ProductItems.push({
-        productTitle: {{ item.product.title | json }},
-        category: {{ item.product.metafields.product.category.value | json }},
-        variantType: {{ item.variant.metafields.variant.type | json }},
-        variantTitle: {{ item.variant.title | json }},
-        variantId: {{ item.variant.id }},
-        quantity: {{ item.quantity }},
-        variantCoverage: {{ item.product.metafields.coverage.country.value | json }}
+    ProductItems.push({
+      productTitle: {{ item.product.title | json }},
+    category: {{ item.product.metafields.product.category.value | json }},
+    variantType: {{ item.variant.metafields.variant.type | json }},
+    variantTitle: {{ item.variant.title | json }},
+    variantId: {{ item.variant.id }},
+    quantity: {{ item.quantity }},
+    variantCoverage: {{ item.product.metafields.coverage.country.value | json }}
       });
-    {% endfor %}
+  {% endfor %}
 
-    if (ProductItems.length === 0) {
-      alert('Cart is empty.');
-      return;
-    }
+  if (ProductItems.length === 0) {
+    alert('Cart is empty.');
+    return;
+  }
 
-    // Save all items in sessionStorage
-    sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-
-    // Redirect to login page with return_url
-    window.location.href = '/account/login?return_url=/pages/form-insurance';
+  sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+  window.location.href = '/account/login?return_url=/pages/form-insurance';
   });
 </script>
 
-
 <script>
   document.getElementById('insurance-checkout-button')?.addEventListener('click', function () {
-    // Clear sessionStorage data if it exists
-    sessionStorage.removeItem('ProductItems'); // or sessionStorage.clear(); to remove all session storage data
+    sessionStorage.removeItem('ProductItems');
 
     const ProductItems = [];
 
     {% for item in cart.items %}
-      ProductItems.push({
-        productTitle: {{ item.product.title | json }},
-        category: {{ item.product.metafields.product.category.value | json }},
-        variantType: {{ item.variant.metafields.variant.type | json }},
-        variantTitle: {{ item.variant.title | json }},
-        variantId: {{ item.variant.id }},
-        quantity: {{ item.quantity }},
-        variantCoverage: {{ item.product.metafields.coverage.country.value | json }}
+    ProductItems.push({
+      productTitle: {{ item.product.title | json }},
+    category: {{ item.product.metafields.product.category.value | json }},
+    variantType: {{ item.variant.metafields.variant.type | json }},
+    variantTitle: {{ item.variant.title | json }},
+    variantId: {{ item.variant.id }},
+    quantity: {{ item.quantity }},
+    variantCoverage: {{ item.product.metafields.coverage.country.value | json }}
       });
-    {% endfor %}
+  {% endfor %}
 
-    if (ProductItems.length === 0) {
-      alert('Cart is empty.');
-      return;
-    }
+  if (ProductItems.length === 0) {
+    alert('Cart is empty.');
+    return;
+  }
 
-    // Save all items in sessionStorage
-    sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-
-    // Debug
-    console.log("Stored ProductItems:", ProductItems);
-
-    // Redirect to form-insurance
-    window.location.href = '/pages/form-insurance';
+  sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+  window.location.href = '/pages/form-insurance';
   });
 </script>
 

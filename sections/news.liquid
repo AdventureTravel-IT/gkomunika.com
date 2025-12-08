@@ -81,15 +81,12 @@
     text-decoration: none;
   }
 
-  /* Content hero shoot */
   .news-hero-shoot {
     display: flex;
     justify-content: center;
   }
   .news__hero-wrapper {
-    /* background-color: var(--color-neutral); */
     padding: 70px 20%;
-    /* height: 300px; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -165,12 +162,24 @@
   }
   @media (max-width: 768px) {
     .news-content__wrapper {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr !important;
+      padding: 20px 24px !important;
     }
+
+    .news-content__wrapper-category {
+      grid-template-columns: 1fr !important;
+      padding: 20px 24px !important;
+    }
+
+    .news-content__card {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
     .news__content-top {
       padding: 20px 10%;
     }
+
     .news-hero {
       height: 300px;
       padding: 0 10%;
@@ -180,15 +189,25 @@
       font-size: 24px;
     }
   }
+
   @media (max-width: 426px) {
     .news-content__wrapper {
-      grid-template-columns: repeat(1, 1fr);
+      grid-template-columns: 1fr !important;
+      padding: 20px 24px !important;
     }
+
+    .news-content__wrapper-category {
+      grid-template-columns: 1fr !important;
+      padding: 20px 24px !important;
+    }
+
+    .news-content__card {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
     .news__content-top {
       padding: 20px 24px;
-    }
-    .news-content__wrapper {
-      padding: 0;
     }
     .news__hero-wrapper {
       padding: 20px 24px;
@@ -286,7 +305,6 @@
                     {% assign first_img_tag = img_parts[1] | split: '>' | first | prepend: '<img' | append: '>' %}
                     {{ first_img_tag }}
                   {% endif %}
-
                   <h2 class="news-content__card-title" title="{{ page.title }}">{{ page.title }}</h2>
                   <h2 class="news-content__card-description">
                     {{ page.content | strip_html }}
@@ -364,7 +382,6 @@
                     {% assign first_img_tag = img_parts[1] | split: '>' | first | prepend: '<img' | append: '>' %}
                     {{ first_img_tag }}
                   {% endif %}
-
                   <h2 class="news-content__card-title" title="{{ page.title }}">{{ page.title }}</h2>
                   <h2 class="news-content__card-description">
                     {{ page.content | strip_html }}

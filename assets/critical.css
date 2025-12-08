@@ -382,11 +382,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .htu__customer-comment {
   font-size: var(--font-large);
   color: var(--color-neutral);
+  text-align: center;
 }
 
 .htu__benefits {

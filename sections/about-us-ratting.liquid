@@ -3,18 +3,21 @@
     max-width: 1920px;
     margin: 0 auto;
   }
-  .review-container {
+
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     padding: 20px 20% 5%;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
   }
+
   .review-card {
     background-color: var(--color-neutral);
     border-radius: 15px;
     padding: 15px;
     box-shadow: var(--box-shadow);
   }
+
   .review-header {
     display: flex;
     align-items: center;
@@ -22,38 +25,47 @@
     color: var(--color-secondary);
     gap: 10px;
   }
+
   .review-time {
     margin-top: 5px;
   }
+
   .review-user {
     display: flex;
     gap: 15px;
     align-items: center;
   }
+
   .review-user img {
     border-radius: 100px;
   }
+
   .review-name {
     font-weight: bold;
   }
+
   .review-name,
   .review-detail {
     margin: 0;
     color: var(--color-primary);
   }
+
   .review-content {
     color: var(--color-primary);
   }
+
   .review-images {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 5px;
     overflow: hidden;
   }
+
   .review-images img {
     border-radius: 10px;
     border: 1px solid var(--color-border);
   }
+
   .about__button {
     display: flex;
     text-align: center;
@@ -61,10 +73,12 @@
     padding: 20px 20% 5%;
     color: var(--color-primaary);
   }
+
   .about__button-title {
     font-weight: bold;
     color: var(--color-primary);
   }
+
   .about__button-btn {
     padding: 15px 20px;
     border-radius: 20px;
@@ -74,21 +88,45 @@
     background-color: var(--color-primary);
     box-shadow: var(--box-shadow);
   }
+
   @media (max-width: 768px) {
-    .review-container {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+    .review-list {
       padding: 20px 24px;
       gap: 30px;
     }
+
+    .review-images {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .review-images img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    .review-card {
+      width: 100%;
+      max-width: 100%;
+      flex: 0 0 85%;
+      scroll-snap-align: start;
+      box-sizing: border-box;
+    }
+
     .about__button {
       padding-bottom: 10%;
+    }
+
+    .about-review {
+      overflow-x: hidden !important;
+      width: 100%;
     }
   }
 {% endstyle %}
 
 <section class="about-review">
-  <div class="review-container">
+  <div class="review-list">
     {% for block in section.blocks %}
       <div class="review-card">
         <div class="review-header">
@@ -166,11 +204,11 @@
     {% endfor %}
   </div>
   <div class="about__button">
-      <h2 class="about__button-title">See full review on Tokopedia</h2>
-      <a class="about__button-link" href="https://www.tokopedia.com/globalkomunikajk">
-        <button class="about__button-btn">Tokopedia Global Komunika</button>
-      </a>
-    </div>
+    <h2 class="about__button-title">See full review on Tokopedia</h2>
+    <a class="about__button-link" href="https://www.tokopedia.com/globalkomunikajk">
+      <button class="about__button-btn">Tokopedia Global Komunika</button>
+    </a>
+  </div>
 </section>
 
 {% schema %}
@@ -230,7 +268,7 @@
           "type": "image_picker",
           "id": "review-image3",
           "label": "Review Image"
-        },
+        }
       ]
     }
   ],
@@ -240,7 +278,7 @@
       "category": "Custom",
       "blocks": [
         {
-         "type": "rating",
+          "type": "rating",
           "settings": {
             "name": "Nama Customer",
             "review-content": "<p>Description Here</p>"

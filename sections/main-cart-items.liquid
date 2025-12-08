@@ -11,10 +11,114 @@
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
   }
 
+  quantity-input.quantity.cart-quantity {
+    border: none !important;
+  }
+
+  .cart-quantity .quantity__input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-align: center;
+    padding: 8px 4px;
+  }
+
+  .cart-item--updating {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+  }
+
+  .cart-item--updating::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 1.5rem;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    animation: cartSpinner 0.6s linear infinite;
+  }
+
+  @keyframes cartSpinner {
+    to {
+      transform: translateY(-50%) rotate(360deg);
+    }
+  }
+
   @media screen and (min-width: 750px) {
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top }}px;
       padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cart-item {
+      display: grid !important;
+      grid-template-columns: auto 1fr;
+      grid-template-areas: "media title" "media desc" "media price" "media actions";
+      column-gap: 12px;
+      row-gap: 6px;
+      align-items: start;
+    }
+
+    .cart-item__media {
+      grid-area: media;
+      display: flex;
+      align-items: start;
+      justify-content: center;
+    }
+    .cart-item__image-container {
+      max-width: 110px !important;
+    }
+
+    .cart-item__name {
+      grid-area: title;
+      text-align: left !important;
+      font-weight: 700 !important;
+      font-size: 17px;
+      margin: 0;
+    }
+
+    .cart-item__details {
+      grid-area: desc;
+      text-align: left !important;
+      margin-top: -5px;
+    }
+
+    .cart-item__totals {
+      grid-area: price;
+      text-align: right !important;
+      font-weight: 700 !important;
+      padding-right: 5px;
+      margin-top: 4px;
+    }
+
+    .cart-item__quantity {
+      grid-area: actions;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    cart-remove-button {
+      display: flex;
+      align-items: center !important;
+      justify-content: center;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    cart-remove-button a svg {
+      width: 24px;
+      height: 24px;
     }
   }
 {%- endstyle -%}
@@ -25,7 +129,10 @@
 
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
 
-<cart-items style="color: var(--color-primary)" class="gradient color-{{ section.settings.color_scheme }} isolate{% if cart == empty %} is-empty{% else %} section-{{ section.id }}-padding{% endif %}">
+<cart-items
+  style="color: var(--color-primary)"
+  class="gradient color-{{ section.settings.color_scheme }} isolate{% if cart == empty %} is-empty{% else %} section-{{ section.id }}-padding{% endif %}"
+>
   <div class="page-width">
     <div class="title-wrapper-with-link">
       <h1 class="title title--primary">{{ 'sections.cart.title' | t }}</h1>
@@ -278,7 +385,10 @@
                                 {{- 'icon-info.svg' | inline_asset_content -}}
                               </button>
                             {%- endif -%}
-                            <quantity-input style="border:1px solid var(--color-primary)" class="quantity cart-quantity">
+                            <quantity-input
+                              style="border:1px solid var(--color-primary)"
+                              class="quantity cart-quantity"
+                            >
                               <button
                                 class="quantity__button"
                                 name="minus"
@@ -507,66 +617,146 @@
 </cart-items>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const formatMoney = (cents) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-    }).format(cents / 100);
-  };
+  document.addEventListener('DOMContentLoaded', function () {
+    const formatMoney = (cents) => {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+      }).format(cents / 100);
+    };
 
-  // Fungsi update quantity di Shopify
-  function updateCartQuantity(input) {
-    const row = input.closest('tr.cart-item');
-    const key = row.dataset.key;
-    const newQuantity = parseInt(input.value, 10);
+    function setRowLoading(row, isLoading) {
+      if (!row) return;
+      if (isLoading) {
+        row.classList.add('cart-item--updating');
+      } else {
+        row.classList.remove('cart-item--updating');
+      }
+    }
 
-    fetch('/cart/change.js', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: key, quantity: newQuantity }),
-    })
-      .then((res) => res.json())
-      .then((cart) => {
-        const updatedItem = cart.items.find((i) => i.key === key);
-        if (updatedItem) {
-          input.value = updatedItem.quantity;
-          const priceEls = row.querySelectorAll('.cart-item__price-wrapper');
-          priceEls.forEach((el) => {
-            el.innerHTML = `<span class="price price--end">${formatMoney(updatedItem.final_line_price)}</span>`;
-          });
+    function updateMinusButtonState(row) {
+      if (!row) return;
+      const input = row.querySelector('.quantity__input');
+      const minusBtn = row.querySelector('.quantity__button[name="minus"]');
+
+      if (input && minusBtn) {
+        const currentQty = parseInt(input.value, 10);
+        if (currentQty <= 1) {
+          minusBtn.disabled = true;
+          minusBtn.style.opacity = '0.5';
+          minusBtn.style.cursor = 'not-allowed';
+        } else {
+          minusBtn.disabled = false;
+          minusBtn.style.opacity = '1';
+          minusBtn.style.cursor = 'pointer';
         }
+      }
+    }
+    function updateAllMinusButtons() {
+      document.querySelectorAll('tr.cart-item').forEach((row) => {
+        updateMinusButtonState(row);
+      });
+    }
 
-        const subtotalEl = document.querySelector('.cart__footer .totals__subtotal-value');
-        if (subtotalEl) subtotalEl.textContent = formatMoney(cart.total_price);
-        const totalValueEl = document.querySelector('.totals__total-value');
-        if (totalValueEl) totalValueEl.textContent = formatMoney(cart.total_price);
+    function updateCartQuantity(row, input, newQuantity) {
+      const key = row.dataset.key;
+
+      setRowLoading(row, true);
+
+      fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: key, quantity: newQuantity }),
       })
-      .catch(err)
-  }
+        .then((res) => res.json())
+        .then((cart) => {
+          const updatedItem = cart.items.find((i) => i.key === key);
 
-  // Dengarkan tombol + dan -
-  document.querySelectorAll('.quantity__button').forEach((btn) => {
-    btn.addEventListener('click', function () {
-      const input = this.closest('.quantity').querySelector('.quantity__input');
-      const step = parseInt(input.step) || 1;
-      let value = parseInt(input.value) || 0;
+          if (updatedItem) {
+            if (updatedItem.quantity !== newQuantity) {
+              input.value = updatedItem.quantity;
+            }
 
-      if (this.name === 'plus') value += step;
-      if (this.name === 'minus') value = Math.max(0, value - step);
+            const priceEls = row.querySelectorAll('.cart-item__price-wrapper');
+            priceEls.forEach((el) => {
+              el.innerHTML = `<span class="price price--end">${formatMoney(updatedItem.final_line_price)}</span>`;
+            });
+            updateMinusButtonState(row);
+          } else {
+            row.remove();
+          }
+          const subtotalEl = document.querySelector('.cart__footer .totals__subtotal-value');
+          if (subtotalEl) subtotalEl.textContent = formatMoney(cart.total_price);
+
+          const totalValueEl = document.querySelector('.totals__total-value');
+          if (totalValueEl) totalValueEl.textContent = formatMoney(cart.total_price);
+        })
+        .catch((err) => {
+          console.error('Error updating cart quantity:', err);
+        })
+        .finally(() => {
+          setRowLoading(row, false);
+        });
+    }
+
+    function onPlusMinusClick(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const btn = e.currentTarget;
+
+      if (btn.disabled) {
+        return;
+      }
+
+      const quantityWrapper = btn.closest('.quantity');
+      if (!quantityWrapper) return;
+
+      const input = quantityWrapper.querySelector('.quantity__input');
+      const row = btn.closest('tr.cart-item');
+      if (!input || !row) return;
+
+      let current = parseInt(input.value, 10);
+      if (isNaN(current) || current < 0) current = 0;
+
+      if (btn.name === 'plus') {
+        const target = current + 1;
+        input.value = target;
+        updateCartQuantity(row, input, target);
+      }
+
+      if (btn.name === 'minus') {
+        if (current > 1) {
+          const target = current - 1;
+          input.value = target;
+          updateCartQuantity(row, input, target);
+        }
+      }
+    }
+
+    function onQuantityChange(e) {
+      e.stopPropagation();
+
+      const input = e.currentTarget;
+      const row = input.closest('tr.cart-item');
+      if (!row) return;
+
+      let value = parseInt(input.value, 10);
+      if (isNaN(value) || value < 1) value = 1;
 
       input.value = value;
-      input.dispatchEvent(new Event('change')); // 🔥 trigger update
-    });
-  });
+      updateCartQuantity(row, input, value);
+    }
 
-  // Event untuk input manual
-  document.querySelectorAll('.quantity__input').forEach((input) => {
-    input.addEventListener('change', function () {
-      updateCartQuantity(this);
+    document.querySelectorAll('.quantity__button').forEach((btn) => {
+      btn.addEventListener('click', onPlusMinusClick, true);
     });
+
+    document.querySelectorAll('.quantity__input').forEach((input) => {
+      input.addEventListener('change', onQuantityChange, true);
+    });
+    updateAllMinusButtons();
   });
-});
 </script>
 
 {% schema %}

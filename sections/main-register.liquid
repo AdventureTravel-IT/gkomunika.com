@@ -1,193 +1,32 @@
-<div id="popup-member" class="popup-member">
-  <div class="popup-content">
-    <h2>
-      Selamat Datang di<br>
-      Global Komunika!
-    </h2>
-    <p>
-      <strong>Sign up menggunakan akun google</strong> atau secara manual dengan
-      <strong>email yang sama</strong> seperti yang terdaftar di gkomunika.id.
-    </p>
-    <p>
-      Setelah mendaftar, kamu akan langsung mendapatkan <strong>poin rewards</strong> yang bisa ditukarkan dengan
-      <strong>diskon menarik.</strong>
-    </p>
-    <button id="popup-ok" class="button-form">Close</button>
-  </div>
-</div>
-
-{% style %}
-  /* Style for the popup */
-  .popup-member {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-
-  .popup-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 15px;
-    width: 480px;
-    min-height: auto;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    box-shadow: var(--box-shadow);
-    color: var(--color-primary);
-  }
-
-  .popup-content h2 {
-    font-size: 38px;
-    font-weight: bold;
-    color: var(--color-primary);
-    margin: 0;
-    line-height: 1;
-    margin-bottom: 10px;
-  }
-
-  .popup-content p {
-    font-size: 20px;
-    margin: 10px;
-    line-height: 1.3;
-  }
-
-  .button-form {
-    margin-top: 15px;
-    padding: 10px;
-    background-color: #005496;
-    color: #fff;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-
-  .button-form:hover {
-    background-color: #003d6a;
-  }
-
-  @media (max-width: 426px) {
-    .popup-member {
-      padding: 0 24px;
-    }
-    .popup-content {
-      padding: 20px 15px;
-    }
-    .popup-content h2 {
-      font-size: 33px;
-    }
-  }
-{% endstyle %}
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    function getUrlParameter(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
-
-    if (getUrlParameter('member') === 'migrasi') {
-      const popup = document.getElementById('popup-member');
-      const okBtn = document.getElementById('popup-ok');
-
-      popup.style.display = 'flex';
-
-      // Close dengan tombol
-      okBtn.addEventListener('click', function () {
-        popup.style.display = 'none';
-      });
-
-      // Close ketika klik di luar konten
-      popup.addEventListener('click', function (e) {
-        if (e.target === popup) {
-          popup.style.display = 'none';
-        }
-      });
-
-      // Close dengan ESC key
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-          popup.style.display = 'none';
-        }
-      });
-    }
-  });
-</script>
-
 <style>
-  .field-error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-    display: block;
-  }
-
-  .email-error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-    display: none;
-  }
-
-  .password-strength-message {
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  .custom-auth-divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 15px 0;
-  }
-  .custom-auth-divider::before,
-  .custom-auth-divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #005496; /* Warna biru seperti teks */
-    margin: 0 10px;
-  }
-  .custom-auth-divider span {
-    font-size: 14px;
-    color: #005496; /* Sesuaikan warna teks */
-  }
-</style>
-
-<style>
-  .login {
+  .register {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
     max-width: 1920px;
-    height: 100vh;
+    height: 100 dv h;
   }
 
-  .MainLogin-container {
+  .MainRegister-container {
     width: 350px;
     height: auto;
     padding: 10px;
   }
 
-  .MainLogin-logo {
+  .MainRegister-logo {
     display: flex;
     justify-content: center;
     padding: 15px;
   }
 
-  .MainLogin-Tabs {
+  .MainRegister-Tabs {
     display: flex;
     width: 100%;
     height: auto;
   }
 
-  .MainLogin-TabButton {
+  .MainRegister-TabButton {
     flex: 1;
     padding: 15px;
     background: transparent;
@@ -203,33 +42,25 @@
     text-decoration: none;
   }
 
-  .MainLogin-TabButton.active {
+  .MainRegister-TabButton.active {
     background-color: var(--color-neutral);
   }
 
-  .MainLogin-form {
+  .MainRegister-form {
     display: flex;
     padding: 20px;
     background-color: var(--color-neutral);
-    border-radius: 15px 0 15px 15px;
+    border-radius: 0 15px 15px 15px;
     transition: border-radius 0.3s ease;
   }
 
-  .MainLogin-TabButton[onclick="showForm('register')"].active ~ .MainLogin-form,
-  .MainLogin-form.register-active {
-    border-radius: 15px 0 15px 15px !important;
-  }
-
-  .FormLogin,
-  .FormRegister,
-  .FormRecover {
+  /* Hanya pakai FormRegister di file ini */
+  .FormRegister {
     display: none;
     width: 100%;
   }
 
-  .FormLogin.active,
-  .FormRegister.active,
-  .FormRecover.active {
+  .FormRegister.active {
     display: block;
   }
 
@@ -269,7 +100,8 @@
     flex-direction: column;
     width: 100%;
     justify-content: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease
+    , box-shadow 0.3s ease;
     cursor: pointer;
   }
 
@@ -281,14 +113,31 @@
   }
 
   .button-form {
-    padding: 15px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 120px;
+    padding: 12px 16px;
+    border: none;
     border-radius: 10px;
     background-color: var(--color-primary);
-    border: none;
-    cursor: pointer;
     color: var(--color-neutral);
     font-size: var(--font-large);
-    font-weight: bold;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .button-form:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+  }
+
+  .button-form:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .form-error-message {
@@ -299,6 +148,17 @@
     font-size: 14px;
     color: red;
     text-align: center;
+  }
+
+  .form-error-message ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .form-error-message a {
+    color: inherit;
+    text-decoration: underline;
   }
 
   .email-error-message {
@@ -328,11 +188,7 @@
   .terms-checkbox a {
     color: var(--color-primary);
   }
-  .button-form:disabled {
-    background-color: #ccc;
-    color: #666;
-    cursor: not-allowed;
-  }
+
   .field-error-message {
     color: red;
     font-size: 12px;
@@ -340,7 +196,6 @@
     display: block;
   }
 
-  /* Autofill tweaks */
   .field-auth input:-webkit-autofill {
     -webkit-text-fill-color: var(--color-primary);
     transition: background-color 9999s ease-in-out 0s;
@@ -351,256 +206,242 @@
     color: var(--color-neutral);
   }
 
-  .button-form:active {
-    transform: scale(0.96);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  .button-form-icon {
+  .custom-auth-divider {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    text-align: center;
+    margin: 15px 0;
   }
 
-  .button-form-icon svg {
-    transform: rotate(180deg);
+  .custom-auth-divider::before,
+  .custom-auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #005496;
+    margin: 0 10px;
+  }
+
+  .custom-auth-divider span {
+    font-size: 14px;
+    color: #005496;
   }
 
   @media (max-width: 768px) {
-    .MainLogin-container {
+    .MainRegister-container {
       padding: 0 24px;
     }
   }
 </style>
 
-<div class="login">
-  <div class="MainLogin-container">
-    <!-- Bagian Logo -->
-    <section class="MainLogin-logo">
+<div class="register">
+  <div class="MainRegister-container">
+    <section class="MainRegister-logo">
       {% if section.settings.logo != blank %}
-        <img
-          class="footer__logo"
-          src="{{ section.settings.logo | img_url: 'master' }}"
-          width="auto"
-          height="80"
-          alt="Site Logo"
-        >
+        <a href="/">
+          <img
+            class="footer__logo"
+            src="{{ section.settings.logo | img_url: 'master' }}"
+            width="auto"
+            height="80"
+            alt="Site Logo">
+        </a>
       {% endif %}
     </section>
 
-    <!-- Tab Login/Register -->
-    <section class="MainLogin-Tabs" id="MainLogin-Tabs">
-      <a class="MainLogin-TabButton {% if request.path == '/account/login' %}active{% endif %}" href="/account/login"
-        >Login</a
-      >
-      <a
-        class="MainLogin-TabButton {% if request.path contains '/account/register' %}active{% endif %}"
-        href="/account/register"
-        >Sign Up</a
-      >
+    <section class="MainRegister-Tabs" id="MainRegister-Tabs">
+      <a class="MainRegister-TabButton" href="/account/login">Login</a>
+      <a class="MainRegister-TabButton active" href="/account/register">Register</a>
     </section>
 
-    <!-- Form Section -->
-    <section class="MainLogin-form">
-      {% if request.path == '/account/login' %}
-        <!-- Form Login -->
-        <div class="FormLogin active" id="FormLogin">
-          {%- form 'customer_login', novalidate: 'novalidate', return_to: '/' -%}
-            {% if form.errors %}
-              <div class="form-error-message">Incorrect email or password. Please try again !!!</div>
-            {% endif %}
+    <section class="MainRegister-form">
+      <div class="FormRegister active" id="FormRegister">
+        {%- form 'create_customer'
+          , novalidate: 'novalidate'
+          , class: 'customer-register-form' -%}
 
+          {% if form.errors %}
+            {%- assign err_text = form.errors | default_errors -%}
+            <div class="form-error-message">
+              {%- if err_text contains 'associated with an account' or err_text contains 'already associated' -%}
+                This email address is already associated with an account. <br>
+                You may
+                <a href="/account/login" style="color:inherit; text-decoration:underline;">login directly</a>.
+              {%- else -%}
+                {{ err_text | strip_html }}
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          <div class="wrapper-field">
             <div class="field-auth">
               <input
-                type="email"
-                name="customer[email]"
-                id="Login-Email"
-                placeholder="Email"
-                value="{{ form.email }}"
+                type="text"
+                name="customer[first_name]"
+                id="Register-FirstName"
+                placeholder="First Name"
                 required
-                {% if form.errors %}
-                  aria-invalid="true"
-                {% endif %}
-              >
-              <span class="field-error-message" id="LoginEmailError"></span>
-            </div>
-
-            <div class="field-auth">
-              <input
-                type="password"
-                name="customer[password]"
-                id="Login-Password"
-                placeholder="Password"
-                required
-                {% if form.errors %}
-                  aria-invalid="true"
-                {% endif %}
-              >
-              <span class="field-error-message" id="LoginPasswordError"></span>
-            </div>
-
-            <div class="WrapperButton-form">
-              <a href="javascript:void(0)" class="link-recover" onclick="showRecoveryForm()">Forgot Password?</a>
-              <button class="button-form" id="login-button" type="submit">Log In</button>
-            </div>
-          {%- endform -%}
-        </div>
-
-        <!-- Form Recovery -->
-        <div class="FormRecover" id="FormRecovery">{% render 'form-recovery' %}</div>
-      {% elsif request.path contains '/account/register' %}
-        <!-- Form Register -->
-        <div class="FormRegister active" id="FormRegister">
-          {%- form 'create_customer', novalidate: 'novalidate', class: 'customer-register-form' -%}
-            {% if form.errors %}
-              <div class="form-error-message">
-                {% for field in form.errors %}
-                  {{ form.errors.messages[field] }}
-                {% endfor %}
-              </div>
-            {% endif %}
-
-            <div class="wrapper-field">
-              <div class="field-auth">
-                <input
-                  type="text"
-                  name="customer[first_name]"
-                  id="Register-FirstName"
-                  placeholder="First Name"
-                  required
-                  minlength="2"
-                  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
-                >
-              </div>
-
-              <div class="field-auth">
-                <input
-                  type="text"
-                  name="customer[last_name]"
-                  id="Register-LastName"
-                  placeholder="Last Name"
-                  minlength="2"
-                  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
-                >
-              </div>
+                minlength="2"
+                oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
+              <span class="field-error-message" id="RegisterFirstNameError"></span>
             </div>
 
             <div class="field-auth">
               <input
-                type="email"
-                name="customer[email]"
-                id="RegisterForm-email"
-                placeholder="Email"
+                type="text"
+                name="customer[last_name]"
+                id="Register-LastName"
+                placeholder="Last Name"
                 required
-                value="{{ form.email }}"
-                onblur="validateEmail(this)"
-                {% if form.errors contains 'email' %}
-                  aria-invalid="true"
-                {% endif %}
-              >
-              <span class="email-error-message">Invalid email format</span>
+                minlength="2"
+                oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
+              <span class="field-error-message" id="RegisterLastNameError"></span>
             </div>
+          </div>
 
-            <div class="field-auth">
-              <input
-                type="password"
-                name="customer[password]"
-                id="RegisterForm-password"
-                placeholder="Password"
-                required
-                minlength="8"
-                autocomplete="current-password"
-              >
-            </div>
+          <div class="field-auth">
+            <input
+              type="email"
+              name="customer[email]"
+              id="RegisterForm-email"
+              placeholder="Email"
+              required
+              value="{{ form.email }}"
+              onblur="validateEmail(this)"
+              {% if form.errors contains 'email' %}
+              aria-invalid="true"
+              {% endif %}>
+            <span class="email-error-message">Invalid email format</span>
+          </div>
 
-            <div class="field-auth terms-checkbox">
-              <input
-                type="checkbox"
-                id="terms-checkbox"
-                name="terms"
-                required
-              >
-              <label for="terms-checkbox">
-                I agree <a href="/pages/terms-of-use" target="_blank">Terms & Conditions</a>
-              </label>
-            </div>
+          <div class="field-auth">
+            <input
+              type="password"
+              name="customer[password]"
+              id="RegisterForm-password"
+              placeholder="Password"
+              required
+              minlength="8">
+            <span class="password-strength-message"></span>
+            <span class="field-error-message" id="RegisterPasswordError"></span>
+          </div>
 
-            <div class="WrapperButton-form">
-              <button class="button-form" id="register-button" type="submit" disabled>Sign Up</button>
-            </div>
+          <div class="field-auth terms-checkbox">
+            <input
+              type="checkbox"
+              id="terms-checkbox"
+              name="terms"
+              required>
+            <label for="terms-checkbox">
+              I agree
+              <a href="/pages/terms-of-use" target="_blank">Terms & Conditions</a>
+            </label>
+          </div>
+          <span class="field-error-message" id="RegisterTermsError"></span>
 
-            <div class="custom-auth-divider">
-              <span>OR LOGIN DIRECTLY</span>
-            </div>
+          <div class="WrapperButton-form">
+            <button
+              class="button-form"
+              id="register-button"
+              type="button"
+              disabled>Register</button>
+          </div>
 
-            <div class="oxi-social-login" style="margin-top: 15px"></div>
-          {%- endform -%}
-        </div>
-      {% endif %}
+          <div class="custom-auth-divider">
+            <span>OR REGISTER WITH</span>
+          </div>
+
+        {%- endform -%}
+      </div>
     </section>
   </div>
 </div>
 
 <script>
-  function showRecoveryForm() {
-    document.querySelectorAll('.MainLogin-form > div').forEach((form) => {
-      form.classList.remove('active');
-    });
-    document.getElementById('FormRecovery').classList.add('active');
-    document.querySelector('.MainLogin-Tabs').style.display = 'none';
-  }
-
   document.addEventListener('DOMContentLoaded', function () {
-    // Validasi sebelum submit untuk login form
-    const loginForm = document.querySelector('#FormLogin form');
-    if (loginForm) {
-      loginForm.addEventListener('submit', function (e) {
-        const email = document.getElementById('Login-Email');
-        const password = document.getElementById('Login-Password');
-
-        if (!email.value || !password.value) {
-          e.preventDefault();
-          if (!email.value) {
-            document.getElementById('LoginEmailError').textContent = 'Email is required.';
-          }
-          if (!password.value) {
-            document.getElementById('LoginPasswordError').textContent = 'Password is required.';
-          }
-        }
-      });
-    }
-
-    // Validasi sebelum submit untuk register form
     const registerForm = document.querySelector('.customer-register-form');
-    if (registerForm) {
-      registerForm.addEventListener('submit', function (e) {
-        const emailValid = validateEmail(document.getElementById('RegisterForm-email'));
-        const termsChecked = document.getElementById('terms-checkbox').checked;
-        const firstName = document.getElementById('Register-FirstName');
-        const lastName = document.getElementById('Register-LastName');
-        const password = document.getElementById('RegisterForm-password');
-
-        if (!emailValid || !termsChecked || !firstName.value || !lastName.value || !password.value) {
-          e.preventDefault();
-          if (!emailValid) {
-            document.querySelector('.email-error-message').style.display = 'block';
-          }
-          if (!termsChecked) {
-            alert('Please accept the terms and conditions.');
-          }
-        }
-      });
-
-      // Atur tombol Register berdasarkan checkbox terms
-      const termsCheckbox = document.getElementById('terms-checkbox');
-      const registerButton = document.getElementById('register-button');
+    const registerButton = document.getElementById('register-button');
+  
+    if (!registerForm || !registerButton) return;
+  
+    const firstName = document.getElementById('Register-FirstName');
+    const lastName = document.getElementById('Register-LastName');
+    const emailInput = document.getElementById('RegisterForm-email');
+    const passwordInput = document.getElementById('RegisterForm-password');
+    const termsCheckbox = document.getElementById('terms-checkbox');
+  
+    const firstNameError = document.getElementById('RegisterFirstNameError');
+    const lastNameError = document.getElementById('RegisterLastNameError');
+    const passwordError = document.getElementById('RegisterPasswordError');
+    const termsError = document.getElementById('RegisterTermsError');
+    const emailError = document.querySelector('.email-error-message');
+  
+    if (termsCheckbox) {
       registerButton.disabled = !termsCheckbox.checked;
       termsCheckbox.addEventListener('change', function () {
         registerButton.disabled = !this.checked;
       });
     }
+  
+    registerButton.addEventListener('click', function () {
+      if (registerButton.disabled) return;
+  
+      firstNameError.textContent = '';
+      lastNameError.textContent = '';
+      passwordError.textContent = '';
+      termsError.textContent = '';
+      if (emailError) {
+        emailError.style.display = 'none';
+        emailError.textContent = 'Invalid email format';
+      }
+  
+      let hasError = false;
+  
+      if (!firstName.value.trim()) {
+        firstNameError.textContent = 'First name is required.';
+        hasError = true;
+      }
+  
+      if (!lastName.value.trim()) {
+        lastNameError.textContent = 'Last name is required.';
+        hasError = true;
+      }
+  
+      if (!emailInput.value.trim()) {
+        if (emailError) {
+          emailError.textContent = 'Email is required.';
+          emailError.style.display = 'block';
+        }
+        hasError = true;
+      } else if (!validateEmail(emailInput)) {
+        if (emailError) {
+          emailError.textContent = 'Invalid email format';
+          emailError.style.display = 'block';
+        }
+        hasError = true;
+      }
+  
+      if (!passwordInput.value.trim()) {
+        passwordError.textContent = 'Password is required.';
+        hasError = true;
+      } else if (passwordInput.value.length < 8) {
+        passwordError.textContent = 'Password must be at least 8 characters.';
+        hasError = true;
+      }
+  
+      if (!termsCheckbox.checked) {
+        termsError.textContent = 'Please accept the terms and conditions.';
+        hasError = true;
+      }
+  
+      if (hasError) return;
+  
+      registerButton.disabled = true;
+      registerButton.textContent = 'Registering...';
+  
+      registerForm.submit();
+    });
   });
-
+  
   function validateEmail(input) {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(input.value);
@@ -608,38 +449,35 @@
 </script>
 
 {% schema %}
-{
-  "name": "t:sections.main-register.name",
-  "settings": [
-    {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
-    },
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Insert Logo"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 36
-    }
-  ]
-}
+  {
+    "name": "t:sections.main-register.name",
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:sections.all.padding.section_padding_heading"
+      }, {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Insert Logo"
+      }, {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      }, {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      }
+    ]
+  }
 {% endschema %}

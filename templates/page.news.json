@@ -22,7 +22,12 @@
             "first-page": "check-data-usage",
             "second-page": "what-is-sim-card-recycling-and-its-process",
             "thrid-page": "airport-regulations-for-flights-to-dubai-have-changed-here-s-what-you-need-to-know",
+<<<<<<< HEAD
             "show-button": true
+=======
+            "show-button": true,
+            "hero-background": "shopify://shop_images/news_1.webp"
+>>>>>>> e3520917976545c6219353964ef0f7e87e86770b
           }
         },
         "news_block_EGEeC3": {
@@ -63,13 +68,27 @@
             "thrid-page": "the-beauty-of-garden-rhapsody-gardens-by-the-bay-s-night-light-show-in-singapore",
             "show-button": true
           }
+        },
+        "news_block_wQRfkB": {
+          "type": "news_block",
+          "settings": {
+            "category": "tech-guide",
+            "hero-title": "Tech Guide",
+            "hero-description": "<p>Break down complex tech topics into simple, traveler-friendly guides. Learn how to <strong>maximize your eSIM, optimize your device, and solve common connectivity issues</strong>, helping you stay online anywhere in the world.</p>",
+            "first-page": "can-my-esim-be-used-for-calls-or-sms",
+            "second-page": "",
+            "thrid-page": "",
+            "show-button": true,
+            "hero-background": "shopify://shop_images/WhatsApp_Image_2025-11-20_at_16.05.04_32a9aae1.jpg"
+          }
         }
       },
       "block_order": [
         "news_block_R4Mzgt",
         "news_block_EGEeC3",
         "news_block_dbChQJ",
-        "news_block_AyHEdg"
+        "news_block_AyHEdg",
+        "news_block_wQRfkB"
       ],
       "settings": {
         "main-heading": "Stay Connected, Travel Smarter",

@@ -578,5 +578,41 @@
       "signup_form_success": "We will send you an email right before we open!",
       "password_link": "Enter using password"
     }
+  },
+  "search": {
+    "filter": {
+      "all": "Semua"
+    },
+    "no_match_filter": "Tidak ada produk yang cocok dengan filter ini.",
+    "no_products": "Produk tidak ditemukan."
+  },
+  "product": {
+    "sim_type": {
+      "sim_card": "Kartu SIM",
+      "esim": "Kartu SIM Elektronik"
+    },
+    "card": {
+      "insurance_label": "Asuransi",
+      "sim_type_prefix": "Jenis SIM:",
+      "coverage": "Cakupan",
+      "countries": "{{ count }} Negara",
+      "including": "Termasuk",
+      "data": "Data",
+      "days": "Hari",
+      "days_insurance": "Hingga 31 hari",
+      "price": "Harga",
+      "price_from_prefix": "Mulai dari",
+      "button_gsim": "Pilih Paket",
+      "button_default": "Beli Sekarang",
+      "esim_label": "eSIM"
+    }
+  },
+  "popular_countries": {
+    "title": "Negara Populer",
+    "all_destination_title": "Semua Destinasi",
+    "show_all": "Semua Destinasi",
+    "tab_land": "Negara",
+    "tab_region": "Wilayah",
+    "start_from": "Mulai dari",
   }
 }

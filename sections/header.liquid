@@ -1,6 +1,4 @@
 <style>
-  /* =============== Utilities & Global =============== */
-
   .flex-center {
     display: flex;
     align-items: center;
@@ -26,8 +24,6 @@
   a {
     text-decoration: none;
   }
-
-  /* =============== Header =============== */
 
   .header__wrapper {
     display: flex;
@@ -64,15 +60,12 @@
     color: var(--color-primary);
   }
 
-  /* reset button */
   .menu-toggle {
     border: none;
     background: transparent;
     padding: 0;
     cursor: pointer;
   }
-
-  /* =============== Currency & Language =============== */
 
   .currency-language {
     display: flex;
@@ -88,8 +81,6 @@
     display: flex;
     align-items: center;
   }
-
-  /* =============== Sidebar Desktop Base =============== */
 
   .sidebar-list {
     display: grid;
@@ -121,8 +112,6 @@
     display: none;
   }
 
-  /* =============== Header Right (Mobile Icons) =============== */
-
   .header-mobile-right {
     display: none;
     align-items: center;
@@ -139,8 +128,6 @@
     width: 24px;
     height: 24px;
   }
-
-  /* =============== Hamburger Icon =============== */
 
   .animated-icon {
     position: relative;
@@ -184,7 +171,32 @@
     transform: rotate(-45deg);
   }
 
-  /* =============== Mobile =============== */
+  .header-cart,
+  .header-cart-link {
+    position: relative;
+  }
+
+  .header-cart-icon-wrapper {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .header-cart__badge {
+    position: absolute;
+    top: -4px;
+    right: -8px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
+    font-weight: 600;
+    box-shadow: 0 0 0 2px #fff;
+  }
 
   @media (max-width: 768px) {
     .header-menu {
@@ -300,18 +312,29 @@
         {% endif %}
       </div>
 
-      <!-- IKON KANAN KHUSUS MOBILE -->
       <div class="header-mobile-right" aria-label="Quick actions">
-        <a href="/cart" class="header-mobile-icon" aria-label="Cart">
-          <img src="{{ 'header-cart.svg' | asset_url }}" alt="Cart" class="icon-24">
+        <a href="{{ routes.cart_url }}" class="header-mobile-icon header-cart" aria-label="Cart">
+          <span class="header-cart-icon-wrapper">
+            <img src="{{ 'header-cart.svg' | asset_url }}" alt="Cart" class="icon-24">
+            {% if cart.items.size > 0 %}
+              <span class="header-cart__badge">{{ cart.items.size }}</span>
+            {% endif %}
+          </span>
         </a>
-        <a href="/account/login" class="header-mobile-icon" aria-label="Profile">
+
+        {% assign profile_url = customer | default: false %}
+        {% if customer %}
+          {% assign profile_url = routes.account_url %}
+        {% else %}
+          {% assign profile_url = routes.account_login_url %}
+        {% endif %}
+
+        <a href="{{ profile_url }}" class="header-mobile-icon" aria-label="Profile">
           <img src="{{ 'header-profile.svg' | asset_url }}" alt="Profile" class="icon-24">
         </a>
       </div>
 
       <div class="header-right">
-        <!-- Versi DESKTOP -->
         <div class="currency-language">
           <div class="currency-language-group">
             <div class="inline-flex-center">
@@ -333,37 +356,29 @@
           id="navbar"
           role="navigation"
           aria-label="Main navigation"
+          data-root-url="{{ routes.root_url }}"
           data-icons='
-            {
-              "home": "{{ 'header-home.svg' | asset_url }}",
-              "esim": "{{ 'header-esim.svg' | asset_url }}",
-              "simcard": "{{ 'header-simcard.svg' | asset_url }}",
-              "insurance": "{{ 'header-insurance.svg' | asset_url }}",
-              "usage": "{{ 'header-usage.svg' | asset_url }}",
-              "topup": "{{ 'icon-plus.svg' | asset_url }}",
-              "about": "{{ 'header-about.svg' | asset_url }}",
-              "faq": "{{ 'header-faq.svg' | asset_url }}",
-              "news": "{{ 'header-news.svg' | asset_url }}",
-              "cart": "{{ 'header-cart.svg' | asset_url }}",
-              "profile": "{{ 'header-profile.svg' | asset_url }}"
-            }
+                {
+                  "home": "{{ ' header-home.svg' | asset_url }}", "esim" : "{{ 'header-esim.svg' | asset_url }}"
+            , "simcard" : "{{ 'header-simcard.svg' | asset_url }}" , "insurance"
+            : "{{ 'header-insurance.svg' | asset_url }}" , "usage" : "{{ 'header-usage.svg' | asset_url }}" , "topup"
+            : "{{ 'icon-plus.svg' | asset_url }}" , "about" : "{{ 'header-about.svg' | asset_url }}" , "faq"
+            : "{{ 'header-faq.svg' | asset_url }}" , "news" : "{{ 'header-news.svg' | asset_url }}" , "cart"
+            : "{{ 'header-cart.svg' | asset_url }}" , "profile" : "{{ 'header-profile.svg' | asset_url }}" }
           '
         ></div>
       </div>
     </div>
 
-    <!-- SIDEBAR (Mobile) -->
     <div id="sidebar">
       <div class="sidebar-panel" aria-hidden="true">
-        <!-- daftar menu akan dirender ke sini -->
         <div id="sidebar-list"></div>
 
-        <!-- Blok currency-language untuk MOBILE -->
         <div class="sidebar-mobile-block">
           <div class="currency-language">
             <div class="currency-language-group">
               <div class="inline-flex-center">
-                {{- 'header-currency.svg' | inline_asset_content -}}
+                {{- ' header-currency.svg' | inline_asset_content -}}
               </div>
               <div id="bucks-mobile"></div>
             </div>
@@ -383,135 +398,147 @@
 {% endunless %}
 
 <script>
+  window.cartItemCount = {{ cart.items | size | default: 0 | plus: 0 }};
+  
   (function () {
     const nav = document.getElementById('navbar');
     if (!nav) return;
-
+  
     const iconsData = nav.getAttribute('data-icons');
     if (!iconsData) return;
-
+  
     const icons = JSON.parse(iconsData);
-
+  
+    const rawRootUrl = nav.getAttribute('data-root-url') || '';
+    const cleanRoot = rawRootUrl.replace(/\/$/, '');
+  
+    function makeUrl(path) {
+      if (!path || path === '/') {
+        return cleanRoot || '/';
+      }
+      const cleanPath = path.startsWith('/') ? path : '/' + path;
+      return cleanRoot + cleanPath;
+    }
+  
     const menu = [
-      { label: 'Home', icon: icons.home, link: '/' },
-      { label: 'eSIM', icon: icons.esim, link: '/pages/product-category?sim_type=esim' },
-      { label: 'SIM Card', icon: icons.simcard, link: '/pages/product-category?sim_type=sim-card' },
-      { label: 'Insurance', icon: icons.insurance, link: '/pages/product-category?sim_type=insurance' },
-      { label: 'Data Usage', icon: icons.usage, link: '/pages/check-data-usage' },
-      { label: 'Top Up', icon: icons.topup, link: '/pages/check-data-usage-topup' },
-      { label: 'About Us', icon: icons.about, link: '/pages/about-us' },
-      { label: 'FAQ', icon: icons.faq, link: '/pages/faq' },
-      { label: 'News', icon: icons.news, link: '/pages/news' },
+      { label: 'Home', icon: icons.home, link: makeUrl('/') },
+      { label: 'eSIM', icon: icons.esim, link: makeUrl('pages/product-category?sim_type=esim') },
+      { label: 'SIM Card', icon: icons.simcard, link: makeUrl('pages/product-category?sim_type=sim-card') },
+      { label: 'Insurance', icon: icons.insurance, link: makeUrl('pages/product-category?sim_type=insurance') },
+      { label: 'Data Usage', icon: icons.usage, link: makeUrl('pages/check-data-usage') },
+      { label: 'Top Up', icon: icons.topup, link: makeUrl('pages/check-data-usage-topup') },
+      { label: 'About Us', icon: icons.about, link: makeUrl('pages/about-us') },
+      { label: 'FAQ', icon: icons.faq, link: makeUrl('pages/faq') },
+      { label: 'News', icon: icons.news, link: makeUrl('pages/news') },
     ];
-
-    const normalizeLink = (link) => (link && link.startsWith('/') ? link : `/${link || ''}`);
-
+  
     function renderMenuList(items) {
       const itemsHtml = items
         .map(
           (item) => `
             <li>
-              <a href="${normalizeLink(item.link)}" class="sidebar-link">
+              <a href="${item.link}" class="sidebar-link">
                 <img src="${item.icon}" alt="${item.label} icon" class="icon-24" />
                 <span style="font-weight:bold;">${item.label}</span>
               </a>
             </li>`
         )
         .join('');
-
       return `<ul class="sidebar-list">${itemsHtml}</ul>`;
     }
-
+  
     function renderHeaderMenu({ container, items }) {
       const fullItems = items.concat([
-        { label: 'Cart', icon: icons.cart, link: '/cart' },
-        { label: 'Profile', icon: icons.profile, link: '/account' },
+        { label: 'Cart', icon: icons.cart, link: "{{ routes.cart_url }}" },
+        { label: 'Profile', icon: icons.profile, link: "{{ routes.account_url }}" },
       ]);
-
+  
+      const count = window.cartItemCount || 0;
+  
       const itemsHtml = fullItems
-        .map(
-          (item) => `
+        .map((item) => {
+          const isCart = item.label === 'Cart';
+          const badge =
+            isCart && count > 0
+              ? `<span class="header-cart__badge">${count}</span>`
+              : '';
+  
+          return `
             <li>
-              <a href="${normalizeLink(item.link)}" class="menu-list">
-                <img src="${item.icon}" alt="${item.label} icon" class="icon-24" />
+              <a href="${item.link}"
+                 class="menu-list ${isCart ? 'header-cart-link' : ''}">
+                <span class="header-cart-icon-wrapper">
+                  <img src="${item.icon}" alt="${item.label} icon" class="icon-24" />
+                  ${badge}
+                </span>
                 <span style="font-weight:bold;">${item.label}</span>
               </a>
-            </li>`
-        )
+            </li>`;
+        })
         .join('');
-
       container.innerHTML = `<ul class="header-menu">${itemsHtml}</ul>`;
     }
-
-    // Render header menu (desktop)
+  
     renderHeaderMenu({ container: nav, items: menu });
-
-    // Render sidebar list (mobile)
+  
     const sidebarListMount = document.getElementById('sidebar-list');
     if (sidebarListMount) {
       sidebarListMount.innerHTML = renderMenuList(menu);
     }
-
-    /* ===========================
-       Toggle Sidebar (Mobile)
-    ============================*/
+  
     const sidebarPanel = document.querySelector('.sidebar-panel');
     const menuToggleBtn = document.querySelector('.menu-toggle');
     const menuIcon = document.getElementById('menu-icon');
     const root = document.documentElement;
-
+  
     function setScrollLock(locked) {
       const value = locked ? 'hidden' : '';
       root.style.overflow = value;
       document.body.style.overflow = value;
     }
-
+  
     function setMenuState(isOpen) {
       if (!sidebarPanel) return;
-
+  
       sidebarPanel.classList.toggle('active', isOpen);
       sidebarPanel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-
+  
       if (menuIcon) {
         menuIcon.classList.toggle('open', isOpen);
       }
-
       if (menuToggleBtn) {
         menuToggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         menuToggleBtn.setAttribute('aria-label', isOpen ? 'Close Menu' : 'Open Menu');
       }
-
       setScrollLock(isOpen);
     }
-
+  
     function toggleMenu() {
       if (!sidebarPanel) return;
       const isOpen = sidebarPanel.classList.contains('active');
       setMenuState(!isOpen);
     }
-
+  
     function closeMenu() {
       if (!sidebarPanel || !sidebarPanel.classList.contains('active')) return;
       setMenuState(false);
     }
-
+  
     if (menuToggleBtn) {
       menuToggleBtn.addEventListener('click', toggleMenu);
     }
-
-    // Tutup saat klik di luar panel & tombol
+  
     document.addEventListener('click', function (e) {
       if (!sidebarPanel || !sidebarPanel.classList.contains('active')) return;
-
+  
       const clickInsidePanel = sidebarPanel.contains(e.target);
       const clickOnToggle = menuToggleBtn && menuToggleBtn.contains(e.target);
-
+  
       if (!clickInsidePanel && !clickOnToggle) {
         closeMenu();
       }
     });
-
-    // Tutup saat ESC
+  
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         closeMenu();

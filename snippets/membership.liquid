@@ -50,7 +50,8 @@
     For every
     <strong>IDR 1,000</strong>
     spent on your purchase, you will earn
-    <strong>1 point</strong>. This means that every time you make a purchase, the amount you spend directly translates into points that accumulate in your account.
+    <strong>1 point</strong>. This means that every time you make a purchase, the amount you spend directly translates
+    into points that accumulate in your account.
   </p>
   <h3 class="membership__sub-heading">Example:</h3>
   <ul>
@@ -58,16 +59,30 @@
     <li>If you spend IDR 50,000, you will earn 50 points.</li>
     <li>If you spend IDR 100,000, you will earn 100 points.</li>
   </ul>
-  <p>The points are automatically calculated and added to your account, so you don't need to do anything extra after making a purchase. The more you spend, the more points you will earn, which will increase your future discount opportunities.</p>
+  <p>
+    The points are automatically calculated and added to your account, so you don't need to do anything extra after
+    making a purchase. The more you spend, the more points you will earn, which will increase your future discount
+    opportunities.
+  </p>
   <h3 class="membership__sub-heading">2. Earning Points by Folowing Our Instagram</h3>
-  <p>As part of the rewards system, you can also earn points by engaging with our brand on social media. Specifically, by following our Instagram account
-    <a href="https://www.instagram.com/global.komunika?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">(@global.komunika)</a>, you will receive a
-    <strong>bonus of 150 points</strong>.</p>
-  <p>This means that once you follow us, you immediately get 150 points added to your account, which is a nice way to start earning rewards without even making a purchase!</p>
+  <p>
+    As part of the rewards system, you can also earn points by engaging with our brand on social media. Specifically, by
+    following our Instagram account
+    <a href="https://www.instagram.com/global.komunika?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+      >(@global.komunika)</a
+    >, you will receive a <strong>bonus of 150 points</strong>.
+  </p>
+  <p>
+    This means that once you follow us, you immediately get 150 points added to your account, which is a nice way to
+    start earning rewards without even making a purchase!
+  </p>
   <h3 class="membership__sub-heading">3. Earning Points by Reviewing Products</h3>
-  <p>We encourage customers to share their experiences with our products. After purchasing any product, you have the option to leave a review. By doing so, you will earn an additional
+  <p>
+    We encourage customers to share their experiences with our products. After purchasing any product, you have the
+    option to leave a review. By doing so, you will earn an additional
     <strong>150 points</strong>
-    as a reward</p>
+    as a reward
+  </p>
   <h3 class="membership__sub-heading">
     <strong>Example:</strong>
   </h3>
@@ -77,13 +92,20 @@
   </ul>
   <p>This helps us improve our products and services while rewarding you for your time and insights.</p>
   <h2 class="membership__heading">How to Redeem Points?</h2>
-  <p>Now that you have accumulated points, the next step is to redeem them for discounts on future purchases. Here’s how it works:</p>
+  <p>
+    Now that you have accumulated points, the next step is to redeem them for discounts on future purchases. Here’s how
+    it works:
+  </p>
   <ul>
     <li>
       <strong>For every 100 points</strong>, you can redeem a
       <strong>discount of IDR 2,000</strong>
-      on your next purchase.</li>
-    <li>You can redeem points in multiples. This means that if you accumulate more than 100 points, you can redeem them for a larger discount.</li>
+      on your next purchase.
+    </li>
+    <li>
+      You can redeem points in multiples. This means that if you accumulate more than 100 points, you can redeem them
+      for a larger discount.
+    </li>
   </ul>
   <h3 class="membership__sub-heading">
     <strong>Example of Redeeming Points:</strong>
@@ -91,16 +113,19 @@
   <ul>
     <li>100 points = IDR 2,000 discount</li>
     <li>200 points = IDR 4,000 discount</li>
-    <li>500 points = IDR 10,000 discount
-    </li>
+    <li>500 points = IDR 10,000 discount</li>
   </ul>
-  <p>So, if you have
-    <strong>500 points</strong>, you can redeem those points for a
+  <p>
+    So, if you have <strong>500 points</strong>, you can redeem those points for a
     <strong>discount of IDR 10,000</strong>
-    on your next purchase. The more points you collect, the higher the discount you can get!</p>
+    on your next purchase. The more points you collect, the higher the discount you can get!
+  </p>
   <h2 class="membership__heading">How Can I Access My Points?</h2>
-  <p>Once you’ve signed up for the membership program, you will have a user account on our website. All your points will be stored and updated in real-time under your account profile. Here’s how to access them:</p>
-  {% assign handles = "1,2,3,4,5" | split: "," %}
+  <p>
+    Once you’ve signed up for the membership program, you will have a user account on our website. All your points will
+    be stored and updated in real-time under your account profile. Here’s how to access them:
+  </p>
+  {% assign handles = '1,2,3,4,5' | split: ',' %}
 
   {% for handle in handles %}
     {% assign member = shop.metaobjects.membership[handle] %}
@@ -112,23 +137,34 @@
         {% if member.image %}
           <img
             src="{{ member.image | img_url: 'master' }}"
-            width="400px"
+            width="100%"
             height="auto"
             alt="Membership image"
-            class="mb-2 rounded">
+            class="mb-2 rounded"
+          >
         {% endif %}
       </section>
     {% endif %}
   {% endfor %}
-  <p>Keeping an eye on your points history helps you manage your balance effectively and plan your redemptions for maximum benefits.</p>
-
+  <p>
+    Keeping an eye on your points history helps you manage your balance effectively and plan your redemptions for
+    maximum benefits.
+  </p>
 
   <h1 class="membership__title">FAQ</h1>
   <p>1. How Can I Earn Points?</p>
-  <p>You can earn points by purchasing, following us on Instagram, and writing reviews. These points can be redeemed for discounts on future transactions.</p>
+  <p>
+    You can earn points by purchasing, following us on Instagram, and writing reviews. These points can be redeemed for
+    discounts on future transactions.
+  </p>
   <p>2. How Can I Spend My Points?</p>
-  <p>Each 100 points is equivalent to an IDR 2000 discount. Points can only be redeemed in multiples, so accumulating more points allows for greater discounts.
+  <p>
+    Each 100 points is equivalent to an IDR 2000 discount. Points can only be redeemed in multiples, so accumulating
+    more points allows for greater discounts.
   </p>
   <p>3. How Can I Participate?</p>
-  <p>You can simply create an account on our website. Once registered, you can start earning points through various activities listed in the first question.</p>
+  <p>
+    You can simply create an account on our website. Once registered, you can start earning points through various
+    activities listed in the first question.
+  </p>
 </div>

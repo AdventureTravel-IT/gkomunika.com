@@ -3,7 +3,8 @@
     <button
       id="btn-esim"
       class="product-category__button"
-      data-category="esim">
+      data-category="esim"
+    >
       <div class="product-category__icon">
         {% render 'icon-qr-code' %}
       </div>
@@ -13,7 +14,8 @@
     <button
       id="btn-simcard"
       class="product-category__button"
-      data-category="sim-card">
+      data-category="sim-card"
+    >
       <div class="product-category__icon">
         {% render 'icon-simcard' %}
       </div>
@@ -23,7 +25,8 @@
     <button
       id="btn-insurance"
       class="product-category__button"
-      data-category="insurance">
+      data-category="insurance"
+    >
       <div class="product-category__icon">
         {% render 'icon-insurance' %}
       </div>
@@ -34,7 +37,7 @@
 
 <style>
   .product-category {
-   max-width: 1920px;
+    max-width: 1920px;
     margin: 0 auto;
   }
 
@@ -91,42 +94,50 @@
 
   .product-category__label {
     font-weight: 700;
-    font-size: 1.5rem; /* kira-kira setara text-3xl di Tailwind */
+    font-size: 1.5rem;
     line-height: 1.2;
-    color: inherit; /* biar ikut warna button (neutral on primary) */
+    color: inherit;
   }
 
-  /* Responsive */
   @media (max-width: 768px) {
-    .product-category__label {
-      font-size: 1.25rem;
-    }
     .product-category__wrapper {
-      padding: 20px 24px;
+      padding: 16px 20px;
+      flex-wrap: wrap;
+      overflow-x: visible;
+      gap: 12px;
+      justify-content: center;
     }
 
     .product-category__button {
-      padding: 12px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      flex: 0 0 auto;
+    }
+
+    .product-category__label {
+      font-size: 1rem;
+    }
+
+    .product-category__icon {
+      width: 18px;
+      height: 18px;
     }
   }
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Ambil elemen berdasarkan ID
+  document.addEventListener('DOMContentLoaded', function () {
     const btnEsim = document.getElementById('btn-esim');
     const btnSimcard = document.getElementById('btn-simcard');
     const btnInsurance = document.getElementById('btn-insurance');
-  
-    // Fungsi untuk redirect
+
     function goToCategory(button) {
       const categoryValue = button.getAttribute('data-category');
       if (categoryValue) {
         window.location.href = `/pages/product-category?sim_type=${encodeURIComponent(categoryValue)}`;
       }
     }
-  
-    // Pasang event listener
+
     btnEsim.addEventListener('click', () => goToCategory(btnEsim));
     btnSimcard.addEventListener('click', () => goToCategory(btnSimcard));
     btnInsurance.addEventListener('click', () => goToCategory(btnInsurance));
@@ -134,14 +145,14 @@
 </script>
 
 {% schema %}
-  {
-    "name": "Product Category Button",
-    "settings": [],
-    "presets": [
-      {
-        "name": "Product Category Button",
-        "category": "Custom"
-      }
-    ]
-  }
+{
+  "name": "Product Category Button",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Product Category Button",
+      "category": "Custom"
+    }
+  ]
+}
 {% endschema %}

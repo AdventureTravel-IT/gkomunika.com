@@ -8,7 +8,6 @@
  * ------------------------------------------------------------
  */
 {
-  "name": "Landing Page GSIM",
   "sections": {
     "main": {
       "type": "landing-hero-gsim",
@@ -33,7 +32,7 @@
     "faq": {
       "type": "landing-faq-gsim",
       "settings": {}
-    },
+    }
   },
   "order": [
     "main",

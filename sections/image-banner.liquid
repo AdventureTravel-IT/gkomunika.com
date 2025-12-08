@@ -1,47 +1,262 @@
-<div class="banner-container">
-  <div class="banner__wrapper">
-    <img 
-      class="banner__image"
-      src="{{ section.settings.image | img_url: 'master' }}" 
-      alt="Banner Image"
-      loading="lazy"
-    />
-    <div class="banner__content--wrapper">
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'heading' -%}
-            <h2
-              class="banner__heading--title {{ block.settings.heading_size }}"
-              {{ block.shopify_attributes }}
-              id="default-heading"
-            >
-              {{ block.settings.heading }}
-            </h2>
+{% style %}
+  .hero-container {
+    position: relative;
+    height: 580px;
+    overflow: hidden;
+  }
 
-            <h2
-              class="banner__heading--result {{ block.settings.heading_size }}"
-              id="search-heading"
-              style="display: none;"
-            >
-              Search Result for “{{ search.terms }}”
-            </h2>
+  .img-mobile,
+  .img-desktop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-          {%- when 'text' -%}
-            <div class="banner__heading--text {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
-              <p>{{ block.settings.text }}</p>
-            </div>
-          {%- when 'desc' -%}
-            <div class="banner__heading--desc {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
-              <p>{{ block.settings.desc }}</p>
-            </div>
-          {%- when 'search' -%}
-            <div class="banner__heading--search">
-              {% render 'search-bar' %}
-            </div>
-        {%- endcase -%}
-      {%- endfor -%}
-    </div>
+  .img-mobile {
+    object-position: 89% 100%;
+  }
+
+  .img-desktop {
+    display: none;
+  }
+
+  .hero-content {
+    position: absolute;
+    top: 150px;
+    left: 0;
+    width: 100%;
+    transform: translateY(-0%);
+  }
+
+  .hero-text {
+    padding: 0 16px;
+    margin-bottom: 10px;
+  }
+
+  .hero-text h3 {
+    color: #fff;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-text h2 {
+    color: #fff;
+    font-size: 30px;
+    font-weight: bold;
+  }
+
+  .hero-text span {
+    color: #fff;
+    font-size: 16px;
+  }
+
+  .cta-mobile {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 350px;
+    padding: 10px 16px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 999px;
+
+    border: 3px solid #fff;
+    background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+    color: #fff;
+    display: block;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .cta-mobile:hover {
+    transform: translateX(-50%) translateY(-3px);
+  }
+
+  .cta-desktop {
+    display: none;
+  }
+
+  .banner__content--wrapper {
+    position: absolute;
+    width: 50%;
+    padding: 130px 5% 0 10%;
+    z-index: 1;
+  }
+
+  .banner__heading--text p,
+  .banner__heading--desc p {
+    color: var(--color-neutral);
+    margin: 0;
+  }
+
+  #default-heading {
+    font-weight: bold;
+    color: var(--color-neutral);
+    margin: 0;
+  }
+
+  .banner__heading-text p {
+    letter-spacing: 0.1em;
+  }
+
+  .banner__heading-desc {
+    font-weight: bold;
+  }
+
+  .banner__heading--search {
+    margin-top: 10px;
+  }
+
+  .link-cta-learn {
+    text-decoration: none;
+    color: #fff;
+  }
+
+  @media (min-width: 1366px) and (max-width: 1366px) {
+    .cta-desktop {
+      left: 780px !important;
+      width: 400px !important;
+      bottom: 90px !important;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-container {
+      height: 600px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero-container {
+      height: 700px;
+    }
+    .hero-content {
+      top: 50%;
+      width: 50%;
+      transform: translateY(-50%);
+    }
+    .hero-text {
+      padding: 0;
+    }
+    .hero-text h2 {
+      font-size: 40px;
+    }
+    .img-mobile {
+      display: none;
+    }
+    .img-desktop {
+      display: block;
+    }
+    .cta-mobile {
+      display: none;
+    }
+    .cta-desktop {
+      display: block;
+      position: absolute;
+      bottom: 80px;
+      left: 900px;
+      padding: 10px 30px;
+      width: 450px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+
+      border-radius: 999px;
+      border: 3px solid #fff;
+      background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+      color: #fff;
+      transition: all 0.2s ease;
+    }
+
+    .cta-desktop:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .banner__content--wrapper {
+      width: 100%;
+      padding: 0 24px;
+      position: absolute;
+      top: 30px;
+    }
+
+    .banner__heading--search {
+      width: 100%;
+    }
+
+    .banner__heading--text p,
+    .banner__heading--desc p,
+    #default-heading,
+    .banner__heading--title,
+    .banner__heading--result {
+      color: var(--color-neutral);
+    }
+  }
+{% endstyle %}
+
+<div class="hero-container">
+  <img
+    src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/banner-winter-mobile.webp?v=1764416410"
+    class="img-mobile"
+    loading="lazy"
+    format="webp"
+  >
+
+  <img
+    src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/banner-winter-desktop.webp?v=1764416284"
+    class="img-desktop"
+    loading="lazy"
+    format="webp"
+  >
+
+  <div class="banner__content--wrapper">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'heading' -%}
+          <h2
+            class="banner__heading--title {{ block.settings.heading_size }}"
+            {{ block.shopify_attributes }}
+            id="default-heading"
+          >
+            {{ block.settings.heading }}
+          </h2>
+
+          <h2
+            class="banner__heading--result {{ block.settings.heading_size }}"
+            id="search-heading"
+            style="display: none;"
+          >
+            Search Result for “{{ search.terms }}”
+          </h2>
+
+        {%- when 'text' -%}
+          <div class="banner__heading--text {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+            <p>{{ block.settings.text }}</p>
+          </div>
+        {%- when 'desc' -%}
+          <div class="banner__heading--desc {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+            <p>{{ block.settings.desc }}</p>
+          </div>
+        {%- when 'search' -%}
+          <div class="banner__heading--search">
+            {% render 'search-bar' %}
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
   </div>
+
+  <button class="cta-mobile">
+    <a href="pages/gsim" class="link-cta-learn"> Learn more our latest product gSIM! </a>
+  </button>
+
+  <button class="cta-desktop">
+    <a href="pages/gsim" class="link-cta-learn"> Learn more our latest product gSIM! </a>
+  </button>
 </div>
 
 {% schema %}
@@ -144,6 +359,6 @@
       "limit": 1,
       "settings": []
     }
-  ],
+  ]
 }
 {% endschema %}

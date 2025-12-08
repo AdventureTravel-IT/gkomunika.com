@@ -748,36 +748,38 @@ li[data-address] > h2 {
 }
 
 .customer.reset-password button {
-  background-color: #1e3a8a;
+  background-color: var(--color-primary);
   color: white;
 }
 
 .customer.reset-password .field input {
-  background-color: #dbeafe;
-  border: 0.1rem solid #93c5fd;
-  color: #1e3a8a;
+  background-color: var(--color-background-secondary);
+  border: 0.1rem solid var(--color-border);
+  color: var(--color-primary);
 }
 
 .customer.reset-password .field input:focus {
-  border-color: #1e3a8a;
+  border-color: var(--color-primary);
   outline: none;
-  background-color: #bfdbfe;
+  background-color: var(--color-background-secondary);
 }
 
 .customer.reset-password .field input::placeholder {
-  color: #60a5fa;
+  color: var(--color-secondary);
 }
 
 .customer.reset-password .field label {
-  color: #1e3a8a;
+  color: var(--color-primary);
+
 }
 
 .customer.reset-password > h1 {
-  color: #1e3a8a;
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
 .customer.reset-password > p {
-  color: #1e3a8a;
+  color: var(--color-primary);
 }
 
 .customer.reset-password .validation-error {

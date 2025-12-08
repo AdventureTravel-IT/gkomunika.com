@@ -495,11 +495,11 @@
       "submit": "Create"
     },
     "reset_password": {
-      "title": "Reset account password",
+      "title": "Reset Account Password",
       "subtext": "Enter a new password",
       "password": "Password",
       "password_confirm": "Confirm password",
-      "submit": "Reset password"
+      "submit": "Reset Password"
     }
   },
   "gift_cards": {

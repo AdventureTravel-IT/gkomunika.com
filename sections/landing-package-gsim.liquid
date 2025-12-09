@@ -4,100 +4,120 @@
 
 <section class="landing-package-gsim">
   <div class="package-content">
-    <img
-      src="{{ 'choose-package-gsim.webp' | asset_url }}"
-      alt="gSim Packages"
-      class="package-image"
-      width="300"
-      height="auto"
-      loading="lazy"
-      decoding="async"
-      srcset="{{ 'choose-package-gsim.webp' | asset_url }} 300w, {{ 'choose-package-gsim.webp' | asset_url }} 600w"
-    >
+    <div class="mascot-section">
+      <img
+        src="{{ 'choose-package-gsim.webp' | asset_url }}"
+        alt="gSim Packages"
+        class="package-image"
+        width="300"
+        height="auto"
+        loading="lazy"
+        decoding="async"
+        srcset="{{ 'choose-package-gsim.webp' | asset_url }} 300w, {{ 'choose-package-gsim.webp' | asset_url }} 600w"
+      >
+    </div>
 
-    <button class="btn-prev" type="button" aria-label="Previous packages"></button>
+    <button class="btn-prev" type="button" aria-label="Previous packages">
+      <span class="sr-only">Previous</span>
+    </button>
+    <button class="btn-next" type="button" aria-label="Next packages">
+      <span class="sr-only">Next</span>
+    </button>
 
-    <img
-      src="{{ 'asia-gsim.webp' | asset_url }}"
-      alt="Asia gSim Packages"
-      class="asia-image"
-      width="300"
-      height="auto"
-      loading="lazy"
-      decoding="async"
-      srcset="{{ 'asia-gsim.webp' | asset_url }} 300w, {{ 'asia-gsim.webp' | asset_url }} 600w"
-    >
-    <a
-      href="https://gkomunika.com/id/products/gsim-asia"
-      class="btn-buy-package"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      BUY NOW
-    </a>
+    <div class="cards-container">
+      <div class="package-card">
+        <img
+          src="{{ 'asia-gsim.webp' | asset_url }}"
+          alt="Asia gSim Packages"
+          class="package-card-image"
+          width="300"
+          height="auto"
+          loading="lazy"
+          decoding="async"
+          srcset="{{ 'asia-gsim.webp' | asset_url }} 300w, {{ 'asia-gsim.webp' | asset_url }} 600w"
+        >
+        <a
+          href="https://gkomunika.com/products/gsim-asia"
+          class="btn-buy-package"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          BUY NOW
+        </a>
+      </div>
 
-    <img
-      src="{{ 'eropa-gsim.webp' | asset_url }}"
-      alt="Europe gSim Packages"
-      class="eropa-image"
-      width="600"
-      height="auto"
-      loading="lazy"
-      decoding="async"
-      srcset="{{ 'eropa-gsim.webp' | asset_url }} 600w, {{ 'eropa-gsim.webp' | asset_url }} 1200w"
-    >
-    <a
-      href="https://gkomunika.com/products/gsim-europe"
-      class="btn-buy-package"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      BUY NOW
-    </a>
+      <div class="package-card">
+        <img
+          src="{{ 'eropa-gsim.webp' | asset_url }}"
+          alt="Europe gSim Packages"
+          class="package-card-image"
+          width="600"
+          height="auto"
+          loading="lazy"
+          decoding="async"
+          srcset="{{ 'eropa-gsim.webp' | asset_url }} 600w, {{ 'eropa-gsim.webp' | asset_url }} 1200w"
+        >
+        <a
+          href="https://gkomunika.com/products/gsim-europe"
+          class="btn-buy-package"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          BUY NOW
+        </a>
+      </div>
 
-    <img
-      src="{{ 'middle-east-gsim.webp' | asset_url }}"
-      alt="Middle East gSim Packages"
-      class="middle-east-image"
-      width="600"
-      height="auto"
-      loading="lazy"
-      decoding="async"
-      style="display:none"
-      srcset="{{ 'middle-east-gsim.webp' | asset_url }} 600w, {{ 'middle-east-gsim.webp' | asset_url }} 1200w"
-    >
-    <a
-      href="https://gkomunika.com/products/gsim-middle-east"
-      class="btn-buy-package"
-      target="_blank"
-      rel="noopener noreferrer"
-      style="display:none"
-    >
-      BUY NOW
-    </a>
+      <div class="package-card" style="display:none">
+        <img
+          src="{{ 'middle-east-gsim.webp' | asset_url }}"
+          alt="Middle East gSim Packages"
+          class="package-card-image"
+          width="600"
+          height="auto"
+          loading="lazy"
+          decoding="async"
+          srcset="{{ 'middle-east-gsim.webp' | asset_url }} 600w, {{ 'middle-east-gsim.webp' | asset_url }} 1200w"
+        >
+        <a
+          href="https://gkomunika.com/products/gsim-middle-east"
+          class="btn-buy-package"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          BUY NOW
+        </a>
+      </div>
 
-    <img
-      src="{{ 'amerika-gsim.webp' | asset_url }}"
-      alt="Amerika gSim Packages"
-      class="amerika-image"
-      width="600"
-      height="auto"
-      loading="lazy"
-      decoding="async"
-      style="display:none"
-      srcset="{{ 'amerika-gsim.webp' | asset_url }} 600w, {{ 'amerika-gsim.webp' | asset_url }} 1200w"
-    >
-    <a
-      href="https://gkomunika.com/products/gsim-amerika"
-      class="btn-buy-package"
-      target="_blank"
-      rel="noopener noreferrer"
-      style="display:none"
-    >
-      BUY NOW
-    </a>
+      <div class="package-card" style="display:none">
+        <img
+          src="{{ 'amerika-gsim.webp' | asset_url }}"
+          alt="Amerika gSim Packages"
+          class="package-card-image"
+          width="600"
+          height="auto"
+          loading="lazy"
+          decoding="async"
+          srcset="{{ 'amerika-gsim.webp' | asset_url }} 600w, {{ 'amerika-gsim.webp' | asset_url }} 1200w"
+        >
+        <a
+          href="https://gkomunika.com/products/gsim-amerika"
+          class="btn-buy-package"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          BUY NOW
+        </a>
+      </div>
+    </div>
+  </div>
 
-    <button class="btn-next" type="button" aria-label="Next packages"></button>
+  <div class="mobile-nav-buttons">
+    <button class="btn-prev-mobile" type="button" aria-label="Previous packages">
+      <span class="sr-only">Previous</span>
+    </button>
+    <button class="btn-next-mobile" type="button" aria-label="Next packages">
+      <span class="sr-only">Next</span>
+    </button>
   </div>
 </section>
 

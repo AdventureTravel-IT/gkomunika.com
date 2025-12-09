@@ -3,8 +3,6 @@
 {%- endif -%}
 
 <section class="landing-package-gsim">
-  <button class="btn-prev" type="button" aria-label="Previous packages"></button>
-
   <div class="package-content">
     <img
       src="{{ 'choose-package-gsim.webp' | asset_url }}"
@@ -16,6 +14,8 @@
       decoding="async"
       srcset="{{ 'choose-package-gsim.webp' | asset_url }} 300w, {{ 'choose-package-gsim.webp' | asset_url }} 600w"
     >
+
+    <button class="btn-prev" type="button" aria-label="Previous packages"></button>
 
     <img
       src="{{ 'asia-gsim.webp' | asset_url }}"
@@ -32,8 +32,9 @@
       class="btn-buy-package"
       target="_blank"
       rel="noopener noreferrer"
-      >BUY NOW</a
     >
+      BUY NOW
+    </a>
 
     <img
       src="{{ 'eropa-gsim.webp' | asset_url }}"
@@ -50,8 +51,9 @@
       class="btn-buy-package"
       target="_blank"
       rel="noopener noreferrer"
-      >BUY NOW</a
     >
+      BUY NOW
+    </a>
 
     <img
       src="{{ 'middle-east-gsim.webp' | asset_url }}"
@@ -70,8 +72,9 @@
       target="_blank"
       rel="noopener noreferrer"
       style="display:none"
-      >BUY NOW</a
     >
+      BUY NOW
+    </a>
 
     <img
       src="{{ 'amerika-gsim.webp' | asset_url }}"
@@ -90,11 +93,12 @@
       target="_blank"
       rel="noopener noreferrer"
       style="display:none"
-      >BUY NOW</a
     >
-  </div>
+      BUY NOW
+    </a>
 
-  <button class="btn-next" type="button" aria-label="Next packages"></button>
+    <button class="btn-next" type="button" aria-label="Next packages"></button>
+  </div>
 </section>
 
 {% schema %}

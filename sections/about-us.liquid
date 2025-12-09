@@ -96,13 +96,13 @@
     aspect-ratio: 3 / 2;
     width: 100%;
     object-fit: cover;
-    border-radius: 15px; /* Memberikan sudut membulat */
+    border-radius: 15px;
   }
   .about-owner {
     display: flex;
     gap: 20px;
-    align-items: stretch; /* Menyamakan tinggi elemen di dalam flex container */
-    height: auto; /* Ubah menjadi auto agar fleksibel sesuai konten */
+    align-items: stretch;
+    height: auto;
   }
   .about__owner-image {
     width: 50%;
@@ -110,9 +110,9 @@
   }
   .about__owner-image img {
     border-radius: 10px;
-    width: 100%; /* Untuk memastikan gambar responsif */
-    height: 100%; /* Agar tinggi gambar mengikuti tinggi elemen parent */
-    object-fit: cover; /* Menjaga rasio gambar tetap proporsional */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     aspect-ratio: 1 / 1;
   }
 
@@ -126,7 +126,7 @@
     display: flex;
     align-items: top;
     flex-direction: column;
-    justify-content: center; /* Untuk memastikan konten tetap di tengah */
+    justify-content: center;
   }
   .about__owner-text h2 {
     margin: 0;
@@ -139,7 +139,7 @@
   .about-target h2,
   .about-team h2,
   .about-owner h2,
-  .about__review-text h2{
+  .about__review-text h2 {
     color: var(--color-primary);
     font-weight: bold;
     margin: 0;
@@ -148,9 +148,28 @@
   .about__product-deskripsi,
   .about__target-wrapper,
   .about__team-text,
-  .about__owner-text{
+  .about__owner-text {
     box-shadow: var(--box-shadow);
   }
+
+  @media (min-width: 769px) {
+    .product-flex-override {
+      flex-direction: column;
+    }
+
+    .about__product-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .about__product-image {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
   @media (max-width: 768px) {
     .about-container {
       padding: 20px 24px;
@@ -176,7 +195,7 @@
       flex-direction: column;
       align-items: center;
     }
-}
+  }
 {% endstyle %}
 
 {% if template.name == 'page' and template.suffix == 'about-us' %}
@@ -211,7 +230,7 @@
 
     {% for block in section.blocks %}
       {% if block.type == 'about-product' %}
-        <section class="about-product about-wrapper">
+        <section class="about-product about-wrapper product-flex-override">
           <div class="about__product-deskripsi">
             <h2>{{ block.settings['product-heading'] }}</h2>
             <p>{{ block.settings.product_paragraph }}</p>
@@ -234,7 +253,7 @@
             </ul>
           </div>
           <div class="about__product-wrapper">
-          <div>
+            <div>
               <img
                 src="{{ block.settings.product-image1 | image_url }}"
                 alt=""
@@ -243,8 +262,7 @@
                 class="about__product-img-main"
               >
             </div>
-          <div class="about__product-image">
-            
+            <div class="about__product-image">
               <img
                 src="{{ block.settings.product-image2 | image_url }}"
                 alt=""
@@ -252,7 +270,7 @@
                 height="100%"
                 class="about__product-img"
               >
-            
+
               <img
                 src="{{ block.settings.product-image3 | image_url }}"
                 alt=""
@@ -260,7 +278,7 @@
                 height="100%"
                 class="about__product-img"
               >
-          </div>
+            </div>
           </div>
         </section>
       {% endif %}

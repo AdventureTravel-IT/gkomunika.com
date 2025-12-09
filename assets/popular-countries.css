@@ -82,10 +82,14 @@
   align-items: center;
 }
 
-.text-content {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.tab-content {
+  display: none;
+  visibility: hidden;
+}
+
+.tab-content.active {
+  display: grid !important;
+  visibility: visible !important;
 }
 
 .text-content img {
@@ -180,7 +184,26 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Responsive */
+#land .text-content img {
+  width: 50px !important;
+  height: 50px !important;
+  margin-right: 18px !important;
+}
+
+#land .text-content {
+  display: flex !important;
+  align-items: center !important;
+}
+
+#region .text-content img {
+  width: 55px !important;
+  height: 55px !important;
+}
+
+#region .text-content {
+  gap: 14px !important;
+}
+
 @media screen and (max-width: 1440px) {
   .popular-countries {
     padding: 0 10%;
@@ -206,8 +229,39 @@
 }
 
 @media (max-width: 768px) {
+  .tab-content.active {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px;
+  }
+
+  .country {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-neutral);
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .country img {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+
+  .country .text-content {
+    margin-left: 10px;
+    width: 100%;
+  }
+
   .popular-countries {
     padding: 0 24px 20px;
+  }
+
+  .popular-countries h2 {
+    font-size: 28px;
   }
 
   .show-all button {
@@ -216,20 +270,6 @@
 
   .tab-content {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .popular-countries h2 {
-    font-size: 28px;
-  }
-
-  /* .tab-content a:nth-child(n + 5) {
-    display: none;
-  } */
-  .country {
-    display: flex;
-    align-items: center;
-    background-color: var(--color-neutral);
-    border-radius: var(--font-small);
   }
 
   .tabs {
@@ -245,6 +285,17 @@
     align-items: center;
     background: var(--color-neutral);
     border-radius: 12px;
+  }
+
+  #land .text-content img {
+    width: 45px !important;
+    height: 45px !important;
+    margin-right: 14px !important;
+  }
+
+  #region .text-content img {
+    width: 55px !important;
+    height: 55px !important;
   }
 }
 

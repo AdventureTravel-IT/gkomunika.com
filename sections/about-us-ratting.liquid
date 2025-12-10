@@ -96,7 +96,8 @@
     }
 
     .review-images {
-      grid-template-columns: 1fr;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px;
     }
 
@@ -104,6 +105,7 @@
       width: 100%;
       height: auto;
       border-radius: 10px;
+      object-fit: cover;
     }
 
     .review-card {

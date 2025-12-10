@@ -167,15 +167,17 @@
     text-align: center;
     margin-top: 40px;
     margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
   }
 
   .see-more-btn {
-    padding: 12px 40px;
+    padding: 8px 24px;
     background-color: var(--color-primary);
     color: white;
     border: none;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -320,8 +322,32 @@
           <h2>{{ block.settings['hero-title'] }}</h2>
           <span>{{ block.settings['hero-description'] }}</span>
           {% if block.settings['show-button'] %}
-            <a href="/pages/news-category/{{ block.settings.category }}">
-              <button class="news__hero-button">Read More</button>
+            {% assign current_locale = request.locale.iso_code %}
+            {% assign category_slug = block.settings.category %}
+
+            {%- if current_locale == 'id' -%}
+              {%- case category_slug -%}
+                {%- when 'news' -%}
+                  {%- assign translated_slug = 'berita' -%}
+                {%- when 'event' -%}
+                  {%- assign translated_slug = 'acara' -%}
+                {%- when 'travel-guide' -%}
+                  {%- assign translated_slug = 'panduan-perjalanan' -%}
+                {%- when 'travel-tips' -%}
+                  {%- assign translated_slug = 'tips-perjalanan' -%}
+                {%- else -%}
+                  {%- assign translated_slug = category_slug -%}
+              {%- endcase -%}
+              {%- assign category_url = '/id/pages/news-category/' | append: translated_slug -%}
+            {%- else -%}
+              {%- assign translated_slug = category_slug -%}
+              {%- assign category_url = '/pages/news-category/' | append: translated_slug -%}
+            {%- endif -%}
+
+            <a href="{{ category_url }}">
+              <button class="news__hero-button">
+                {%- if current_locale == 'id' -%}Baca Selengkapnya{%- else -%}Read More{%- endif -%}
+              </button>
             </a>
           {% endif %}
         </div>
@@ -356,14 +382,93 @@
     </section>
   {% endfor %}
 
+  {% assign current_locale = request.locale.iso_code %}
   {% assign path_parts = request.path | split: '/' %}
-  {% assign category_slug_raw = path_parts.last %}
-  {% assign category_slug = category_slug_raw | downcase | handleize %}
+  {% assign last_segment = path_parts.last %}
+  {% assign valid_categories = 'news,berita,event,acara,peristiwa,travel-guide,panduan-perjalanan,travel-tips,tips-perjalanan,tech-guide,panduan-teknologi'
+    | split: ','
+  %}
+  {% assign is_valid_category = false %}
+  {% for cat in valid_categories %}
+    {% if last_segment == cat %}
+      {% assign is_valid_category = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
 
+  {% if is_valid_category %}
+    {% assign category_slug_raw = last_segment %}
+  {% else %}
+    {% assign category_slug_raw = request.path | split: '?' | first | split: '/' | last %}
+    {% if category_slug_raw == 'news-category' %}
+      {% if current_locale == 'id' %}
+        {% assign category_slug_raw = 'berita' %}
+      {% else %}
+        {% assign category_slug_raw = 'news' %}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+
+  {% assign category_slug = category_slug_raw | downcase | handleize %}
+  {% assign category_map_id_to_en = 'berita:news,acara:event,peristiwa:event,panduan-perjalanan:travel-guide,tips-perjalanan:travel-tips,panduan-teknologi:tech-guide' %}
+  {% assign category_map_en_to_id = 'news:berita,event:acara,travel-guide:panduan-perjalanan,travel-tips:tips-perjalanan,tech-guide:panduan-teknologi' %}
+  {% assign normalized_category = category_slug %}
+  {% assign map_pairs = category_map_id_to_en | split: ',' %}
+  {% for pair in map_pairs %}
+    {% assign parts = pair | split: ':' %}
+    {% if parts[0] == category_slug %}
+      {% assign normalized_category = parts[1] %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {% assign display_slug = category_slug %}
+  {% if current_locale == 'id' %}
+    {% assign map_pairs = category_map_en_to_id | split: ',' %}
+    {% for pair in map_pairs %}
+      {% assign parts = pair | split: ':' %}
+      {% if parts[0] == normalized_category %}
+        {% assign display_slug = parts[1] %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    {% assign display_slug = normalized_category %}
+  {% endif %}
+
+  {% assign accepted_categories = '' %}
+  {% case normalized_category %}
+    {% when 'news' %}
+      {% assign accepted_categories = 'news,berita' %}
+    {% when 'event' %}
+      {% assign accepted_categories = 'event,acara,peristiwa' %}
+    {% when 'travel-guide' %}
+      {% assign accepted_categories = 'travel-guide,panduan-perjalanan,panduan perjalanan' %}
+    {% when 'travel-tips' %}
+      {% assign accepted_categories = 'travel-tips,tips-perjalanan,tips perjalanan' %}
+    {% when 'tech-guide' %}
+      {% assign accepted_categories = 'tech-guide,panduan-teknologi,panduan teknologi' %}
+    {% else %}
+      {% assign accepted_categories = normalized_category %}
+  {% endcase %}
+
+  {% assign accepted_list = accepted_categories | split: ',' %}
   {% assign category_pages_raw = '' %}
+
   {% for p in pages %}
-    {% assign page_category = p.metafields.pages.category.value | downcase | handleize %}
-    {% if page_category == category_slug %}
+    {% assign page_category_raw = p.metafields.pages.category.value %}
+    {% assign page_category = page_category_raw | strip | downcase | handleize %}
+
+    {% assign is_match = false %}
+    {% for accepted in accepted_list %}
+      {% assign accepted_normalized = accepted | strip | downcase | handleize %}
+      {% if page_category == accepted_normalized %}
+        {% assign is_match = true %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+
+    {% if is_match %}
       {% assign date_key = p.published_at | date: '%Y-%m-%d-%H-%M-%S' %}
       {% assign key = date_key | append: '|' | append: p.handle %}
       {% if category_pages_raw == '' %}
@@ -380,13 +485,29 @@
     {% assign category_pages_array = '' | split: ',' %}
   {% endif %}
 
+  {% assign display_title = normalized_category | replace: '-', ' ' | capitalize %}
+  {% if current_locale == 'id' %}
+    {% case normalized_category %}
+      {% when 'news' %}
+        {% assign display_title = 'Berita' %}
+      {% when 'event' %}
+        {% assign display_title = 'Acara' %}
+      {% when 'travel-guide' %}
+        {% assign display_title = 'Panduan Perjalanan' %}
+      {% when 'travel-tips' %}
+        {% assign display_title = 'Tips Perjalanan' %}
+      {% when 'tech-guide' %}
+        {% assign display_title = 'Panduan Teknologi' %}
+    {% endcase %}
+  {% endif %}
+
   {% unless template.suffix == 'news' %}
     {% if category_pages_array.size > 0 %}
       <section class="news-content">
         <div class="news__hero-shoot">
           <div class="news__hero-wrapper">
-            <h2>{{ category_slug | replace: '-', ' ' | capitalize }}</h2>
-            {% case category_slug %}
+            <h2>{{ display_title }}</h2>
+            {% case normalized_category %}
               {% when 'news' %}
                 <span>{{ section.settings['news-heading'] }}</span>
               {% when 'event' %}
@@ -395,13 +516,21 @@
                 <span>{{ section.settings['travel-guide-heading'] }}</span>
               {% when 'travel-tips' %}
                 <span>{{ section.settings['travel-tips-heading'] }}</span>
+              {% when 'tech-guide' %}
+                <span>{{ section.settings['tech-guide-heading'] }}</span>
             {% endcase %}
           </div>
         </div>
       </section>
 
       <section class="news__content-top">
-        <h2 class="news__latest-article" style="font-weight:bold;">Latest Article</h2>
+        <h2 class="news__latest-article" style="font-weight:bold;">
+          {% if current_locale == 'id' %}
+            Artikel Terbaru
+          {% else %}
+            Latest Article
+          {% endif %}
+        </h2>
         <div class="news-content__wrapper-category" id="articlesContainer">
           {% for item in category_pages_array %}
             {% assign parts = item | split: '|' %}
@@ -432,71 +561,313 @@
 
         {% if category_pages_array.size > 6 %}
           <div class="see-more-container">
-            <button id="seeMoreBtn" class="see-more-btn">See More</button>
+            <button id="seeMoreBtn" class="see-more-btn">
+              {% if current_locale == 'id' %}
+                Lihat Lebih Banyak
+              {% else %}
+                See More
+              {% endif %}
+            </button>
           </div>
         {% endif %}
       </section>
     {% else %}
-      <h2 class="news__latest-article" style="margin: 10% 0;">Article Not Found</h2>
+      <h2 class="news__latest-article" style="margin: 10% 0;">
+        {% if current_locale == 'id' %}
+          Artikel Tidak Ditemukan
+        {% else %}
+          Article Not Found
+        {% endif %}
+      </h2>
     {% endif %}
   {% endunless %}
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const articles = document.querySelectorAll('.article-item');
-    const seeMoreBtn = document.getElementById('seeMoreBtn');
-    let isExpanded = false;
+  (function () {
+    const currentLocale = '{{ request.locale.iso_code }}';
+    const currentPath = window.location.pathname;
+    const normalizedCategory = '{{ normalized_category }}';
 
-    function getInitialLimit() {
-      return window.innerWidth <= 768 ? 3 : 6;
+    const categoryMap = {
+      en_to_id: {
+        news: 'berita',
+        event: 'acara',
+        'travel-guide': 'panduan-perjalanan',
+        'travel-tips': 'tips-perjalanan',
+        'tech-guide': 'panduan-teknologi',
+      },
+      id_to_en: {
+        berita: 'news',
+        acara: 'event',
+        peristiwa: 'event',
+        'panduan-perjalanan': 'travel-guide',
+        'tips-perjalanan': 'travel-tips',
+        'panduan-teknologi': 'tech-guide',
+      },
+    };
+
+    function getCurrentSlug() {
+      const pathParts = currentPath.split('/').filter((p) => p);
+      return pathParts[pathParts.length - 1];
     }
 
-    function showArticles() {
-      const limit = isExpanded ? articles.length : getInitialLimit();
-
-      articles.forEach((article, index) => {
-        if (index < limit) {
-          article.classList.add('visible');
-        } else {
-          article.classList.remove('visible');
-        }
-      });
-
-      if (seeMoreBtn) {
-        if (isExpanded) {
-          seeMoreBtn.textContent = 'Show Less';
-        } else {
-          seeMoreBtn.textContent = 'See More';
-        }
+    function buildCategoryURL(slug) {
+      if (currentLocale === 'id') {
+        return '/id/pages/news-category/' + slug;
+      } else {
+        return '/pages/news-category/' + slug;
       }
     }
 
-    if (seeMoreBtn) {
-      seeMoreBtn.addEventListener('click', function () {
-        isExpanded = !isExpanded;
-        showArticles();
+    function isURLCorrect() {
+      const currentSlug = getCurrentSlug();
 
-        if (!isExpanded) {
-          document.querySelector('.news__content-top').scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          });
+      if (currentSlug === 'news-category') {
+        return false;
+      }
+
+      const hasIdPrefix = currentPath.startsWith('/id/');
+      const shouldHaveIdPrefix = currentLocale === 'id';
+
+      if (hasIdPrefix !== shouldHaveIdPrefix) {
+        return false;
+      }
+
+      const validSlugs = [
+        'news',
+        'berita',
+        'event',
+        'acara',
+        'peristiwa',
+        'travel-guide',
+        'panduan-perjalanan',
+        'travel-tips',
+        'tips-perjalanan',
+        'tech-guide',
+        'panduan-teknologi',
+      ];
+
+      return validSlugs.includes(currentSlug);
+    }
+
+    function fixURLIfNeeded() {
+      if (sessionStorage.getItem('languageSwitching')) {
+        return;
+      }
+
+      if (!currentPath.includes('/news-category')) {
+        return;
+      }
+
+      if (isURLCorrect()) {
+        return;
+      }
+
+      const currentSlug = getCurrentSlug();
+      let targetSlug;
+
+      if (currentSlug === 'news-category' || currentSlug === '') {
+        try {
+          const lastVisited = localStorage.getItem('lastCategoryVisited');
+          if (lastVisited) {
+            targetSlug = currentLocale === 'id' ? categoryMap.en_to_id[lastVisited] || lastVisited : lastVisited;
+            localStorage.removeItem('lastCategoryVisited');
+          } else {
+            targetSlug = currentLocale === 'id' ? 'berita' : 'news';
+          }
+        } catch (e) {
+          targetSlug = currentLocale === 'id' ? 'berita' : 'news';
         }
+      } else {
+        const normalized = categoryMap.id_to_en[currentSlug] || currentSlug;
+        targetSlug = currentLocale === 'id' ? categoryMap.en_to_id[normalized] || normalized : normalized;
+      }
+
+      const targetURL = buildCategoryURL(targetSlug);
+      window.location.replace(targetURL);
+    }
+
+    function setupLanguageSwitcher() {
+      if (currentPath.includes('/news-category/')) {
+        const currentSlug = getCurrentSlug();
+        if (currentSlug && currentSlug !== 'news-category') {
+          const normalized = categoryMap.id_to_en[currentSlug] || currentSlug;
+          try {
+            localStorage.setItem('lastCategoryVisited', normalized);
+          } catch (e) {}
+        }
+      }
+
+      const findAndInterceptLocalizationForm = () => {
+        const selectors = [
+          'localization-form',
+          '.localization-form',
+          'form[action*="localization"]',
+          '[data-localization-form]',
+        ];
+
+        for (let selector of selectors) {
+          const form = document.querySelector(selector);
+          if (form) {
+            form.addEventListener(
+              'submit',
+              function (e) {
+                if (currentPath.includes('/news-category/')) {
+                  const currentSlug = getCurrentSlug();
+                  if (currentSlug && currentSlug !== 'news-category') {
+                    const normalized = categoryMap.id_to_en[currentSlug] || currentSlug;
+                    sessionStorage.setItem('savedCategorySlug', normalized);
+                    sessionStorage.setItem('languageSwitching', 'true');
+                    try {
+                      localStorage.setItem('lastCategoryVisited', normalized);
+                    } catch (e) {}
+                  }
+                }
+              },
+              true
+            );
+            return;
+          }
+        }
+
+        const hreflangLinks = document.querySelectorAll('a[hreflang]');
+        hreflangLinks.forEach((link) => {
+          link.addEventListener(
+            'click',
+            function (e) {
+              if (currentPath.includes('/news-category/')) {
+                const currentSlug = getCurrentSlug();
+                if (currentSlug && currentSlug !== 'news-category') {
+                  const normalized = categoryMap.id_to_en[currentSlug] || currentSlug;
+                  sessionStorage.setItem('savedCategorySlug', normalized);
+                  sessionStorage.setItem('languageSwitching', 'true');
+                  try {
+                    localStorage.setItem('lastCategoryVisited', normalized);
+                  } catch (e) {}
+                }
+              }
+            },
+            true
+          );
+        });
+      };
+
+      findAndInterceptLocalizationForm();
+      document.addEventListener('DOMContentLoaded', findAndInterceptLocalizationForm);
+    }
+
+    function handlePostLanguageSwitch() {
+      const savedSlug = sessionStorage.getItem('savedCategorySlug');
+      const isSwitching = sessionStorage.getItem('languageSwitching');
+
+      let categoryToRestore = savedSlug;
+      if (!categoryToRestore) {
+        try {
+          categoryToRestore = localStorage.getItem('lastCategoryVisited');
+        } catch (e) {}
+      }
+
+      if (!categoryToRestore || !isSwitching) {
+        return;
+      }
+
+      const targetSlug =
+        currentLocale === 'id' ? categoryMap.en_to_id[categoryToRestore] || categoryToRestore : categoryToRestore;
+
+      const targetURL = buildCategoryURL(targetSlug);
+
+      sessionStorage.removeItem('savedCategorySlug');
+      sessionStorage.removeItem('languageSwitching');
+
+      if (currentPath !== targetURL) {
+        window.location.replace(targetURL);
+      } else {
+        try {
+          localStorage.removeItem('lastCategoryVisited');
+        } catch (e) {}
+      }
+    }
+
+    function initArticleDisplay() {
+      const articles = document.querySelectorAll('.article-item');
+      const seeMoreBtn = document.getElementById('seeMoreBtn');
+
+      if (articles.length === 0) {
+        return;
+      }
+
+      let isExpanded = false;
+
+      function getInitialLimit() {
+        return window.innerWidth <= 768 ? 3 : 6;
+      }
+
+      function showArticles() {
+        const limit = isExpanded ? articles.length : getInitialLimit();
+
+        articles.forEach((article, index) => {
+          if (index < limit) {
+            article.classList.add('visible');
+          } else {
+            article.classList.remove('visible');
+          }
+        });
+
+        if (seeMoreBtn) {
+          if (articles.length <= getInitialLimit()) {
+            seeMoreBtn.style.display = 'none';
+          } else {
+            seeMoreBtn.style.display = 'block';
+            seeMoreBtn.textContent = isExpanded
+              ? currentLocale === 'id'
+                ? 'Tampilkan Lebih Sedikit'
+                : 'Show Less'
+              : currentLocale === 'id'
+              ? 'Lihat Lebih Banyak'
+              : 'See More';
+          }
+        }
+      }
+
+      if (seeMoreBtn) {
+        seeMoreBtn.addEventListener('click', function () {
+          isExpanded = !isExpanded;
+          showArticles();
+
+          if (!isExpanded) {
+            const contentTop = document.querySelector('.news__content-top');
+            if (contentTop) {
+              contentTop.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        });
+      }
+      showArticles();
+
+      let resizeTimer;
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+          if (!isExpanded) showArticles();
+        }, 250);
       });
     }
-    showArticles();
 
-    let resizeTimer;
-    window.addEventListener('resize', function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
-        if (!isExpanded) {
-          showArticles();
-        }
-      }, 250);
-    });
-  });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () {
+        setupLanguageSwitcher();
+        setTimeout(handlePostLanguageSwitch, 100);
+        setTimeout(fixURLIfNeeded, 200);
+        setTimeout(initArticleDisplay, 350);
+      });
+    } else {
+      setupLanguageSwitcher();
+      setTimeout(handlePostLanguageSwitch, 100);
+      setTimeout(fixURLIfNeeded, 200);
+      setTimeout(initArticleDisplay, 350);
+    }
+  })();
 </script>
 
 {% schema %}

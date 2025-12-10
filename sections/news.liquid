@@ -155,6 +155,40 @@
     margin: 0;
   }
 
+  .article-item {
+    display: none;
+  }
+
+  .article-item.visible {
+    display: block;
+  }
+
+  .see-more-container {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .see-more-btn {
+    padding: 12px 40px;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .see-more-btn:hover {
+    background-color: var(--color-secondary);
+  }
+
+  .see-more-btn.hidden {
+    display: none;
+  }
+
   @media (max-width: 1440px) {
     .news__content-top {
       padding: 0 10% 100px;
@@ -368,14 +402,14 @@
 
       <section class="news__content-top">
         <h2 class="news__latest-article" style="font-weight:bold;">Latest Article</h2>
-        <div class="news-content__wrapper-category">
+        <div class="news-content__wrapper-category" id="articlesContainer">
           {% for item in category_pages_array %}
             {% assign parts = item | split: '|' %}
             {% assign page_handle = parts[1] %}
             {% assign page = pages[page_handle] %}
 
             {% if page %}
-              <a class="new-content__link" href="{{ page.url }}">
+              <a class="new-content__link article-item" href="{{ page.url }}" data-index="{{ forloop.index }}">
                 <div class="news-content__card">
                   {% assign img_parts = page.content | split: '<img' %}
                   {% if img_parts.size > 1 %}
@@ -395,12 +429,75 @@
             {% endif %}
           {% endfor %}
         </div>
+
+        {% if category_pages_array.size > 6 %}
+          <div class="see-more-container">
+            <button id="seeMoreBtn" class="see-more-btn">See More</button>
+          </div>
+        {% endif %}
       </section>
     {% else %}
       <h2 class="news__latest-article" style="margin: 10% 0;">Article Not Found</h2>
     {% endif %}
   {% endunless %}
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const articles = document.querySelectorAll('.article-item');
+    const seeMoreBtn = document.getElementById('seeMoreBtn');
+    let isExpanded = false;
+
+    function getInitialLimit() {
+      return window.innerWidth <= 768 ? 3 : 6;
+    }
+
+    function showArticles() {
+      const limit = isExpanded ? articles.length : getInitialLimit();
+
+      articles.forEach((article, index) => {
+        if (index < limit) {
+          article.classList.add('visible');
+        } else {
+          article.classList.remove('visible');
+        }
+      });
+
+      if (seeMoreBtn) {
+        if (isExpanded) {
+          seeMoreBtn.textContent = 'Show Less';
+        } else {
+          seeMoreBtn.textContent = 'See More';
+        }
+      }
+    }
+
+    if (seeMoreBtn) {
+      seeMoreBtn.addEventListener('click', function () {
+        isExpanded = !isExpanded;
+        showArticles();
+
+        if (!isExpanded) {
+          document.querySelector('.news__content-top').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }
+      });
+    }
+    showArticles();
+
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        if (!isExpanded) {
+          showArticles();
+        }
+      }, 250);
+    });
+  });
+</script>
 
 {% schema %}
 {

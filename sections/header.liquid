@@ -25,15 +25,32 @@
     text-decoration: none;
   }
 
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .shopify-section-header,
+  .shopify-section[id*='shopify-section-header'] {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .header__container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   .header__wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-  }
-
-  .header__container {
-    width: 100%;
+    padding: 12px 16px;
+    background-color: var(--color-neutral);
   }
 
   .header-conten-menu {

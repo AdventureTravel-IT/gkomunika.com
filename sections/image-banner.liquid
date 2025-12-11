@@ -178,6 +178,11 @@
   }
 
   @media (max-width: 768px) {
+    /* Push hero container ke bawah agar tidak tertutup header */
+    .hero-container {
+      margin-top: 60px; /* Sesuaikan dengan tinggi header mobile */
+    }
+
     .banner__content--wrapper {
       width: 100%;
       padding: 0 24px;
@@ -231,7 +236,7 @@
             id="search-heading"
             style="display: none;"
           >
-            Search Result for “{{ search.terms }}”
+            Search Result for "{{ search.terms }}"
           </h2>
 
         {%- when 'text' -%}

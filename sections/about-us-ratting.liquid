@@ -70,13 +70,14 @@
     display: flex;
     text-align: center;
     flex-direction: column;
-    padding: 20px 20% 5%;
-    color: var(--color-primaary);
+    align-items: center;
+    padding: 20px 0 5%;
   }
 
   .about__button-title {
     font-weight: bold;
     color: var(--color-primary);
+    margin-bottom: 10px;
   }
 
   .about__button-btn {
@@ -87,6 +88,13 @@
     color: var(--color-neutral);
     background-color: var(--color-primary);
     box-shadow: var(--box-shadow);
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .about__button-link {
+    text-decoration: none;
   }
 
   @media (max-width: 768px) {
@@ -207,7 +215,7 @@
   </div>
   <div class="about__button">
     <h2 class="about__button-title">See full review on Tokopedia</h2>
-    <a class="about__button-link" href="https://www.tokopedia.com/globalkomunikajk">
+    <a class="about__button-link" href="https://www.tokopedia.com/globalkomunikajk" target="_blank">
       <button class="about__button-btn">Tokopedia Global Komunika</button>
     </a>
   </div>

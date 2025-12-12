@@ -10,60 +10,68 @@
 
     if (!track || !cards || !cards.length) return;
 
-    let currentIndex = 0;
-    let cardWidth = 0;
-    let visibleCards = 1;
-    let maxIndex = 0;
+    const isMobile = window.innerWidth < 768;
 
-    const updatePosition = () => {
-      track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
-      if (prevBtn) prevBtn.disabled = currentIndex === 0;
-      if (nextBtn) nextBtn.disabled = currentIndex >= maxIndex;
-    };
+    if (!isMobile) {
+      let currentIndex = 0;
+      let cardWidth = 0;
+      let visibleCards = 1;
+      let maxIndex = 0;
 
-    const recalc = () => {
-      if (!cards[0]) return;
+      const updatePosition = () => {
+        track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex >= maxIndex;
+      };
 
-      const rect = cards[0].getBoundingClientRect();
-      if (!rect.width) return;
+      const recalc = () => {
+        if (!cards[0]) return;
 
-      cardWidth = rect.width + 16;
+        const rect = cards[0].getBoundingClientRect();
+        if (!rect.width) return;
 
-      const w = window.innerWidth;
-      visibleCards = w < 768 ? 1 : w < 1024 ? 2 : 3;
-      maxIndex = Math.max(0, cards.length - visibleCards);
+        cardWidth = rect.width + 16;
 
-      if (currentIndex > maxIndex) currentIndex = maxIndex;
-      updatePosition();
-    };
+        const w = window.innerWidth;
+        visibleCards = w < 768 ? 1 : w < 1024 ? 2 : 3;
+        maxIndex = Math.max(0, cards.length - visibleCards);
 
-    if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) {
-          currentIndex--;
-          updatePosition();
-        }
+        if (currentIndex > maxIndex) currentIndex = maxIndex;
+        updatePosition();
+      };
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          if (currentIndex > 0) {
+            currentIndex--;
+            updatePosition();
+          }
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (currentIndex < maxIndex) {
+            currentIndex++;
+            updatePosition();
+          }
+        });
+      }
+
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          recalc();
+        }, 200);
       });
+
+      recalc();
+    } else {
+      track.style.display = 'flex';
+      track.style.overflowX = 'auto';
+      track.style.transform = 'none';
     }
-
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        if (currentIndex < maxIndex) {
-          currentIndex++;
-          updatePosition();
-        }
-      });
-    }
-
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        recalc();
-      }, 200);
-    });
-
-    recalc();
   };
 
   if (document.readyState === 'loading') {

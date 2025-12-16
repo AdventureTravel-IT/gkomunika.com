@@ -307,6 +307,18 @@
       padding: 20px 24px;
     }
   }
+
+  @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    .product-card-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .product-card-container {
+      width: 100%;
+    }
+  }
 {% endstyle %}
 
 <script>
@@ -427,17 +439,6 @@
         {% assign product_output = '' %}
 
         {% for product in collection.products %}
-          {% assign valid_variants = '' %}
-          {% for v in product.variants %}
-            {% if v.available and v.option2 != blank %}
-              {% assign valid_variants = valid_variants | append: 'ok,' %}
-            {% endif %}
-          {% endfor %}
-
-          {% if valid_variants == '' %}
-            {% continue %}
-          {% endif %}
-
           {% assign found_any_product = true %}
           {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
           {% assign product_countries = product.metafields.coverage.country.value %}

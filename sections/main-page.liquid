@@ -353,10 +353,33 @@
       position: static;
     }
   }
+
+  @media (max-width: 768px) {
+    .pages-wrapper {
+      flex-direction: column;
+      padding: 100px 24px 50px;
+      gap: 1px;
+    }
+    .pages-content__latest {
+      display: flex;
+      flex-direction: column;
+    }
+    .pages-content__next-container h2 {
+      text-align: left;
+    }
+    .pages-summary {
+      display: none;
+    }
+    .image-modal__inner {
+      padding: 8px;
+    }
+  }
+
   @media (max-width: 426px) {
     .pages-wrapper {
       flex-direction: column;
-      padding: 20px 24px 24px;
+      padding: 100px 24px 50px;
+      gap: 1px;
     }
     .pages-content__latest {
       display: flex;
@@ -654,6 +677,44 @@
         }
       });
     }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const internalDomain = 'gkomunika.com';
+
+    document.querySelectorAll('.page-content__wrapper a[href]').forEach(function (link) {
+      const href = link.getAttribute('href');
+
+      if (
+        !href ||
+        href.startsWith('#') ||
+        href.startsWith('javascript:') ||
+        href.startsWith('mailto:') ||
+        href.startsWith('tel:')
+      ) {
+        return;
+      }
+
+      let url;
+      try {
+        url = new URL(href, window.location.origin);
+      } catch (e) {
+        return;
+      }
+
+      const isInternal =
+        url.hostname === '' || url.hostname === window.location.hostname || url.hostname.endsWith(internalDomain);
+
+      if (isInternal) {
+        link.removeAttribute('target');
+        link.removeAttribute('rel');
+      } else {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+      }
+    });
   });
 </script>
 

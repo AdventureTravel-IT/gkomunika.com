@@ -584,8 +584,7 @@ width: 100%;
           }
 
           const quotaList = usage.quotaList || [];
-          const q = quotaList[0] || {};
-          const productName = q.productName || "-";
+          const productName = data?.data_usage?.quotaList[0] || "-";
 
           // Mapping status
           const statusMap = {

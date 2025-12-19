@@ -2,8 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const subImagesWrapper = document.querySelector(".main-product-sub-images");
   const scrollLeftBtn = document.querySelector(".scroll-btn.left");
   const scrollRightBtn = document.querySelector(".scroll-btn.right");
+  const mainImage = document.getElementById("mainImage");
+  const subImages = document.querySelectorAll(".sub-image");
 
-  if (!subImagesWrapper) return;
+  if (!subImagesWrapper || !subImages.length) return;
 
   const checkScrollPosition = () => {
     const maxScrollLeft =
@@ -24,6 +26,18 @@ document.addEventListener("DOMContentLoaded", function () {
       behavior: "smooth",
     });
   };
+
+  function updateMainImage(src, img) {
+    mainImage.src = src;
+    subImages.forEach((image) => image.classList.remove("active"));
+    img.classList.add("active");
+  }
+
+  subImagesWrapper.addEventListener("click", (e) => {
+    if (e.target.classList.contains("sub-image")) {
+      updateMainImage(e.target.dataset.src, e.target);
+    }
+  });
 
   subImagesWrapper.addEventListener("scroll", checkScrollPosition);
   checkScrollPosition();

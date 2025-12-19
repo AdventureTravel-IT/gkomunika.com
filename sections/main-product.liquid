@@ -42,9 +42,23 @@
     }
 
     .main-product-sub-images {
+      display: flex;
+      gap: 8px;
+      padding-left: 8px;
+      padding-right: 8px;
+      margin: 0;
+      scroll-padding-left: 8px;
+      scroll-padding-right: 8px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
+      overscroll-behavior-x: contain;
+      background-color: transparent;
+    }
+
+    .main-product-sub-images img {
+      flex: 0 0 auto;
+      margin: 0;
     }
   }
 </style>

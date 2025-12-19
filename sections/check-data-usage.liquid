@@ -99,7 +99,7 @@
   }
 
   .check-data-usage__wrapper {
-    padding: 20px 20% 40px;
+    padding: 20px 20%;
   }
 
   .btn-topup-information {
@@ -248,7 +248,7 @@
 
   @media (max-width: 768px) {
     .check-data-usage__wrapper {
-      padding: 100px 24px 50px;
+      padding: 80px 24px 50px;
     }
     .total-data-usage__wrapper {
       width: 100%;
@@ -276,7 +276,7 @@
       {% if template.suffix == 'check-data-usage' %}
         <p>Check Data Usage</p>
       {% else %}
-        <p>Check Data Usage / Top</p>
+        <p>Check Data Usage / Top Up</p>
       {% endif %}
       <div class="flex items-center gap-2.5">
         <span>Enter your ICCID</span>
@@ -445,17 +445,47 @@
       return (value / KB).toFixed(2) + ' KB';
     }
 
+    function formatDateFromTimestamp(timestamp) {
+      if (!timestamp || timestamp === '-') return '-';
+      const date = new Date(parseInt(timestamp));
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; // Months are 0-based, so adding 1
+      const day = date.getDate();
+
+      // Format date as dd MMMM yyyy
+      const monthNames = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ];
+      return `${day} ${monthNames[month - 1]} ${year}`;
+    }
+
     function renderEsimInfo(item, vendor) {
       const bundle = item.skuName || item.product_name || '-';
       const startRaw = vendor === 'AF' ? item.useSDate : item.planStartTime;
       const endRaw = vendor === 'AF' ? item.useEDate : item.planEndTime;
+
+      // Format the start and end dates from Unix timestamps
+      const formattedStartDate = formatDateFromTimestamp(startRaw);
+      const formattedEndDate = formatDateFromTimestamp(endRaw);
+
       return `
-      <div class="check-data-usage__esim-information">
+    <div class="check-data-usage__esim-information">
         <h3>SIM Card Information</h3>
         <div class="esim-information__wrapper"><p>Your Bundle</p><span>${bundle}</span></div>
-        <div class="esim-information__wrapper"><p>Active Date</p><span>${formatDate(startRaw)}</span></div>
-        <div class="esim-information__wrapper"><p>End Date</p><span>${formatDate(endRaw)}</span></div>
-      </div>`;
+        <div class="esim-information__wrapper"><p>Active Date</p><span>${formattedStartDate}</span></div>
+        <div class="esim-information__wrapper"><p>End Date</p><span>${formattedEndDate}</span></div>
+    </div>`;
     }
 
     function renderTopUpButton() {
@@ -584,7 +614,8 @@
           }
 
           const quotaList = usage.quotaList || [];
-          const productName = data.product_name || '-';
+          const q = quotaList[0] || {};
+          const productName = q.productName || '-';
 
           // Mapping status
           const statusMap = {

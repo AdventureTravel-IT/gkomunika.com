@@ -1,16 +1,23 @@
 <style>
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+  }
+
   .register {
+    width: 100vw;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto;
-    max-width: 1920px;
-    height: 100 dv h;
+    background: var(--color-background-secondary);
+    padding: 24px;
+    box-sizing: border-box;
   }
 
   .MainRegister-container {
-    width: 350px;
-    height: auto;
+    width: min(420px, 100%);
     padding: 10px;
   }
 
@@ -52,9 +59,9 @@
     background-color: var(--color-neutral);
     border-radius: 0 15px 15px 15px;
     transition: border-radius 0.3s ease;
+    box-shadow: var(--box-shadow);
   }
 
-  /* Hanya pakai FormRegister di file ini */
   .FormRegister {
     display: none;
     width: 100%;
@@ -223,6 +230,12 @@
   .custom-auth-divider span {
     font-size: 14px;
     color: #005496;
+  }
+
+  @media (orientation: landscape) {
+    .MainRegister-container {
+      transform: translateY(-24px);
+    }
   }
 
   @media (max-width: 768px) {

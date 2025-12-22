@@ -1,16 +1,23 @@
 <style>
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+  }
+
   .login {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto;
-    max-width: 1920px;
-    height: 100 dvh;
+    width: 100vw;
+    min-height: 100dvh;
+    background: var(--color-background-secondary);
+    padding: 24px;
+    box-sizing: border-box;
   }
 
   .MainLogin-container {
-    width: 350px;
-    height: auto;
+    width: min(420px, 100%);
     padding: 10px;
   }
 
@@ -52,6 +59,7 @@
     background-color: var(--color-neutral);
     border-radius: 0 15px 15px 15px;
     transition: border-radius 0.3s ease;
+    box-shadow: var(--box-shadow);
   }
 
   .FormLogin,
@@ -101,8 +109,20 @@
     flex-direction: column;
     width: 100%;
     justify-content: left;
-    transition: transform 0.3s ease
-    , box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .WrapperButton-form .link-recover {
+    display: inline !important;
+    width: max-content !important;
+    padding: 0 !important;
+    margin: 0 0 15px 0;
+    background: transparent;
+    border: none;
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--color-primary);
+    text-underline-offset: 2px;
     cursor: pointer;
   }
 
@@ -188,6 +208,12 @@
     color: #005496;
   }
 
+  @media (orientation: landscape) {
+    .MainLogin-container {
+      transform: translateY(-24px);
+    }
+  }
+
   @media (max-width: 768px) {
     .MainLogin-container {
       padding: 0 24px;
@@ -205,7 +231,8 @@
             src="{{ section.settings.logo | img_url: 'master' }}"
             width="auto"
             height="80"
-            alt="Site Logo">
+            alt="Site Logo"
+          >
         </a>
       {% endif %}
     </section>
@@ -219,32 +246,29 @@
       <div
         class="FormSuccess"
         id="FormSuccess"
-        style="display: none;">
+        style="display: none;"
+      >
         <div class="recovery-popup">
           <p style="color: var(--color-primary); margin: 0 0 10px 0;">
-            The link to reset your email has been sent to
+            Your password reset link has been sent to your email.
             <span id="recovery-email"></span>
           </p>
           <div class="WrapperButton-form">
             <button
               type="button"
               class="button-form"
-              id="go-to-login">
-              go to login page
+              id="go-to-login"
+            >
+              Go to Login
             </button>
           </div>
         </div>
       </div>
 
       <div class="FormLogin active" id="FormLogin">
-        {%- form 'customer_login'
-          , novalidate: 'novalidate'
-          , return_to: '/' -%}
-
+        {%- form 'customer_login', novalidate: 'novalidate', return_to: '/' -%}
           {% if form.errors %}
-            <div class="form-error-message">
-              Incorrect email or password. Please try again.
-            </div>
+            <div class="form-error-message">Incorrect email or password. Please try again.</div>
           {% endif %}
 
           <div class="field-auth">
@@ -256,8 +280,9 @@
               value="{{ form.email }}"
               required
               {% if form.errors %}
-              aria-invalid="true"
-              {% endif %}>
+                aria-invalid="true"
+              {% endif %}
+            >
             <span class="field-error-message" id="LoginEmailError"></span>
           </div>
 
@@ -269,8 +294,9 @@
               placeholder="Password"
               required
               {% if form.errors %}
-              aria-invalid="true"
-              {% endif %}>
+                aria-invalid="true"
+              {% endif %}
+            >
             <span class="field-error-message" id="LoginPasswordError"></span>
           </div>
 
@@ -278,17 +304,20 @@
             <a
               href="javascript:void(0)"
               class="link-recover"
-              onclick="showRecoveryForm()">Forgot Password?</a>
+              onclick="showRecoveryForm()"
+              >Forgot Password?</a
+            >
             <button
               class="button-form"
               id="login-button"
-              type="button">
+              type="button"
+            >
               <span class="login-button-text">Log In</span>
             </button>
           </div>
 
           <div class="custom-auth-divider">
-            <span>OR LOGIN WITH</span>
+            <span>or</span>
           </div>
 
           <div class="oxi-social-login" style="margin-top: 15px"></div>
@@ -310,7 +339,7 @@
     document.getElementById('FormRecovery').classList.add('active');
     document.querySelector('.MainLogin-Tabs').style.display = 'none';
   }
-  
+
   document.addEventListener('DOMContentLoaded', function () {
     if (sessionStorage.getItem('login') === 'true') {
       document.querySelectorAll('.MainLogin-form > div').forEach((form) => {
@@ -319,7 +348,7 @@
       document.querySelector('.MainLogin-Tabs').style.display = 'none';
       document.getElementById('FormSuccess').style.display = 'block';
     }
-  
+
     const btn = document.getElementById('go-to-login');
     if (btn) {
       btn.addEventListener('click', function () {
@@ -327,39 +356,39 @@
         window.location.href = '/account/login';
       });
     }
-  
+
     const loginForm = document.querySelector('#FormLogin form');
     const loginButton = document.getElementById('login-button');
-  
+
     if (loginForm && loginButton) {
       loginButton.addEventListener('click', function () {
         if (loginButton.disabled) return;
-  
+
         const email = document.getElementById('Login-Email');
         const password = document.getElementById('Login-Password');
         const emailError = document.getElementById('LoginEmailError');
         const passwordError = document.getElementById('LoginPasswordError');
-  
+
         emailError.textContent = '';
         passwordError.textContent = '';
-  
+
         let hasError = false;
-  
+
         if (!email.value.trim()) {
           emailError.textContent = 'Email is required.';
           hasError = true;
         }
-  
+
         if (!password.value.trim()) {
           passwordError.textContent = 'Password is required.';
           hasError = true;
         }
-  
+
         if (hasError) return;
-  
+
         loginButton.disabled = true;
         loginButton.querySelector('.login-button-text').textContent = 'Logging in...';
-  
+
         loginForm.submit();
       });
     }
@@ -367,14 +396,14 @@
 </script>
 
 {% schema %}
-  {
-    "name": "main login",
-    "settings": [
-      {
-        "type": "image_picker",
-        "id": "logo",
-        "label": "Insert Logo"
-      }
-    ]
-  }
+{
+  "name": "main login",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Insert Logo"
+    }
+  ]
+}
 {% endschema %}

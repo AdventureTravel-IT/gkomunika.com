@@ -1,16 +1,23 @@
 <style>
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+  }
+
   .register {
+    width: 100vw;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto;
-    max-width: 1920px;
-    height: 100 dv h;
+    background: var(--color-background-secondary);
+    padding: 24px;
+    box-sizing: border-box;
   }
 
   .MainRegister-container {
-    width: 350px;
-    height: auto;
+    width: min(420px, 100%);
     padding: 10px;
   }
 
@@ -52,9 +59,9 @@
     background-color: var(--color-neutral);
     border-radius: 0 15px 15px 15px;
     transition: border-radius 0.3s ease;
+    box-shadow: var(--box-shadow);
   }
 
-  /* Hanya pakai FormRegister di file ini */
   .FormRegister {
     display: none;
     width: 100%;
@@ -100,8 +107,7 @@
     flex-direction: column;
     width: 100%;
     justify-content: left;
-    transition: transform 0.3s ease
-    , box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
   }
 
@@ -226,6 +232,12 @@
     color: #005496;
   }
 
+  @media (orientation: landscape) {
+    .MainRegister-container {
+      transform: translateY(-24px);
+    }
+  }
+
   @media (max-width: 768px) {
     .MainRegister-container {
       padding: 0 24px;
@@ -243,7 +255,8 @@
             src="{{ section.settings.logo | img_url: 'master' }}"
             width="auto"
             height="80"
-            alt="Site Logo">
+            alt="Site Logo"
+          >
         </a>
       {% endif %}
     </section>
@@ -255,10 +268,7 @@
 
     <section class="MainRegister-form">
       <div class="FormRegister active" id="FormRegister">
-        {%- form 'create_customer'
-          , novalidate: 'novalidate'
-          , class: 'customer-register-form' -%}
-
+        {%- form 'create_customer', novalidate: 'novalidate', class: 'customer-register-form' -%}
           {% if form.errors %}
             {%- assign err_text = form.errors | default_errors -%}
             <div class="form-error-message">
@@ -272,32 +282,6 @@
             </div>
           {%- endif -%}
 
-          <div class="wrapper-field">
-            <div class="field-auth">
-              <input
-                type="text"
-                name="customer[first_name]"
-                id="Register-FirstName"
-                placeholder="First Name"
-                required
-                minlength="2"
-                oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
-              <span class="field-error-message" id="RegisterFirstNameError"></span>
-            </div>
-
-            <div class="field-auth">
-              <input
-                type="text"
-                name="customer[last_name]"
-                id="Register-LastName"
-                placeholder="Last Name"
-                required
-                minlength="2"
-                oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
-              <span class="field-error-message" id="RegisterLastNameError"></span>
-            </div>
-          </div>
-
           <div class="field-auth">
             <input
               type="email"
@@ -308,8 +292,9 @@
               value="{{ form.email }}"
               onblur="validateEmail(this)"
               {% if form.errors contains 'email' %}
-              aria-invalid="true"
-              {% endif %}>
+                aria-invalid="true"
+              {% endif %}
+            >
             <span class="email-error-message">Invalid email format</span>
           </div>
 
@@ -320,7 +305,8 @@
               id="RegisterForm-password"
               placeholder="Password"
               required
-              minlength="8">
+              minlength="8"
+            >
             <span class="password-strength-message"></span>
             <span class="field-error-message" id="RegisterPasswordError"></span>
           </div>
@@ -330,7 +316,8 @@
               type="checkbox"
               id="terms-checkbox"
               name="terms"
-              required>
+              required
+            >
             <label for="terms-checkbox">
               I agree
               <a href="/pages/terms-of-use" target="_blank">Terms & Conditions</a>
@@ -343,13 +330,15 @@
               class="button-form"
               id="register-button"
               type="button"
-              disabled>Register</button>
+              disabled
+            >
+              Register
+            </button>
           </div>
 
           <div class="custom-auth-divider">
-            <span>OR REGISTER WITH</span>
+            <span>or</span>
           </div>
-
         {%- endform -%}
       </div>
     </section>
@@ -360,52 +349,36 @@
   document.addEventListener('DOMContentLoaded', function () {
     const registerForm = document.querySelector('.customer-register-form');
     const registerButton = document.getElementById('register-button');
-  
+
     if (!registerForm || !registerButton) return;
-  
-    const firstName = document.getElementById('Register-FirstName');
-    const lastName = document.getElementById('Register-LastName');
+
     const emailInput = document.getElementById('RegisterForm-email');
     const passwordInput = document.getElementById('RegisterForm-password');
     const termsCheckbox = document.getElementById('terms-checkbox');
-  
-    const firstNameError = document.getElementById('RegisterFirstNameError');
-    const lastNameError = document.getElementById('RegisterLastNameError');
+
+    const emailError = document.querySelector('.email-error-message');
     const passwordError = document.getElementById('RegisterPasswordError');
     const termsError = document.getElementById('RegisterTermsError');
-    const emailError = document.querySelector('.email-error-message');
-  
+
     if (termsCheckbox) {
       registerButton.disabled = !termsCheckbox.checked;
       termsCheckbox.addEventListener('change', function () {
         registerButton.disabled = !this.checked;
       });
     }
-  
+
     registerButton.addEventListener('click', function () {
       if (registerButton.disabled) return;
-  
-      firstNameError.textContent = '';
-      lastNameError.textContent = '';
+
       passwordError.textContent = '';
       termsError.textContent = '';
       if (emailError) {
         emailError.style.display = 'none';
         emailError.textContent = 'Invalid email format';
       }
-  
+
       let hasError = false;
-  
-      if (!firstName.value.trim()) {
-        firstNameError.textContent = 'First name is required.';
-        hasError = true;
-      }
-  
-      if (!lastName.value.trim()) {
-        lastNameError.textContent = 'Last name is required.';
-        hasError = true;
-      }
-  
+
       if (!emailInput.value.trim()) {
         if (emailError) {
           emailError.textContent = 'Email is required.';
@@ -419,7 +392,7 @@
         }
         hasError = true;
       }
-  
+
       if (!passwordInput.value.trim()) {
         passwordError.textContent = 'Password is required.';
         hasError = true;
@@ -427,21 +400,21 @@
         passwordError.textContent = 'Password must be at least 8 characters.';
         hasError = true;
       }
-  
+
       if (!termsCheckbox.checked) {
         termsError.textContent = 'Please accept the terms and conditions.';
         hasError = true;
       }
-  
+
       if (hasError) return;
-  
+
       registerButton.disabled = true;
       registerButton.textContent = 'Registering...';
-  
+
       registerForm.submit();
     });
   });
-  
+
   function validateEmail(input) {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(input.value);
@@ -449,35 +422,38 @@
 </script>
 
 {% schema %}
-  {
-    "name": "t:sections.main-register.name",
-    "settings": [
-      {
-        "type": "header",
-        "content": "t:sections.all.padding.section_padding_heading"
-      }, {
-        "type": "image_picker",
-        "id": "logo",
-        "label": "Insert Logo"
-      }, {
-        "type": "range",
-        "id": "padding_top",
-        "min": 0,
-        "max": 100,
-        "step": 4,
-        "unit": "px",
-        "label": "t:sections.all.padding.padding_top",
-        "default": 36
-      }, {
-        "type": "range",
-        "id": "padding_bottom",
-        "min": 0,
-        "max": 100,
-        "step": 4,
-        "unit": "px",
-        "label": "t:sections.all.padding.padding_bottom",
-        "default": 36
-      }
-    ]
-  }
+{
+  "name": "t:sections.main-register.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Insert Logo"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
 {% endschema %}

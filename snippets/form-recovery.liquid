@@ -2,7 +2,7 @@
   <a href="/account/login" style="margin: 0; text-decoration: none;">
     <div style="align-items: center; display: flex; gap: 2px; margin-bottom: 8px; color: var(--color-primary);">
       {{- 'icon-arrow-back.svg' | inline_asset_content -}}
-      cancel
+      Back to Login
     </div>
   </a>
 </div>
@@ -13,12 +13,12 @@
       document.addEventListener('DOMContentLoaded', function () {
         sessionStorage.setItem('login', 'true');
         sessionStorage.setItem('recoveryEmail', '{{ form.email }}');
-      
+
         var popup = document.querySelector('.recovery-popup');
         var recoveryText = document.getElementById('recovery-email');
         var formContainer = document.getElementById('CustomRecoverForm');
         var backButtonWrapper = document.getElementById('BackButtonWrapper');
-      
+
         if (popup && recoveryText) {
           recoveryText.textContent = '{{ form.email }}';
           popup.style.display = 'block';
@@ -37,15 +37,18 @@
     id="CustomRecoverForm"
     class="custom-recover-form"
     method="post"
-    action="/account/recover">
+    action="/account/recover"
+  >
     <input
       type="hidden"
       name="form_type"
-      value="recover_customer_password">
+      value="recover_customer_password"
+    >
     <input
       type="hidden"
       name="utf8"
-      value="✓">
+      value="✓"
+    >
 
     <div class="field-auth">
       <input
@@ -57,14 +60,16 @@
         autocapitalize="off"
         autocomplete="email"
         placeholder="{{ 'customer.login_page.email' | t }}"
-        required>
+        required
+      >
     </div>
 
     {% if form.errors %}
       <div
         id="RecoverFormError"
         class="form__message"
-        style="color: red;">
+        style="color: red;"
+      >
         {{ form.errors | default_errors }}
       </div>
     {% endif %}
@@ -74,25 +79,26 @@
         type="submit"
         class="button-form"
         id="RecoverSubmitButton"
-        data-loading-text="{{ 'customer.general.loading' | t }}">
+        data-loading-text="{{ 'customer.general.loading' | t }}"
+      >
         {{ 'customer.login_page.submit' | t }}
       </button>
-
     </div>
   </form>
 {% endform %}
 
 <div class="recovery-popup" style="display: none;">
   <p style="color: var(--color-primary); margin: 0 0 10px 0;">
-    The link to reset your password has been sent to
+    Your password reset link has been sent to your email.
     <span id="recovery-email"></span>.
   </p>
   <div class="WrapperButton-form">
     <a
       href="/account/login"
       class="button-form"
-      style="color: var(--color-neutral); text-align: center; display: inline-block;">
-      Go to login page
+      style="color: var(--color-neutral); text-align: center; display: inline-block;"
+    >
+      Go to Login
     </a>
   </div>
 </div>
@@ -101,13 +107,13 @@
   document.addEventListener('DOMContentLoaded', function () {
     var recoverForm = document.getElementById('CustomRecoverForm');
     var recoverButton = document.getElementById('RecoverSubmitButton');
-  
+
     if (recoverForm && recoverButton) {
       recoverForm.addEventListener('submit', function (e) {
         recoverButton.disabled = true;
-  
+
         recoverButton.classList.add('button--loading');
-  
+
         var loadingText = recoverButton.getAttribute('data-loading-text');
         if (loadingText) {
           recoverButton.textContent = loadingText;

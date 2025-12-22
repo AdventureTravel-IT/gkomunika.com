@@ -178,6 +178,10 @@
   }
 
   @media (max-width: 768px) {
+    .hero-container {
+      margin-top: 40px;
+    }
+
     .banner__content--wrapper {
       width: 100%;
       padding: 0 24px;
@@ -231,7 +235,7 @@
             id="search-heading"
             style="display: none;"
           >
-            Search Result for “{{ search.terms }}”
+            Search Result for "{{ search.terms }}"
           </h2>
 
         {%- when 'text' -%}

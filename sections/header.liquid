@@ -198,7 +198,36 @@
     box-shadow: 0 0 0 2px #fff;
   }
 
+  body.sidebar-open .product-form,
+  body.sidebar-open .product__info-wrapper,
+  body.sidebar-open .product__sticky,
+  body.sidebar-open .product-form__buttons,
+  body.sidebar-open .product-buy-buttons,
+  body.sidebar-open .main-product-header-right,
+  body.sidebar-open .main-product-container .BuyButtonsWrap,
+  body.sidebar-open [data-sticky],
+  body.sidebar-open [data-mobile-sticky] {
+    display: none !important;
+  }
+
   @media (max-width: 768px) {
+    html,
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .shopify-section-header,
+    .shopify-section[id*='shopify-section-header'] {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
+
+    .header__wrapper {
+      padding: 0 24px;
+    }
+
     .header-menu {
       display: none;
     }
@@ -213,25 +242,27 @@
 
     #sidebar {
       display: block;
-      position: relative;
       width: 100%;
+      position: static;
     }
 
     .sidebar-panel {
-      overflow: hidden;
+      position: absolute;
+      left: 0;
+      width: 100%;
       max-height: 0;
       opacity: 0;
-      transform: translateY(-8px);
-      transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease;
-      border-top: 1px solid #eaeaea;
-      background: var(--color-neutral);
-      will-change: max-height, opacity, transform;
+      overflow-y: auto;
+      background-color: var(--color-neutral);
+      z-index: 999999;
+      transition: max-height 0.35s ease, opacity 0.25s ease;
     }
 
     .sidebar-panel.active {
-      max-height: 80vh;
+      max-height: calc(100vh - 60px);
       opacity: 1;
       transform: translateY(0);
+      min-height: 1px;
     }
 
     .sidebar-list {
@@ -280,12 +311,7 @@
   <div class="header__container">
     <div class="header__wrapper">
       <div class="header-conten-menu">
-        <button
-          class="menu-toggle"
-          type="button"
-          aria-label="Open Menu"
-          aria-expanded="false"
-        >
+        <button class="menu-toggle" type="button" aria-label="Open Menu" aria-expanded="false">
           <div class="animated-icon" id="menu-icon">
             <span></span>
             <span></span>
@@ -294,7 +320,7 @@
         </button>
 
         {% if section.settings.logo != blank %}
-          <a href="/" class="inline-flex-center">
+          <a href="{{ routes.root_url }}" class="inline-flex-center">
             <img
               class="header-content-logo"
               src="{{ section.settings.logo | image_url: width: 120 }}"
@@ -358,8 +384,8 @@
           aria-label="Main navigation"
           data-root-url="{{ routes.root_url }}"
           data-icons='
-                {
-                  "home": "{{ ' header-home.svg' | asset_url }}", "esim" : "{{ 'header-esim.svg' | asset_url }}"
+                    {
+                      "home": "{{ ' header-home.svg' | asset_url }}", "esim" : "{{ 'header-esim.svg' | asset_url }}"
             , "simcard" : "{{ 'header-simcard.svg' | asset_url }}" , "insurance"
             : "{{ 'header-insurance.svg' | asset_url }}" , "usage" : "{{ 'header-usage.svg' | asset_url }}" , "topup"
             : "{{ 'icon-plus.svg' | asset_url }}" , "about" : "{{ 'header-about.svg' | asset_url }}" , "faq"
@@ -399,19 +425,19 @@
 
 <script>
   window.cartItemCount = {{ cart.items | size | default: 0 | plus: 0 }};
-  
+
   (function () {
     const nav = document.getElementById('navbar');
     if (!nav) return;
-  
+
     const iconsData = nav.getAttribute('data-icons');
     if (!iconsData) return;
-  
+
     const icons = JSON.parse(iconsData);
-  
+
     const rawRootUrl = nav.getAttribute('data-root-url') || '';
     const cleanRoot = rawRootUrl.replace(/\/$/, '');
-  
+
     function makeUrl(path) {
       if (!path || path === '/') {
         return cleanRoot || '/';
@@ -419,7 +445,7 @@
       const cleanPath = path.startsWith('/') ? path : '/' + path;
       return cleanRoot + cleanPath;
     }
-  
+
     const menu = [
       { label: 'Home', icon: icons.home, link: makeUrl('/') },
       { label: 'eSIM', icon: icons.esim, link: makeUrl('pages/product-category?sim_type=esim') },
@@ -431,7 +457,7 @@
       { label: 'FAQ', icon: icons.faq, link: makeUrl('pages/faq') },
       { label: 'News', icon: icons.news, link: makeUrl('pages/news') },
     ];
-  
+
     function renderMenuList(items) {
       const itemsHtml = items
         .map(
@@ -446,15 +472,15 @@
         .join('');
       return `<ul class="sidebar-list">${itemsHtml}</ul>`;
     }
-  
+
     function renderHeaderMenu({ container, items }) {
       const fullItems = items.concat([
         { label: 'Cart', icon: icons.cart, link: "{{ routes.cart_url }}" },
         { label: 'Profile', icon: icons.profile, link: "{{ routes.account_url }}" },
       ]);
-  
+
       const count = window.cartItemCount || 0;
-  
+
       const itemsHtml = fullItems
         .map((item) => {
           const isCart = item.label === 'Cart';
@@ -462,7 +488,7 @@
             isCart && count > 0
               ? `<span class="header-cart__badge">${count}</span>`
               : '';
-  
+
           return `
             <li>
               <a href="${item.link}"
@@ -478,31 +504,31 @@
         .join('');
       container.innerHTML = `<ul class="header-menu">${itemsHtml}</ul>`;
     }
-  
+
     renderHeaderMenu({ container: nav, items: menu });
-  
+
     const sidebarListMount = document.getElementById('sidebar-list');
     if (sidebarListMount) {
       sidebarListMount.innerHTML = renderMenuList(menu);
     }
-  
+
     const sidebarPanel = document.querySelector('.sidebar-panel');
     const menuToggleBtn = document.querySelector('.menu-toggle');
     const menuIcon = document.getElementById('menu-icon');
     const root = document.documentElement;
-  
+
     function setScrollLock(locked) {
       const value = locked ? 'hidden' : '';
       root.style.overflow = value;
       document.body.style.overflow = value;
     }
-  
+
     function setMenuState(isOpen) {
       if (!sidebarPanel) return;
-  
+
       sidebarPanel.classList.toggle('active', isOpen);
       sidebarPanel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-  
+
       if (menuIcon) {
         menuIcon.classList.toggle('open', isOpen);
       }
@@ -511,34 +537,36 @@
         menuToggleBtn.setAttribute('aria-label', isOpen ? 'Close Menu' : 'Open Menu');
       }
       setScrollLock(isOpen);
+
+      document.body.classList.toggle('sidebar-open', isOpen);
     }
-  
+
     function toggleMenu() {
       if (!sidebarPanel) return;
       const isOpen = sidebarPanel.classList.contains('active');
       setMenuState(!isOpen);
     }
-  
+
     function closeMenu() {
       if (!sidebarPanel || !sidebarPanel.classList.contains('active')) return;
       setMenuState(false);
     }
-  
+
     if (menuToggleBtn) {
       menuToggleBtn.addEventListener('click', toggleMenu);
     }
-  
+
     document.addEventListener('click', function (e) {
       if (!sidebarPanel || !sidebarPanel.classList.contains('active')) return;
-  
+
       const clickInsidePanel = sidebarPanel.contains(e.target);
       const clickOnToggle = menuToggleBtn && menuToggleBtn.contains(e.target);
-  
+
       if (!clickInsidePanel && !clickOnToggle) {
         closeMenu();
       }
     });
-  
+
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         closeMenu();

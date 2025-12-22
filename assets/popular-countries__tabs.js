@@ -1,51 +1,64 @@
+(() => {
+  const buttons = document.querySelectorAll(".tab-button");
+  const contents = document.querySelectorAll(".tab-content");
+  const PRO_MAX = window.matchMedia("(min-width: 430px) and (max-width: 440px)");
+  const showAllButton = document.querySelector(".show-all-destination");
 
-    (function () {
-      const buttons = document.querySelectorAll(".tab-button");
-      const contents = document.querySelectorAll(".tab-content");
-      const showAllButton = document.querySelector(".show-all-destination");
+  const urlParams = new URLSearchParams(window.location.search);
+  const hasTabParam = urlParams.has("tab");
+  const activeTab = urlParams.get("tab") || "land";
 
-      // Ambil tab aktif dari URL atau default ke 'land'
-      const urlParams = new URLSearchParams(window.location.search);
-      const activeTab = urlParams.get("tab") || "land";
+  const isHomePage = window.location.pathname === "/";
 
-      // Set tab aktif saat pertama kali load
-      buttons.forEach((button) => {
-        button.classList.toggle("active", button.getAttribute("data-tab") === activeTab);
-        button.style.visibility = "visible"; // Tampilkan tombol setelah diatur
-      });
+  function activateTab(tab, { updateUrl } = { updateUrl: true }) {
+    buttons.forEach((btn) => {
+      btn.classList.toggle("active", btn.getAttribute("data-tab") === tab);
+    });
 
-      contents.forEach((content) => {
-        content.style.display = content.id === activeTab ? "grid" : "none";
-        content.style.visibility = "visible"; // Tampilkan konten setelah diatur
-      });
+    contents.forEach((content) => {
+      content.classList.toggle("active", content.id === tab);
+    });
 
-      // Update URL dan tampilkan tab saat klik tombol
-      buttons.forEach((button) => {
-        button.addEventListener("click", () => {
-          const tab = button.getAttribute("data-tab");
+    if (showAllButton) {
+      const baseUrl = showAllButton.getAttribute("href").split("?")[0];
+      showAllButton.setAttribute("href", `${baseUrl}?tab=${tab}`);
+    }
 
-          // Update tampilan tab
-          buttons.forEach((btn) => btn.classList.remove("active"));
-          contents.forEach((content) => (content.style.display = "none"));
+    if (!updateUrl || isHomePage) return;
 
-          button.classList.add("active");
-          document.getElementById(tab).style.display = "grid";
+    const newUrl = `${window.location.pathname}?tab=${tab}`;
+    window.history.replaceState(null, "", newUrl);
+  }
 
-          // Update URL tanpa reload
-          const newUrl = `${window.location.pathname}?tab=${tab}`;
-          window.history.pushState(null, "", newUrl);
+  function limitItems(tabId, limit = 4) {
+    const tab = document.getElementById(tabId);
+    if (!tab) return;
 
-          // Update href pada tombol 'Show All Destination'
-          if (showAllButton) {
-            const baseUrl = showAllButton.getAttribute("href").split('?')[0];
-            showAllButton.setAttribute('href', `${baseUrl}?tab=${tab}`);
-          }
-        });
-      });
+    const items = tab.querySelectorAll("a");
 
-      // Update href saat pertama kali load
-      if (showAllButton) {
-        const baseUrl = showAllButton.getAttribute("href").split('?')[0];
-        showAllButton.setAttribute('href', `${baseUrl}?tab=${activeTab}`);
-      }
-    })();
+    items.forEach((el, idx) => {
+      const shouldLimit = isHomePage && PRO_MAX.matches;
+      el.style.display = shouldLimit && idx >= limit ? "none" : "";
+    });
+  }
+
+  function applyLimit() {
+    limitItems("land", 4);
+    limitItems("region", 4);
+  }
+
+  activateTab(activeTab, { updateUrl: hasTabParam && !isHomePage });
+
+  applyLimit();
+
+  PRO_MAX.addEventListener?.("change", applyLimit);
+  window.addEventListener("resize", applyLimit);
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const tab = button.getAttribute("data-tab");
+      activateTab(tab, { updateUrl: !isHomePage });
+      applyLimit();
+    });
+  });
+})();

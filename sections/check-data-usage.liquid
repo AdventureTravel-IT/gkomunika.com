@@ -587,7 +587,10 @@ width: 100%;
           }
 
           const quotaList = usage.quotaList || [];
-          const productName = data?.data_usage?.quotaList[0] || "-";
+          const productName =
+            data?.data_usage?.quotaList?.[0]?.skuName ||
+            data?.product_name ||
+            "-";
 
           // Mapping status
           const statusMap = {

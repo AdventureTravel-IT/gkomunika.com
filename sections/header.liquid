@@ -1,4 +1,13 @@
 {% unless template == 'customers/login' or template == 'customers/register' %}
+  {%- comment -%}
+    Deteksi bahasa aktif untuk menambahkan prefix /id pada bahasa Indonesia
+  {%- endcomment -%}
+  {% if request.locale.iso_code == 'id' %}
+    {% assign locale_prefix = '/id' %}
+  {% else %}
+    {% assign locale_prefix = '' %}
+  {% endif %}
+
   <div class="header__container">
     <div class="header__wrapper">
       <div class="header-conten-menu">
@@ -108,7 +117,7 @@
               </a>
             </li>
             <li>
-              <a href="{{ routes.root_url }}/pages/esim-page?sim_type=esim" class="menu-list">
+              <a href="{{ locale_prefix }}/pages/esim-page?sim_type=esim" class="menu-list">
                 <img
                   src="{{ 'header-esim.svg' | asset_url }}"
                   alt="eSIM icon"
@@ -123,7 +132,7 @@
             </li>
             <li>
               <a
-                href="{{ routes.root_url }}/pages/sim-card-page?sim_type=sim-card"
+                href="{{ locale_prefix }}/pages/sim-card-page?sim_type=sim-card"
                 class="menu-list"
               >
                 <img
@@ -140,7 +149,7 @@
             </li>
             <li>
               <a
-                href="{{ routes.root_url }}/pages/insurance-page?sim_type=insurance"
+                href="{{ locale_prefix }}/pages/insurance-page?sim_type=insurance"
                 class="menu-list"
               >
                 <img
@@ -156,7 +165,7 @@
               </a>
             </li>
             <li>
-              <a href="{{ routes.root_url }}/pages/check-data-usage" class="menu-list">
+              <a href="{{ locale_prefix }}/pages/check-data-usage" class="menu-list">
                 <img
                   src="{{ 'header-usage.svg' | asset_url }}"
                   alt="Data Usage icon"
@@ -170,7 +179,7 @@
               </a>
             </li>
             <li>
-              <a href="{{ routes.root_url }}/pages/check-data-usage-topup" class="menu-list">
+              <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="menu-list">
                 <img
                   src="{{ 'icon-plus.svg' | asset_url }}"
                   alt="Top Up icon"
@@ -184,7 +193,7 @@
               </a>
             </li>
             <li>
-              <a href="{{ routes.root_url }}/pages/about-us" class="menu-list">
+              <a href="{{ locale_prefix }}/pages/about-us" class="menu-list">
                 <img
                   src="{{ 'header-about.svg' | asset_url }}"
                   alt="About Us icon"
@@ -198,7 +207,7 @@
               </a>
             </li>
             <li>
-              <a href="{{ routes.root_url }}/pages/faq" class="menu-list">
+              <a href="{{ locale_prefix }}/pages/faq" class="menu-list">
                 <img
                   src="{{ 'header-faq.svg' | asset_url }}"
                   alt="FAQ icon"
@@ -212,7 +221,7 @@
               </a>
             </li>
             <li>
-              <a href="{{ routes.root_url }}/pages/news" class="menu-list">
+              <a href="{{ locale_prefix }}/pages/news" class="menu-list">
                 <img
                   src="{{ 'header-news.svg' | asset_url }}"
                   alt="News icon"
@@ -282,7 +291,7 @@
             >
           </li>
           <li>
-            <a href="{{ routes.root_url }}pages/esim-page?sim_type=esim" class="sidebar-link"
+            <a href="{{ locale_prefix }}/pages/esim-page?sim_type=esim" class="sidebar-link"
               ><img
                 src="{{ 'header-esim.svg' | asset_url }}"
                 alt="eSIM icon"
@@ -296,9 +305,7 @@
             >
           </li>
           <li>
-            <a
-              href="{{ routes.root_url }}pages/sim-card-page?sim_type=sim-card"
-              class="sidebar-link"
+            <a href="{{ locale_prefix }}/pages/sim-card-page?sim_type=sim-card" class="sidebar-link"
               ><img
                 src="{{ 'header-simcard.svg' | asset_url }}"
                 alt="SIM Card icon"
@@ -312,9 +319,7 @@
             >
           </li>
           <li>
-            <a
-              href="{{ routes.root_url }}pages/insurance-page?sim_type=insurance"
-              class="sidebar-link"
+            <a href="{{ locale_prefix }}/pages/insurance-page?sim_type=insurance" class="sidebar-link"
               ><img
                 src="{{ 'header-insurance.svg' | asset_url }}"
                 alt="Insurance icon"
@@ -328,7 +333,7 @@
             >
           </li>
           <li>
-            <a href="{{ routes.root_url }}pages/check-data-usage" class="sidebar-link"
+            <a href="{{ locale_prefix }}/pages/check-data-usage" class="sidebar-link"
               ><img
                 src="{{ 'header-usage.svg' | asset_url }}"
                 alt="Data Usage icon"
@@ -342,7 +347,7 @@
             >
           </li>
           <li>
-            <a href="{{ routes.root_url }}pages/check-data-usage-topup" class="sidebar-link"
+            <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="sidebar-link"
               ><img
                 src="{{ 'icon-plus.svg' | asset_url }}"
                 alt="Top Up icon"
@@ -356,7 +361,7 @@
             >
           </li>
           <li>
-            <a href="{{ routes.root_url }}pages/about-us" class="sidebar-link"
+            <a href="{{ locale_prefix }}/pages/about-us" class="sidebar-link"
               ><img
                 src="{{ 'header-about.svg' | asset_url }}"
                 alt="About Us icon"
@@ -370,7 +375,7 @@
             >
           </li>
           <li>
-            <a href="{{ routes.root_url }}pages/faq" class="sidebar-link"
+            <a href="{{ locale_prefix }}/pages/faq" class="sidebar-link"
               ><img
                 src="{{ 'header-faq.svg' | asset_url }}"
                 alt="FAQ icon"
@@ -384,7 +389,7 @@
             >
           </li>
           <li>
-            <a href="{{ routes.root_url }}pages/news" class="sidebar-link"
+            <a href="{{ locale_prefix }}/pages/news" class="sidebar-link"
               ><img
                 src="{{ 'header-news.svg' | asset_url }}"
                 alt="News icon"

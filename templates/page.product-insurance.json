@@ -10,22 +10,22 @@
 {
   "sections": {
     "main": {
-      "type": "main-page",
-      "disabled": true,
+      "type": "product-category-pages",
       "settings": {
-        "padding_top": 28,
-        "padding_bottom": 28
+        "default_filter": "insurance"
       }
     },
-    "check_data_usage_3g9T3p": {
-      "type": "check-data-usage",
-      "disabled": true,
-      "name": "Check Data Usage",
-      "settings": {}
+    "custom_image_banner_DwraKP": {
+      "type": "custom-image-banner",
+      "name": "Banner-search",
+      "settings": {
+        "heading_text": "All Destinations",
+        "subheading_text": "Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries"
+      }
     }
   },
   "order": [
-    "main",
-    "check_data_usage_3g9T3p"
+    "custom_image_banner_DwraKP",
+    "main"
   ]
 }

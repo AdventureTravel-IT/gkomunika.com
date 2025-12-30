@@ -22,12 +22,8 @@
             "first-page": "check-data-usage",
             "second-page": "what-is-sim-card-recycling-and-its-process",
             "thrid-page": "airport-regulations-for-flights-to-dubai-have-changed-here-s-what-you-need-to-know",
-<<<<<<< HEAD
-            "show-button": true
-=======
             "show-button": true,
             "hero-background": "shopify://shop_images/news_1.webp"
->>>>>>> e3520917976545c6219353964ef0f7e87e86770b
           }
         },
         "news_block_EGEeC3": {

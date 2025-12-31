@@ -9,6 +9,12 @@
  */
 {
   "sections": {
+    "header_promo_gFRbbm": {
+      "type": "header-promo",
+      "disabled": true,
+      "name": "Header Promo",
+      "settings": {}
+    },
     "main": {
       "type": "landing-hero-gsim",
       "settings": {}
@@ -31,11 +37,6 @@
     },
     "faq": {
       "type": "landing-faq-gsim",
-      "settings": {}
-    },
-    "header_promo_gFRbbm": {
-      "type": "header-promo",
-      "name": "Header Promo",
       "settings": {}
     }
   },

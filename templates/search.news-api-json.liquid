@@ -1,0 +1,45 @@
+{%- layout none -%}
+{%- paginate search.results by 50 -%}
+{
+  "items": [
+    {%- assign first = true -%}
+    {%- for item in search.results -%}
+      {%- unless item.object_type == 'page' -%}{%- continue -%}{%- endunless -%}
+      {%- assign cat = item.metafields.pages.category.value | default: '' | downcase -%}
+
+      {%- comment -%} Ambil image pertama dari content {%- endcomment -%}
+      {%- assign first_img_url = '' -%}
+      {%- assign img_parts = item.content | split: '<img' -%}
+      {%- if img_parts.size > 1 -%}
+        {%- assign img_tag = img_parts[1] | split: '>' | first -%}
+
+        {%- comment -%} coba ambil src="..." {%- endcomment -%}
+        {%- if img_tag contains 'src="' -%}
+          {%- assign first_img_url = img_tag | split: 'src="' | last | split: '"' | first -%}
+        {%- elsif img_tag contains "src='" -%}
+          {%- assign first_img_url = img_tag | split: "src='" | last | split: "'" | first -%}
+        {%- elsif img_tag contains 'data-src="' -%}
+          {%- assign first_img_url = img_tag | split: 'data-src="' | last | split: '"' | first -%}
+        {%- elsif img_tag contains "data-src='" -%}
+          {%- assign first_img_url = img_tag | split: "data-src='" | last | split: "'" | first -%}
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- unless first -%},{%- endunless -%}
+      {%- assign first = false -%}
+      {
+        "title": {{ item.title | json }},
+        "url": {{ item.url | json }},
+        "category": {{ cat | json }},
+        "published_at": {{ item.published_at | date: "%Y-%m-%d" | json }},
+        "excerpt": {{ item.content | strip_html | truncate: 160 | json }},
+        "image": {{ first_img_url | json }}
+      }
+    {%- endfor -%}
+  ],
+  "count": {{ paginate.items.size | json }},
+  "total": {{ search.results_count | json }},
+  "page": {{ paginate.current_page | json }},
+  "pages": {{ paginate.pages | json }}
+}
+{%- endpaginate -%}

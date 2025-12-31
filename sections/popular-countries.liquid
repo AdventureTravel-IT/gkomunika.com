@@ -1,5 +1,6 @@
 {{ 'popular-countries.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'popular-countries__tabs.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'popular-countries__tabs.js' | asset_url }}" defer></script>
+
 <div class="container-popular-countries">
   <div class="popular-countries">
     {% if request.page_type == 'collection' and collection.handle == 'all' %}
@@ -7,6 +8,7 @@
     {% else %}
       <h2>{{ 'popular_countries.title' | t }}</h2>
     {% endif %}
+
     <div class="tabs">
       <button class="tab-button active" data-tab="land">
         <span>{{ 'popular_countries.tab_land' | t }}</span>
@@ -44,6 +46,7 @@
       {% assign collection = collections[section.settings.region_collection] %}
       {% if collection and collection.products.size > 0 %}
         {% assign displayed_regions = '' %}
+        {% assign item_index = 0 %}
 
         {% for product in collection.products %}
           {% assign region_value = product.metafields.coverage.region.value %}
@@ -52,6 +55,13 @@
           {% if region_value and country_name != blank and country_name != null %}
             {% unless displayed_regions contains country_name %}
               {% assign displayed_regions = displayed_regions | append: ',' | append: country_name %}
+              {% assign item_index = item_index | plus: 1 %}
+
+              {% if item_index <= 8 %}
+                {% assign img_loading = 'eager' %}
+              {% else %}
+                {% assign img_loading = 'lazy' %}
+              {% endif %}
 
               <a href="{{ routes.search_url }}?q={{ country_name | url_encode }}">
                 <div class="country">
@@ -59,10 +69,10 @@
                     <img
                       src="{{ country_name | append: '.svg' | replace: ' ','_' | file_url }}"
                       alt="{{ country_name }}"
-                      width="30"
-                      height="30"
-                      loading="lazy"
-                      style="border: none;"
+                      width="50"
+                      height="50"
+                      loading="{{ img_loading }}"
+                      decoding="async"
                     >
                     <div class="collection-pick">
                       <p>{{ country_name | replace: '_', ' ' }}</p>

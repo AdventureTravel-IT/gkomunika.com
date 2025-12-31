@@ -36,6 +36,7 @@
   padding: 10px 20px;
   border-radius: 15px;
   cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .tab-button:hover,
@@ -202,6 +203,20 @@
 
 #region .text-content {
   gap: 14px !important;
+}
+
+@media (min-width: 1366px) and (max-width: 1366px) {
+  .cta-desktop {
+    left: 780px !important;
+    width: 400px !important;
+    bottom: 90px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-container {
+    height: 600px;
+  }
 }
 
 @media screen and (max-width: 1440px) {

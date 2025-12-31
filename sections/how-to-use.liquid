@@ -1,10 +1,19 @@
+{% assign htu_blocks = section.blocks | where: 'type', 'htu_card' %}
+{% assign wgk_blocks = section.blocks | where: 'type', 'wgk_card' %}
+{% assign benefits_blocks = section.blocks | where: 'type', 'benefits_card' %}
+{% assign review_top_blocks = section.blocks | where: 'type', 'review_top' %}
+{% assign review_bottom_blocks = section.blocks | where: 'type', 'review_bottom' %}
+
+{% capture rating_svg %}{{- 'ratting.svg' | inline_asset_content -}}{% endcapture %}
+{% capture arrow_svg %}{{- 'icon-arrow-back.svg' | inline_asset_content -}}{% endcapture %}
+
 <div class="htu__container">
   <div class="htu__wrapper">
-    <section class="htu__htu">
-      <h2 class="htu__title">{{ section.settings.htu_title }}</h2>
-      <div class="htu__htu-wrapper htu__grid">
-        {% for block in section.blocks %}
-          {% if block.type == 'htu_card' %}
+    {% if htu_blocks.size > 0 %}
+      <section class="htu__htu">
+        <h2 class="htu__title">{{ section.settings.htu_title }}</h2>
+        <div class="htu__htu-wrapper htu__grid">
+          {% for block in htu_blocks %}
             <section class="htu__htu-card">
               {% if block.settings.icon != blank %}
                 {% assign icon_name = block.settings.icon | append: '.svg' %}
@@ -15,81 +24,82 @@
               </div>
               <div class="htu__card-paragraph">{{ block.settings.paragraph }}</div>
             </section>
-          {% endif %}
-        {% endfor %}
-      </div>
-    </section>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
 
-    <section class="htu__wgk">
-      <h2 class="htu__title">{{ section.settings.wgk_title }}</h2>
-      <div class="htu__wgk-wrapper htu__grid">
-        {% for block in section.blocks %}
-          {% if block.type == 'wgk_card' %}
+    {% if wgk_blocks.size > 0 %}
+      <section class="htu__wgk">
+        <h2 class="htu__title">{{ section.settings.wgk_title }}</h2>
+        <div class="htu__wgk-wrapper htu__grid">
+          {% for block in wgk_blocks %}
             <section class="htu__wgk-card">
               {% if block.settings.icon != blank %}
                 {% assign icon_name = block.settings.icon | append: '.svg' %}
                 <div class="htu__card-icon">{{ icon_name | inline_asset_content }}</div>
               {% endif %}
-
               <div class="htu__card-title">
                 <span>{{ block.settings.title }}</span>
               </div>
               <div class="htu__card-paragraph">{{ block.settings.paragraph }}</div>
             </section>
-          {% endif %}
-        {% endfor %}
-      </div>
-    </section>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
 
-    <section class="htu__customer-review">
-      <h2 class="htu__title">{{ section.settings.review_title }}</h2>
-      <div class="htu__customer-wrapper">
-        {% for block in section.blocks %}
-          {% if block.type == 'review_top' %}
+    {% if review_top_blocks.size > 0 or review_bottom_blocks.size > 0 %}
+      <section class="htu__customer-review">
+        <h2 class="htu__title">{{ section.settings.review_title }}</h2>
+        <div class="htu__customer-wrapper">
+          {% for block in review_top_blocks %}
             <div class="htu__customer-content top">
               <section class="htu__cutomer-content wrapper">
                 <div class="htu__customer-profile">
                   {{ block.settings['profile-top'] }}
-                  <div>{{- 'ratting.svg' | inline_asset_content -}}</div>
+                  <div>{{ rating_svg }}</div>
                 </div>
                 <div class="htu__customer-comment">{{ block.settings['comment-top'] }}</div>
               </section>
               <section class="htu__cutomer-content wrapper">
-                {{- 'icon-arrow-back.svg' | inline_asset_content -}}
+                {{ arrow_svg }}
                 <div class="htu__customer-profile">
                   {{ block.settings['profile-top1'] }}
-                  <div>{{- 'ratting.svg' | inline_asset_content -}}</div>
+                  <div>{{ rating_svg }}</div>
                 </div>
                 <div class="htu__customer-comment">{{ block.settings['comment-top1'] }}</div>
               </section>
             </div>
-          {% elsif block.type == 'review_bottom' %}
+          {% endfor %}
+
+          {% for block in review_bottom_blocks %}
             <div class="htu__customer-content bottom">
               <section class="htu__cutomer-content wrapper">
                 <div class="htu__customer-profile">
                   {{ block.settings['profile-bottom'] }}
-                  <div>{{- 'ratting.svg' | inline_asset_content -}}</div>
+                  <div>{{ rating_svg }}</div>
                 </div>
                 <div class="htu__customer-comment">{{ block.settings['comment-bottom'] }}</div>
               </section>
               <section class="htu__cutomer-content wrapper">
                 <div class="htu__customer-profile">
                   {{ block.settings['profile-bottom1'] }}
-                  <div>{{- 'ratting.svg' | inline_asset_content -}}</div>
+                  <div>{{ rating_svg }}</div>
                 </div>
                 <div class="htu__customer-comment">{{ block.settings['comment-bottom1'] }}</div>
               </section>
             </div>
-          {% endif %}
-        {% endfor %}
-      </div>
-    </section>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
 
-    <section class="htu__benefits">
-      <h2 class="htu__title">{{ section.settings.benefits_title }}</h2>
-      <div class="htu__benefits-wrapper htu__grid">
-        {% for block in section.blocks %}
-          {% if block.type == 'benefits_card' %}
+    {% if benefits_blocks.size > 0 %}
+      <section class="htu__benefits">
+        <h2 class="htu__title">{{ section.settings.benefits_title }}</h2>
+        <div class="htu__benefits-wrapper htu__grid">
+          {% for block in benefits_blocks %}
             <section class="htu__benefits-card">
               {% if block.settings.icon != blank %}
                 {% assign icon_name = block.settings.icon | append: '.svg' %}
@@ -100,10 +110,10 @@
               </div>
               <div class="htu__card-paragraph">{{ block.settings.paragraph }}</div>
             </section>
-          {% endif %}
-        {% endfor %}
-      </div>
-    </section>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
   </div>
 </div>
 
@@ -258,7 +268,7 @@
       ]
     }
   ],
-  "max_blocks": 20,
+  "max_blocks": 30,
   "presets": [
     {
       "name": "How To Use Section",

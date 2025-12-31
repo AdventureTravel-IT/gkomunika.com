@@ -19,7 +19,6 @@
     },
     "check_data_usage_3g9T3p": {
       "type": "check-data-usage",
-      "disabled": true,
       "name": "Check Data Usage",
       "settings": {}
     }

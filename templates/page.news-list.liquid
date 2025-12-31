@@ -1,0 +1,320 @@
+{% comment %}
+  TEMPLATE UNTUK MENAMPILKAN SEMUA PAGES
+  URL: /pages/news-category/news
+{% endcomment %}
+
+{% layout 'theme' %}
+
+{% comment %} SETTINGS - BISA DIUBAH {% endcomment %}
+{% assign page_size = 20 %} {% comment %} Jumlah artikel per halaman {% endcomment %}
+{% assign all_pages = pages %}
+{% assign total_pages = all_pages.size %}
+
+{% comment %} HITUNG PAGINATION {% endcomment %}
+{% assign current_page = 1 %}
+{% if request.params.page %}
+  {% assign current_page = request.params.page | plus: 0 %}
+{% endif %}
+
+{% assign start_index = current_page | minus: 1 | times: page_size %}
+{% assign end_index = current_page | times: page_size | minus: 1 %}
+{% if end_index > total_pages %}
+  {% assign end_index = total_pages | minus: 1 %}
+{% endif %}
+
+{% comment %} SIMPAN KE VARIABLE BARU {% endcomment %}
+{% assign show_pages = '' | split: '' %}
+{% for i in (start_index..end_index) %}
+  {% if all_pages[i] %}
+    {% assign show_pages = show_pages | concat: [all_pages[i]] %}
+  {% endif %}
+{% endfor %}
+
+{% assign max_pages = total_pages | divided_by: page_size | ceil %}
+
+<div class="news-page">
+  <div class="container">
+    <!-- HEADER -->
+    <div class="news-header">
+      <h1>Artikel & Berita</h1>
+      <p class="total-count">Total: {{ total_pages }} artikel</p>
+    </div>
+    
+    <!-- ARTIKEL LIST -->
+    <div class="news-list">
+      {% if show_pages.size > 0 %}
+        {% for page_item in show_pages %}
+          <div class="news-item">
+            <div class="news-content">
+              <h3 class="news-title">
+                <a href="{{ page_item.url }}">{{ page_item.title }}</a>
+              </h3>
+              
+              {% if page_item.content != blank %}
+                <p class="news-excerpt">
+                  {{ page_item.content | strip_html | truncatewords: 25 }}
+                </p>
+              {% endif %}
+              
+              <div class="news-meta">
+                <span class="news-date">
+                  {{ page_item.published_at | date: "%d %b %Y" }}
+                </span>
+                {% if page_item.tags != empty %}
+                  <span class="news-tags">
+                    {{ page_item.tags | join: ', ' }}
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="no-articles">
+          <p>Belum ada artikel tersedia.</p>
+        </div>
+      {% endif %}
+    </div>
+    
+    <!-- PAGINATION -->
+    {% if max_pages > 1 %}
+      <div class="pagination">
+        <div class="pagination-info">
+          Halaman {{ current_page }} dari {{ max_pages }}
+        </div>
+        
+        <div class="pagination-links">
+          {% if current_page > 1 %}
+            <a href="/pages/news-category/news?page={{ current_page | minus: 1 }}" class="prev-btn">
+              ← Sebelumnya
+            </a>
+          {% endif %}
+          
+          {% for i in (1..max_pages) %}
+            {% if i == current_page %}
+              <span class="page-number current">{{ i }}</span>
+            {% else %}
+              <a href="/pages/news-category/news?page={{ i }}" class="page-number">{{ i }}</a>
+            {% endif %}
+          {% endfor %}
+          
+          {% if current_page < max_pages %}
+            <a href="/pages/news-category/news?page={{ current_page | plus: 1 }}" class="next-btn">
+              Berikutnya →
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  /* GAYA DASAR */
+  .news-page {
+    padding: 40px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .container {
+    width: 100%;
+  }
+  
+  /* HEADER */
+  .news-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  
+  .news-header h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+  }
+  
+  .total-count {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+  }
+  
+  /* LIST ARTIKEL */
+  .news-list {
+    display: grid;
+    gap: 30px;
+    margin-bottom: 50px;
+  }
+  
+  .news-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 25px;
+    background: white;
+    transition: all 0.3s ease;
+  }
+  
+  .news-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border-color: #3498db;
+  }
+  
+  .news-title {
+    margin: 0 0 15px 0;
+    font-size: 1.4rem;
+  }
+  
+  .news-title a {
+    color: #2c3e50;
+    text-decoration: none;
+  }
+  
+  .news-title a:hover {
+    color: #3498db;
+  }
+  
+  .news-excerpt {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    font-size: 1rem;
+  }
+  
+  .news-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #95a5a6;
+    padding-top: 15px;
+    border-top: 1px solid #f5f5f5;
+  }
+  
+  .news-date {
+    font-weight: 500;
+  }
+  
+  .news-tags {
+    background: #f8f9fa;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+  
+  .no-articles {
+    text-align: center;
+    padding: 50px;
+    color: #7f8c8d;
+  }
+  
+  /* PAGINATION */
+  .pagination {
+    text-align: center;
+    padding: 30px 0;
+    border-top: 1px solid #eee;
+  }
+  
+  .pagination-info {
+    color: #7f8c8d;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+  
+  .pagination-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .page-number, .prev-btn, .next-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: #3498db;
+    font-weight: 500;
+    transition: all 0.2s;
+    min-width: 40px;
+    text-align: center;
+  }
+  
+  .page-number.current {
+    background: #3498db;
+    color: white;
+    border-color: #3498db;
+  }
+  
+  .page-number:hover, .prev-btn:hover, .next-btn:hover {
+    background: #f8f9fa;
+    border-color: #3498db;
+  }
+  
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .news-page {
+      padding: 20px 15px;
+    }
+    
+    .news-header h1 {
+      font-size: 2rem;
+    }
+    
+    .news-item {
+      padding: 20px;
+    }
+    
+    .news-title {
+      font-size: 1.2rem;
+    }
+    
+    .news-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    
+    .pagination-links {
+      gap: 5px;
+    }
+    
+    .page-number, .prev-btn, .next-btn {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
+<script>
+// SMOOTH SCROLL KE ATAS SAAT GANTI HALAMAN
+document.addEventListener('DOMContentLoaded', function() {
+  const pageLinks = document.querySelectorAll('.page-number, .prev-btn, .next-btn');
+  
+  pageLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      if (this.tagName === 'A') {
+        e.preventDefault();
+        
+        // Scroll smooth ke atas
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        
+        // Tunggu sebentar lalu ganti halaman
+        setTimeout(() => {
+          window.location.href = this.href;
+        }, 300);
+      }
+    });
+  });
+  
+  // TAMPILKAN INFO DI CONSOLE
+  console.log('Halaman News List Loaded!');
+  console.log('Total Pages:', {{ total_pages }});
+  console.log('Current Page:', {{ current_page }});
+});
+</script>

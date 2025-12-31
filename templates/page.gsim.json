@@ -32,9 +32,15 @@
     "faq": {
       "type": "landing-faq-gsim",
       "settings": {}
+    },
+    "header_promo_gFRbbm": {
+      "type": "header-promo",
+      "name": "Header Promo",
+      "settings": {}
     }
   },
   "order": [
+    "header_promo_gFRbbm",
     "main",
     "discover",
     "started",

@@ -1,25 +1,51 @@
+{%- assign banner_mobile = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/banner-winter-mobile.webp?v=1764416410' -%}
+{%- assign banner_desktop = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/banner-winter-desktop.webp?v=1764416284' -%}
+
+<link
+  rel="preload"
+  as="image"
+  media="(max-width: 767px)"
+  imagesrcset="
+    {{ banner_mobile }}&width=360 360w,
+    {{ banner_mobile }}&width=540 540w,
+    {{ banner_mobile }}&width=720 720w,
+    {{ banner_mobile }}&width=900 900w
+  "
+  imagesizes="100vw"
+>
+
+<link
+  rel="preload"
+  as="image"
+  media="(min-width: 768px)"
+  imagesrcset="
+    {{ banner_desktop }}&width=960 960w,
+    {{ banner_desktop }}&width=1280 1280w,
+    {{ banner_desktop }}&width=1600 1600w,
+    {{ banner_desktop }}&width=1920 1920w
+  "
+  imagesizes="100vw"
+>
+
 {% style %}
   .hero-container {
     position: relative;
     height: 580px;
     overflow: hidden;
+    contain: layout style paint;
   }
 
-  .img-mobile,
-  .img-desktop {
+  .hero-container picture,
+  .hero-container .hero-img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
+  }
+
+  .hero-container .hero-img {
     object-fit: cover;
-  }
-
-  .img-mobile {
     object-position: 89% 100%;
-  }
-
-  .img-desktop {
-    display: none;
   }
 
   .hero-content {
@@ -27,7 +53,8 @@
     top: 150px;
     left: 0;
     width: 100%;
-    transform: translateY(-0%);
+    transform: translateY(0);
+    will-change: transform;
   }
 
   .hero-text {
@@ -39,12 +66,14 @@
     color: #fff;
     font-size: 16px;
     letter-spacing: 0.05em;
+    margin: 0;
   }
 
   .hero-text h2 {
     color: #fff;
     font-size: 30px;
     font-weight: bold;
+    margin: 0;
   }
 
   .hero-text span {
@@ -57,18 +86,21 @@
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
-    width: 350px;
-    padding: 10px 16px;
+    width: 380px;
+    max-width: calc(100% - 32px);
+    padding: 12px 16px;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     border-radius: 999px;
-
-    border: 3px solid #fff;
-    background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
-    color: #fff;
+    border: 3px solid var(--color-neutral);
+    background: var(--color-primary);
+    color: var(--color-neutral);
     display: block;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+    text-align: center;
+    transition: transform 0.2s ease;
   }
 
   .cta-mobile:hover {
@@ -110,11 +142,6 @@
     margin-top: 10px;
   }
 
-  .link-cta-learn {
-    text-decoration: none;
-    color: #fff;
-  }
-
   @media (min-width: 1366px) and (max-width: 1366px) {
     .cta-desktop {
       left: 780px !important;
@@ -133,53 +160,58 @@
     .hero-container {
       height: 700px;
     }
+
     .hero-content {
       top: 50%;
       width: 50%;
       transform: translateY(-50%);
     }
+
     .hero-text {
       padding: 0;
     }
+
     .hero-text h2 {
       font-size: 40px;
     }
-    .img-mobile {
-      display: none;
-    }
-    .img-desktop {
-      display: block;
-    }
+
     .cta-mobile {
       display: none;
     }
+
     .cta-desktop {
       display: block;
       position: absolute;
       bottom: 80px;
       left: 900px;
-      padding: 10px 30px;
+      padding: 12px 30px;
       width: 450px;
+      max-width: calc(100% - 100px);
       font-size: 18px;
       font-weight: bold;
       cursor: pointer;
-
       border-radius: 999px;
       border: 3px solid #fff;
-      background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+      background: #007bff;
       color: #fff;
-      transition: all 0.2s ease;
+      transition: transform 0.2s ease;
+      text-decoration: none;
+      text-align: center;
     }
 
     .cta-desktop:hover {
       transform: translateY(-3px);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
     }
+
+    .hero-container .hero-img {
+      object-position: center center;
+    }
   }
 
   @media (max-width: 768px) {
     .hero-container {
-      margin-top: 40px;
+      margin-top: 20px;
     }
 
     .banner__content--wrapper {
@@ -204,19 +236,36 @@
 {% endstyle %}
 
 <div class="hero-container">
-  <img
-    src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/banner-winter-mobile.webp?v=1764416410"
-    class="img-mobile"
-    loading="lazy"
-    format="webp"
-  >
+  <picture>
+    <source
+      media="(min-width: 768px)"
+      srcset="
+        {{ banner_desktop }}&width=960 960w,
+        {{ banner_desktop }}&width=1280 1280w,
+        {{ banner_desktop }}&width=1600 1600w,
+        {{ banner_desktop }}&width=1920 1920w
+      "
+      sizes="100vw"
+    >
 
-  <img
-    src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/banner-winter-desktop.webp?v=1764416284"
-    class="img-desktop"
-    loading="lazy"
-    format="webp"
-  >
+    <img
+      class="hero-img"
+      src="{{ banner_mobile }}&width=720"
+      srcset="
+        {{ banner_mobile }}&width=360 360w,
+        {{ banner_mobile }}&width=540 540w,
+        {{ banner_mobile }}&width=720 720w,
+        {{ banner_mobile }}&width=900 900w
+      "
+      sizes="100vw"
+      alt="Winter Banner"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      width="375"
+      height="580"
+    >
+  </picture>
 
   <div class="banner__content--wrapper">
     {%- for block in section.blocks -%}
@@ -242,10 +291,12 @@
           <div class="banner__heading--text {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
             <p>{{ block.settings.text }}</p>
           </div>
+
         {%- when 'desc' -%}
           <div class="banner__heading--desc {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
             <p>{{ block.settings.desc }}</p>
           </div>
+
         {%- when 'search' -%}
           <div class="banner__heading--search">
             {% render 'search-bar' %}
@@ -254,25 +305,14 @@
     {%- endfor -%}
   </div>
 
-  <button class="cta-mobile">
-    <a href="pages/gsim" class="link-cta-learn"> Learn more our latest product gSIM! </a>
-  </button>
-
-  <button class="cta-desktop">
-    <a href="pages/gsim" class="link-cta-learn"> Learn more our latest product gSIM! </a>
-  </button>
+  <a href="/pages/gsim" class="cta-mobile"> Learn more our latest product gSIM! </a>
+  <a href="/pages/gsim" class="cta-desktop"> Learn more our latest product gSIM! </a>
 </div>
 
 {% schema %}
 {
   "name": "Image Banner",
-  "settings": [
-    {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Select Image"
-    }
-  ],
+  "settings": [],
   "presets": [
     {
       "name": "Image Banner",

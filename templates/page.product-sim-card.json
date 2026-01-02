@@ -1,0 +1,31 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "product-category-pages",
+      "settings": {
+        "default_filter": "sim-card"
+      }
+    },
+    "custom_image_banner_L6azRf": {
+      "type": "custom-image-banner",
+      "name": "Banner-search",
+      "settings": {
+        "heading_text": "All Destinations",
+        "subheading_text": "Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries"
+      }
+    }
+  },
+  "order": [
+    "custom_image_banner_L6azRf",
+    "main"
+  ]
+}

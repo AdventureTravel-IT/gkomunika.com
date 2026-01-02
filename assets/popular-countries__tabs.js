@@ -1,22 +1,30 @@
 (() => {
   const buttons = document.querySelectorAll(".tab-button");
   const contents = document.querySelectorAll(".tab-content");
-  const PRO_MAX = window.matchMedia("(min-width: 430px) and (max-width: 440px)");
   const showAllButton = document.querySelector(".show-all-destination");
+  const PRO_MAX = window.matchMedia("(min-width: 430px) and (max-width: 440px)");
 
   const urlParams = new URLSearchParams(window.location.search);
   const hasTabParam = urlParams.has("tab");
   const activeTab = urlParams.get("tab") || "land";
-
   const isHomePage = window.location.pathname === "/";
 
-  function activateTab(tab, { updateUrl } = { updateUrl: true }) {
+  function activateTab(tab, { updateUrl = true } = {}) {
     buttons.forEach((btn) => {
       btn.classList.toggle("active", btn.getAttribute("data-tab") === tab);
     });
 
     contents.forEach((content) => {
-      content.classList.toggle("active", content.id === tab);
+      const isActive = content.id === tab;
+      content.classList.toggle("active", isActive);
+      
+      if (isActive) {
+        content.style.display = "";
+        content.style.visibility = "visible";
+      } else {
+        content.style.display = "none";
+        content.style.visibility = "hidden";
+      }
     });
 
     if (showAllButton) {
@@ -24,10 +32,12 @@
       showAllButton.setAttribute("href", `${baseUrl}?tab=${tab}`);
     }
 
-    if (!updateUrl || isHomePage) return;
+    if (updateUrl && !isHomePage) {
+      const newUrl = `${window.location.pathname}?tab=${tab}`;
+      window.history.replaceState(null, "", newUrl);
+    }
 
-    const newUrl = `${window.location.pathname}?tab=${tab}`;
-    window.history.replaceState(null, "", newUrl);
+    applyLimit();
   }
 
   function limitItems(tabId, limit = 4) {
@@ -35,9 +45,9 @@
     if (!tab) return;
 
     const items = tab.querySelectorAll("a");
+    const shouldLimit = isHomePage && PRO_MAX.matches;
 
     items.forEach((el, idx) => {
-      const shouldLimit = isHomePage && PRO_MAX.matches;
       el.style.display = shouldLimit && idx >= limit ? "none" : "";
     });
   }
@@ -47,18 +57,27 @@
     limitItems("region", 4);
   }
 
+  function debounce(func, wait = 150) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  }
+
   activateTab(activeTab, { updateUrl: hasTabParam && !isHomePage });
-
   applyLimit();
-
-  PRO_MAX.addEventListener?.("change", applyLimit);
-  window.addEventListener("resize", applyLimit);
 
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
       const tab = button.getAttribute("data-tab");
       activateTab(tab, { updateUrl: !isHomePage });
-      applyLimit();
     });
   });
+
+  if (PRO_MAX.addEventListener) {
+    PRO_MAX.addEventListener("change", applyLimit);
+  }
+
+  window.addEventListener("resize", debounce(applyLimit, 150));
 })();

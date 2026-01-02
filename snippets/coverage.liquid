@@ -1,49 +1,51 @@
 {% assign countries_1 = product.metafields.coverage.country.value %}
 {% assign countries_2 = product.metafields.coverage.country_2.value %}
 
-{% if countries_1 == blank %}
-{% assign countries_1 = '' | split: ',' %}
-{% endif %}
-{% if countries_2 == blank %}
-{% assign countries_2 = '' | split: ',' %}
-{% endif %}
+{% if countries_1 == blank %}{% assign countries_1 = '' | split: ',' %}{% endif %}
+{% if countries_2 == blank %}{% assign countries_2 = '' | split: ',' %}{% endif %}
 
 {% assign countries_all = countries_1 | concat: countries_2 %}
 
 {% style %}
-.coverage {
-display: flex;
-flex-direction: column;
-gap: 5px;
-}
-.coverage li {
-display: flex;
-align-items: center;
-gap: 10px;
-}
-.coverage h3 {
-text-align: center;
-font-size: 20px;
-color: var(--color-primary);
-margin: 0;
-}
-.coverage img {
-border-radius: 15px;
-border: 1px solid var(--color-border);
-}
+  .coverage {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .coverage li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .coverage h3 {
+    text-align: center;
+    font-size: 20px;
+    color: var(--color-primary);
+    margin: 0;
+  }
+  .coverage img {
+    border-radius: 15px;
+    border: 1px solid var(--color-border);
+  }
 {% endstyle %}
 
 <div id="coverage-container" class="coverage">
   {% for country in countries_all %}
-  {% assign formatted_country = country | replace: '_', ' ' %}
-  {% assign country_with_underscore = country | replace: ' ', '_' %}
-  <div class="coverage-item" data-country="{{ formatted_country | downcase }}" data-country-raw="{{ country }}">
-    <li>
-      <img class="image-countries" src="//gkomunika.com/cdn/shop/files/{{ country_with_underscore }}.svg"
-        alt="{{ formatted_country }}" width="50" height="50" loading="lazy">
-      <h3>{{ formatted_country }}</h3>
-    </li>
-  </div>
+    {% assign formatted_country = country | replace: '_', ' ' %}
+    {% assign country_with_underscore = country | replace: ' ', '_' %}
+    <div class="coverage-item" data-country="{{ formatted_country | downcase }}" data-country-raw="{{ country }}">
+      <li>
+        <img
+          class="image-countries"
+          src="//gkomunika.com/cdn/shop/files/{{ country_with_underscore }}.svg"
+          alt="{{ formatted_country }}"
+          width="50"
+          height="50"
+          loading="lazy"
+        >
+        <h3>{{ formatted_country }}</h3>
+      </li>
+    </div>
   {% endfor %}
 </div>
 

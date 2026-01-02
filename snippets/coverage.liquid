@@ -6,26 +6,129 @@
 
 {% assign countries_all = countries_1 | concat: countries_2 %}
 
-<div
-  class="coverage-block"
-  data-base-url="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/"
-  data-version="?v=1739352504"
->
-  <script type="application/json" class="product-coverage-json">
-    {{ countries_all | json }}
-  </script>
+{% style %}
+  .coverage {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .coverage li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .coverage h3 {
+    text-align: center;
+    font-size: 20px;
+    color: var(--color-primary);
+    margin: 0;
+  }
+  .coverage img {
+    border-radius: 15px;
+    border: 1px solid var(--color-border);
+  }
+{% endstyle %}
 
-  <script type="application/json" class="variants-data-json">
-    [
+<div id="coverage-container" class="coverage">
+  {% for country in countries_all %}
+    {% assign formatted_country = country | replace: '_', ' ' %}
+    {% assign country_with_underscore = country | replace: ' ', '_' %}
+    <div class="coverage-item" data-country="{{ formatted_country | downcase }}" data-country-raw="{{ country }}">
+      <li>
+        <img
+          class="image-countries"
+          src="//gkomunika.com/cdn/shop/files/{{ country_with_underscore }}.svg"
+          alt="{{ formatted_country }}"
+          width="50"
+          height="50"
+          loading="lazy"
+        >
+        <h3>{{ formatted_country }}</h3>
+      </li>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const variantDropdowns = document.querySelectorAll('.variant-dropdown');
+    const coverageContainer = document.getElementById('coverage-container');
+
+    const variantsData = [
       {% for variant in product.variants %}
         {
-          "id": {{ variant.id | json }},
-          "options": {{ variant.options | json }},
-          "coverage": {{ variant.metafields.variant.coverage.value | default: "[]" | json }}
-        }{% unless forloop.last %},{% endunless %}
-      {% endfor %}
-    ]
-  </script>
+      id: {{ variant.id }},
+    options: [{% for option in variant.options %}"{{ option | escape }}"{% unless forloop.last %}, {% endunless %} {% endfor %}],
+  coverage: { { variant.metafields.variant.coverage.value | default: "[]" | json } }
+        }{% unless forloop.last %}, {% endunless %}
+  {% endfor %}
+    ];
 
-  <ul class="coverage-container"></ul>
-</div>
+  const baseUrl = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/';
+  const version = '?v=1739352504';
+
+  const productCoverage = {{ countries_all | json }};
+
+  function renderCoverage(countries) {
+    coverageContainer.innerHTML = '';
+
+    if (Array.isArray(countries)) {
+      countries.forEach(country => {
+        const formatted = country.replace(/_/g, ' ');
+        const imageUrl = `${baseUrl}${country}.svg${version}`;
+
+        const el = document.createElement('div');
+        el.className = 'coverage-item';
+        // Tambahan penting untuk keperluan search:
+        el.setAttribute('data-country', formatted.toLowerCase());
+        el.setAttribute('data-country-raw', country);
+
+        el.innerHTML = `
+            <li>
+              <img
+                class="image-countries"
+                src="${imageUrl}"
+                alt="${formatted}"
+                width="50"
+                height="50"
+                loading="lazy">
+              <h3>${formatted}</h3>
+            </li>
+          `;
+
+        coverageContainer.appendChild(el);
+      });
+    }
+
+    // Re-apply filter jika user sudah mengetik sesuatu
+    if (typeof window.filterCountries === 'function') {
+      window.filterCountries();
+    }
+  }
+
+  function updateMetafieldDisplay() {
+    const selectedOptions = Array.from(variantDropdowns).map(dropdown => dropdown.value);
+
+    const matchedVariant = variantsData.find(variant => {
+      return variant.options.every((option, index) => option === selectedOptions[index]);
+    });
+
+    if (matchedVariant) {
+      const coverage = matchedVariant.coverage;
+      if (Array.isArray(coverage) && coverage.length > 0) {
+        renderCoverage(coverage);
+      } else {
+        renderCoverage(productCoverage);
+      }
+    } else {
+      renderCoverage(productCoverage);
+    }
+  }
+
+  variantDropdowns.forEach(dropdown => {
+    dropdown.addEventListener('change', updateMetafieldDisplay);
+  });
+
+  updateMetafieldDisplay(); // initial render
+  });
+</script>

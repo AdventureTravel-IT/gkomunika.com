@@ -252,12 +252,23 @@
             {%- else -%}
               <div class="cart__ctas" {{ block.shopify_attributes }}>
                 {% assign hasInsuranceProduct = false %}
+{% assign hasForbiddenTopUpD = false %}
 
-                {% for item in cart.items %}
-                  {% if item.product.metafields.product.category == 'Insurance' %}
-                    {% assign hasInsuranceProduct = true %}
-                  {% endif %}
-                {% endfor %}
+{% for item in cart.items %}
+  {% assign cat = item.product.metafields.product.category.value
+    | default: item.product.metafields.product.category
+    | default: ''
+    | strip
+  %}
+
+  {% if cat == 'Insurance' %}
+    {% assign hasInsuranceProduct = true %}
+  {% endif %}
+
+  {% if cat == 'Top_Up_D' %}
+    {% assign hasForbiddenTopUpD = true %}
+  {% endif %}
+{% endfor %}
 
                 {% if hasInsuranceProduct %}
                   {% if customer %}

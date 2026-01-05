@@ -205,11 +205,19 @@
 
               <tbody>
                 {%- for item in cart.items -%}
-                  <tr
-                    class="cart-item"
-                    id="CartItem-{{ item.index | plus: 1 }}"
-                    data-key="{{ item.key }}"
-                  >
+                  {%- assign product_category = item.product.metafields.product.category.value
+  | default: item.product.metafields.product.category
+  | default: ''
+  | strip
+-%}
+
+<tr
+  class="cart-item"
+  id="CartItem-{{ item.index | plus: 1 }}"
+  data-key="{{ item.key }}"
+  data-product-category="{{ product_category | escape }}"
+>
+
                     <td class="cart-item__media">
                       {% if item.image %}
                         {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
@@ -298,6 +306,13 @@
                         </dl>
 
                         <p class="product-option">{{ item.selling_plan_allocation.selling_plan.name }}</p>
+                        {%- assign product_category = item.product.metafields.product.category | default: '' -%}
+    {%- if product_category != blank -%}
+      <div class="product-option">
+        <dt>Category:</dt>
+        <dd>{{ product_category }}</dd>
+      </div>
+    {%- endif -%}
                       {%- endif -%}
 
                       <ul
@@ -616,6 +631,38 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+
+  const FORBIDDEN_CATEGORY = 'Top_Up_D';
+
+    async function purgeForbiddenItems() {
+      const forbiddenRows = Array.from(
+        document.querySelectorAll(`tr.cart-item[data-product-category="${FORBIDDEN_CATEGORY}"]`)
+      );
+
+      if (!forbiddenRows.length) return;
+
+      // optional: kasih pesan sekali
+      alert('Produk Top Up tidak boleh ada di cart. Item akan dihapus otomatis.');
+
+      for (const row of forbiddenRows) {
+        const key = row.dataset.key; // kamu sudah pakai dataset.key untuk update qty :contentReference[oaicite:5]{index=5}
+        try {
+          await fetch('/cart/change.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: key, quantity: 0 }),
+          });
+        } catch (e) {
+          console.error('Failed to remove forbidden item:', e);
+        }
+      }
+
+      // refresh supaya section + total ikut rapi
+      window.location.reload();
+    }
+
+    purgeForbiddenItems();
+    
     const formatMoney = (cents) => {
       return new Intl.NumberFormat('id-ID', {
         style: 'currency',

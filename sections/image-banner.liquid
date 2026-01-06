@@ -1,318 +1,277 @@
-{%- assign banner_mobile = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/banner-winter-mobile.webp?v=1764416410' -%}
-{%- assign banner_desktop = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/banner-winter-desktop.webp?v=1764416284' -%}
-
-<link
-  rel="preload"
-  as="image"
-  media="(max-width: 767px)"
-  imagesrcset="
-    {{ banner_mobile }}&width=360 360w,
-    {{ banner_mobile }}&width=540 540w,
-    {{ banner_mobile }}&width=720 720w,
-    {{ banner_mobile }}&width=900 900w
-  "
-  imagesizes="100vw"
->
-
-<link
-  rel="preload"
-  as="image"
-  media="(min-width: 768px)"
-  imagesrcset="
-    {{ banner_desktop }}&width=960 960w,
-    {{ banner_desktop }}&width=1280 1280w,
-    {{ banner_desktop }}&width=1600 1600w,
-    {{ banner_desktop }}&width=1920 1920w
-  "
-  imagesizes="100vw"
->
-
 {% style %}
-  .hero-container {
-    position: relative;
-    height: 580px;
-    overflow: hidden;
-    contain: layout style paint;
-  }
+  /* BANNER STYLE */
+.banner-container {
+  position: relative;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  height: 100%;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+}
 
-  .hero-container picture,
-  .hero-container .hero-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
+.banner__wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 800px;
+  overflow: visible;
+}
 
-  .hero-container .hero-img {
-    object-fit: cover;
-    object-position: 89% 100%;
-  }
+.banner__image {
+  position: absolute;
+  bottom: 0;
+  left: 70%;
+  width: 100%;
+  height: 100%;
+  transform: translateX(-70%);
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
 
-  .hero-content {
-    position: absolute;
-    top: 150px;
-    left: 0;
-    width: 100%;
-    transform: translateY(0);
-    will-change: transform;
-  }
+.banner__content--wrapper {
+  position: absolute;
+  width: 100%;
+  padding: 0 5% 0 10%;
+  z-index: 1;
+}
 
-  .hero-text {
-    padding: 0 16px;
-    margin-bottom: 10px;
-  }
+.banner__heading--text p,
+.banner__heading--desc p {
+  color: var(--color-neutral);
+  margin: 0;
+}
 
-  .hero-text h3 {
-    color: #fff;
-    font-size: 16px;
-    letter-spacing: 0.05em;
-    margin: 0;
-  }
+#default-heading {
+  font-weight: bold;
+  color: var(--color-neutral);
+  margin: 0;
+}
 
-  .hero-text h2 {
-    color: #fff;
-    font-size: 30px;
-    font-weight: bold;
-    margin: 0;
-  }
+.banner__heading-text p {
+  letter-spacing: 0.1em;
+}
 
-  .hero-text span {
-    color: #fff;
-    font-size: 16px;
-  }
+.banner__heading-desc {
+  font-weight: bold;
+}
 
-  .cta-mobile {
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 380px;
-    max-width: calc(100% - 32px);
-    padding: 12px 16px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 999px;
-    border: 3px solid var(--color-neutral);
-    background: var(--color-primary);
-    color: var(--color-neutral);
-    display: block;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    text-decoration: none;
-    text-align: center;
-    transition: transform 0.2s ease;
-  }
+.banner__heading--search {
+  margin-top: 10px;
+  max-width: 500px;
+}
 
-  .cta-mobile:hover {
-    transform: translateX(-50%) translateY(-3px);
-  }
+.cta-desktop {
+  display: block;
+  width: 470px;
+  max-width: calc(100% - 100px);
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 999px;
+  border: 3px solid #fff;
+  background: var(--color-primary);
+  color: #fff;
+  transition: transform 0.2s ease;
+  text-decoration: none;
+  text-align: center;
+  position: absolute;
+  right: 320px;
+  bottom: -240px;
+}
 
+.cta-desktop:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.cta-wrapper {
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #f40932;
+}
+
+@media (max-width: 1680px) {
   .cta-desktop {
-    display: none;
+    position: absolute;
+    right: 220px;
+    bottom: -230px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .banner__wrapper {
+    height: 650px;
+  }
+  .cta-desktop {
+    position: absolute;
+    right: 160px;
+    bottom: -170px;
+  }
+}
+
+@media (max-width: 1366px) {
+  .banner__wrapper {
+    height: 550px;
+  }
+  .cta-desktop {
+    position: absolute;
+    right: 150px;
+    bottom: -130px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .cta-desktop {
+    position: absolute;
+    right: 120px;
+    bottom: -150px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .cta-desktop {
+    position: absolute;
+    right: 0;
+    bottom: -150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner__wrapper {
+    height: 600px;
+    overflow: hidden;
+  }
+
+  .banner__image {
+    width: 100%;
+    height: 600px;
+    top: 0;
+    bottom: auto;
+    left: 70%;
+    transform: translateX(-70%);
+    object-fit: cover;
+    object-position: 70% bottom;
   }
 
   .banner__content--wrapper {
+    width: 100%;
+    padding: 0 24px;
     position: absolute;
-    width: 50%;
-    padding: 130px 5% 0 10%;
-    z-index: 1;
+    top: 30px;
+  }
+
+  .banner__heading--search {
+    width: 100%;
   }
 
   .banner__heading--text p,
   .banner__heading--desc p {
     color: var(--color-neutral);
-    margin: 0;
+    font-size: var(--font-large);
   }
 
   #default-heading {
     font-weight: bold;
     color: var(--color-neutral);
-    margin: 0;
   }
-
-  .banner__heading-text p {
-    letter-spacing: 0.1em;
+  .cta-desktop {
+    position: absolute;
+    right: 50px;
+    bottom: -340px;
   }
+}
 
-  .banner__heading-desc {
-    font-weight: bold;
+@media (max-width: 426px) {
+  .cta-desktop {
+    width: 100%;
+    font-size: 16px;
+    max-width: none;
+    position: absolute;
+    right: -15px;
+    bottom: -280px;
   }
+}
 
-  .banner__heading--search {
-    margin-top: 10px;
+@media (max-width: 320px) {
+  .cta-desktop {
+    width: 300px;
+    font-size: 14px;
+    /* padding: 0 20px; */
+    max-width: none;
+    position: absolute;
+    right: 0;
+    bottom: -255px;
+    white-space: nowrap;
   }
-
-  @media (min-width: 1366px) and (max-width: 1366px) {
-    .cta-desktop {
-      left: 780px !important;
-      width: 400px !important;
-      bottom: 90px !important;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .hero-container {
-      height: 600px;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .hero-container {
-      height: 700px;
-    }
-
-    .hero-content {
-      top: 50%;
-      width: 50%;
-      transform: translateY(-50%);
-    }
-
-    .hero-text {
-      padding: 0;
-    }
-
-    .hero-text h2 {
-      font-size: 40px;
-    }
-
-    .cta-mobile {
-      display: none;
-    }
-
-    .cta-desktop {
-      display: block;
-      position: absolute;
-      bottom: 80px;
-      left: 900px;
-      padding: 12px 30px;
-      width: 450px;
-      max-width: calc(100% - 100px);
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 999px;
-      border: 3px solid #fff;
-      background: #007bff;
-      color: #fff;
-      transition: transform 0.2s ease;
-      text-decoration: none;
-      text-align: center;
-    }
-
-    .cta-desktop:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-    }
-
-    .hero-container .hero-img {
-      object-position: center center;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .hero-container {
-      margin-top: 20px;
-    }
-
-    .banner__content--wrapper {
-      width: 100%;
-      padding: 0 24px;
-      position: absolute;
-      top: 30px;
-    }
-
-    .banner__heading--search {
-      width: 100%;
-    }
-
-    .banner__heading--text p,
-    .banner__heading--desc p,
-    #default-heading,
-    .banner__heading--title,
-    .banner__heading--result {
-      color: var(--color-neutral);
-    }
-  }
+}
 {% endstyle %}
 
-<div class="hero-container">
-  <picture>
-    <source
-      media="(min-width: 768px)"
-      srcset="
-        {{ banner_desktop }}&width=960 960w,
-        {{ banner_desktop }}&width=1280 1280w,
-        {{ banner_desktop }}&width=1600 1600w,
-        {{ banner_desktop }}&width=1920 1920w
-      "
-      sizes="100vw"
-    >
-
-    <img
-      class="hero-img"
-      src="{{ banner_mobile }}&width=720"
-      srcset="
-        {{ banner_mobile }}&width=360 360w,
-        {{ banner_mobile }}&width=540 540w,
-        {{ banner_mobile }}&width=720 720w,
-        {{ banner_mobile }}&width=900 900w
-      "
-      sizes="100vw"
-      alt="Winter Banner"
-      loading="eager"
+<div class="banner-container">
+  <div class="banner__wrapper">
+    <img 
+      class="banner__image"
+      src="{{ section.settings.image | img_url: 'master' }}" 
+      alt="Banner Image"
       fetchpriority="high"
-      decoding="async"
-      width="375"
-      height="580"
-    >
-  </picture>
+    />
+    <div class="banner__content--wrapper">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'heading' -%}
+            <h2
+              class="banner__heading--title {{ block.settings.heading_size }}"
+              {{ block.shopify_attributes }}
+              id="default-heading"
+            >
+              {{ block.settings.heading }}
+            </h2>
 
-  <div class="banner__content--wrapper">
-    {%- for block in section.blocks -%}
-      {%- case block.type -%}
-        {%- when 'heading' -%}
-          <h2
-            class="banner__heading--title {{ block.settings.heading_size }}"
-            {{ block.shopify_attributes }}
-            id="default-heading"
-          >
-            {{ block.settings.heading }}
-          </h2>
+            <h2
+              class="banner__heading--result {{ block.settings.heading_size }}"
+              id="search-heading"
+              style="display: none;"
+            >
+              Search Result for “{{ search.terms }}”
+            </h2>
 
-          <h2
-            class="banner__heading--result {{ block.settings.heading_size }}"
-            id="search-heading"
-            style="display: none;"
-          >
-            Search Result for "{{ search.terms }}"
-          </h2>
-
-        {%- when 'text' -%}
-          <div class="banner__heading--text {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
-            <p>{{ block.settings.text }}</p>
-          </div>
-
-        {%- when 'desc' -%}
-          <div class="banner__heading--desc {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
-            <p>{{ block.settings.desc }}</p>
-          </div>
-
-        {%- when 'search' -%}
-          <div class="banner__heading--search">
-            {% render 'search-bar' %}
-          </div>
-      {%- endcase -%}
-    {%- endfor -%}
+          {%- when 'text' -%}
+            <div class="banner__heading--text {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+              <p>{{ block.settings.text }}</p>
+            </div>
+          {%- when 'desc' -%}
+            <div class="banner__heading--desc {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+              <p>{{ block.settings.desc }}</p>
+            </div>
+          {%- when 'search' -%}
+            <div class="banner__heading--search">
+              {% render 'search-bar' %}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+      <div class="cta-wrapper">
+        <a href="/pages/gsim" class="cta-desktop"> Learn more our latest product gSIM! </a>
+      </div>
+    </div>
   </div>
-
-  <a href="/pages/gsim" class="cta-mobile"> Learn more our latest product gSIM! </a>
-  <a href="/pages/gsim" class="cta-desktop"> Learn more our latest product gSIM! </a>
 </div>
 
 {% schema %}
 {
   "name": "Image Banner",
-  "settings": [],
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Select Image"
+    }
+  ],
   "presets": [
     {
       "name": "Image Banner",
@@ -403,6 +362,6 @@
       "limit": 1,
       "settings": []
     }
-  ]
+  ],
 }
 {% endschema %}

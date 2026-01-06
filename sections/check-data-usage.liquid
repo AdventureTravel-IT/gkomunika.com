@@ -8,16 +8,25 @@ background-color: rgba(0, 0, 0, 0.5);
 }
 
 .invalid-popup__content {
-background-color: var(--color-neutral);
-padding: 30px;
-max-width: 450px;
-width: 100%;
-border-radius: 10px;
-text-align: center;
-color: var(--color-primary);
-font-size: var(--font-extra-large);
-margin: 50px auto;
+  background-color: var(--color-neutral);
+  padding: 30px;
+
+  max-width: 500px;
+  width: calc(100% - 40px); /* sisa margin kiri-kanan 20px */
+
+  border-radius: 10px;
+  text-align: center;
+  color: var(--color-primary);
+  font-size: var(--font-extra-large);
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  margin: 0; /* supaya tidak pakai margin auto yang lama */
 }
+
 
 .invalid-popup__content h2 {
 font-size: 34px;
@@ -342,6 +351,24 @@ width: 100%;
     </button>
   </div>
 </div>
+
+<div class="invalid-popup" id="topup-confirm-popup" style="display:none;">
+  <div class="invalid-popup__content">
+    <h2>Information</h2>
+    <p>Top-up will automatically delete your current data package.</p>
+
+    <div class="invalid-popup__button">
+      <button id="topup-confirm-cancel" style="background-color: var(--color-secondary); color:var(--color-neutral);">
+        Cancel
+      </button>
+      <button id="topup-confirm-continue"
+        style="background-color: var(--color-primary); color: var(--color-neutral);">
+        Continue
+      </button>
+    </div>
+  </div>
+</div>
+
 
 {% assign collection = collections['top-up-plan'] %}
 <script>
@@ -791,22 +818,56 @@ width: 100%;
     btnHidePopup.addEventListener('click', hideInvalidPopup);
     btnBuyEsim.addEventListener('click', () => (window.location.href = 'https://gkomunika.com/pages/all-destination'));
     btnContactCs.addEventListener('click', () => (window.location.href = 'https://wa.me/628986454071'));
+    // --- modal elements (taruh setelah deklarasi element lain di DOMContentLoaded) ---
+    const topupConfirmPopup = document.getElementById('topup-confirm-popup');
+    const topupConfirmCancel = document.getElementById('topup-confirm-cancel');
+    const topupConfirmContinue = document.getElementById('topup-confirm-continue');
+
+    function showTopupConfirm() {
+      if (topupConfirmPopup) topupConfirmPopup.style.display = 'block';
+    }
+    function hideTopupConfirm() {
+      if (topupConfirmPopup) topupConfirmPopup.style.display = 'none';
+    }
+
+    // Simpan aksi lanjutan top up (biar flow lama tetap persis sama)
+    function proceedTopUp() {
+      const iccidValue = iccidInput.value.trim();
+      if (iccidValue) sessionStorage.setItem('iccid', iccidValue);
+
+      const lastVendor = window.lastDetectedVendor;
+      if (lastVendor === 'SEM') {
+        sessionStorage.setItem('category', 'Top_Up_D');
+      } else if (lastVendor === 'BS') {
+        sessionStorage.setItem('category', 'Top_Up_A');
+      }
+
+      window.location.href = '/pages/top-up';
+    }
+
+    // tombol cancel & continue
+    if (topupConfirmCancel) topupConfirmCancel.addEventListener('click', hideTopupConfirm);
+    if (topupConfirmContinue) topupConfirmContinue.addEventListener('click', () => {
+      hideTopupConfirm();
+      proceedTopUp();
+    });
+
+    if (topupConfirmPopup) {
+      topupConfirmPopup.addEventListener('click', (e) => {
+        if (e.target === topupConfirmPopup) hideTopupConfirm();
+      });
+    }
+
+    // klik tombol top-up sekarang memunculkan modal dulu
     document.addEventListener('click', (e) => {
-      if (e.target?.id === 'top-up-plan') {
-        const iccidValue = iccidInput.value.trim();
-        if (iccidValue) sessionStorage.setItem('iccid', iccidValue);
+      const clickedTopUp =
+        e.target?.id === 'top-up-plan' || e.target?.closest?.('#top-up-plan');
 
-        // --- Tambahkan logika vendor SEM untuk simpan kategori ---
-        const lastVendor = window.lastDetectedVendor; // ambil vendor terakhir
-        if (lastVendor === 'SEM') {
-          sessionStorage.setItem('category', 'Top_Up_D');
-        } else if (lastVendor === 'BS') {
-          sessionStorage.setItem('category', 'Top_Up_A');
-        }
-
-        window.location.href = '/pages/top-up';
+      if (clickedTopUp) {
+        showTopupConfirm();
       }
     });
+
   });
 </script>
 

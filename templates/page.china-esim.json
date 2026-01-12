@@ -15,16 +15,9 @@
         "padding_top": 28,
         "padding_bottom": 28
       }
-    },
-    "check_data_usage_dFM6rw": {
-      "type": "check-data-usage",
-      "disabled": true,
-      "name": "Check Data Usage",
-      "settings": {}
     }
   },
   "order": [
-    "main",
-    "check_data_usage_dFM6rw"
+    "main"
   ]
 }

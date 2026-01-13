@@ -55,7 +55,7 @@
 
   @media (max-width: 1024px) {
     .banner-search__wrapper {
-      padding: 20px 10% 20px;
+      padding: 20px 10%;
     }
     .banner-search__form {
       width: 100%;
@@ -114,27 +114,26 @@
 </div>
 
 {% schema %}
-{
-  "name": "Banner Search",
-  "settings": [
-    {
-      "type": "text",
-      "id": "heading_text",
-      "label": "Heading Text",
-      "default": "All Destinations"
-    },
-    {
-      "type": "text",
-      "id": "subheading_text",
-      "label": "Subheading Text",
-      "default": "Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Banner-search",
-      "category": "Custom"
-    }
-  ]
-}
+  {
+    "name": "Banner Search",
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading_text",
+        "label": "Heading Text",
+        "default": "All Destinations"
+      }, {
+        "type": "text",
+        "id": "subheading_text",
+        "label": "Subheading Text",
+        "default": "Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Banner-search",
+        "category": "Custom"
+      }
+    ]
+  }
 {% endschema %}

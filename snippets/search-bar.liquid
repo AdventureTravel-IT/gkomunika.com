@@ -54,7 +54,11 @@
 {%- endif -%}
 
 <section class="search-bar">
-  <form action="{{ routes.search_url }}" method="get" role="search" class="search__form">
+  <form
+    action="{{ routes.search_url }}"
+    method="get"
+    role="search"
+    class="search__form">
     <div class="search__field">
       <input
         class="search__input"
@@ -64,36 +68,37 @@
         value="{{ search.terms | escape }}"
         placeholder="Search Your Destination"
         {%- if settings.predictive_search_enabled -%}
-          role="combobox"
-          aria-expanded="false"
-          aria-owns="predictive-search-results"
-          aria-controls="predictive-search-results"
-          aria-haspopup="listbox"
-          aria-autocomplete="list"
-          autocorrect="off"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-        {%- endif -%}
-      >
+        role="combobox"
+        aria-expanded="false"
+        aria-owns="predictive-search-results"
+        aria-controls="predictive-search-results"
+        aria-haspopup="listbox"
+        aria-autocomplete="list"
+        autocorrect="off"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        {%- endif -%}>
 
       {%- if settings.predictive_search_enabled -%}
         <div
           id="predictive-search-results"
           class="predictive-search predictive-search--search-template"
           tabindex="-1"
-          data-predictive-search
-        >
-          {%- render 'loading-spinner', class: 'predictive-search__loading-state' -%}
+          data-predictive-search>
+          {%- render 'loading-spinner'
+            , class: 'predictive-search__loading-state' -%}
         </div>
-        <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+        <span
+          class="predictive-search-status visually-hidden"
+          role="status"
+          aria-hidden="true"></span>
       {%- endif -%}
 
       <button
         type="submit"
         class="search__button-submit"
-        aria-label="{{ 'general.search.search' | t }}"
-      >
+        aria-label="{{ 'general.search.search' | t }}">
         <span>
           {{- 'material-search.svg' | inline_asset_content -}}
         </span>

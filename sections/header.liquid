@@ -1,7 +1,7 @@
 {% unless template == 'customers/login' or template == 'customers/register' %}
-  {%- comment -%}
-    Deteksi bahasa aktif untuk menambahkan prefix /id pada bahasa Indonesia
-  {%- endcomment -%}
+  {%- comment -%} 
+                        Deteksi bahasa aktif untuk menambahkan prefix /id pada bahasa Indonesia 
+            {%- endcomment -%}
   {% if request.locale.iso_code == 'id' %}
     {% assign locale_prefix = '/id' %}
   {% else %}
@@ -16,8 +16,7 @@
           type="button"
           aria-label="Open Menu"
           aria-expanded="false"
-          aria-controls="sidebar-panel"
-        >
+          aria-controls="sidebar-panel">
           <div class="animated-icon" id="menu-icon">
             <span></span>
             <span></span>
@@ -39,14 +38,16 @@
               height="40"
               alt="Global Komunika"
               loading="eager"
-              decoding="async"
-            >
+              decoding="async">
           </a>
         {% endif %}
       </div>
 
       <div class="header-mobile-right" aria-label="Quick actions">
-        <a href="{{ routes.cart_url }}" class="header-mobile-icon header-cart" aria-label="Cart">
+        <a
+          href="{{ routes.cart_url }}"
+          class="header-mobile-icon header-cart"
+          aria-label="Cart">
           <span class="header-cart-icon-wrapper">
             <img
               src="{{ 'header-cart.svg' | asset_url }}"
@@ -55,8 +56,7 @@
               width="24"
               height="24"
               loading="eager"
-              decoding="async"
-            >
+              decoding="async">
             {% if cart.items.size > 0 %}
               <span class="header-cart__badge">{{ cart.items.size }}</span>
             {% endif %}
@@ -69,7 +69,10 @@
           {% assign profile_url = routes.account_login_url %}
         {% endif %}
 
-        <a href="{{ profile_url }}" class="header-mobile-icon" aria-label="Profile">
+        <a
+          href="{{ profile_url }}"
+          class="header-mobile-icon"
+          aria-label="Profile">
           <img
             src="{{ 'header-profile.svg' | asset_url }}"
             alt="Profile"
@@ -77,8 +80,7 @@
             width="24"
             height="24"
             loading="eager"
-            decoding="async"
-          >
+            decoding="async">
         </a>
       </div>
 
@@ -92,15 +94,21 @@
           </div>
 
           <localization-form>
-            {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
+            {%- form 'localization'
+              , id: 'FooterLanguageForm'
+              , class: 'localization-form' -%}
               <div class="localization-inner">
-                {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
+                {%- render 'language-localization'
+                  , localPosition: 'FooterLanguage' -%}
               </div>
             {%- endform -%}
           </localization-form>
         </div>
 
-        <nav class="header-menu" role="navigation" aria-label="Main navigation">
+        <nav
+          class="header-menu"
+          role="navigation"
+          aria-label="Main navigation">
           <ul class="menu-list-wrapper">
             <li>
               <a href="{{ routes.root_url }}" class="menu-list">
@@ -111,13 +119,12 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="menu-label">Home</span>
               </a>
             </li>
             <li>
-              <a href="{{ locale_prefix }}/pages/esim-page?sim_type=esim" class="menu-list">
+              <a href="{{ locale_prefix }}/pages/product-category?q=esim" class="menu-list">
                 <img
                   src="{{ 'header-esim.svg' | asset_url }}"
                   alt="eSIM icon"
@@ -125,16 +132,12 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="menu-label">eSIM</span>
               </a>
             </li>
             <li>
-              <a
-                href="{{ locale_prefix }}/pages/sim-card-page?sim_type=sim-card"
-                class="menu-list"
-              >
+              <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="menu-list">
                 <img
                   src="{{ 'header-simcard.svg' | asset_url }}"
                   alt="SIM Card icon"
@@ -142,16 +145,12 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="menu-label">SIM Card</span>
               </a>
             </li>
             <li>
-              <a
-                href="{{ locale_prefix }}/pages/insurance-page?sim_type=insurance"
-                class="menu-list"
-              >
+              <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="menu-list">
                 <img
                   src="{{ 'header-insurance.svg' | asset_url }}"
                   alt="Insurance icon"
@@ -159,8 +158,7 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="menu-label">Insurance</span>
               </a>
             </li>
@@ -173,8 +171,7 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="menu-label">Data Usage</span>
               </a>
             </li>
@@ -187,8 +184,7 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="menu-label">Top Up</span>
               </a>
             </li>
@@ -201,8 +197,7 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="menu-label">About Us</span>
               </a>
             </li>
@@ -215,8 +210,7 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="menu-label">FAQ</span>
               </a>
             </li>
@@ -229,8 +223,7 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="menu-label">News</span>
               </a>
             </li>
@@ -245,8 +238,7 @@
                     width="24"
                     height="24"
                     loading="eager"
-                    decoding="async"
-                  >
+                    decoding="async">
                   {% if cart.items.size > 0 %}
                     <span class="header-cart__badge">{{ cart.items.size }}</span>
                   {% endif %}
@@ -263,8 +255,7 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="menu-label">Profile</span>
               </a>
             </li>
@@ -274,133 +265,109 @@
     </div>
 
     <div id="sidebar">
-      <div id="sidebar-panel" class="sidebar-panel" aria-hidden="true">
+      <div
+        id="sidebar-panel"
+        class="sidebar-panel"
+        aria-hidden="true">
         <ul class="sidebar-list">
           <li>
-            <a href="{{ routes.root_url }}" class="sidebar-link"
-              ><img
+            <a href="{{ routes.root_url }}" class="sidebar-link"><img
                 src="{{ 'header-home.svg' | asset_url }}"
                 alt="Home icon"
                 class="icon-24"
                 width="24"
                 height="24"
                 loading="lazy"
-                decoding="async"
-
-              ><span class="menu-label">Home</span></a
-            >
+                decoding="async"><span class="menu-label">Home</span>
+            </a>
           </li>
           <li>
-            <a href="{{ locale_prefix }}/pages/esim-page?sim_type=esim" class="sidebar-link"
-              ><img
+            <a href="{{ locale_prefix }}/pages/esim-page?sim_type=esim" class="sidebar-link"><img
                 src="{{ 'header-esim.svg' | asset_url }}"
                 alt="eSIM icon"
                 class="icon-24"
                 width="24"
                 height="24"
                 loading="lazy"
-                decoding="async"
-
-              ><span class="menu-label">eSIM</span></a
-            >
+                decoding="async"><span class="menu-label">eSIM</span>
+            </a>
           </li>
           <li>
-            <a href="{{ locale_prefix }}/pages/sim-card-page?sim_type=sim-card" class="sidebar-link"
-              ><img
+            <a href="{{ locale_prefix }}/pages/sim-card-page?sim_type=sim-card" class="sidebar-link"><img
                 src="{{ 'header-simcard.svg' | asset_url }}"
                 alt="SIM Card icon"
                 class="icon-24"
                 width="24"
                 height="24"
                 loading="lazy"
-                decoding="async"
-
-              ><span class="menu-label">SIM Card</span></a
-            >
+                decoding="async"><span class="menu-label">SIM Card</span>
+            </a>
           </li>
           <li>
-            <a href="{{ locale_prefix }}/pages/insurance-page?sim_type=insurance" class="sidebar-link"
-              ><img
+            <a href="{{ locale_prefix }}/pages/insurance-page?sim_type=insurance" class="sidebar-link"><img
                 src="{{ 'header-insurance.svg' | asset_url }}"
                 alt="Insurance icon"
                 class="icon-24"
                 width="24"
                 height="24"
                 loading="lazy"
-                decoding="async"
-
-              ><span class="menu-label">Insurance</span></a
-            >
+                decoding="async"><span class="menu-label">Insurance</span>
+            </a>
           </li>
           <li>
-            <a href="{{ locale_prefix }}/pages/check-data-usage" class="sidebar-link"
-              ><img
+            <a href="{{ locale_prefix }}/pages/check-data-usage" class="sidebar-link"><img
                 src="{{ 'header-usage.svg' | asset_url }}"
                 alt="Data Usage icon"
                 class="icon-24"
                 width="24"
                 height="24"
                 loading="lazy"
-                decoding="async"
-
-              ><span class="menu-label">Data Usage</span></a
-            >
+                decoding="async"><span class="menu-label">Data Usage</span>
+            </a>
           </li>
           <li>
-            <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="sidebar-link"
-              ><img
+            <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="sidebar-link"><img
                 src="{{ 'icon-plus.svg' | asset_url }}"
                 alt="Top Up icon"
                 class="icon-24"
                 width="24"
                 height="24"
                 loading="lazy"
-                decoding="async"
-
-              ><span class="menu-label">Top Up</span></a
-            >
+                decoding="async"><span class="menu-label">Top Up</span>
+            </a>
           </li>
           <li>
-            <a href="{{ locale_prefix }}/pages/about-us" class="sidebar-link"
-              ><img
+            <a href="{{ locale_prefix }}/pages/about-us" class="sidebar-link"><img
                 src="{{ 'header-about.svg' | asset_url }}"
                 alt="About Us icon"
                 class="icon-24"
                 width="24"
                 height="24"
                 loading="lazy"
-                decoding="async"
-
-              ><span class="menu-label">About Us</span></a
-            >
+                decoding="async"><span class="menu-label">About Us</span>
+            </a>
           </li>
           <li>
-            <a href="{{ locale_prefix }}/pages/faq" class="sidebar-link"
-              ><img
+            <a href="{{ locale_prefix }}/pages/faq" class="sidebar-link"><img
                 src="{{ 'header-faq.svg' | asset_url }}"
                 alt="FAQ icon"
                 class="icon-24"
                 width="24"
                 height="24"
                 loading="lazy"
-                decoding="async"
-
-              ><span class="menu-label">FAQ</span></a
-            >
+                decoding="async"><span class="menu-label">FAQ</span>
+            </a>
           </li>
           <li>
-            <a href="{{ locale_prefix }}/pages/news" class="sidebar-link"
-              ><img
+            <a href="{{ locale_prefix }}/pages/news" class="sidebar-link"><img
                 src="{{ 'header-news.svg' | asset_url }}"
                 alt="News icon"
                 class="icon-24"
                 width="24"
                 height="24"
                 loading="lazy"
-                decoding="async"
-
-              ><span class="menu-label">News</span></a
-            >
+                decoding="async"><span class="menu-label">News</span>
+            </a>
           </li>
         </ul>
 
@@ -414,9 +381,12 @@
             </div>
 
             <localization-form>
-              {%- form 'localization', id: 'FooterLanguageFormSidebar', class: 'localization-form' -%}
+              {%- form 'localization'
+                , id: 'FooterLanguageFormSidebar'
+                , class: 'localization-form' -%}
                 <div class="localization-inner">
-                  {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
+                  {%- render 'language-localization'
+                    , localPosition: 'FooterLanguage' -%}
                 </div>
               {%- endform -%}
             </localization-form>
@@ -430,19 +400,18 @@
 {% endunless %}
 
 {% schema %}
-{
-  "name": "Header Settings",
-  "settings": [
-    {
-      "type": "link_list",
-      "id": "selected_menu",
-      "label": "Menu"
-    },
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo"
-    }
-  ]
-}
+  {
+    "name": "Header Settings",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "selected_menu",
+        "label": "Menu"
+      }, {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      }
+    ]
+  }
 {% endschema %}

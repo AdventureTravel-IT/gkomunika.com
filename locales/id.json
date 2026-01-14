@@ -588,8 +588,8 @@
   },
   "product": {
     "sim_type": {
-      "sim_card": "Kartu SIM",
-      "esim": "Kartu SIM Elektronik"
+      "sim_card": "Sim Card",
+      "esim": "eSIM"
     },
     "card": {
       "insurance_label": "Asuransi",
@@ -613,6 +613,6 @@
     "show_all": "Semua Destinasi",
     "tab_land": "Negara",
     "tab_region": "Wilayah",
-    "start_from": "Mulai dari",
+    "start_from": "Mulai dari"
   }
 }

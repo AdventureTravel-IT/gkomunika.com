@@ -1,0 +1,19 @@
+{%- layout none -%}
+{%- paginate collection.products by 50 -%}
+{
+  "items": [
+    {%- for p in collection.products -%}
+      {%- assign mo = p.metafields.search.key.reference -%}
+      {
+        "id": {{ p.id | json }},
+        "title": {{ p.title | json }},
+        "handle": {{ p.handle | json }},
+        "search_key": {{ mo.key | default: blank | json }}
+      }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ],
+  "page": {{ paginate.current_page | json }},
+  "pages": {{ paginate.pages | json }},
+  "count": {{ paginate.items | json }}
+}
+{%- endpaginate -%}

@@ -1,0 +1,21 @@
+{% layout none %}
+{%- assign regions = metaobject.region.value -%}
+{%- assign region_count = regions | size -%}
+
+{%- if region_count == 0 -%}
+  { "ok": false, "error": "region references empty", "handle": {{ metaobject.handle | json }} }
+{%- else -%}
+  {
+    "ok": true,
+    "handle": {{ metaobject.handle | json }},
+    "country_en": {{ metaobject.country_en.value | json }},
+    "country_id": {{ metaobject.country_id.value | json }},
+    "country_alias": {{ metaobject.country_alias.value | json }},
+    "region_count": {{ region_count | json }},
+    "regions": [
+      {%- for r in regions -%}
+        { "id": {{ r.id | json }}, "handle": {{ r.handle | json }}, "type": {{ r.type | json }} }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+{%- endif -%}

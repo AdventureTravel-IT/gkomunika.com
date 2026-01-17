@@ -1,10 +1,13 @@
-{% assign countries_1 = product.metafields.coverage.country.value %}
-{% assign countries_2 = product.metafields.coverage.country_2.value %}
-
-{% if countries_1 == blank %}{% assign countries_1 = '' | split: ',' %}{% endif %}
-{% if countries_2 == blank %}{% assign countries_2 = '' | split: ',' %}{% endif %}
-
-{% assign countries_all = countries_1 | concat: countries_2 %}
+{% comment %}
+  COVERAGE FINAL
+  - Data: product.metafields.search.key.value (metaobject list)
+  - Field handles:
+      country_en, country_id, alias (list), flag (image/file)
+  - Label: ID -> country_id, else -> country_en, fallback -> country
+  - Search bar: tampil hanya jika count > 10
+  - Search keyword: HANYA dari alias
+  - Flag kosong: placeholder 50x50 bg slate (tanpa fallback svg lama)
+{% endcomment %}
 
 {% style %}
   .coverage {
@@ -26,24 +29,148 @@
   .coverage img {
     border-radius: 15px;
     border: 1px solid var(--color-border);
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+  }
+  .coverage .flag-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    border: 1px solid var(--color-border);
+    background: #64748b; /* slate */
+    flex: 0 0 auto;
+  }
+  .coverage-search {
+    margin-bottom: 10px;
+  }
+  .coverage-search input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    outline: none;
   }
 {% endstyle %}
 
+{% assign is_id = false %}
+{% assign lang_code = request.locale.iso_code | default: localization.language.iso_code | default: 'en' %}
+
+{% if lang_code == 'id' or request.path == '/id' or request.path contains '/id/' %}
+  {% assign is_id = true %}
+{% endif %}
+
+{% assign entries = product.metafields.search.key.value %}
+{% if entries == blank %}
+  {% assign entries = '' | split: ',' %}
+{% endif %}
+
+{% assign has_search = false %}
+{% if entries.size > 10 %}
+  {% assign has_search = true %}
+{% endif %}
+
+{%- comment -%} Search input hanya muncul jika count > 10 {%- endcomment -%}
+{% if has_search %}
+  <div class="coverage-search">
+    <input
+      id="CoverageSearchInput"
+      type="text"
+      placeholder="Search country..."
+      oninput="window.filterCountries && window.filterCountries()"
+      autocomplete="off"
+    >
+  </div>
+{% endif %}
+
+{%- comment -%}
+  Build DB untuk JS:
+  - flag_url dihitung dari Liquid (image_url/file_url) supaya JS tidak pakai gid://...
+  - data-search hanya alias (sesuai request)
+{%- endcomment -%}
+<script>
+  window.__COVERAGE_LANG__ = "{{ lang_code | escape }}";
+  window.__COVERAGE_HAS_SEARCH__ = {{ has_search | json }};
+  window.__COVERAGE_DB__ = [
+    {% for entry in entries %}
+      {% assign aliases = entry.alias %}
+      {% if entry.alias.value %}{% assign aliases = entry.alias.value %}{% endif %}
+
+      {% assign flag_ref = entry.flag.value | default: entry.flag %}
+{% assign flag_url = '' %}
+
+{% if flag_ref != blank %}
+  {% assign flag_url = flag_ref | image_url: width: 50 %}
+  {% if flag_url == blank %}
+    {% assign flag_url = flag_ref | file_url %}
+  {% endif %}
+{% endif %}
+
+
+      {
+        country_en: {{ entry.country_en.value | default: entry.country_en | json }},
+        country_id: {{ entry.country_id.value | default: entry.country_id | json }},
+        country: {{ entry.country.value | default: entry.country | json }},
+        aliases: {{ aliases | default: '[]' | json }},
+        flag_url: {{ flag_url | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+</script>
+
 <div id="coverage-container" class="coverage">
-  {% for country in countries_all %}
-    {% assign formatted_country = country | replace: '_', ' ' %}
-    {% assign country_with_underscore = country | replace: ' ', '_' %}
-    <div class="coverage-item" data-country="{{ formatted_country | downcase }}" data-country-raw="{{ country }}">
+  {%- comment -%} Initial render (Liquid) {%- endcomment -%}
+  {% for entry in entries %}
+    {% assign label = entry.country %}
+    {% assign country_id_val = entry.country_id %}
+    {% if entry.country_id.value %}{% assign country_id_val = entry.country_id.value %}{% endif %}
+
+    {% assign country_en_val = entry.country_en %}
+    {% if entry.country_en.value %}{% assign country_en_val = entry.country_en.value %}{% endif %}
+
+    {% assign country_val = entry.country %}
+    {% if entry.country.value %}{% assign country_val = entry.country.value %}{% endif %}
+
+    {% assign label = country_val %}
+    {% if is_id and country_id_val != blank %}
+      {% assign label = country_id_val %}
+    {% elsif is_id == false and country_en_val != blank %}
+      {% assign label = country_en_val %}
+    {% endif %}
+    {% if label == blank %}{% assign label = country_val %}{% endif %}
+
+    {% assign flag_ref = entry.flag.value | default: entry.flag %}
+    {% assign flag_url = '' %}
+
+    {% if flag_ref != blank %}
+      {% assign flag_url = flag_ref | image_url: width: 50 %}
+      {% if flag_url == blank %}
+        {% assign flag_url = flag_ref | file_url %}
+      {% endif %}
+    {% endif %}
+
+    {% assign aliases = entry.alias %}
+    {% if entry.alias.value %}{% assign aliases = entry.alias.value %}{% endif %}
+    {% assign alias_blob = '' %}
+    {% if aliases and aliases.size > 0 %}
+      {% assign alias_blob = aliases | join: ',' %}
+    {% endif %}
+
+    <div class="coverage-item" data-search="{{ alias_blob | downcase | escape }}">
       <li>
-        <img
-          class="image-countries"
-          src="//gkomunika.com/cdn/shop/files/{{ country_with_underscore }}.svg"
-          alt="{{ formatted_country }}"
-          width="50"
-          height="50"
-          loading="lazy"
-        >
-        <h3>{{ formatted_country }}</h3>
+        {% if flag_url != blank %}
+          <img
+            class="image-countries"
+            src="{{ flag_url }}"
+            alt="{{ label | escape }}"
+            width="50"
+            height="50"
+            loading="lazy"
+          >
+        {% else %}
+          <span class="flag-placeholder" aria-hidden="true"></span>
+        {% endif %}
+        <h3>{{ label }}</h3>
       </li>
     </div>
   {% endfor %}
@@ -51,84 +178,28 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const variantDropdowns = document.querySelectorAll('.variant-dropdown');
-    const coverageContainer = document.getElementById('coverage-container');
+    const hasSearch = !!window.__COVERAGE_HAS_SEARCH__;
+    const lang = window.__COVERAGE_LANG__ || 'en';
+    const isID = lang === 'id';
 
-    const variantsData = [
-      {% for variant in product.variants %}
-        {
-      id: {{ variant.id }},
-    options: [{% for option in variant.options %}"{{ option | escape }}"{% unless forloop.last %}, {% endunless %} {% endfor %}],
-  coverage: { { variant.metafields.variant.coverage.value | default: "[]" | json } }
-        }{% unless forloop.last %}, {% endunless %}
-  {% endfor %}
-    ];
-
-  const baseUrl = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/';
-  const version = '?v=1739352504';
-
-  const productCoverage = {{ countries_all | json }};
-
-  function renderCoverage(countries) {
-    coverageContainer.innerHTML = '';
-
-    if (Array.isArray(countries)) {
-      countries.forEach(country => {
-        const formatted = country.replace(/_/g, ' ');
-        const imageUrl = `${baseUrl}${country}.svg${version}`;
-
-        const el = document.createElement('div');
-        el.className = 'coverage-item';
-        // Tambahan penting untuk keperluan search:
-        el.setAttribute('data-country', formatted.toLowerCase());
-        el.setAttribute('data-country-raw', country);
-
-        el.innerHTML = `
-            <li>
-              <img
-                class="image-countries"
-                src="${imageUrl}"
-                alt="${formatted}"
-                width="50"
-                height="50"
-                loading="lazy">
-              <h3>${formatted}</h3>
-            </li>
-          `;
-
-        coverageContainer.appendChild(el);
-      });
+    function norm(s) {
+      return (s || '').toString().trim().toLowerCase().replace(/_/g, ' ').replace(/\s+/g, ' ');
     }
 
-    // Re-apply filter jika user sudah mengetik sesuatu
-    if (typeof window.filterCountries === 'function') {
-      window.filterCountries();
+    // Filter hanya jalan kalau hasSearch true
+    if (hasSearch && typeof window.filterCountries !== 'function') {
+      window.filterCountries = function () {
+        const input = document.getElementById('CoverageSearchInput');
+        const q = norm(input ? input.value : '');
+
+        document.querySelectorAll('#coverage-container .coverage-item').forEach((item) => {
+          const hay = norm(item.dataset.search || ''); // HANYA alias
+          item.style.display = !q || hay.includes(q) ? '' : 'none';
+        });
+      };
     }
-  }
 
-  function updateMetafieldDisplay() {
-    const selectedOptions = Array.from(variantDropdowns).map(dropdown => dropdown.value);
-
-    const matchedVariant = variantsData.find(variant => {
-      return variant.options.every((option, index) => option === selectedOptions[index]);
-    });
-
-    if (matchedVariant) {
-      const coverage = matchedVariant.coverage;
-      if (Array.isArray(coverage) && coverage.length > 0) {
-        renderCoverage(coverage);
-      } else {
-        renderCoverage(productCoverage);
-      }
-    } else {
-      renderCoverage(productCoverage);
-    }
-  }
-
-  variantDropdowns.forEach(dropdown => {
-    dropdown.addEventListener('change', updateMetafieldDisplay);
-  });
-
-  updateMetafieldDisplay(); // initial render
+    // Tidak re-render pakai JS, supaya tidak "kedip" & tidak hilang image.
+    // Karena render Liquid sudah final + sudah pakai placeholder kalau flag kosong.
   });
 </script>

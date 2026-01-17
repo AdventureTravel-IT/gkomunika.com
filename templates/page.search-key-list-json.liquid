@@ -1,0 +1,28 @@
+{% layout none %}
+
+{%- paginate metaobjects.search_key.values by 250 -%}
+{
+  "ok": true,
+  "page": {{ paginate.current_page | json }},
+  "has_next": {{ paginate.next.is_link | json }},
+  "items": [
+    {%- assign first = true -%}
+    {%- for item in paginate.items -%}
+      {%- assign regions = item.region.value -%}
+      {%- assign region_count = regions | size -%}
+
+      {%- if region_count > 0 -%}
+        {%- unless first -%},{%- endunless -%}
+        {%- assign first = false -%}
+        {
+          "handle": {{ item.handle | json }},
+          "country_en": {{ item.country_en.value | json }},
+          "country_id": {{ item.country_id.value | json }},
+          "country_alias": {{ item.country_alias.value | json }},
+          "region_count": {{ region_count | json }}
+        }
+      {%- endif -%}
+    {%- endfor -%}
+  ]
+}
+{%- endpaginate -%}

@@ -602,7 +602,7 @@
     }
     
     // kalau ketemu: show
-    badge.textContent = `Included: ${name}`;
+    badge.textContent = `Include: ${name}`;
     badge.classList.add("is-visible");
     if (countSpan) countSpan.classList.add("has-included"); // ✅ aktifkan mb 5px
       });
@@ -685,7 +685,7 @@
       ${benefits
         .map(
           (b) => `
-          <div class="py-3 w-full flex items-center justify-between border-t border-slate-300">
+          <div class="py-5 w-full flex items-center justify-between border-t border-slate-300">
             <div class="flex items-center gap-2">
               <div class="w-[33px] h-[33px] shrink-0 flex items-center justify-center">
                 <img class="w-[30px] h-[30px]" src="${b.icon}" alt="${escapeHtml(b.label)}">
@@ -1117,12 +1117,12 @@
     
               return `
                 <section
-                  class="product-card-container bg-neutral hover:shadow-lg transition-all rounded-[20px] p-[20px] flex flex-col h-full"
+                  class="product-card-container bg-neutral hover:shadow-lg transition-all rounded-[20px] p-[15px] shadow-md flex flex-col h-full"
                   data-sim-type="${escapeHtml(simType)}"
                   data-search-text="${escapeHtml(searchText)}"
                   data-country-map="${countryMapStr}"
                 >
-                  <div class="w-full flex items-center gap-5 h-auto">
+                  <div class="w-full flex items-center gap-5 h-auto mb-5">
                     ${renderCountryVisual(item)}
     
                     <div>

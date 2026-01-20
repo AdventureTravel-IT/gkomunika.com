@@ -10,14 +10,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "var(--color-primary)",
-        secondary: "var(--color-secondary)",
-        background: "var(--color-background)",
-        "background-secondary": "var(--color-background-secondary)",
-        "background-third": "var(--color-background-third)",
-        border: "var(--color-border)",
-        neutral: "var(--color-neutral)",
-        gray: "var(--color-gray)",
+        primary: "rgb(var(--color-primary-rgb) / <alpha-value>)",
+        secondary: "rgb(var(--color-secondary-rgb) / <alpha-value>)",
+        background: "rgb(var(--color-background-rgb) / <alpha-value>)",
+        "background-secondary": "rgb(var(--color-background-secondary-rgb) / <alpha-value>)",
+        "background-third": "rgb(var(--color-background-third-rgb) / <alpha-value>)",
+        border: "rgb(var(--color-border-rgb) / <alpha-value>)",
+        neutral: "rgb(var(--color-neutral-rgb) / <alpha-value>)",
+        gray: "rgb(var(--color-gray-rgb) / <alpha-value>)",
       },
     },
   },

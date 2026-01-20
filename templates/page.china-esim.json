@@ -16,9 +16,15 @@
         "padding_top": 28,
         "padding_bottom": 28
       }
+    },
+    "landing_page_Ga3Fhq": {
+      "type": "landing-page",
+      "name": "Landing Page",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "landing_page_Ga3Fhq"
   ]
 }

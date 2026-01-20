@@ -145,13 +145,14 @@
 
 @media (max-width: 768px) {
   .banner__wrapper {
-    height: 600px;
+    height: 800px;
+    margin-top: 20px;
     overflow: hidden;
   }
 
   .banner__image {
     width: 100%;
-    height: 600px;
+    height: 800px;
     top: 0;
     bottom: auto;
     left: 70%;
@@ -173,18 +174,18 @@
 
   .banner__heading--text p,
   .banner__heading--desc p {
-    color: var(--color-neutral);
-    font-size: var(--font-large);
+    color: var(--color-primary);
   }
 
   #default-heading {
     font-weight: bold;
-    color: var(--color-neutral);
+    color: var(--color-primary);
   }
+
   .cta-desktop {
     position: absolute;
     right: 50px;
-    bottom: -340px;
+    bottom: -500px;
   }
 }
 
@@ -194,8 +195,13 @@
     font-size: 16px;
     max-width: none;
     position: absolute;
-    right: -15px;
-    bottom: -280px;
+    right: 0;
+    bottom: -480px;
+  }
+  .banner__heading--text p,
+  #default-heading,
+  .banner__heading--desc p {
+    color: var(--color-primary);
   }
 }
 
@@ -246,7 +252,7 @@
               <p>{{ block.settings.text }}</p>
             </div>
           {%- when 'desc' -%}
-            <div class="banner__heading--desc {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+            <div class="banner__heading--desc{{ block.settings.text_style }}" {{ block.shopify_attributes }}>
               <p>{{ block.settings.desc }}</p>
             </div>
           {%- when 'search' -%}

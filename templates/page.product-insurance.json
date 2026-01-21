@@ -9,23 +9,15 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "product-category-pages",
+    "main_search_ACrCME": {
+      "type": "main-search",
+      "name": "Main Search",
       "settings": {
-        "default_filter": "insurance"
-      }
-    },
-    "custom_image_banner_DwraKP": {
-      "type": "custom-image-banner",
-      "name": "Banner-search",
-      "settings": {
-        "heading_text": "All Destinations",
-        "subheading_text": "Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries"
+        "search_type": "category"
       }
     }
   },
   "order": [
-    "custom_image_banner_DwraKP",
-    "main"
+    "main_search_ACrCME"
   ]
 }

@@ -9,25 +9,14 @@
  */
 {
   "sections": {
-    "custom_image_banner_xpdGBQ": {
-      "type": "custom-image-banner",
-      "custom_css": [],
-      "settings": {}
-    },
     "main": {
       "type": "main-search",
       "settings": {
-        "title_single": "Single Country",
-        "single_country_collection": "single-country",
-        "title_multi": "Multi Country",
-        "multi_country_collection": "multi-country",
-        "title_global": "Global Country",
-        "global_country_collection": "global-country"
+        "search_type": "main"
       }
     }
   },
   "order": [
-    "custom_image_banner_xpdGBQ",
     "main"
   ]
 }

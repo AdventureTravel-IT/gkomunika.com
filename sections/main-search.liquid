@@ -836,7 +836,11 @@
         .flatMap((x) => (Array.isArray(x?.region?.region_alias) ? x.region.region_alias : []))
         .filter(Boolean);
 
-      return [...countryAliases, ...regionAliases].join(' ').toLowerCase();
+      const title = item?.title ? [item.title] : [];
+      const handle = item?.handle ? [item.handle] : [];
+      const category = item?.category ? [item.category] : [];
+
+      return [...title, ...handle, ...category, ...countryAliases, ...regionAliases].join(' ').toLowerCase();
     }
 
     function renderFilterBar(types = [], mode = 'main') {
@@ -975,7 +979,7 @@
 
       function updateTabsVisibility() {
         const q = (state.q || '').trim().toLowerCase();
-        const keywordActive = q.length >= 3;
+        const keywordActive = q.length >= 2;
 
         // hitung jumlah hasil per tipe berdasarkan keyword saja (tanpa filter tab)
         const counts = {};

@@ -4,135 +4,159 @@
     flex-direction: column;
     gap: 15px;
   }
-.oh-details__card {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  gap: 10px;
-  align-items: center;
-  color: var(--color-primary);
-}
+  .oh-details__card {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+    align-items: center;
+    color: var(--color-primary);
+  }
 
-.oh-details__date {
-  display: flex;
-  gap: 5px;
-  color: var(--color-primary);
-}
+  .oh-details__date {
+    display: flex;
+    gap: 5px;
+    color: var(--color-primary);
+  }
 
-.oh-details__date-title,
-.oh-details__date-id {
-  font-size: var(--font-large);
-  color: var(--color-primary);
-  margin: 0;
-  display: flex;
-  align-items: center;
-}
+  .oh-details__date-title,
+  .oh-details__date-id {
+    font-size: var(--font-large);
+    color: var(--color-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
 
-.oh-details__card-title {
-  font-size: var(--font-supper-large);
-  color: var(--color-primary);
-  font-weight: bold;
-  margin: 0;
-}
+  .oh-details__card-title {
+    font-size: var(--font-supper-large);
+    color: var(--color-primary);
+    font-weight: bold;
+    margin: 0;
+  }
 
+  .oh-details__card-variant {
+    margin: 0;
+  }
 
-.oh-details__card-variant {
-  margin: 0;
-}
+  .oh-details__images {
+    display: flex;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+  }
 
-.oh-details__images {
-  display: flex;
-  align-items: center;
-  width: 50px;
-  height: 50px;
-}
+  .oh-details__single-image {
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+  }
+  .oh-details__multi-image {
+    border-radius: 5px;
+    border: 1px solid var(--color-border);
+    width: 25px;
+    height: 25px;
+    overflow: hidden;
+  }
 
-.oh-details__single-image {
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-}
-.oh-details__multi-image {
-  border-radius: 5px;
-  border: 1px solid var(--color-border);
-}
+  /* kalau mau fix 24x24, ganti semua 25 -> 24 */
+  .oh-details__multi-image,
+  .oh-details__single-image {
+    display: block;
+    object-fit: contain; /* aman buat SVG/flag: tidak kepotong, tidak gepeng */
+    object-position: center; /* selalu di tengah */
+  }
 
-.oh-details__multi-images {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2px;
-}
+  /* FIX ukuran multi image */
+  .oh-details__multi-image {
+    width: 25px;
+    height: 25px;
+  }
 
-.oh-details__count {
-  border-radius: 5px;
-  border: 1px solid var(--color-border);
-  width: 25px;
-  height: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
+  /* FIX ukuran single image kalau perlu */
+  .oh-details__single-image {
+    width: 50px;
+    height: 50px;
+  }
 
-.oh-details__count span {
-  font-size: 12px;
-  margin: 0;
-  line-height: 1.2;
-  color: var(--color-primary);
-}
+  .oh-details__multi-images {
+    display: grid;
+    grid-template-columns: repeat(2, 24px);
+    grid-auto-rows: 24px;
+    gap: 2px;
+  }
 
-.oh-details__card-wrapper {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  color: var(--color-primary);
-}
+  .oh-details__count {
+    border-radius: 5px;
+    border: 1px solid var(--color-border);
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
 
-.oh-details__card-variant {
-  font-size: var(--font-large);
-  color: var(--color-primary);
-}
+  .oh-details__count span {
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.2;
+    color: var(--color-primary);
+  }
 
-.oh-details__quantity {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-align: right;
-  color: var(--color-primary);
-}
+  .oh-details__card-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    color: var(--color-primary);
+  }
 
-.oh-details__summary {
-  display: flex;
-  justify-content: space-between;
-  color: var(--color-primary);
-  align-items: center;
-}
+  .oh-details__card-variant {
+    font-size: var(--font-large);
+    color: var(--color-primary);
+  }
 
-.oh-details__total-title {
-  font-size: var(--font-large);
-  margin: 0;
-  color: var(--color-primary);
-  font-weight: bold;
-}
+  .oh-details__quantity {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: right;
+    color: var(--color-primary);
+  }
 
-.oh-details__button {
-  background-color: var(--color-primary);
-  color: var(--color-neutral);
-  font-size: var(--font-large);
-  padding: 0 15px;
-  height: 40px;
-  border-radius: 15px;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
+  .oh-details__summary {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-primary);
+    align-items: center;
+  }
 
-.oh-details__button:active {
-  transform: translateY(5px);
-  box-shadow: var(--box-shadow);
-}
+  .oh-details__total-title {
+    font-size: var(--font-large);
+    margin: 0;
+    color: var(--color-primary);
+    font-weight: bold;
+  }
+
+  .oh-details__button {
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+    font-size: var(--font-large);
+    padding: 0 15px;
+    height: 40px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .oh-details__button:active {
+    transform: translateY(5px);
+    box-shadow: var(--box-shadow);
+  }
+  .oh-details__product-link {
+    text-decoration: underline;
+  }
 {% endstyle %}
-
-
 
 <div class="oh-details__container">
   <section class="oh-details__card">
@@ -148,7 +172,7 @@
       <section class="oh-details__card">
         <div class="oh-details__images">
           {% assign countries_array = line_item.product.metafields.coverage.country.value %}
-          
+
           {% assign total_countries = countries_array.size %}
           {% if total_countries == 1 %}
             {% assign country_trimmed = countries_array.first | strip | downcase %}
@@ -194,20 +218,26 @@
               {% assign product_name_only = line_item.title %}
               {% assign formatted_variant = '' %}
             {% endif %}
-        
-            <h2 class="oh-details__card-title">{{ product_name_only }}</h2>
-        
+
+            <h2 class="oh-details__card-title">
+              <a
+                class="oh-details__product-link"
+                href="{{ line_item.product.url | default: line_item.url }}"
+              >
+                {{ product_name_only }}
+              </a>
+            </h2>
+
             {% if formatted_variant != '' %}
               <h2 class="oh-details__card-variant">{{ formatted_variant }}</h2>
             {% endif %}
           </div>
-        
+
           <div class="oh-details__quantity">
             <p>x {{ line_item.quantity }}</p>
             <p>{{ line_item.price | money_with_currency }}</p>
           </div>
         </div>
-        
       </section>
     </div>
   {% endfor %}

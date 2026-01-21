@@ -107,6 +107,25 @@
       {%- endunless -%}
     </title>
 
+    {% style %}
+      ui-skeleton {
+        display: block;
+        background: #e9edf2;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      ui-skeleton::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        transform: translateX(-100%);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+        animation: sk-shimmer 1.1s infinite;
+      }
+    {% endstyle %}
+
     {% if page_description %}
       <meta name="description" content="{{ page_description | escape }}">
     {% elsif page and page.content != blank %}

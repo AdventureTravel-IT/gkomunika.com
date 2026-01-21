@@ -1,29 +1,31 @@
 <section class="relative flex items-center" data-country-autocomplete>
-  <input
-    class="w-full rounded-[15px] py-[15px] pl-[15px] pr-[70px] text-primary placeholder:text-primary outline-none"
-    data-country-input
-    type="search"
-    name="q"
-    value="{{ search.terms | escape }}"
-    placeholder="Search Your Destination"
-    autocomplete="off"
-  >
+  <form class="relative flex items-center w-full" data-country-autocomplete action="/search" method="get">
+    <input
+      class="w-full rounded-[15px] py-[15px] pl-[15px] pr-[70px] text-primary placeholder:text-primary outline-none focus:outline-none"
+      data-country-input
+      type="search"
+      name="q"
+      value="{{ search.terms | escape }}"
+      placeholder="Search Your Destination"
+      autocomplete="off"
+    >
 
-  <div
-    data-country-suggestions
-    class="max-h-[250px] overflow-auto bg-white rounded-[15px] p-[10px] shadow-lg"
-    style="display:none;"
-  >
-    <ul data-country-list class="flex flex-col gap-1"></ul>
-  </div>
+    <div
+      data-country-suggestions
+      class="max-h-[250px] overflow-auto bg-white rounded-[15px] p-[10px] shadow-lg"
+      style="display:none;"
+    >
+      <ul data-country-list class="flex flex-col gap-1"></ul>
+    </div>
 
-  <button
-    type="submit"
-    class="absolute right-[5px] bg-primary rounded-[15px] p-[10px]"
-    aria-label="{{ 'general.search.search' | t }}"
-  >
-    <span>{{- 'material-search.svg' | inline_asset_content -}}</span>
-  </button>
+    <button
+      type="submit"
+      class="absolute right-[5px] z-[999] bg-primary rounded-[15px] p-[10px]"
+      aria-label="{{ 'general.search.search' | t }}"
+    >
+      <span>{{- 'material-search.svg' | inline_asset_content -}}</span>
+    </button>
+  </form>
 </section>
 
 <script>
@@ -31,11 +33,7 @@
     const ENDPOINT = '/collections/all?view=country-api-json';
 
     const normalize = (str = '') => String(str).toLowerCase().trim().replace(/_/g, ' ').replace(/\s+/g, ' ');
-
-    const toImgSrc = (url) => {
-      if (!url) return null;
-      return url.startsWith('//') ? 'https:' + url : url;
-    };
+    const toImgSrc = (url) => (!url ? null : url.startsWith('//') ? 'https:' + url : url);
 
     const escapeHtml = (s) =>
       String(s)
@@ -74,6 +72,16 @@
         list.innerHTML = '';
       };
 
+      // ✅ ENTER / tombol submit -> search normal
+      root.addEventListener('submit', (e) => {
+        const q = input.value.trim();
+        if (!q) {
+          e.preventDefault();
+          hideBox();
+        }
+        // kalau q ada, biarkan form submit ke /search?q=...
+      });
+
       // --- Fetch JSON ---
       let countries = [];
       try {
@@ -92,24 +100,39 @@
 
       const index = countries.map((c) => {
         const countryEn = (c.country_en || '').trim();
-        const aliases = Array.isArray(c.country_alias) ? c.country_alias : [];
-        const tokens = [countryEn, ...aliases].map((x) => normalize((x || '').trim())).filter(Boolean);
+        const countryAliases = Array.isArray(c.country_alias) ? c.country_alias : [];
+
+        // ✅ ambil token region juga
+        const regions = Array.isArray(c.regions) ? c.regions : [];
+        const regionTokens = regions.flatMap((r) => {
+          const re = (r.region_en || '').trim();
+          const rid = (r.region_id || '').trim();
+          const rAliases = Array.isArray(r.region_alias) ? r.region_alias : [];
+          return [re, rid, ...rAliases];
+        });
+
+        const tokens = [countryEn, ...countryAliases, ...regionTokens]
+          .map((x) => normalize((x || '').trim()))
+          .filter(Boolean);
+
+        // (opsional) buat dipakai render kalau mau tampil flag region
+        const regionFlag = regions?.[0]?.region_flag ? toImgSrc(regions[0].region_flag) : null;
 
         return {
           id: c.id,
           country_en: countryEn,
+          country_id: c.country_id,
           country_flag: toImgSrc(c.country_flag),
+          region_flag: regionFlag, // opsional
           tokens: Array.from(new Set(tokens)),
         };
       });
 
-      console.log('[autocomplete] READY ✅', index.length, 'countries');
-
       const searchCountries = (q) => {
         const nq = normalize(q);
         if (nq.length < 2) return [];
-
         const MAX = 10;
+
         return index
           .map((it) => {
             let score = 999;
@@ -126,11 +149,9 @@
           .map((x) => x.it);
       };
 
-      // detect locale dari path: /id, /en, dll
       const currentLocale = (window.location.pathname.split('/')[1] || '').toLowerCase();
       const isID = currentLocale === 'id';
 
-      // buat label country sesuai locale + rapihin "_" jadi spasi
       const getCountryLabel = (r) => {
         const raw = isID ? r.country_id || r.country_en || '' : r.country_en || '';
         return String(raw).trim().replace(/_/g, ' ');
@@ -145,22 +166,20 @@
 
             const flag = r.country_flag
               ? `<img src="${escapeHtml(r.country_flag)}"
-        class="w-[40px] h-[40px] shrink-0 border border-slate-300 rounded-[10px] object-cover"
-        alt="${escapeHtml(label)}">`
-              : `<span
-        class="w-[40px] h-[40px] shrink-0 border border-slate-300 rounded-[10px] bg-slate-400 inline-block"
-      ></span>`;
+                  class="w-[40px] h-[40px] shrink-0 border border-slate-300 rounded-[10px] object-cover"
+                  alt="${escapeHtml(label)}">`
+              : `<span class="w-[40px] h-[40px] shrink-0 border border-slate-300 rounded-[10px] bg-slate-400 inline-block"></span>`;
 
             return `
-    <li>
-      <button type="button"
-        class="w-full flex items-center gap-3 px-3 py-2 rounded-[12px] hover:bg-black/5 text-left"
-        data-query="${escapeHtml(label)}">
-        ${flag}
-        <span class="text-primary text-[16px]">${escapeHtml(label)}</span>
-      </button>
-    </li>
-  `;
+              <li>
+                <button type="button"
+                  class="w-full flex items-center gap-3 px-3 py-2 rounded-[12px] hover:bg-black/5 text-left"
+                  data-query="${escapeHtml(label)}">
+                  ${flag}
+                  <span class="text-primary text-[16px]">${escapeHtml(label)}</span>
+                </button>
+              </li>
+            `;
           })
           .join('');
 
@@ -183,7 +202,6 @@
         input.value = q;
         hideBox();
 
-        // redirect ke search
         window.location.href = `/search?q=${encodeURIComponent(q)}`;
       });
 
@@ -206,17 +224,16 @@
     }
 
     function boot() {
-      document.querySelectorAll('[data-country-autocomplete]').forEach(init);
+      // ✅ biar gak double init, target form aja
+      document.querySelectorAll('form[data-country-autocomplete]').forEach(init);
     }
 
-    // ✅ Jalan walaupun DOMContentLoaded sudah lewat
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', boot);
     } else {
       boot();
     }
 
-    // ✅ Support Shopify section reload
     document.addEventListener('shopify:section:load', boot);
   })();
 </script>

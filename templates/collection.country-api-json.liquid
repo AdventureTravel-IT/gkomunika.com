@@ -1,0 +1,70 @@
+{%- layout none -%}
+{%- paginate collection.products by 250 -%}
+{
+  "collection": {{ collection.title | json }},
+  "search_keys": [
+    {%- assign used_ids = '' -%}
+    {%- assign first_out = true -%}
+
+    {%- for product in collection.products -%}
+      {%- unless product.available -%}{%- continue -%}{%- endunless -%}
+
+      {%- assign mos = product.metafields.search.key.value -%}
+      {%- if mos == blank -%}{%- continue -%}{%- endif -%}
+
+      {%- for mo in mos -%}
+        {%- assign mo_id = mo.system.id | default: mo.id | default: mo.handle -%}
+        {%- assign token = '|' | append: mo_id | append: '|' -%}
+        {%- if used_ids contains token -%}{%- continue -%}{%- endif -%}
+        {%- assign used_ids = used_ids | append: token -%}
+
+        {%- unless first_out -%},{%- endunless -%}
+        {%- assign first_out = false -%}
+
+        {%- assign flag = mo.flag.value -%}
+        {%- assign regions = mo.region.value -%}
+        {%- assign aliases = mo.alias.value -%}
+
+        {
+          "id": {{ mo_id | json }},
+          "country_en": {{ mo.country.value | default: '' | json }},
+          "country_id": {{ mo.country_id.value | default: '' | json }},
+          "country_alias": [
+            {%- if aliases != blank -%}
+              {%- for a in aliases -%}
+                {%- unless forloop.first -%},{%- endunless -%}
+                {{ a | json }}
+              {%- endfor -%}
+            {%- endif -%}
+          ],
+          "country_flag": {%- if flag != blank -%}{{ flag | image_url: width: 500 | json }}{%- else -%}null{%- endif -%},
+          "regions": [
+            {%- if regions != blank -%}
+              {%- for r in regions -%}
+                {%- unless forloop.first -%},{%- endunless -%}
+                {%- assign r_flag = r.region_flag.value -%}
+                {%- assign r_aliases = r.region_alias.value -%}
+                {
+                  "region_en": {{ r.region.value | default: '' | json }},
+                  "region_id": {{ r.region_id.value | default: '' | json }},
+                  "region_alias": [
+                    {%- if r_aliases != blank -%}
+                      {%- for ra in r_aliases -%}
+                        {%- unless forloop.first -%},{%- endunless -%}
+                        {{ ra | json }}
+                      {%- endfor -%}
+                    {%- endif -%}
+                  ],
+                  "region_flag": {%- if r_flag != blank -%}{{ r_flag | image_url: width: 200 | json }}{%- else -%}null{%- endif -%}
+                }
+              {%- endfor -%}
+            {%- endif -%}
+          ]
+        }
+      {%- endfor -%}
+    {%- endfor -%}
+  ],
+  "page": {{ paginate.current_page | json }},
+  "pages": {{ paginate.pages | json }}
+}
+{%- endpaginate -%}

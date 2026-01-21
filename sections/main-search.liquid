@@ -1,802 +1,1433 @@
-{% style %}
-  .main-search {
-    max-width: 1920px;
-    margin: 0 auto;
-  }
+<div style="margin: 0 auto; max-width: 1920px;">
+  <div
+    id="collections"
+    data-search-type="{{ section.settings.search_type | default: 'main' }}"
+    class="container-search"
+  >
+    <!-- ✅ Skeleton awal: tampil instan sebelum fetch -->
+    <div
+      class="skeleton-wrap"
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <div class="skeleton-header">
+        <div class="sk sk-title"></div>
+        <div class="sk sk-subtitle"></div>
+        <div class="sk sk-search"></div>
+        <div class="skeleton-tabs">
+          <span class="sk sk-tab"></span>
+          <span class="sk sk-tab"></span>
+          <span class="sk sk-tab"></span>
+          <span class="sk sk-tab"></span>
+        </div>
+      </div>
 
-  .main-search-container {
-    background-color: var(--color-background);
-    padding: 20px 10% 90px;
-  }
+      <div class="sk-grid">
+        {% for i in (1..9) %}
+          <div class="sk-card">
+            <div class="sk sk-row">
+              <span class="sk sk-tab"></span>
+            </div>
+            <div class="sk sk-row">
+              <span class="sk sk-tab"></span>
+            </div>
+            <div class="sk sk-row">
+              <span class="sk sk-tab"></span>
+            </div>
+            <div class="sk sk-btn">
+              <span class="sk sk-tab"></span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 
-  .is-hidden {
-    display: none !important;
-  }
+  {% style %}
+    /* ===== SKELETON LOADING ===== */
+    .skeleton-wrap {
+      width: 100%;
+    }
+    .sk {
+      background: #e9edf2;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .sk::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      animation: sk-shimmer 1.1s infinite;
+    }
+    @keyframes sk-shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
 
-  .sim-filter-buttons {
-    margin-bottom: 20px;
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-  }
+    .skeleton-header {
+      max-width: 50%;
+      margin-bottom: 24px;
+    }
+    .sk-title {
+      height: 44px;
+      margin-bottom: 10px;
+    }
+    .sk-subtitle {
+      height: 20px;
+      margin-bottom: 16px;
+      width: 85%;
+    }
+    .sk-search {
+      height: 54px;
+      border-radius: 15px;
+      margin-bottom: 18px;
+    }
 
-  .sim-filter-buttons button {
-    padding: 8px 20px;
-    background: transparent;
-    color: var(--color-primary);
-    border: none;
-    border-radius: 15px;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-  }
+    .skeleton-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .sk-tab {
+      width: 110px;
+      height: 36px;
+      border-radius: 9999px;
+      display: inline-block;
+    }
 
-  .sim-filter-buttons button.active,
-  .sim-filter-buttons button:hover {
-    color: var(--color-neutral);
-    background-color: var(--color-primary);
-  }
-
-  .main-search-collection-wrapper {
-    margin-bottom: 30px;
-  }
-
-  .main-search-collection {
-    margin-top: 20px;
-  }
-
-  .main-search-collection.title {
-    margin: 0 0 10px;
-    font-weight: bold;
-    color: var(--color-primary);
-    font-size: 26px;
-  }
-
-  .product-card-wrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
-    align-items: stretch;
-  }
-
-  .product-card-container {
-    display: flex;
-    gap: 10px;
-    padding: 15px;
-    background-color: white;
-    border-radius: 25px;
-    box-shadow: var(--box-shadow);
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .product-card-country {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    min-height: 53px;
-  }
-
-  .product-card-country h1 {
-    margin: 0;
-    color: var(--color-primary);
-    font-size: 20px;
-    font-weight: bold;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .product-card-icon-single-flag {
-    border-radius: 15px;
-    border: 1px solid var(--color-border);
-  }
-
-  .product-card-multi-flag {
-    display: grid;
-    grid-template-columns: repeat(2, 25px);
-    gap: 3px;
-    align-items: center;
-    justify-content: start;
-  }
-
-  .product-card-multi-flag img {
-    width: 25px;
-    height: 25px;
-    border-radius: 5px;
-    border: 1px solid var(--color-border);
-    object-fit: cover;
-  }
-
-  .product-card-flag-count {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 25px;
-    height: 25px;
-    border: 1px solid var(--color-border);
-    border-radius: 5px;
-    color: var(--color-primary);
-    background-color: white;
-    font-size: 10px;
-    font-weight: bold;
-  }
-
-  .product-card-icon-multi-flag {
-    border: 1px solid var(--color-border);
-  }
-
-  .product-card-flag-count span {
-    font-size: 10px;
-    font-weight: bold;
-    color: var(--color-primary);
-  }
-
-  .product-url-link {
-    text-decoration: none;
-    color: var(--color-primary);
-    display: flex;
-    align-items: center;
-  }
-
-  .product-card-field-icons {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .product-card-field-icons h1 {
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--color-primary);
-  }
-
-  .product-card-field-icons h2 {
-    word-break: break-word;
-    -webkit-line-clamp: 2;
-  }
-
-  .product-card-field {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px ridge;
-    padding: 5px 0;
-  }
-
-  img.field-icon {
-    width: 30px;
-    height: 30px;
-  }
-
-  .product-card-field h2 {
-    font-size: 16px;
-    font-weight: bold;
-    color: var(--color-secondary);
-  }
-
-  .product-card-btn {
-    width: 100%;
-    height: 55px;
-    background-color: var(--color-primary);
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-
-  .product-card-btn p {
-    font-size: var(--font-large);
-    font-weight: bold;
-    color: var(--color-neutral);
-    margin: 0;
-  }
-
-  .product-card-content {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    margin-bottom: 10px;
-    transform-style: preserve-3d;
-    transition: transform 0.6s ease-in-out;
-  }
-
-  .product-card-container .product-card-content {
-    transform: rotateY(0deg);
-  }
-
-  .product-card-container.flipped .product-card-content {
-    transform: rotateY(180deg);
-  }
-
-  .product-card-content-flip-front,
-  .product-card-content-flip-back {
-    backface-visibility: hidden;
-    transition: transform 0.6s ease-in-out;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-  }
-
-  .product-card-content-flip-back {
-    position: absolute;
-    top: 0;
-    left: 0;
-    overflow-y: hidden;
-    background: var(--color-neutral);
-    text-align: center;
-    transform: rotateY(180deg);
-  }
-
-  .product-card-container.flipped .product-card-content-flip-back {
-    overflow-y: auto;
-  }
-
-  .country-total-atribut-wrapper {
-    max-width: 100%;
-    padding: 2px 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .country-total-atribut span {
-    font-size: 12px;
-    font-weight: bold;
-    color: var(--color-secondary);
-  }
-
-  .country-total-atribut button {
-    width: 100%;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 10px;
-    border: 1px solid var(--color-primary);
-    background: none;
-  }
-
-  .country-total-including-atribut {
-    background-color: var(--color-primary);
-    text-align: center;
-    border-radius: 5px;
-  }
-
-  .country-total-including-atribut p {
-    margin: 5px;
-    font-size: 12px;
-    font-weight: bold;
-    color: var(--color-neutral);
-  }
-
-  .main-search__product-type {
-    background-color: var(--color-primary);
-    border-radius: 5px;
-    padding: 5px;
-    color: var(--color-neutral);
-    font-size: 12px;
-    margin: 0;
-    font-weight: bold;
-  }
-
-  .main-search__error {
-    display: flex;
-    justify-content: center;
-    border-radius: 15px;
-    padding: 15px;
-  }
-
-  .main-search__error p {
-    font-size: var(--font-supper-large);
-    color: var(--color-primary);
-  }
-
-  @media (max-width: 1600px) {
-    .product-card-wrapper {
+    .sk-grid {
+      display: grid;
       grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
     }
-  }
-
-  @media (max-width: 1024px) {
-    .product-card-wrapper {
-      grid-template-columns: repeat(2, 1fr);
+    @media (max-width: 1024px) {
+      .skeleton-header {
+        max-width: 100%;
+      }
+      .sk-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
-  }
+    @media (max-width: 640px) {
+      .sk-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .sk-card {
+      background: var(--color-neutral);
+      border-radius: 20px;
+      padding: 20px;
+      min-height: 340px;
+      /* ✅ supaya layout gak loncat */
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sk-row {
+      height: 18px;
+    }
+    .sk-btn {
+      height: 52px;
+      border-radius: 15px;
+      margin-top: auto;
+    }
+  {% endstyle %}
 
-  @media (max-width: 768px) {
-    .main-search-container {
-      padding: 20px 10%;
+  <style>
+    .container-search {
+      padding: 20px 10% 10%;
     }
 
-    .banner-search__content {
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .container-search {
+        padding: 20px 24px;
+      }
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 426px) {
+      .grid {
+        grid-template-columns: repeat(1, 1fr);
+      }
+    }
+    /* fallback grid kalau tailwind grid-cols-3 tidak ter-load */
+
+    .filter-tab.is-active {
+      background: var(--color-primary);
+      color: var(--color-neutral);
+    }
+    .filter-tab:not(.is-active) {
+      background: transparent;
+      color: var(--color-primary);
+    }
+    .filter-tab:not(.is-active):hover {
+      background: var(--color-primary);
+      color: var(--color-neutral);
+    }
+
+    .product-card-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      margin-bottom: 10px;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease-in-out;
+    }
+    .product-card-container .product-card-content {
+      transform: rotateY(0deg);
+    }
+    .product-card-container.flipped .product-card-content {
+      transform: rotateY(180deg);
+    }
+    .product-card-content-flip-front,
+    .product-card-content-flip-back {
+      backface-visibility: hidden;
+      transition: transform 0.6s ease-in-out;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .product-card-content-flip-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow-y: hidden;
+      background: var(--color-neutral);
+      text-align: center;
+      cursor: pointer;
+      transform: rotateY(180deg);
+      border-radius: 15px;
+    }
+    .product-card-container.flipped .product-card-content-flip-back {
+      overflow-y: auto;
+    }
+
+    /* ===== COVERAGE LIST (flag + nama) ===== */
+    .coverage {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .coverage li {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .coverage h3 {
+      margin: 0;
+      font-size: 12px;
+      color: var(--color-primary);
+      text-align: left;
+    }
+    .coverage img {
+      width: 50px;
+      height: 50px;
+      border-radius: 15px;
+      border: 1px solid var(--color-border);
+      object-fit: cover;
+    }
+
+    .coverage-title {
+      margin: 10px 0 6px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-primary);
+    }
+
+    .country-total-atribut {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    /* tombol coverage (front) */
+    .country-total-atribut button {
+      width: 100%;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 12px;
+      border: 1px solid var(--color-primary);
+      background: none;
+    }
+
+    /* fallback badge included kalau tailwind tidak kebaca */
+    .included-badge {
+      white-space: nowrap;
+      width: max-content;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 4px 12px;
+      border-radius: 5px;
+      line-height: 1;
+      display: none;
+      /* default: hidden */
+    }
+    .included-badge.is-visible {
+      display: inline-block;
+      /* muncul hanya kalau ada is-visible */
+    }
+
+    .countries-count.has-included {
+      margin-bottom: 3px;
+    }
+
+    #realtimeSearchInput:focus::placeholder {
+      opacity: 0.25;
+    }
+
+    .no-results {
+      width: 100%;
+      padding: 80px 0 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .no-results__title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--color-primary);
+      margin: 0 0 10px;
+    }
+
+    .no-results__desc {
+      max-width: 520px;
+      margin: 0;
+      color: var(--color-secondary);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ===== TAB SCROLL ARROWS ===== */
+    .tab-scroll-wrap {
+      position: relative;
       width: 100%;
     }
 
-    .product-card-wrapper {
-      grid-template-columns: repeat(1, 1fr);
+    .tab-scroll {
+      /* supaya tab nggak ketutup arrow */
+      scroll-behavior: smooth;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
     }
-  }
+    .tab-scroll::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
 
-  @media (max-width: 426px) {
-    .product-card-wrapper {
-      grid-template-columns: repeat(1, 1fr);
+    .tab-scroll-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 6;
+
+      width: 36px;
+      height: 36px;
+      border-radius: 9999px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: var(--color-neutral);
+      border: 1px solid var(--color-border);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
     }
 
-    .main-search-container {
-      padding: 20px 24px;
+    .tab-scroll-arrow.is-visible {
+      opacity: 1;
+      pointer-events: auto;
     }
-  }
-{% endstyle %}
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const root = document.querySelector('.main-search-container');
-    if (!root) return;
-  
-    const filterContainer = root.querySelector('.sim-filter-buttons');
-    const allCards = Array.from(root.querySelectorAll('.product-card-container'));
-    const wrappers = Array.from(root.querySelectorAll('.main-search-collection-wrapper'));
-  
-    const byType = new Map();
-    for (const card of allCards) {
-      const typeClass = Array.from(card.classList).find((c) => c.startsWith('sim-type-'));
-      if (!typeClass) continue;
-      const type = typeClass.slice('sim-type-'.length);
-      if (!byType.has(type)) byType.set(type, []);
-      byType.get(type).push(card);
+    .tab-scroll-arrow--left {
+      left: 0;
     }
-  
-    function updateWrapperVisibility() {
-      for (const w of wrappers) {
-        const anyVisible = w.querySelector('.product-card-container:not(.is-hidden)');
-        w.classList.toggle('is-hidden', !anyVisible);
+    .tab-scroll-arrow--right {
+      right: 0;
+    }
+
+    /* optional fade */
+    .tab-scroll-fade {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 44px;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .tab-scroll-fade.is-visible {
+      opacity: 1;
+    }
+
+    .tab-scroll-fade--left {
+      left: 0;
+      background: linear-gradient(90deg, var(--color-neutral), rgba(255, 255, 255, 0));
+    }
+    .tab-scroll-fade--right {
+      right: 0;
+      background: linear-gradient(270deg, var(--color-neutral), rgba(255, 255, 255, 0));
+    }
+  </style>
+
+  <script type="module">
+    // =========================
+    // I18N (from Shopify locale)
+    // =========================
+    const I18N = {
+      coverage: "{{ 'product.card.coverage' | t | escape }}",
+      countries: "{{ 'product.card.countries' | t | escape }}", // ex: "{{ count }} Negara"
+      including: "{{ 'product.card.including' | t | escape }}", // ex: "Termasuk"
+      data: "{{ 'product.card.data' | t | escape }}",
+      days: "{{ 'product.card.days' | t | escape }}",
+      price: "{{ 'product.card.price' | t | escape }}",
+      price_from_prefix: "{{ 'product.card.price_from_prefix' | t | escape }}",
+      button_gsim: "{{ 'product.card.button_gsim' | t | escape }}", // bikin key ini di locale
+    };
+
+    function t(key, vars = {}) {
+      let s = I18N[key] ?? key;
+
+      const OPEN = '{% raw %}{{{% endraw %}';
+      const CLOSE = '{% raw %}}}{% endraw %}';
+
+      for (const [k, v] of Object.entries(vars)) {
+        s = s.split(`${OPEN} ${k} ${CLOSE}`).join(String(v));
+      }
+      return s;
+    }
+
+    const COLLECTIONS = [
+      { handle: 'single-country', title: 'Single Country' },
+      { handle: 'multi-country', title: 'Multi Country' },
+    ];
+
+    async function fetchCollection(handle) {
+      const res = await fetch(`/collections/${handle}?view=product-api-json`);
+      if (!res.ok) return { ok: false, handle, error: 'Failed to fetch data' };
+      return { ok: true, handle, json: await res.json() };
+    }
+
+    async function fetchAllCollections() {
+      const results = await Promise.all(
+        COLLECTIONS.map(async ({ handle, title }) => {
+          const result = await fetchCollection(handle);
+
+          if (!result?.ok) {
+            console.error(`[${title}] (${handle})`, result?.error);
+            return { handle, title, items: [] };
+          }
+
+          return { handle, title, items: result.json?.items ?? [] };
+        })
+      );
+
+      return results;
+    }
+
+    function escapeHtml(str = '') {
+      return String(str)
+        .replace(/_/g, ' ')
+        .replace(
+          /[&<>"']/g,
+          (m) =>
+            ({
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              '"': '&quot;',
+              "'": '&#039;',
+            }[m])
+        );
+    }
+
+    function formatIDR(num) {
+      const n = Number(num ?? 0);
+      return new Intl.NumberFormat('id-ID').format(n);
+    }
+
+    // =========================
+    // LOCALE HELPERS (EN/ID)
+    // =========================
+    function getLocale() {
+      return (window.Shopify && Shopify.locale) || document.documentElement.lang || 'en';
+    }
+
+    function getCountryNameByLocale(entry, locale) {
+      const c = entry?.country || {};
+      const isID = String(locale).toLowerCase().startsWith('id');
+
+      const raw = isID
+        ? c.country_name_id || c.country_id || c.name_id || c.title_id || c.country_name || c.name || c.title
+        : c.country_name_en || c.country_en || c.name_en || c.title_en || c.country_name || c.name || c.title;
+
+      const fallback = (Array.isArray(c.country_alias) ? c.country_alias[0] : '') || entry?.country_name || '';
+
+      return String(raw || fallback || '').trim();
+    }
+
+    function normalizeUrl(url = '') {
+      if (typeof url !== 'string') return '';
+      if (url.startsWith('//')) return 'https:' + url;
+      return url;
+    }
+
+    function getSearchKey(item) {
+      return Array.isArray(item?.search_key) ? item.search_key : [];
+    }
+
+    function getCountryFlag(entry) {
+      const flag = entry?.country?.country_flag;
+      return typeof flag === 'string' && flag.length ? flag : null;
+    }
+
+    function getValidFlags(item) {
+      return getSearchKey(item).map(getCountryFlag).filter(Boolean);
+    }
+
+    function renderCountryVisual(item) {
+      const flags = getValidFlags(item);
+      const total = flags.length;
+
+      if (total === 0) {
+        return `
+          <div class="w-[50px] h-[50px] shrink-0 border border-slate-300 overflow-hidden rounded-[15px]">
+            <div class="rounded-xl bg-slate-300 h-full w-full"></div>
+          </div>
+        `;
+      }
+
+      if (total === 1) {
+        const src = escapeHtml(normalizeUrl(flags[0]));
+        return `
+          <div class="w-[50px] h-[50px] shrink-0 border border-slate-300 overflow-hidden rounded-[15px]">
+            <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+        `;
+      }
+
+      const showCounter = total > 4;
+      const displayFlags = showCounter ? flags.slice(0, 3) : flags.slice(0, 4);
+      const remaining = total - 3;
+
+      const cellsHtml = [
+        ...displayFlags.map((f) => {
+          const src = escapeHtml(normalizeUrl(f));
+          return `
+            <div class="border border-slate-300 bg-neutral rounded-[5px] h-[24px] w-[24px] overflow-hidden shrink-0">
+              <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
+            </div>
+          `;
+        }),
+        ...(showCounter
+          ? [
+              `
+            <div class="rounded-[5px] border border-slate-300 h-[24px] w-[24px] overflow-hidden shrink-0 flex items-center justify-center">
+              <span class="text-[11px] font-bold text-primary">+${escapeHtml(remaining)}</span>
+            </div>
+          `,
+            ]
+          : []),
+      ].join('');
+
+      return `
+        <div class="w-[50px] h-[50px] gap-0.5 items-center" style="display:grid; grid-template-columns:repeat(2,1fr);">
+          ${cellsHtml}
+        </div>
+      `;
+    }
+
+    // =========================
+    // COVERAGE HELPERS
+    // =========================
+    function getCountryName(entry) {
+      const c = entry?.country || {};
+      const raw =
+        c.country_name ||
+        c.name ||
+        c.title ||
+        (Array.isArray(c.country_alias) ? c.country_alias[0] : '') ||
+        entry?.country_name ||
+        '';
+      return String(raw || '').trim();
+    }
+
+    function getCoverageItems(item) {
+      const sk = getSearchKey(item);
+
+      const map = new Map();
+      sk.forEach((entry) => {
+        const flag = getCountryFlag(entry);
+        const name = getCountryName(entry);
+        if (!flag || !name) return;
+
+        const key = `${name}__${flag}`;
+        if (!map.has(key)) {
+          map.set(key, { name, flag });
+        }
+      });
+
+      return Array.from(map.values());
+    }
+
+    function renderCoverageBack(item) {
+      const cov = getCoverageItems(item);
+
+      if (!cov.length) {
+        return `
+      <ul class="coverage" role="list">
+        <li style="padding:10px; color: var(--color-secondary); font-weight:700;">
+          No coverage data
+        </li>
+      </ul>
+    `;
+      }
+
+      const rows = cov
+        .map((c) => {
+          const src = escapeHtml(normalizeUrl(c.flag));
+          const nm = escapeHtml(c.name.replace(/_/g, ' '));
+          return `
+        <li>
+          <img src="${src}" alt="${nm}" loading="lazy" />
+          <span class="text-primary text-[16px]">${nm}</span>
+        </li>
+      `;
+        })
+        .join('');
+
+      return `
+    <ul class="coverage" role="list">
+      ${rows}
+    </ul>
+  `;
+    }
+
+    // =========================
+    // Included (dynamic) by alias -> country name EN/ID
+    // =========================
+    function buildCountryAliasMap(item) {
+      const map = {}; // aliasLower -> { en: "...", id: "..." }
+      const sk = getSearchKey(item);
+
+      sk.forEach((entry) => {
+        const c = entry?.country || {};
+        const aliases = Array.isArray(c.country_alias) ? c.country_alias : [];
+
+        const nameEn = getCountryNameByLocale(entry, 'en');
+        const nameId = getCountryNameByLocale(entry, 'id');
+
+        aliases.forEach((a) => {
+          const key = String(a || '')
+            .toLowerCase()
+            .trim();
+          if (!key) return;
+          if (!map[key]) map[key] = { en: nameEn, id: nameId };
+        });
+      });
+
+      return map;
+    }
+
+    function resolveIncludedFromQuery(cardEl, q, locale) {
+      const qLower = String(q || '')
+        .toLowerCase()
+        .trim();
+      if (!qLower) return null;
+
+      try {
+        const raw = cardEl.getAttribute('data-country-map') || '{}';
+        const map = JSON.parse(raw);
+        const hit = map[qLower];
+        if (!hit) return null;
+
+        const isID = String(locale).toLowerCase().startsWith('id');
+        return isID ? hit.id : hit.en;
+      } catch (e) {
+        return null;
       }
     }
-  
-    function applyFilter(type) {
-      for (const card of allCards) card.classList.add('is-hidden');
-  
-      if (type === 'all') {
-        for (const card of allCards) card.classList.remove('is-hidden');
-      } else {
-        const list = byType.get(type) || [];
-        for (const card of list) card.classList.remove('is-hidden');
-      }
-  
-      updateWrapperVisibility();
-    }
-  
-    function closeAllFlips(exceptCard = null) {
-      root.querySelectorAll('.product-card-container.flipped').forEach((c) => {
-        if (exceptCard && c === exceptCard) return;
-        c.classList.remove('flipped');
+
+    // hide kalau tidak ada included
+    function updateIncludedBadges(rootEl, q) {
+      const locale = getLocale();
+      const cards = Array.from(rootEl.querySelectorAll('.product-card-container'));
+      const qTrim = String(q || '').trim();
+
+      cards.forEach((card) => {
+        const badge = card.querySelector('.included-badge');
+        const countSpan = card.querySelector('.countries-count'); // ✅ ambil span count
+        if (!badge) return;
+
+        // kalau input kurang dari 2 huruf: hide
+        if (qTrim.length < 2) {
+          badge.textContent = '';
+          badge.classList.remove('is-visible');
+          if (countSpan) countSpan.classList.remove('has-included'); // ✅ reset mb
+          return;
+        }
+
+        const name = resolveIncludedFromQuery(card, qTrim, locale);
+
+        // kalau tidak ketemu: hide
+        if (!name) {
+          badge.textContent = '';
+          badge.classList.remove('is-visible');
+          if (countSpan) countSpan.classList.remove('has-included'); // ✅ reset mb
+          return;
+        }
+
+        // kalau ketemu: show
+        badge.textContent = `Include: ${name}`;
+        badge.classList.add('is-visible');
+        if (countSpan) countSpan.classList.add('has-included'); // ✅ aktifkan mb 5px
       });
     }
-  
-    root.addEventListener('click', (e) => {
-      const filterBtn = e.target.closest('.sim-filter-buttons button[data-filter]');
-      if (filterBtn && filterContainer && filterContainer.contains(filterBtn)) {
-        const filter = filterBtn.getAttribute('data-filter') || 'all';
-  
-        filterContainer.querySelectorAll('button').forEach((b) => b.classList.remove('active'));
-        filterBtn.classList.add('active');
-  
-        applyFilter(filter);
-        return;
+
+    function renderCoverageFieldFront(item) {
+      const cov = getCoverageItems(item);
+      if (cov.length <= 1) return '';
+
+      const iconWorld = "{{ 'icon-park-outline_world.svg' | asset_url }}";
+      const label = "{{ 'product.card.coverage' | t }}";
+      const count = cov.length;
+
+      return `
+        <div class="py-4 w-full flex items-center justify-between border-t border-slate-300">
+          <div class="flex items-center gap-2">
+            <div class="w-[33px] h-[33px] shrink-0 flex items-center justify-center">
+              <img class="w-[30px] h-[30px]" src="${iconWorld}" alt="Icon">
+            </div>
+            <h3 class="text-primary font-bold">${escapeHtml(label)}</h3>
+          </div>
+    
+          <div class="country-total-atribut">
+            <button class="flipped-trigger w-full" type="button">
+              <span class="countries-count text-secondary leading-relaxed">
+                ${escapeHtml(t('countries', { count }))}
+              </span>
+            </button>
+              <p class="included-badge text-neutral text-[12px] text-semibold bg-secondary">
+              </p>
+          </div>
+        </div>
+      `;
+    }
+
+    function hasValue(v) {
+      if (v === null || v === undefined) return false;
+      const s = String(v).trim();
+      if (!s) return false;
+      const low = s.toLowerCase();
+      if (low === 'null' || low === 'undefined') return false;
+      if (s === '-') return false;
+      return true;
+    }
+
+    function renderBenefits(item) {
+      const benefits = [];
+
+      // ✅ HANYA push kalau ada value
+      if (hasValue(item.option2)) {
+        benefits.push({
+          icon: "{{ 'icon-tabler_mobiledata.svg' | asset_url }}",
+          label: t('data'),
+          value: item.option2,
+        });
       }
-  
-      const flipBtn = e.target.closest('.flipped-trigger');
-      if (flipBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-  
-        const card = flipBtn.closest('.product-card-container');
-        if (!card) return;
-  
-        const slot = card.querySelector('.coverage-slot');
-        if (slot && slot.dataset.loaded === '0') {
-          const tpl = slot.querySelector('template.coverage-template');
-          if (tpl && tpl.content) {
-            slot.appendChild(tpl.content.cloneNode(true));
-            slot.dataset.loaded = '1';
+
+      if (hasValue(item.option1)) {
+        benefits.push({
+          icon: "{{ 'icon-date-range.svg' | asset_url }}",
+          label: t('days'),
+          value: item.option1,
+        });
+      }
+
+      // ✅ Price selalu tampil
+      benefits.push({
+        icon: "{{ 'icon-dollar.svg' | asset_url }}",
+        label: t('price'),
+        value: `${t('price_from_prefix')} Rp ${formatIDR(item.price_min)}`,
+      });
+
+      return `
+    <div class="space-y-0">
+      ${renderCoverageFieldFront(item)}
+      ${benefits
+        .map(
+          (b) => `
+          <div class="py-5 w-full flex items-center justify-between border-t border-slate-300">
+            <div class="flex items-center gap-2">
+              <div class="w-[33px] h-[33px] shrink-0 flex items-center justify-center">
+                <img class="w-[30px] h-[30px]" src="${b.icon}" alt="${escapeHtml(b.label)}">
+              </div>
+              <h3 class="text-primary font-bold">${escapeHtml(b.label)}</h3>
+            </div>
+            <h3 class="text-secondary font-bold">${escapeHtml(b.value)}</h3>
+          </div>
+        `
+        )
+        .join('')}
+    </div>
+      `;
+    }
+
+    function normalizeType(raw = '') {
+      return String(raw || 'undefined')
+        .trim()
+        .toLowerCase()
+        .replace(/_/g, ' ')
+        .replace(/\s+/g, '-');
+    }
+
+    function collectAllTypes(results = []) {
+      const set = new Set();
+      const HIDE_TABS = new Set(['top-up-plan', 'top-up', 'topup-plan', 'topup']);
+
+      results.forEach((col) => {
+        (col.items || []).forEach((item) => {
+          const t = normalizeType(item.category);
+          if (!t || t === 'undefined') return;
+          if (HIDE_TABS.has(t)) return;
+          set.add(t);
+        });
+      });
+
+      const desired = ['sim-card', 'esim', 'gsim', 'insurance'];
+      const types = Array.from(set);
+      const ordered = desired.filter((t) => types.includes(t));
+      const extras = types.filter((t) => !desired.includes(t));
+      return [...ordered, ...extras];
+    }
+
+    function getCardSearchText(item) {
+      const sk = Array.isArray(item?.search_key) ? item.search_key : [];
+
+      const countryAliases = sk
+        .flatMap((x) => (Array.isArray(x?.country?.country_alias) ? x.country.country_alias : []))
+        .filter(Boolean);
+
+      const regionAliases = sk
+        .flatMap((x) => (Array.isArray(x?.region?.region_alias) ? x.region.region_alias : []))
+        .filter(Boolean);
+
+      return [...countryAliases, ...regionAliases].join(' ').toLowerCase();
+    }
+
+    function renderFilterBar(types = [], mode = 'main') {
+      const LABELS = {
+        'sim-card': "{{ 'product.sim_type.sim_card' | t }}",
+        esim: "{{ 'product.sim_type.esim' | t }}",
+        gsim: 'gSIM',
+        insurance: "{{ 'product.card.insurance_label' | t }}",
+      };
+
+      const CATEGORY_TABS = ['esim', 'sim-card', 'insurance'];
+
+      // mode category: hanya 3 tab ini (dan tanpa "All")
+      const finalTabs =
+        mode === 'category' ? CATEGORY_TABS.filter((t) => types.includes(t) || CATEGORY_TABS.includes(t)) : types;
+
+      const tabButtons =
+        mode === 'category'
+          ? finalTabs
+              .map(
+                (t, idx) => `
+            <button
+              class="filter-tab ${
+                idx === 0 ? 'is-active' : ''
+              } whitespace-nowrap shrink-0 pb-[5px] rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
+              data-filter="${escapeHtml(t)}"
+              type="button"
+            >
+              ${escapeHtml(LABELS[t] || t.replace(/-/g, ' '))}
+            </button>
+          `
+              )
+              .join('')
+          : [
+              `
+          <button
+            class="filter-tab is-active rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
+            data-filter="all"
+            type="button"
+          >
+            {{ 'search.filter.all' | t }}
+          </button>
+        `,
+              ...finalTabs.map(
+                (t) => `
+            <button
+              class="filter-tab rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
+              data-filter="${escapeHtml(t)}"
+              type="button"
+            >
+              ${escapeHtml(LABELS[t] || t.replace(/-/g, ' '))}
+            </button>
+          `
+              ),
+            ].join('');
+
+      return `
+    <div class="w-full mb-5">
+      <div class="w-full md:max-w-[50%] mt-[20px] mb-[50px] md:mt-[100px] md:mb-[100px] space-y-5">
+        <div class="mb-5 space-y-5">
+          <h2 class="text-[36px] font-bold text-primary">All Destinations</h2>
+          <p class="text-primary text-[18px] tracking-wider leading-normal">
+            Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries
+          </p>
+        </div>
+    
+        <div class="relative">
+          <input
+            type="search"
+            id="realtimeSearchInput"
+            placeholder="Search Your Destination"
+            class="w-full rounded-[15px] pl-[20px] pr-[65px] py-[15px] text-primary placeholder:text-primary focus:placeholder:text-primary/80 text-primary focus:outline-none"
+          />
+          <div class="absolute right-[10px] top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center bg-primary rounded-[15px] w-[45px] h-[45px] shrink-0 text-neutral">
+            {% render 'icon-search' %}
+          </div>
+        </div>
+      </div>
+    
+      <div class="tab-scroll-wrap">
+  <button
+    class="tab-scroll-arrow tab-scroll-arrow--left"
+    type="button"
+    aria-label="Scroll left"
+    data-tabs-left
+  >
+    {% render 'icon-arrow-left', class: 'text-primary' %}
+  </button>
+
+  <div
+    class="tab-scroll px-[45px] md:px-0 flex items-center gap-2 overflow-x-auto overflow-y-hidden whitespace-nowrap"
+    data-tabs-scroll
+  >
+    ${tabButtons}
+  </div>
+
+  <button
+    class="tab-scroll-arrow tab-scroll-arrow--right"
+    type="button"
+    aria-label="Scroll right"
+    data-tabs-right
+  >
+    {% render 'icon-arrow-right', class: 'text-primary' %}
+  </button>
+
+  <!-- optional: fade biar keliatan masih bisa scroll -->
+  <div class="tab-scroll-fade tab-scroll-fade--left" aria-hidden="true"></div>
+  <div class="tab-scroll-fade tab-scroll-fade--right" aria-hidden="true"></div>
+</div>
+
+    </div>
+      `;
+    }
+
+    function wireFilterAndSearch(rootEl, mode = 'main') {
+      const tabs = Array.from(rootEl.querySelectorAll('.filter-tab'));
+      const tabScrollUI = wireTabScrollArrows(rootEl);
+      const searchInput = rootEl.querySelector('#realtimeSearchInput');
+      const wrappers = Array.from(rootEl.querySelectorAll('.collection-wrapper'));
+      const cards = Array.from(rootEl.querySelectorAll('.product-card-container'));
+
+      const CATEGORY_TABS = ['esim', 'sim-card', 'insurance'];
+      const DEFAULT_CATEGORY = 'esim';
+
+      const state = { filter: mode === 'category' ? DEFAULT_CATEGORY : 'all', q: '' };
+
+      function setActiveTab(filter) {
+        tabs.forEach((btn) => {
+          const f = (btn.getAttribute('data-filter') || '').trim();
+          const isActive = f === filter;
+          btn.classList.toggle('is-active', isActive);
+
+          if (isActive) tabScrollUI.scrollIntoView(btn);
+        });
+      }
+
+      function updateTabsVisibility() {
+        const q = (state.q || '').trim().toLowerCase();
+        const keywordActive = q.length >= 3;
+
+        // hitung jumlah hasil per tipe berdasarkan keyword saja (tanpa filter tab)
+        const counts = {};
+        let totalMatches = 0;
+
+        cards.forEach((card) => {
+          const cardType = card.getAttribute('data-sim-type') || '';
+          const hay = (card.getAttribute('data-search-text') || '').toLowerCase();
+
+          const matchSearch = !keywordActive || hay.includes(q);
+          if (!matchSearch) return;
+
+          totalMatches++;
+          counts[cardType] = (counts[cardType] || 0) + 1;
+        });
+
+        tabs.forEach((btn) => {
+          const f = (btn.getAttribute('data-filter') || '').trim();
+
+          // ✅ "All" ikut hide kalau tidak ada hasil sama sekali
+          if (mode !== 'category' && f === 'all') {
+            btn.style.display = totalMatches > 0 ? '' : 'none';
+            return;
+          }
+
+          const c = counts[f] || 0;
+          btn.style.display = c > 0 ? '' : 'none';
+        });
+
+        // kalau tab aktif sekarang hidden, pindah (kalau masih ada yang visible)
+        const activeBtn = tabs.find((b) => (b.getAttribute('data-filter') || '').trim() === state.filter);
+
+        const activeHidden = activeBtn && activeBtn.style.display === 'none';
+        if (activeHidden) {
+          const firstVisible = tabs.find((b) => b.style.display !== 'none');
+          if (firstVisible) {
+            state.filter = (firstVisible.getAttribute('data-filter') || '').trim();
+            setActiveTab(state.filter);
           }
         }
-        closeAllFlips(card);
-  
-        card.classList.toggle('flipped');
+      }
+
+      function apply() {
+        updateTabsVisibility(); // ✅
+        tabScrollUI.update();
+
+        const filter = state.filter;
+        const q = (state.q || '').trim().toLowerCase();
+        const keywordActive = q.length >= 3;
+
+        cards.forEach((card) => {
+          const cardType = card.getAttribute('data-sim-type') || '';
+          const hay = card.getAttribute('data-search-text') || '';
+
+          const matchType = mode === 'category' ? cardType === filter : filter === 'all' || cardType === filter;
+
+          const matchSearch = !keywordActive || hay.includes(q);
+
+          card.style.display = matchType && matchSearch ? 'flex' : 'none';
+        });
+
+        wrappers.forEach((w) => {
+          const inside = Array.from(w.querySelectorAll('.product-card-container'));
+          const anyVisible = inside.some((c) => c.style.display !== 'none');
+          w.style.display = anyVisible ? 'block' : 'none';
+        });
+
+        // ✅ EMPTY STATE (kalau tidak ada produk yang muncul sama sekali)
+        const emptyEl = rootEl.querySelector('#noResults');
+        if (emptyEl) {
+          const anyCardVisible = cards.some((c) => c.style.display !== 'none');
+          emptyEl.style.display = anyCardVisible ? 'none' : 'flex';
+        }
+      }
+
+      // ===== MAIN SEARCH: sync keyword -> URL ?q= (logic lama) =====
+      function setUrlQueryKeyword(qValue) {
+        const u = new URL(window.location.href);
+        const v = String(qValue || '').trim();
+        if (v) u.searchParams.set('q', v);
+        else u.searchParams.delete('q');
+        history.replaceState(null, '', u);
+      }
+
+      // ===== CATEGORY SEARCH: sync category -> URL ?q= =====
+      function normalizeCategoryParam(v) {
+        const raw = String(v || '')
+          .trim()
+          .toLowerCase();
+        // biar kalau user kirim "Sim Card" dll tetap kebaca
+        const norm = raw.replace(/_/g, ' ').replace(/\s+/g, '-');
+        return norm;
+      }
+
+      function getCategoryFromUrl() {
+        const u = new URL(window.location.href);
+        const qCat = normalizeCategoryParam(u.searchParams.get('q'));
+        if (CATEGORY_TABS.includes(qCat)) return qCat;
+        return DEFAULT_CATEGORY;
+      }
+
+      function setUrlCategory(catValue) {
+        const u = new URL(window.location.href);
+        const v = normalizeCategoryParam(catValue);
+
+        // sesuai request: category pakai query `q`
+        u.searchParams.set('q', v);
+
+        history.replaceState(null, '', u);
+      }
+
+      // ===== Tab click =====
+      tabs.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const filter = btn.getAttribute('data-filter') || (mode === 'category' ? DEFAULT_CATEGORY : 'all');
+
+          state.filter = filter;
+          setActiveTab(state.filter);
+          apply();
+
+          if (mode === 'category') {
+            // klik tab = update query category via replaceState
+            setUrlCategory(state.filter);
+          }
+        });
+      });
+
+      // ===== Search input =====
+      let debounce = null;
+
+      if (searchInput) {
+        if (mode === 'main') {
+          // INIT keyword dari URL -> input
+          const urlQ = new URL(window.location.href).searchParams.get('q') || '';
+          if (urlQ) {
+            searchInput.value = urlQ;
+            state.q = urlQ;
+          }
+
+          searchInput.addEventListener('input', (e) => {
+            const val = e.target.value || '';
+            clearTimeout(debounce);
+            debounce = setTimeout(() => {
+              state.q = val;
+              apply();
+              updateIncludedBadges(rootEl, val);
+              setUrlQueryKeyword(val);
+            }, 80);
+          });
+
+          window.addEventListener('popstate', () => {
+            const qFromUrl = new URL(window.location.href).searchParams.get('q') || '';
+            searchInput.value = qFromUrl;
+            state.q = qFromUrl;
+            apply();
+            updateIncludedBadges(rootEl, qFromUrl);
+          });
+        } else {
+          // CATEGORY mode: input hanya filter lokal (tidak ganggu query `q` yg dipakai category)
+          searchInput.addEventListener('input', (e) => {
+            const val = e.target.value || '';
+            clearTimeout(debounce);
+            debounce = setTimeout(() => {
+              state.q = val;
+              apply();
+              updateIncludedBadges(rootEl, val);
+            }, 80);
+          });
+
+          window.addEventListener('popstate', () => {
+            // kalau user back/forward, active tab ikut URL
+            const cat = getCategoryFromUrl();
+            state.filter = cat;
+            setActiveTab(cat);
+            apply();
+          });
+        }
+      }
+
+      // ===== INIT active tab =====
+      if (mode === 'category') {
+        const cat = getCategoryFromUrl(); // default esim kalau tidak sesuai
+        state.filter = cat;
+        setActiveTab(cat);
+      } else {
+        setActiveTab('all');
+      }
+
+      apply();
+
+      const initialQ = searchInput ? searchInput.value : '';
+      updateIncludedBadges(rootEl, initialQ);
+    }
+
+    function wireTabScrollArrows(rootEl) {
+      const scroller = rootEl.querySelector('[data-tabs-scroll]');
+      const btnLeft = rootEl.querySelector('[data-tabs-left]');
+      const btnRight = rootEl.querySelector('[data-tabs-right]');
+      const fadeLeft = rootEl.querySelector('.tab-scroll-fade--left');
+      const fadeRight = rootEl.querySelector('.tab-scroll-fade--right');
+
+      if (!scroller || !btnLeft || !btnRight) return { update: () => {}, scrollIntoView: () => {} };
+
+      const getStep = () => Math.max(220, Math.floor(scroller.clientWidth * 0.7));
+
+      function update() {
+        const maxScroll = scroller.scrollWidth - scroller.clientWidth;
+        const canScroll = maxScroll > 4;
+
+        if (!canScroll) {
+          btnLeft.classList.remove('is-visible');
+          btnRight.classList.remove('is-visible');
+          fadeLeft && fadeLeft.classList.remove('is-visible');
+          fadeRight && fadeRight.classList.remove('is-visible');
+          return;
+        }
+
+        const atStart = scroller.scrollLeft <= 2;
+        const atEnd = scroller.scrollLeft >= maxScroll - 2;
+
+        btnLeft.classList.toggle('is-visible', !atStart);
+        btnRight.classList.toggle('is-visible', !atEnd);
+
+        fadeLeft && fadeLeft.classList.toggle('is-visible', !atStart);
+        fadeRight && fadeRight.classList.toggle('is-visible', !atEnd);
+      }
+
+      const rafUpdate = () => requestAnimationFrame(update);
+
+      scroller.addEventListener('scroll', rafUpdate, { passive: true });
+      window.addEventListener('resize', rafUpdate);
+
+      btnLeft.addEventListener('click', () => {
+        scroller.scrollBy({ left: -getStep(), behavior: 'smooth' });
+      });
+
+      btnRight.addEventListener('click', () => {
+        scroller.scrollBy({ left: getStep(), behavior: 'smooth' });
+      });
+
+      // auto scroll active tab biar keliatan saat klik
+      function scrollIntoView(activeBtn) {
+        if (!activeBtn) return;
+        const btnRect = activeBtn.getBoundingClientRect();
+        const scRect = scroller.getBoundingClientRect();
+        const padding = 44;
+
+        if (btnRect.left < scRect.left + padding || btnRect.right > scRect.right - padding) {
+          const delta = btnRect.left - scRect.left - (scRect.width / 2 - btnRect.width / 2);
+          scroller.scrollBy({ left: delta, behavior: 'smooth' });
+        }
+      }
+
+      update();
+
+      return { update, scrollIntoView };
+    }
+
+    function wireFlip(rootEl) {
+      if (!rootEl) return;
+
+      rootEl.querySelectorAll('.flipped-trigger').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const card = btn.closest('.product-card-container');
+          if (!card) return;
+          card.classList.toggle('flipped');
+        });
+      });
+
+      rootEl.querySelectorAll('.product-card-content-flip-back').forEach((back) => {
+        back.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const card = back.closest('.product-card-container');
+          if (card) card.classList.remove('flipped');
+        });
+      });
+
+      document.addEventListener('click', (event) => {
+        rootEl.querySelectorAll('.product-card-container.flipped').forEach((card) => {
+          if (!card.contains(event.target)) {
+            card.classList.remove('flipped');
+          }
+        });
+      });
+    }
+
+    function renderCollections(results) {
+      const root = document.getElementById('collections');
+      if (!root) return;
+
+      const visible = (results ?? []).filter((col) => (col.items ?? []).length > 0);
+      if (visible.length === 0) {
+        root.innerHTML = '';
         return;
       }
-  
-      const insideCard = e.target.closest('.product-card-container');
-      if (!insideCard) closeAllFlips();
-    });
-  
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeAllFlips();
-    });
-  
-    applyFilter('all');
-  });
-</script>
 
-<div class="main-search">
-  <div class="main-search-container">
-    {% assign search_term = search.terms | downcase | strip %}
-    {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection'
- | split: ','
-    %}
-    {% assign found_any_product = false %}
-    {% assign single_product_url = '' %}
-    {% assign product_count = 0 %}
-    {% assign sim_types = '' %}
+      const allTypes = collectAllTypes(visible);
+      const mode = (root.getAttribute('data-search-type') || 'main').trim().toLowerCase();
+      const filterBarHtml = renderFilterBar(allTypes, mode);
 
-    {% for collection_key in collections_to_check %}
-      {% assign collection = collections[section.settings[collection_key]] %}
-      {% if collection %}
-        {% for product in collection.products %}
-          {% assign product_alias = product.metafields.coverage.alias | downcase | strip %}
-          {% assign product_alias_2 = product.metafields.coverage.alias_2 | downcase | strip %}
-          {% assign product_title = product.title | downcase | strip %}
-          {% assign product_countries = product.metafields.coverage.country.value %}
-          {% assign product_countries_2 = product.metafields.coverage.country_2.value %}
-          {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-          {% assign matched_countries = '' %}
-          {% assign matched_countries_2 = '' %}
+      const groupsHtml = visible
+        .map((col) => {
+          const groupTitle = col.title ?? col.handle ?? 'Untitled';
 
-          {% assign match_region = false %}
-          {% assign product_regions = product.metafields.coverage.region.value %}
-          {% if product_regions %}
-            {% for region in product_regions %}
-              {% assign region_clean = region | downcase | strip %}
-              {% if region_clean == search_term %}
-                {% assign match_region = true %}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
+          const cardsHtml = (col.items ?? [])
+            .map((item) => {
+              const simTypeRaw = item.category ?? 'Undefined';
+              const simType = normalizeType(simTypeRaw);
 
-          {% if collection_key == 'global_country_collection' or collection_key == 'multi_country_collection' %}
-            {% for country in product_countries %}
-              {% assign country_downcase = country | downcase | strip %}
-              {% if country_downcase contains search_term %}
-                {% assign matched_countries = matched_countries | append: country | append: ', ' %}
-              {% endif %}
-            {% endfor %}
-            {% if product_countries_2 %}
-              {% for country2 in product_countries_2 %}
-                {% assign country2_downcase = country2 | downcase | strip %}
-                {% if country2_downcase contains search_term %}
-                  {% assign matched_countries_2 = matched_countries_2 | append: country2 | append: ', ' %}
-                {% endif %}
-              {% endfor %}
-            {% endif %}
-          {% endif %}
+              const itemTitle = item.title ?? item.name ?? item.handle ?? 'Untitled Item';
+              const href = item.url ?? item.href ?? (item.handle ? `/products/${item.handle}` : '#');
 
-          {% if product_alias contains search_term
- or product_alias_2 contains search_term
- or product_title contains search_term
- or matched_countries != ''
- or matched_countries_2 != ''
- or match_region
-          %}
-            {% assign found_any_product = true %}
-            {% unless sim_types contains product_category %}
-              {% assign sim_types = sim_types | append: product_category | append: ',' %}
-            {% endunless %}
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
+              const searchText = getCardSearchText(item);
 
-    {% assign sim_types_array = sim_types | split: ',' %}
+              // alias->name map untuk Included dynamic
+              const countryMap = buildCountryAliasMap(item);
+              const countryMapStr = escapeHtml(JSON.stringify(countryMap));
 
-    <div class="sim-filter-buttons">
-      <button class="filter-btn active" data-filter="all">
-        {{ 'search.filter.all' | t }}
-      </button>
-
-      {% assign available_types = ',' %}
-      {% for sim_type in sim_types_array %}
-        {% assign type_code = sim_type | strip | downcase %}
-        {% if type_code == '' or type_code == 'undefined' %}
-          {% continue %}
-        {% endif %}
-
-        {% assign lookup = ',' | append: type_code | append: ',' %}
-        {% unless available_types contains lookup %}
-          {% assign available_types = available_types | append: type_code | append: ',' %}
-        {% endunless %}
-      {% endfor %}
-
-      {% assign desired_order = 'sim_card,esim,gsim,insurance' | split: ',' %}
-
-      {% for type_code in desired_order %}
-        {% assign lookup = ',' | append: type_code | append: ',' %}
-        {% unless available_types contains lookup %}
-          {% continue %}
-        {% endunless %}
-
-        {% assign filter_value = type_code | replace: '_', ' ' | replace: ' ', '-' %}
-
-        {% case type_code %}
-          {% when 'sim_card' %}
-            {% assign label = 'product.sim_type.sim_card' | t %}
-          {% when 'esim' %}
-            {% assign label = 'product.sim_type.esim' | t %}
-          {% when 'gsim' %}
-            {% assign label = 'gSIM' %}
-          {% when 'insurance' %}
-            {% assign label = 'product.card.insurance_label' | t %}
-        {% endcase %}
-
-        <button class="filter-btn" data-filter="{{ filter_value }}">
-          {{ label }}
-        </button>
-      {% endfor %}
-    </div>
-
-    {% for collection_key in collections_to_check %}
-      {% assign collection = collections[section.settings[collection_key]] %}
-      {% assign found_product = false %}
-      {% assign product_output = '' %}
-
-      {% if collection %}
-        {% for product in collection.products %}
-          {% assign product_alias = product.metafields.coverage.alias | downcase | strip %}
-          {% assign product_alias_2 = product.metafields.coverage.alias_2 | downcase | strip %}
-          {% assign product_title = product.title | downcase | strip %}
-          {% assign product_countries = product.metafields.coverage.country.value %}
-          {% assign product_countries_2 = product.metafields.coverage.country_2.value %}
-          {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-          {% assign matched_countries = '' %}
-          {% assign matched_countries_2 = '' %}
-
-          {% assign match_region = false %}
-          {% assign product_regions = product.metafields.coverage.region.value %}
-          {% if product_regions %}
-            {% for region in product_regions %}
-              {% assign region_clean = region | downcase | strip %}
-              {% if region_clean == search_term %}
-                {% assign match_region = true %}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-
-          {% if collection_key == 'global_country_collection' or collection_key == 'multi_country_collection' %}
-            {% for country in product_countries %}
-              {% assign country_downcase = country | downcase | strip %}
-              {% if country_downcase contains search_term %}
-                {% assign matched_countries = matched_countries | append: country | append: ', ' %}
-              {% endif %}
-            {% endfor %}
-            {% if product_countries_2 %}
-              {% for country2 in product_countries_2 %}
-                {% assign country2_downcase = country2 | downcase | strip %}
-                {% if country2_downcase contains search_term %}
-                  {% assign matched_countries_2 = matched_countries_2 | append: country2 | append: ', ' %}
-                {% endif %}
-              {% endfor %}
-            {% endif %}
-          {% endif %}
-
-          {% if product_alias contains search_term
- or product_alias_2 contains search_term
- or product_title contains search_term
- or matched_countries != ''
- or matched_countries_2 != ''
- or match_region
-          %}
-            {% assign found_product = true %}
-            {% assign found_any_product = true %}
-            {% assign product_count = product_count | plus: 1 %}
-            {% assign single_product_url = product.url %}
-            {% assign all_matched_countries = matched_countries | append: matched_countries_2 %}
-
-            {% capture product_card %}
-              <div class="product-card-container sim-type-{{ product_category | replace: '_', ' ' | downcase | replace: ' ', '-' }}">
-                <a class="product-url-link" href="{{ product.url }}">
-                  <div class="product-card-country">
-                    {% assign total_countries = product_countries.size %}
-                    {% if total_countries == 1 %}
-                      {% assign country_trimmed = product_countries.first | strip %}
-                      {% assign country_filename = country_trimmed | replace: ' ', '-' | append: '.svg' %}
-                      <img class="product-card-icon-single-flag" src="{{ country_filename | file_url }}" alt="{{ country_trimmed }}" width="50" height="50">
-                    {% else %}
-                      <div class="product-card-multi-flag">
-                        {% for country in product_countries limit: 3 %}
-                          {% assign country_parts = country | split: '_' %}
-                          {% assign country_processed = country_parts | join: '_' | replace: ' ', '-' %}
-                          {% assign country_filename = country_processed | append: '.svg' %}
-                          <img class="product-card-icon-multi-flag" src="{{ country_filename | file_url }}" alt="{{ country_processed }}" width="25" height="25">
-                        {% endfor %}
-                        {% if total_countries > 3 %}
-                          <div class="product-card-flag-count"><span>+{{ total_countries | minus: 3 }}</span></div>
-                        {% endif %}
-                      </div>
-                    {% endif %}
-
-                    <div class="main-search__product">
-                      {% if product_category == "Insurance" %}
-                        <span class="main-search__product-type">
-                          {{ 'product.card.insurance_label' | t }}
-                        </span>
-                      {% else %}
-                        {%- assign category_key = product_category | downcase -%}
-                        {%- case category_key -%}
-                          {%- when 'sim_card' -%}
-                            {%- assign sim_type_label = 'product.sim_type.sim_card' | t -%}
-                          {%- when 'esim' -%}
-                            {%- assign sim_type_label = 'product.card.esim_label' | t -%}
-                          {%- else -%}
-                            {%- assign sim_type_label = product_category | replace: '_', ' ' -%}
-                        {%- endcase -%}
-
-                        <span class="main-search__product-type" {% if product_category == "SIM_Card" %}style="background-color: var(--color-secondary);"{% endif %}>
-                          {{ 'product.card.sim_type_prefix' | t }}
-                          {{ sim_type_label }}
-                        </span>
-                      {% endif %}
-
-                      <h1>{{ product.title }}</h1>
+              return `
+                <section
+                  class="product-card-container bg-neutral hover:shadow-lg transition-all rounded-[20px] p-[15px] shadow-md flex flex-col h-full"
+                  data-sim-type="${escapeHtml(simType)}"
+                  data-search-text="${escapeHtml(searchText)}"
+                  data-country-map="${countryMapStr}"
+                >
+                  <div class="w-full flex items-center gap-5 h-auto mb-5">
+                    ${renderCountryVisual(item)}
+    
+                    <div>
+                      <span class="bg-primary rounded-full text-white text-xl font-semibold py-2 px-5 leading-none">
+                        Sim Type: ${escapeHtml(simTypeRaw)}
+                      </span>
+                      <h2 class="text-3xl text-primary font-semibold line-clamp-2">
+                        ${escapeHtml(itemTitle)}
+                      </h2>
                     </div>
                   </div>
-                </a>
-
-                <div class="product-card-content">
-                  <div class="product-card-content-flip-front">
-                    {% if product_countries.size > 1 %}
-                      <div class="product-card-field" style="border-top: 1px ridge;">
-                        <div class="product-card-field-icons">
-                          <img class="field-icon" src="{{ 'icon-park-outline_world.svg' | asset_url }}" alt="Icon">
-                          <h1>{{ 'product.card.coverage' | t }}</h1>
-                        </div>
-                        <div class="country-total-atribut-wrapper">
-                          <div class="country-total-atribut">
-                            <button class="flipped-trigger">
-                              <span>{{ 'product.card.countries' | t: count: product_countries.size }}</span>
-                            </button>
-                          </div>
-
-                          {% assign alias_array = alias_string | split: ',' | uniq %}
-                          {% if alias_array.size > 0 %}
-                            <div class="country-total-including-atribut hidden">
-                              <p>
-                                {{ 'product.card.including' | t }}
-                                {{ alias_array | join: ', ' }}
-                              </p>
-                            </div>
-                          {% endif %}
-                        </div>
-                      </div>
-                    {% endif %}
-
-                    {% if product.variants.size > 0 %}
-                      {% assign first_optiondays = product.variants.first.option1 | replace: ' Days', '' %}
-                      {% assign last_optiondays = product.variants.last.option1 | strip %}
-                      {% assign last_optionquota = product.variants.last.option2 | strip %}
-
-                      {% unless product_category == 'Insurance' %}
-                        <div class="product-card-field">
-                          <div class="product-card-field-icons">
-                            <img class="field-icon" src="{{ 'icon-tabler_mobiledata.svg' | asset_url }}" alt="Icon">
-                            <h1>{{ 'product.card.data' | t }}</h1>
-                          </div>
-                          <h2>{{ last_optionquota }}</h2>
-                        </div>
-                      {% endunless %}
-
-                      <div class="product-card-field">
-                        <div class="product-card-field-icons">
-                          <img class="field-icon" src="{{ 'icon-date-range.svg' | asset_url }}" alt="Icon">
-                          <h1>{{ 'product.card.days' | t }}</h1>
-                        </div>
-                        {% if product.metafields.product.category.value == "Insurance" %}
-                          <h2>{{ 'product.card.days_insurance' | t }}</h2>
-                        {% else %}
-                          <h2>{{ first_optiondays }} - {{ last_optiondays }}</h2>
-                        {% endif %}
-                      </div>
-
-                      <div class="product-card-field">
-                        <div class="product-card-field-icons">
-                          <img class="field-icon" src="{{ 'icon-dollar.svg' | asset_url }}" alt="Icon">
-                          <h1>{{ 'product.card.price' | t }}</h1>
-                        </div>
-                        <h2>
-                          {{ 'product.card.price_from_prefix' | t }}
-                          {{ product.price | money_with_currency }}
-                        </h2>
-                      </div>
-                    {% endif %}
-                  </div>
-
-                  <div class="product-card-content-flip-back">
-                    <div class="coverage-slot" data-loaded="0">
-                      <template class="coverage-template">
-                        {% render 'coverage', product: product %}
-                      </template>
+    
+                  <div class="product-card-content mt-3">
+                    <div class="product-card-content-flip-front">
+                      ${renderBenefits(item)}
+                    </div>
+    
+                    <div class="product-card-content-flip-back">
+                      ${renderCoverageBack(item)}
                     </div>
                   </div>
-                </div>
-
-                <div class="product-card-button">
-                  <a class="product-url-link" href="{{ product.url }}">
-                    <button class="product-card-btn">
-                      <p>{{ 'product.card.button_gsim' | t }}</p>
-                    </button>
+    
+                  <a
+                    href="${escapeHtml(href)}"
+                    class="mt-auto flex w-full items-center justify-center bg-primary text-neutral px-5 py-4 rounded-[15px] tracking-wide"
+                  >
+                    ${escapeHtml(t('button_gsim'))}
                   </a>
-                </div>
-              </div>
-            {% endcapture %}
+                </section>
+              `;
+            })
+            .join('');
 
-            {% assign product_output = product_output | append: product_card %}
-          {% endif %}
-        {% endfor %}
-
-        {% if found_product %}
-          <div class="main-search-collection-wrapper" id="collection-{{ collection_key }}">
-            <h1 class="main-search-collection title">{{ collection.title }}</h1>
-            <div class="main-search-collection">
-              <div class="product-card-wrapper" id="{{ collection_key }}">
-                {{ product_output }}
+          return `
+            <div class="collection-wrapper mb-10">
+              <h2 class="text-primary font-bold text-[30px]">${escapeHtml(groupTitle)}</h2>
+              <div class="grid gap-5 items-stretch">
+                ${cardsHtml}
               </div>
             </div>
-          </div>
-        {% endif %}
-      {% endif %}
-    {% endfor %}
+          `;
+        })
+        .join('');
 
-    {% unless found_any_product %}
-      <div class="main-search__error">
-        <p>No products found for "{{ search.terms }}"</p>
+      root.innerHTML = `
+      ${filterBarHtml}
+    
+      <div id="noResults" class="no-results" style="display:none;">
+    <h3 class="no-results__title">No results found</h3>
+    <p class="no-results__desc">
+      We couldn’t find any products for that destination. Try another country or check the spelling.
+    </p>
       </div>
-    {% endunless %}
+    
+      ${groupsHtml}
+    `;
 
-    {% if product_count == 1 %}
-      <script>
-        window.location.href = '{{ single_product_url }}';
-      </script>
-    {% endif %}
-  </div>
+      wireFilterAndSearch(root, mode);
+      wireFlip(root);
+    }
+
+    function showLoading(rootEl) {
+      rootEl.setAttribute('aria-busy', 'true');
+      rootEl.classList.add('is-loading');
+    }
+
+    function hideLoading(rootEl) {
+      rootEl.setAttribute('aria-busy', 'false');
+      rootEl.classList.remove('is-loading');
+    }
+
+    function renderError(rootEl) {
+      rootEl.innerHTML = `
+    <div style="padding:16px; border:1px solid var(--color-border); border-radius:12px;">
+      <strong style="color:var(--color-primary)">Gagal memuat data.</strong>
+      <div style="margin-top:6px; color:var(--color-secondary)">Coba refresh halaman.</div>
+    </div>
+      `;
+    }
+
+    (async () => {
+      const root = document.getElementById('collections');
+      if (!root) return;
+
+      showLoading(root);
+
+      try {
+        const results = await fetchAllCollections();
+        renderCollections(results); // ini akan replace skeleton karena root.innerHTML di renderCollections()
+      } catch (e) {
+        console.error(e);
+        renderError(root);
+      } finally {
+        hideLoading(root);
+      }
+    })();
+  </script>
 </div>
 
 {% schema %}
-  {
-    "name": "Main Search",
-    "settings": [
-      {
-        "type": "text",
-        "label": "Single Country Title",
-        "id": "title_single",
-        "default": "Single Country"
-      },
-      {
-        "type": "collection",
-        "label": "Single Country Collection",
-        "id": "single_country_collection"
-      },
-      {
-        "type": "text",
-        "label": "Multi Country Title",
-        "id": "title_multi",
-        "default": "Multi Country"
-      },
-      {
-        "type": "collection",
-        "label": "Multi Country Collection",
-        "id": "multi_country_collection"
-      }, {
-        "type": "text",
-        "label": "Global Country Title",
-        "id": "title_global",
-        "default": "Global Country"
-      }, {
-        "type": "collection",
-        "label": "Global Country Collection",
-        "id": "global_country_collection"
-      }
-    ]
-  }
+{
+  "name": "Main Search",
+  "settings": [
+    {
+      "type": "select",
+      "id": "search_type",
+      "label": "Search Type",
+      "default": "main",
+      "options": [
+        {
+          "value": "main",
+          "label": "Main Search"
+        },
+        {
+          "value": "category",
+          "label": "Category Search"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main Search",
+      "category": "Custom Sections"
+    }
+  ]
+}
 {% endschema %}

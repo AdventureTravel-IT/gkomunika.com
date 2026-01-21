@@ -1028,7 +1028,7 @@
 
         const filter = state.filter;
         const q = (state.q || '').trim().toLowerCase();
-        const keywordActive = q.length >= 3;
+        const keywordActive = q.length >= 2;
 
         cards.forEach((card) => {
           const cardType = card.getAttribute('data-sim-type') || '';
@@ -1306,7 +1306,7 @@
                   data-search-text="${escapeHtml(searchText)}"
                   data-country-map="${countryMapStr}"
                 >
-                  <div class="w-full flex items-center gap-5 h-auto mb-5">
+                  <a href="${escapeHtml(href)}" class="w-full flex items-center gap-5 h-auto mb-5">
                     ${renderCountryVisual(item)}
     
                     <div>
@@ -1317,7 +1317,7 @@
                         ${escapeHtml(itemTitle)}
                       </h2>
                     </div>
-                  </div>
+                  </a>
     
                   <div class="product-card-content mt-3">
                     <div class="product-card-content-flip-front">

@@ -1,0 +1,103 @@
+{%- layout none -%}
+{%- paginate collection.products by 100 -%}
+  { "items": [
+  {%- assign first = true -%}
+  {%- assign item_count = 0 -%}
+
+  {%- for item in collection.products -%}
+    {%- unless item.object_type == 'product' -%}
+      {%- continue -%}{%- endunless -%}
+    {%- unless item.available -%}
+      {%- continue -%}{%- endunless -%}
+
+    {%- unless first -%},{%- endunless -%}
+    {%- assign first = false -%}
+    {%- assign item_count = item_count | plus: 1 -%}
+
+    {%- assign opt1 = item.options_with_values | first -%}
+    {%- assign opt2 = item.options_with_values[1] -%}
+
+    {%- capture opt1_range -%}
+        {%- if opt1 != blank and opt1.values.size > 0 -%}
+          {%- assign opt1_min = opt1.values.first -%}
+          {%- assign opt1_max = opt1.values.last -%}
+          {%- if opt1_min == opt1_max -%}{{ opt1_min }}{%- else -%}{{ opt1_min }} - {{ opt1_max }}{%- endif -%}
+        {%- endif -%}
+      {%- endcapture -%}
+    {%- capture opt2_last -%}
+        {%- if opt2 != blank and opt2.values.size > 0 -%}
+          {{ opt2.values.last }}
+        {%- endif -%}
+      {%- endcapture -%}
+    {%- assign raw_category = item.metafields.product.category.value | default: '' -%}
+    {%- assign mapped_category = raw_category -%}
+
+    {%- if raw_category == 'Top_Up_A' or raw_category == 'Top_Up_B' or raw_category == 'Top_Up_C' or raw_category == 'Top_Up_D'
+    -%}
+      {%- assign mapped_category = 'Top Up Plan' -%}
+    {%- endif -%}
+
+    { "id": {{ item.id | json }}, "title": {{ item.title | json }}, "handle": {{ item.handle | json }}, "url":
+    {{ item.url | json }}, "category": {{ mapped_category | json }}, "available": {{ item.available | json }},                  
+    "price_min": {{ item.price_min | json }}, "price_max": {{ item.price_max | json }}, "option1":
+    {{ opt1_range | strip | json }}, "option2": {{ opt2_last | strip | json }}, "collection":
+    {{ collection.title | json }},                  
+
+    "search_key": [
+    {%- assign mos = item.metafields.search.key.value -%}
+    {%- if mos != blank -%}
+      {%- for mo in mos -%}
+        {%- unless forloop.first -%},{%- endunless -%}
+
+        {%- assign flag = mo.flag.value -%}
+        {%- assign regions = mo.region.value -%}
+        {%- assign aliases = mo.alias.value -%}
+
+        { "country": { "country_en": {{ mo.country.value | default: '' | json }}, "country_id":
+        {{ mo.country_id.value | default: '' | json }},                  
+
+        "country_alias": [
+        {%- if aliases != blank -%}
+          {%- for a in aliases -%}
+            {%- unless forloop.first -%},{%- endunless -%}
+            {{ a | json }}
+          {%- endfor -%}
+        {%- endif -%}
+        ],                  
+
+        "country_flag":
+        {%- if flag != blank -%}
+          {{ flag | image_url: width: 500 | json }}{%- else -%}null{%- endif -%}
+        },
+
+        {%- assign r = regions | first -%}
+        "region":
+        {%- if r != blank -%}
+          {%- assign r_flag = r.region_flag.value -%}
+          {%- assign r_aliases = r.region_alias.value -%}
+          { "region_en": {{ r.region.value | default: '' | json }}, "region_id":
+          {{ r.region_id.value | default: '' | json }}, "region_alias": [
+          {%- if r_aliases != blank -%}
+            {%- for ra in r_aliases -%}
+              {%- unless forloop.first -%},{%- endunless -%}
+              {{ ra | json }}
+            {%- endfor -%}
+          {%- endif -%}
+          ], "region_flag":
+          {%- if r_flag != blank -%}
+            {{ r_flag | image_url: width: 200 | json }}{%- else -%}null{%- endif -%}
+          }
+        {%- else -%}
+          null
+        {%- endif -%}
+        }
+      {%- endfor -%}
+    {%- endif -%}
+    ] }
+  {%- endfor -%}
+  ],                  
+
+  "count": {{ item_count | json }}, "total": {{ paginate.items | json }}, "page": {{ paginate.current_page | json }},                  
+  "pages": {{ paginate.pages | json }}
+  }
+{%- endpaginate -%}

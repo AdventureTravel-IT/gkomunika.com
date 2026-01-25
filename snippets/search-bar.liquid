@@ -20,7 +20,7 @@
 
     <button
       type="submit"
-      class="absolute right-[5px] z-[999] bg-primary rounded-[15px] p-[10px]"
+      class="absolute right-[5px] z-[3] bg-primary rounded-[15px] p-[10px]"
       aria-label="{{ 'general.search.search' | t }}"
     >
       <span>{{- 'material-search.svg' | inline_asset_content -}}</span>
@@ -93,6 +93,7 @@
         }
         const data = JSON.parse(raw);
         countries = Array.isArray(data.search_keys) ? data.search_keys : [];
+        console.log(countries.filter((c) => (c.country_en || '').trim().toLowerCase() === 'japan'));
       } catch (e) {
         console.error('[autocomplete] fetch gagal:', e);
         return;
@@ -131,7 +132,6 @@
       const searchCountries = (q) => {
         const nq = normalize(q);
         if (nq.length < 2) return [];
-        const MAX = 10;
 
         return index
           .map((it) => {
@@ -145,7 +145,6 @@
           })
           .filter((x) => x.score !== 999)
           .sort((a, b) => a.score - b.score || a.it.country_en.localeCompare(b.it.country_en))
-          .slice(0, MAX)
           .map((x) => x.it);
       };
 
@@ -160,26 +159,39 @@
       const renderResults = (results) => {
         if (!results.length) return hideBox();
 
-        list.innerHTML = results
+        // ✅ DEDUPE: biar label yang sama cuma muncul 1x
+        const seen = new Set();
+        const uniqueResults = [];
+
+        for (const r of results) {
+          const label = getCountryLabel(r); // label final yang tampil (EN/ID)
+          const key = normalize(label); // normalize biar "Japan", "japan", "Japan " dianggap sama
+
+          if (seen.has(key)) continue; // skip kalau sudah pernah muncul
+          seen.add(key);
+          uniqueResults.push(r);
+        }
+
+        list.innerHTML = uniqueResults
           .map((r) => {
             const label = getCountryLabel(r);
 
             const flag = r.country_flag
               ? `<img src="${escapeHtml(r.country_flag)}"
-                  class="w-[40px] h-[40px] shrink-0 border border-slate-300 rounded-[10px] object-cover"
-                  alt="${escapeHtml(label)}">`
+            class="w-[40px] h-[40px] shrink-0 border border-slate-300 rounded-[10px] object-cover"
+            alt="${escapeHtml(label)}">`
               : `<span class="w-[40px] h-[40px] shrink-0 border border-slate-300 rounded-[10px] bg-slate-400 inline-block"></span>`;
 
             return `
-              <li>
-                <button type="button"
-                  class="w-full flex items-center gap-3 px-3 py-2 rounded-[12px] hover:bg-black/5 text-left"
-                  data-query="${escapeHtml(label)}">
-                  ${flag}
-                  <span class="text-primary text-[16px]">${escapeHtml(label)}</span>
-                </button>
-              </li>
-            `;
+        <li>
+          <button type="button"
+            class="w-full flex items-center gap-3 px-3 py-2 rounded-[12px] hover:bg-black/5 text-left"
+            data-query="${escapeHtml(label)}">
+            ${flag}
+            <span class="text-primary text-[16px]">${escapeHtml(label)}</span>
+          </button>
+        </li>
+      `;
           })
           .join('');
 

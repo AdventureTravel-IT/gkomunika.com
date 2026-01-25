@@ -8,6 +8,18 @@
  * ------------------------------------------------------------
  */
 {
+  "homepage": {
+    "popular_country": {
+      "heading": "Popular Countries",
+      "heading_all": "All Destination",
+      "details": {
+        "cta": "Show All Destinations",
+        "empty": "No popular products found.",
+        "button_land": "Land",
+        "button_region": "Region",
+      }
+    }
+  },
   "general": {
     "password_page": {
       "login_form_heading": "Enter store using password:",

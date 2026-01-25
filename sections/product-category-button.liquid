@@ -1,129 +1,37 @@
-<section class="product-category">
-  <div class="product-category__wrapper">
-    <button
-      id="btn-esim"
-      class="product-category__button"
-      data-category="esim"
-    >
-      <div class="product-category__icon">
-        {% render 'icon-qr-code' %}
-      </div>
-      <span class="product-category__label">eSIM</span>
-    </button>
+{% comment %} overflow-x-visible scroll-smooth {% endcomment %}
+<section class="max-w-[1920px] mx-auto">
+  <div class="pt-12 px-[24px] md:px-[10%] flex gap-4 items-center justify-start">
+    
+    <a href="/pages/esim-page?sim_type=esim"
+      class="bg-primary text-neutral flex items-center justify-center gap-2
+             rounded-[15px] h-[52px] w-[120px] md:w-auto md:px-5 px-4">
+      {% render 'icon-qr-code', class: 'text-neutral h-[24px] w-[24px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
+      <span class="font-bold text-[14px] md:text-[16px] leading-tight text-center">
+        eSIM
+      </span>
+    </a>
 
-    <button
-      id="btn-simcard"
-      class="product-category__button"
-      data-category="sim-card"
-    >
-      <div class="product-category__icon">
-        {% render 'icon-simcard' %}
-      </div>
-      <span class="product-category__label">SIM Card</span>
-    </button>
+    <a href="/pages/esim-page?sim_type=sim-card"
+      class="bg-primary text-neutral flex items-center justify-center gap-2
+             rounded-[15px] h-[52px] w-[120px] md:w-auto md:px-5 px-4">
+      {% render 'icon-simcard', class: 'text-neutral h-[24px] w-[24px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
+      <span class="font-bold text-[14px] md:text-[16px] leading-tight text-center">
+        SIM<br>Card
+      </span>
+    </a>
 
-    <button
-      id="btn-insurance"
-      class="product-category__button"
-      data-category="insurance"
-    >
-      <div class="product-category__icon">
-        {% render 'icon-insurance' %}
-      </div>
-      <span class="product-category__label">Insurance</span>
-    </button>
+    <a href="/pages/esim-page?sim_type=insurance"
+      class="bg-primary text-neutral flex items-center justify-center gap-2
+             rounded-[15px] h-[52px] w-[120px] md:w-auto md:px-5 px-4">
+      {% render 'icon-insurance', class: 'text-neutral h-[24px] w-[24px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
+      <span class="font-bold text-[14px] md:text-[16px] leading-tight text-center">
+        Insurance
+      </span>
+    </a>
+
   </div>
 </section>
 
-<style>
-  .product-category {
-    max-width: 1920px;
-    margin: 0 auto;
-  }
-
-  .product-category__wrapper {
-    display: flex;
-    padding: 20px 10%;
-    flex-wrap: nowrap;
-    gap: 20px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding-bottom: 8px;
-  }
-
-  .product-category__wrapper::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  .product-category__wrapper::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .product-category__wrapper::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.15);
-    border-radius: 999px;
-  }
-
-  .product-category__button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 15px;
-    border-radius: 15px;
-    border: none;
-    cursor: pointer;
-    background-color: var(--color-primary, #2563eb); /* fallback biru */
-    color: var(--color-on-primary, #ffffff);
-    white-space: nowrap;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-    flex-shrink: 0;
-  }
-
-  .product-category__button:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .product-category__icon {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .product-category__label {
-    font-weight: 700;
-    font-size: 1.5rem;
-    line-height: 1.2;
-    color: inherit;
-  }
-
-  @media (max-width: 768px) {
-    .product-category__wrapper {
-      padding: 16px 20px;
-      flex-wrap: wrap;
-      overflow-x: visible;
-      gap: 12px;
-      justify-content: center;
-    }
-
-    .product-category__button {
-      padding: 10px 14px;
-      font-size: 0.9rem;
-      flex: 0 0 auto;
-    }
-
-    .product-category__label {
-      font-size: 1rem;
-    }
-
-    .product-category__icon {
-      width: 18px;
-      height: 18px;
-    }
-  }
-</style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {

@@ -8,6 +8,18 @@
  * ------------------------------------------------------------
  */
 {
+  "homepage": {
+    "popular_country": {
+      "heading": "Negara Populer",
+      "heading_all": "Semua Tujuan",
+      "details": {
+        "cta": "Tampilkan Semua Destinasi",
+        "empty": "Tidak ditemukan produk populer.",
+        "button_land": "Negara",
+        "button_region": "Wilayah",
+      }
+    }
+  },
   "general": {
     "password_page": {
       "login_form_heading": "Masuki toko dengan sandi:",
@@ -588,8 +600,8 @@
   },
   "product": {
     "sim_type": {
-      "sim_card": "Kartu SIM",
-      "esim": "Kartu SIM Elektronik"
+      "sim_card": "Sim Card",
+      "esim": "eSIM"
     },
     "card": {
       "insurance_label": "Asuransi",

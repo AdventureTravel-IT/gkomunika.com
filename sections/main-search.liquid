@@ -450,19 +450,22 @@
     }
 
     function escapeHtml(str = '') {
-      return String(str)
-        .replace(/_/g, ' ')
-        .replace(
-          /[&<>"']/g,
-          (m) =>
-            ({
-              '&': '&amp;',
-              '<': '&lt;',
-              '>': '&gt;',
-              '"': '&quot;',
-              "'": '&#039;',
-            }[m])
-        );
+      return String(str).replace(
+        /[&<>"']/g,
+        (m) =>
+          ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;',
+          }[m])
+      );
+    }
+
+    // ✅ khusus buat text (nama negara dll) biar "_" tampil jadi spasi
+    function escapeText(str = '') {
+      return escapeHtml(String(str).replace(/_/g, ' '));
     }
 
     function formatIDR(num) {
@@ -496,6 +499,12 @@
       return url;
     }
 
+    function normalizeImageSrc(src = '') {
+      const s = normalizeUrl(src);
+      // ✅ South Korea -> South_Korea
+      return escapeHtml(String(s).replace(/\s+/g, '_'));
+    }
+
     function getSearchKey(item) {
       return Array.isArray(item?.search_key) ? item.search_key : [];
     }
@@ -522,7 +531,8 @@
       }
 
       if (total === 1) {
-        const src = escapeHtml(normalizeUrl(flags[0]));
+        const src = normalizeImageSrc(flags[0]);
+
         return `
           <div class="w-[50px] h-[50px] shrink-0 border border-slate-300 overflow-hidden rounded-[15px]">
             <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
@@ -536,7 +546,8 @@
 
       const cellsHtml = [
         ...displayFlags.map((f) => {
-          const src = escapeHtml(normalizeUrl(f));
+          const src = normalizeImageSrc(f);
+
           return `
             <div class="border border-slate-300 bg-neutral rounded-[5px] h-[24px] w-[24px] overflow-hidden shrink-0">
               <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
@@ -609,8 +620,9 @@
 
       const rows = cov
         .map((c) => {
-          const src = escapeHtml(normalizeUrl(c.flag));
-          const nm = escapeHtml(c.name.replace(/_/g, ' '));
+          const src = normalizeImageSrc(c.flag);
+          const nm = escapeText(c.name);
+
           return `
         <li>
           <img src="${src}" alt="${nm}" loading="lazy" />
@@ -825,22 +837,41 @@
       return [...ordered, ...extras];
     }
 
+    function normalizeToken(v = '') {
+      return String(v || '')
+        .toLowerCase()
+        .trim()
+        .replace(/_/g, ' ')
+        .replace(/\s+/g, ' ');
+    }
+
     function getCardSearchText(item) {
       const sk = Array.isArray(item?.search_key) ? item.search_key : [];
 
-      const countryAliases = sk
-        .flatMap((x) => (Array.isArray(x?.country?.country_alias) ? x.country.country_alias : []))
+      const countryTokens = sk
+        .flatMap((x) => {
+          const c = x?.country || {};
+          const aliases = Array.isArray(c.country_alias) ? c.country_alias : [];
+          return [c.country_en, c.country_id, ...aliases];
+        })
         .filter(Boolean);
 
-      const regionAliases = sk
-        .flatMap((x) => (Array.isArray(x?.region?.region_alias) ? x.region.region_alias : []))
+      const regionTokens = sk
+        .flatMap((x) => {
+          const regions = Array.isArray(x?.regions) ? x.regions : x?.region ? [x.region] : [];
+
+          return regions.flatMap((r) => {
+            const aliases = Array.isArray(r?.region_alias) ? r.region_alias : [];
+            return [r?.region_en, r?.region_id, ...aliases];
+          });
+        })
         .filter(Boolean);
 
       const title = item?.title ? [item.title] : [];
       const handle = item?.handle ? [item.handle] : [];
       const category = item?.category ? [item.category] : [];
 
-      return [...title, ...handle, ...category, ...countryAliases, ...regionAliases].join(' ').toLowerCase();
+      return [...title, ...handle, ...category, ...countryTokens, ...regionTokens].join(' ').toLowerCase();
     }
 
     function renderFilterBar(types = [], mode = 'main') {
@@ -914,6 +945,7 @@
             placeholder="Search Your Destination"
             class="w-full rounded-[15px] pl-[20px] pr-[65px] py-[15px] text-primary placeholder:text-primary focus:placeholder:text-primary/80 text-primary focus:outline-none"
           />
+          
           <div class="absolute right-[10px] top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center bg-primary rounded-[15px] w-[45px] h-[45px] shrink-0 text-neutral">
             {% render 'icon-search' %}
           </div>
@@ -931,7 +963,7 @@
   </button>
 
   <div
-    class="tab-scroll px-[45px] md:px-0 flex items-center gap-2 overflow-x-auto overflow-y-hidden whitespace-nowrap"
+    class="tab-scroll px-0 flex items-center gap-2 overflow-x-auto overflow-y-hidden whitespace-nowrap"
     data-tabs-scroll
   >
     ${tabButtons}
@@ -1311,10 +1343,10 @@
     
                     <div>
                       <span class="bg-primary rounded-full text-white text-xl font-semibold py-2 px-5 leading-none">
-                        Sim Type: ${escapeHtml(simTypeRaw)}
+                        Sim Type: ${escapeText(simTypeRaw)}
                       </span>
                       <h2 class="text-3xl text-primary font-semibold line-clamp-2">
-                        ${escapeHtml(itemTitle)}
+                        ${escapeText(itemTitle)}
                       </h2>
                     </div>
                   </a>
@@ -1342,7 +1374,7 @@
 
           return `
             <div class="collection-wrapper mb-10">
-              <h2 class="text-primary font-bold text-[30px]">${escapeHtml(groupTitle)}</h2>
+              <h2 class="text-primary font-bold text-[30px] mb-6">${escapeHtml(groupTitle)}</h2>
               <div class="grid gap-5 items-stretch">
                 ${cardsHtml}
               </div>
@@ -1403,6 +1435,10 @@
         hideLoading(root);
       }
     })();
+
+    [...document.querySelectorAll('.product-card-container')]
+      .map((el) => el.getAttribute('data-search-text'))
+      .find((t) => t.includes('morocco'));
   </script>
 </div>
 

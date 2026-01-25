@@ -25,6 +25,8 @@
           </div>
         </button>
 
+        {% assign alt_global = 'Global Komunika' %}
+
         {% if section.settings.logo != blank %}
           <a href="{{ routes.root_url }}" class="inline-flex-center">
             {{
@@ -34,8 +36,12 @@
                 class: 'header-content-logo',
                 widths: '120, 240',
                 sizes: '120px',
-                alt: section.settings.logo.alt
-              | default: shop.name, loading: 'eager', fetchpriority: 'high', decoding: 'async', width: 120, height: 40
+                alt: alt_global,
+                loading: 'eager',
+                fetchpriority: 'high',
+                decoding: 'async',
+                width: 120,
+                height: 40
             }}
           </a>
         {% endif %}

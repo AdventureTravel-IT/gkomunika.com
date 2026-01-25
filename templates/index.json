@@ -53,21 +53,10 @@
     },
     "popular_countries_AmdMjK": {
       "type": "popular-countries",
-      "custom_css": [
-        "@media (max-width: 426px) {.tab-content a:nth-child(n + 5) {display: none; }}"
-      ],
+      "custom_css": [],
       "settings": {
-        "display_mode": "option_1",
-        "land_collection": "single-country",
-        "collection": "all-country",
-        "region_collection": "all-country",
-        "global_collection": "global-country",
-        "title": "Popular Countries",
-        "tab_land": "Land",
-        "tab_region": "Region",
-        "tab_global": "Global",
-        "show_button": true,
-        "show_all_text": "Show all destinations"
+        "country_mode": "top",
+        "show_cta": true
       }
     },
     "how_to_use_qA8rPU": {

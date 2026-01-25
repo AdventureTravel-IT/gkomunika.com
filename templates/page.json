@@ -11,20 +11,23 @@
   "sections": {
     "main": {
       "type": "main-page",
+      "disabled": true,
       "settings": {
         "padding_top": 28,
         "padding_bottom": 28
       }
     },
-    "check_data_usage_dFM6rw": {
-      "type": "check-data-usage",
-      "disabled": true,
-      "name": "Check Data Usage",
-      "settings": {}
+    "popular_countries_YLKjWG": {
+      "type": "popular-countries",
+      "name": "Popular Countries",
+      "settings": {
+        "country_mode": "all",
+        "show_cta": true
+      }
     }
   },
   "order": [
     "main",
-    "check_data_usage_dFM6rw"
+    "popular_countries_YLKjWG"
   ]
 }

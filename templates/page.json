@@ -15,19 +15,9 @@
         "padding_top": 28,
         "padding_bottom": 28
       }
-    },
-    "popular_countries_YLKjWG": {
-      "type": "popular-countries",
-      "disabled": true,
-      "name": "Popular Countries",
-      "settings": {
-        "country_mode": "all",
-        "show_cta": true
-      }
     }
   },
   "order": [
-    "main",
-    "popular_countries_YLKjWG"
+    "main"
   ]
 }

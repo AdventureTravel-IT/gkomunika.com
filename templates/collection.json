@@ -13,7 +13,7 @@
       "type": "popular-countries",
       "settings": {
         "country_mode": "all",
-        "show_cta": true
+        "show_cta": false
       }
     }
   },

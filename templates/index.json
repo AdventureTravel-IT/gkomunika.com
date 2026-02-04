@@ -202,12 +202,50 @@
         "review_paragraph": "",
         "benefits_title": "Benefits"
       }
+    },
+    "top_article_ertF6F": {
+      "type": "top-article",
+      "blocks": {
+        "post_RkDjmC": {
+          "type": "post",
+          "settings": {
+            "page": "how-to-get-free-domestic-flight-tickets-in-thailand-for-tourists"
+          }
+        },
+        "post_MtH48D": {
+          "type": "post",
+          "settings": {
+            "page": "blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how"
+          }
+        },
+        "post_pkhGLg": {
+          "type": "post",
+          "settings": {
+            "page": "can-a-passport-be-rejected-here-are-examples-of-damaged-passports-you-need-to-know"
+          }
+        },
+        "post_UtePQw": {
+          "type": "post",
+          "settings": {
+            "page": "bca-poket-valas-a-convenient-solution-for-foreign-currency-transactions-abroad"
+          }
+        }
+      },
+      "block_order": [
+        "post_RkDjmC",
+        "post_MtH48D",
+        "post_pkhGLg",
+        "post_UtePQw"
+      ],
+      "name": "Top Article",
+      "settings": {}
     }
   },
   "order": [
     "image_banner_9QEdGw",
     "product_category_button_UVfQzJ",
     "popular_countries_AmdMjK",
-    "how_to_use_qA8rPU"
+    "how_to_use_qA8rPU",
+    "top_article_ertF6F"
   ]
 }

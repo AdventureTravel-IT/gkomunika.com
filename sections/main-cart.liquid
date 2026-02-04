@@ -1,0 +1,832 @@
+{% comment %}
+  <form action="{{ routes.cart_url }}" method="post" id="CartForm" class="wrapper md:wrapper-base">
+    <div class="divide-y divide-slate-200">
+      {% for item in cart.items %}
+        {% assign p = item.product %}
+
+        {%- assign mf_category = p.metafields.product.category -%}
+        {%- assign category_value = '' -%}
+        {%- if mf_category != blank -%}
+          {%- if mf_category.value != blank -%}
+            {%- assign category_value = mf_category.value -%}
+          {%- else -%}
+            {%- assign category_value = mf_category -%}
+          {%- endif -%}
+        {%- endif -%}
+
+        {% assign days_value = item.properties.Days | default: '' %}
+        {% assign data_plan_value = item.properties['Data Plan'] | default: '' %}
+
+        <div class="flex items-start justify-between gap-6 py-8">
+          <!-- LEFT: image + info -->
+          <div class="flex items-start gap-5">
+            <div class="shrink-0">
+              {% if item.image %}
+                <img
+                  src="{{ item.image | image_url: width: 180 }}"
+                  alt="{{ item.product.title | escape }}"
+                  loading="lazy"
+                  class="h-20 w-20 rounded-2xl object-cover"
+                >
+              {% else %}
+                <div class="h-20 w-20 rounded-2xl bg-slate-100"></div>
+              {% endif %}
+            </div>
+
+            <div class="min-w-0">
+              <a href="{{ item.url }}" class="block text-lg font-semibold text-slate-900 hover:underline">
+                {{ item.product.title }}
+              </a>
+
+              <div class="text-lg text-slate-900">
+                {{ item.final_price | money }}
+              </div>
+
+              {% if item.product.has_only_default_variant == false %}
+                {% if item.variant.option1 != blank %}
+                  <div class="mt-2 text-base text-slate-900">
+                    <span class="text-slate-600">{{ item.product.options[0] }}:</span> {{ item.variant.option1 }}
+                  </div>
+                {% endif %}
+
+                {% if item.variant.option2 != blank %}
+                  <div class="mt-2 text-base text-slate-900">
+                    <span class="text-slate-600">{{ item.product.options[1] }}:</span> {{ item.variant.option2 }}
+                  </div>
+                {% endif %}
+
+                {% if item.variant.option3 != blank %}
+                  <div class="mt-2 text-base text-slate-900">
+                    <span class="text-slate-600">{{ item.product.options[2] }}:</span> {{ item.variant.option3 }}
+                  </div>
+                {% endif %}
+              {% endif %}
+
+              {% if category_value != blank %}
+                <div class="mt-2 text-base text-slate-900">
+                  <span class="text-slate-600">Category:</span> {{ category_value }}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- RIGHT: qty + remove + line total -->
+          <div class="flex items-center gap-4">
+            <!-- Qty Stepper -->
+            <div class="flex items-center overflow-hidden rounded-full border border-sky-300 h-11">
+              <button
+                type="button"
+                class="h-11 w-12 text-xl text-sky-700 hover:bg-sky-50"
+                data-qty="minus"
+                data-line="{{ forloop.index }}"
+                aria-label="Decrease quantity"
+              >
+                −
+              </button>
+
+              <input
+                class="h-11 w-12 border-0 text-center text-base text-slate-900 focus:outline-none"
+                type="number"
+                name="updates[]"
+                value="{{ item.quantity }}"
+                min="0"
+                inputmode="numeric"
+                data-qty-input
+                data-line="{{ forloop.index }}"
+              >
+
+              <button
+                type="button"
+                class="h-11 w-12 text-xl text-sky-700 hover:bg-sky-50"
+                data-qty="plus"
+                data-line="{{ forloop.index }}"
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+            </div>
+
+            <!-- Remove (trash) -->
+            <button
+              type="button"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-slate-100"
+              data-remove
+              data-line="{{ forloop.index }}"
+              aria-label="Remove item"
+              title="Remove"
+            >
+              <!-- simple trash icon -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 text-slate-700"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 6h18"/>
+                <path d="M8 6V4h8v2"/>
+                <path d="M6 6l1 16h10l1-16"/>
+                <path d="M10 11v6"/>
+                <path d="M14 11v6"/>
+              </svg>
+            </button>
+
+            <!-- Line total -->
+            <div class="min-w-[140px] text-right text-lg font-medium text-slate-900">
+              {{ item.final_line_price | money }}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Cart footer (optional) -->
+    <div class="flex items-center justify-end gap-4 pt-6">
+      <div class="text-base text-slate-700">Estimated total</div>
+      <div class="text-xl font-semibold text-slate-900">{{ cart.total_price | money }}</div>
+    </div>
+
+    <div class="mt-3 text-right text-sm text-slate-500">Taxes, discounts and shipping calculated at checkout.</div>
+  </form>
+
+  <script>
+    // Qty & remove via Shopify AJAX Cart (tanpa reload besar)
+    async function cartChange(line, quantity) {
+      const res = await fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ line, quantity }),
+      });
+
+      if (!res.ok) {
+        console.error('Cart change failed');
+        return;
+      }
+
+      // Quick refresh: reload halaman cart
+      // (Kalau mau partial update tanpa reload, perlu render ulang HTML bagian cart)
+      window.location.reload();
+    }
+
+    document.addEventListener('click', (e) => {
+      const btnQty = e.target.closest('button[data-qty]');
+      const btnRemove = e.target.closest('button[data-remove]');
+
+      if (btnQty) {
+        const line = parseInt(btnQty.getAttribute('data-line'), 10);
+        const type = btnQty.getAttribute('data-qty');
+        const input = document.querySelector('input[data-qty-input][data-line="' + line + '"]');
+        let val = parseInt(input.value || '0', 10);
+
+        if (type === 'plus') val += 1;
+        if (type === 'minus') val = Math.max(0, val - 1);
+
+        cartChange(line, val);
+      }
+
+      if (btnRemove) {
+        const line = parseInt(btnRemove.getAttribute('data-line'), 10);
+        cartChange(line, 0);
+      }
+    });
+  </script>
+{% endcomment %}
+
+{% comment %}
+  CART (Tailwind)
+  - Category dari metafield: product.category (namespace: product, key: category)
+  - Days & Data Plan contoh ambil dari line item properties:
+      item.properties['Days'], item.properties['Data Plan']
+{% endcomment %}
+
+{% comment %}
+  CART (Tailwind)
+  - Category dari metafield: product.category (namespace: product, key: category)
+  - Days & Data Plan contoh ambil dari line item properties:
+      item.properties['Days'], item.properties['Data Plan']
+{% endcomment %}
+
+{% style %}
+  /* Chrome, Safari, Edge, Opera */
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+{% endstyle %}
+
+<div data-cart-section data-section-id="{{ section.id }}">
+  {% if cart.item_count > 0 %}
+    <!-- Header (HANYA tampil jika cart ada item) -->
+    <div class="px-6 pt-10 md:pt-[100px] md:px-[10%] flex items-center justify-between">
+      <h2 class="text-2xl md:text-[40px] text-primary">Your cart</h2>
+      <a href="{{ pages['all-destination'].url }}" class="text-sm md:text-lg text-primary underline">
+        Continue shopping
+      </a>
+    </div>
+
+    <!-- Desktop table header only (HANYA tampil jika cart ada item) -->
+    <div class="pt-[20px] px-[24px] md:pt-20px md:px-[10%]">
+      <div class="hidden md:flex justify-between text-primary items-center mt-10 border-b border-slate-300 pb-[20px]">
+        <span>Product</span>
+        <div class="flex gap-[250px] items-center">
+          <span>Quantity</span>
+          <span>Total</span>
+        </div>
+      </div>
+    </div>
+
+    <form action="{{ routes.cart_url }}" method="post" id="CartForm" class="wrapper md:wrapper-base">
+      <div class="divide-y divide-slate-200">
+        {% for item in cart.items %}
+          {% assign p = item.product %}
+
+          {%- assign mf_category = p.metafields.product.category -%}
+          {%- assign category_value = '' -%}
+          {%- if mf_category != blank -%}
+            {%- if mf_category.value != blank -%}
+              {%- assign category_value = mf_category.value -%}
+            {%- else -%}
+              {%- assign category_value = mf_category -%}
+            {%- endif -%}
+          {%- endif -%}
+
+          {% assign days_value = item.properties.Days | default: '' %}
+          {% assign data_plan_value = item.properties['Data Plan'] | default: '' %}
+
+          <!-- ITEM WRAP (mobile tetap rapih, desktop seperti design yang kamu mau) -->
+          <div
+            class="py-7 relative md:static"
+            data-cart-item
+            data-line="{{ forloop.index }}"
+            data-category="{{ category_value | escape }}"
+          >
+            <!-- DESKTOP LAYOUT WRAPPER -->
+            <div class="md:flex md:items-start md:justify-between md:gap-6">
+              <!-- LEFT: image + info -->
+              <div class="flex items-start gap-4 md:gap-5">
+                <div class="shrink-0 w-[84px] md:min-w-[133px]">
+                  {% if item.image %}
+                    <img
+                      src="{{ item.image | image_url: width: 180 }}"
+                      alt="{{ item.product.title | escape }}"
+                      loading="lazy"
+                      class="h-[84px] w-[84px] md:h-[100px] md:w-auto rounded-[10px] object-cover"
+                      height="auto"
+                      width="auto"
+                    >
+                  {% else %}
+                    <div class="h-[84px] w-[84px] md:h-[100px] md:w-full rounded-[10px] bg-slate-100"></div>
+                  {% endif %}
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <a href="{{ item.url }}" class="block text-base font-semibold text-primary underline">
+                    {{ item.product.title }}
+                  </a>
+
+                  <div class="text-sm text-primary">
+                    {{ item.final_price | money_with_currency }}
+                  </div>
+
+                  <!-- VARIANT OPTIONS -->
+                  {% if item.product.has_only_default_variant == false %}
+                    {% if item.variant.option1 != blank %}
+                      <div class="text-sm text-primary">
+                        <span>{{ item.product.options[0] }}:</span> {{ item.variant.option1 }}
+                      </div>
+                    {% endif %}
+
+                    {% if item.variant.option2 != blank %}
+                      <div class="text-sm text-primary">
+                        <span>{{ item.product.options[1] }}:</span> {{ item.variant.option2 }}
+                      </div>
+                    {% endif %}
+
+                    {% if item.variant.option3 != blank %}
+                      <div class="text-sm text-primary">
+                        <span>{{ item.product.options[2] }}:</span> {{ item.variant.option3 }}
+                      </div>
+                    {% endif %}
+                  {% endif %}
+
+                  <!-- MOBILE INFO ORDER -->
+                  <div class="md:hidden">
+                    {% if days_value != blank %}
+                      <div class="mt-2 text-sm text-primary"><span>Days:</span> {{ days_value }}</div>
+                    {% endif %}
+
+                    {% if data_plan_value != blank %}
+                      <div class="text-sm text-primary"><span>Data Plan:</span> {{ data_plan_value }}</div>
+                    {% endif %}
+
+                    {% if category_value != blank %}
+                      <div class="text-sm text-primary"><span>Category:</span> {{ category_value }}</div>
+                    {% endif %}
+                  </div>
+
+                  <!-- DESKTOP INFO ORDER -->
+                  <div class="hidden md:block">
+                    {% if category_value != blank %}
+                      <div class="mt-2 text-sm text-primary"><span>Category:</span> {{ category_value }}</div>
+                    {% endif %}
+
+                    {% if days_value != blank %}
+                      <div class="mt-2 text-sm text-primary"><span>Days:</span> {{ days_value }}</div>
+                    {% endif %}
+
+                    {% if data_plan_value != blank %}
+                      <div class="text-sm text-primary"><span>Data Plan:</span> {{ data_plan_value }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- RIGHT: qty + remove + line total -->
+              <div class="mt-4 flex w-full items-center justify-between md:mt-0 md:w-auto md:items-center md:justify-end md:gap-4">
+                <!-- Qty Stepper -->
+                <div class="flex items-center overflow-hidden rounded-full border h-[35px] border-primary">
+                  <button
+                    type="button"
+                    class="text-base px-[10px] text-center flex justify-center items-center text-primary hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    data-qty="minus"
+                    data-line="{{ forloop.index }}"
+                    aria-label="Decrease quantity"
+                    {% if item.quantity <= 1 %}
+                      disabled
+                    {% endif %}
+                  >
+                    {% render 'icon-minus' %}
+                  </button>
+
+                  <input
+                    class="
+                      border-0 bg-transparent text-center text-sm text-primary focus:outline-none
+                      w-[30px] min-w-[10px] max-w-[30px] flex-none p-0
+                    "
+                    type="number"
+                    name="updates[]"
+                    value="{{ item.quantity }}"
+                    min="1"
+                    inputmode="numeric"
+                    data-qty-input
+                    data-line="{{ forloop.index }}"
+                  >
+
+                  <button
+                    type="button"
+                    class="text-base px-[10px] flex justify-center items-center text-primary hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    data-qty="plus"
+                    data-line="{{ forloop.index }}"
+                    aria-label="Increase quantity"
+                  >
+                    {% render 'icon-plus' %}
+                  </button>
+                </div>
+
+                <!-- Trash + Total -->
+                <div class="flex items-center gap-3 md:gap-4">
+                  <button
+                    type="button"
+                    class="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed absolute top-[15px] right-0 md:static md:top-auto md:right-auto"
+                    data-remove
+                    data-line="{{ forloop.index }}"
+                    aria-label="Remove item"
+                    title="Remove"
+                  >
+                    {% render 'icon-trash', class: 'text-primary w-[24px] h-[24px]' %}
+                  </button>
+
+                  <div
+                    class="min-w-[140px] text-right text-base text-primary relative"
+                    data-line-total="{{ forloop.index }}"
+                    aria-live="polite"
+                  >
+                    <span data-price-text class="text-primary">
+                      {{ item.final_line_price | money_with_currency }}
+                    </span>
+
+                    <span
+                      class="absolute inset-0 hidden items-center justify-center pointer-events-none"
+                      data-price-loader
+                      aria-hidden="true"
+                    >
+                      <span class="inline-flex w-[24px] h-[24px] items-center justify-center text-primary">
+                        {% render 'loading', class: 'text-primary w-[24px] h-[24px]' %}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Footer -->
+      <div class="pt-8 border-t border-slate-200 mt-2">
+        <div class="flex items-center justify-between md:justify-end gap-4">
+          <div class="text-sm text-primary">Estimated total</div>
+
+          <div class="text-base font-semibold text-primary relative text-right" data-cart-total aria-live="polite">
+            <span data-price-text>{{ cart.total_price | money_with_currency }}</span>
+
+            <span
+              class="absolute inset-0 hidden items-center justify-center pointer-events-none"
+              data-price-loader
+              aria-hidden="true"
+            >
+              <span class="inline-flex w-[24px] h-[24px] items-center justify-center text-primary">
+                {% render 'loading', class: 'text-primary w-[24px] h-[24px]' %}
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center md:text-right text-sm text-primary">
+          Taxes, discounts and shipping calculated at checkout.
+        </div>
+      </div>
+
+      {% assign hasInsuranceProduct = false %}
+      {% for item in cart.items %}
+        {% assign cat = item.product.metafields.product.category.value
+          | default: item.product.metafields.product.category
+          | default: ''
+          | strip
+        %}
+        {% if cat == 'Insurance' %}
+          {% assign hasInsuranceProduct = true %}
+        {% endif %}
+      {% endfor %}
+
+      <div class="mt-6 flex justify-center md:justify-end">
+        {% if hasInsuranceProduct %}
+          <button
+            type="button"
+            id="checkout-insurance-unified"
+            class="inline-flex items-center justify-center rounded-full bg-primary w-[350px] py-3 text-base tracking-wide text-neutral hover:bg-primary/70 focus:outline-none focus-visible:ring-4 transition"
+          >
+            Checkout
+          </button>
+        {% else %}
+          <button
+            type="submit"
+            name="checkout"
+            class="inline-flex items-center justify-center rounded-full bg-primary w-[350px] py-3 text-base tracking-wide text-neutral hover:bg-primary/70 focus:outline-none focus-visible:ring-4 transition"
+          >
+            Checkout
+          </button>
+        {% endif %}
+      </div>
+    </form>
+
+  {% else %}
+    <!-- EMPTY CART FALLBACK (HANYA ini yang tampil saat empty) -->
+    <section class="wrapper md:wrapper-base">
+      <div class="min-h-[320px] md:min-h-[420px] flex items-center justify-center">
+        <div class="w-full max-w-[520px] text-center px-4 py-14 md:py-20">
+          <h2 class="text-[30px] leading-tight font-medium text-primary">Your cart is empty</h2>
+
+          <div class="mt-8 flex justify-center">
+            <a
+              href="{{ pages['all-destination'].url }}"
+              class="
+                inline-flex items-center justify-center rounded-full bg-sky-700 px-8 h-12 md:h-14 text-white font-semibold
+                hover:bg-sky-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 transition
+              "
+            >
+              Continue shopping
+            </a>
+          </div>
+
+          <div class="mt-10 md:mt-12 text-primary">
+            <div class="text-[24px] font-medium">Have an account?</div>
+            <a
+              href="/account/login"
+              class="mt-3 inline-block text-base underline underline-offset-4 hover:opacity-80 transition"
+            >
+              Log in to check out faster.
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+</div>
+
+<script>
+  // =========================
+  // CART AJAX (NO FULL RELOAD)
+  // - Loader menggantikan price (line total & estimated total)
+  // =========================
+
+  function getCartRoot() {
+    return document.querySelector('[data-cart-section]');
+  }
+
+  function setControlsDisabled(line, disabled) {
+    const minus = document.querySelector(`button[data-qty="minus"][data-line="${line}"]`);
+    const plus = document.querySelector(`button[data-qty="plus"][data-line="${line}"]`);
+    const remove = document.querySelector(`button[data-remove][data-line="${line}"]`);
+    const input = document.querySelector(`input[data-qty-input][data-line="${line}"]`);
+
+    [minus, plus, remove, input].forEach((el) => {
+      if (!el) return;
+      el.disabled = !!disabled;
+    });
+  }
+
+  function togglePriceBox(box, isLoading) {
+    if (!box) return;
+    const text = box.querySelector('[data-price-text]');
+    const loader = box.querySelector('[data-price-loader]');
+    if (!text || !loader) return;
+
+    if (isLoading) {
+      text.classList.add('opacity-0');
+      loader.classList.remove('hidden');
+      loader.classList.add('flex');
+    } else {
+      text.classList.remove('opacity-0');
+      loader.classList.add('hidden');
+      loader.classList.remove('flex');
+    }
+  }
+
+  function setInlinePriceLoading(line, isLoading) {
+    const lineBox = document.querySelector(`[data-line-total="${line}"]`);
+    togglePriceBox(lineBox, isLoading);
+
+    const totalBox = document.querySelector('[data-cart-total]');
+    togglePriceBox(totalBox, isLoading);
+  }
+
+  async function refreshCartSection() {
+    const root = getCartRoot();
+    if (!root) return;
+
+    const sectionId = root.getAttribute('data-section-id');
+    const url = `${window.location.pathname}?section_id=${encodeURIComponent(sectionId)}`;
+
+    const html = await fetch(url, { headers: { Accept: 'text/html' } }).then((r) => r.text());
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const newRoot = doc.querySelector('[data-cart-section]');
+
+    if (newRoot) {
+      root.replaceWith(newRoot);
+    } else {
+      console.warn('Failed to find [data-cart-section] in response.');
+    }
+  }
+
+  let cartBusy = false;
+
+  async function cartChange(line, quantity) {
+    if (cartBusy) return;
+    cartBusy = true;
+
+    setInlinePriceLoading(line, true);
+    setControlsDisabled(line, true);
+
+    try {
+      const res = await fetch('{{ routes.cart_change_url }}.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({ line, quantity }),
+      });
+
+      if (!res.ok) {
+        let errText = '';
+        try {
+          errText = await res.text();
+        } catch (e) {}
+        console.error('Cart change failed:', errText);
+        alert('Gagal update cart. Coba lagi ya.');
+
+        setInlinePriceLoading(line, false);
+        setControlsDisabled(line, false);
+        return;
+      }
+
+      await refreshCartSection();
+    } catch (e) {
+      console.error(e);
+      alert('Terjadi error koneksi. Coba lagi ya.');
+
+      setInlinePriceLoading(line, false);
+      setControlsDisabled(line, false);
+    } finally {
+      cartBusy = false;
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const btnQty = e.target.closest('button[data-qty]');
+    const btnRemove = e.target.closest('button[data-remove]');
+
+    if (btnQty) {
+      const line = parseInt(btnQty.getAttribute('data-line'), 10);
+      const type = btnQty.getAttribute('data-qty');
+      const input = document.querySelector('input[data-qty-input][data-line="' + line + '"]');
+
+      let val = parseInt(input?.value || '1', 10);
+      if (isNaN(val) || val < 1) val = 1;
+
+      if (type === 'plus') val += 1;
+      if (type === 'minus') val = Math.max(1, val - 1);
+
+      if (input) input.value = val;
+      syncMinusDisabled(line, val);
+
+      cartChange(line, val);
+      return;
+    }
+
+    if (btnRemove) {
+      const line = parseInt(btnRemove.getAttribute('data-line'), 10);
+      cartChange(line, 0);
+      return;
+    }
+  });
+
+  document.addEventListener('change', (e) => {
+    const input = e.target.closest('input[data-qty-input]');
+    if (!input) return;
+
+    const line = parseInt(input.getAttribute('data-line'), 10);
+    let val = parseInt(input.value || '1', 10);
+    if (isNaN(val) || val < 1) val = 1;
+
+    input.value = val;
+    syncMinusDisabled(line, val);
+
+    cartChange(line, val);
+  });
+
+  function syncMinusDisabled(line, qty) {
+    const minus = document.querySelector(`button[data-qty="minus"][data-line="${line}"]`);
+    if (!minus) return;
+    minus.disabled = qty <= 1;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('input[data-qty-input][data-line]').forEach((input) => {
+      const line = parseInt(input.getAttribute('data-line'), 10);
+      let val = parseInt(input.value || '1', 10);
+      if (isNaN(val) || val < 1) val = 1;
+      input.value = val;
+      syncMinusDisabled(line, val);
+    });
+  });
+</script>
+
+<script>
+  // =========================
+  // AUTO-REMOVE BLOCKED CATEGORY (silent, no alert)
+  // - sumber category dari data-category (metafield product.category)
+  // =========================
+  (function () {
+    const BLOCKED = new Set(['Top_Up_A', 'Top_Up_B', 'Top_Up_C', 'Top_Up_D']);
+    let purgeBusy = false;
+
+    async function removeLineSilent(line) {
+      await fetch('{{ routes.cart_change_url }}.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({ line, quantity: 0 }),
+      });
+    }
+
+    async function purgeBlockedItems() {
+      if (purgeBusy) return;
+      purgeBusy = true;
+
+      try {
+        const nodes = Array.from(document.querySelectorAll('[data-cart-item][data-line][data-category]'));
+        if (!nodes.length) return;
+
+        const linesToRemove = nodes
+          .map((el) => {
+            const cat = (el.getAttribute('data-category') || '').trim();
+            const line = parseInt(el.getAttribute('data-line') || '0', 10);
+            if (!line || !cat) return null;
+            if (!BLOCKED.has(cat)) return null;
+            return line;
+          })
+          .filter(Boolean);
+
+        if (!linesToRemove.length) return;
+
+        linesToRemove.sort((a, b) => b - a);
+
+        for (const line of linesToRemove) {
+          await removeLineSilent(line);
+        }
+
+        if (typeof refreshCartSection === 'function') {
+          await refreshCartSection();
+        } else {
+          window.location.reload();
+        }
+      } catch (e) {
+        console.warn('Auto-remove blocked items failed', e);
+      } finally {
+        purgeBusy = false;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', purgeBlockedItems);
+  })();
+</script>
+
+<script>
+  // ==========================================
+  // INSURANCE UNIFIED CHECKOUT (single button)
+  // - Simpan ProductItems ke sessionStorage
+  // - Nama key payload TIDAK berubah (ref)
+  // - variantCoverage VALUE diisi dari metafield search.key
+  // - Redirect login/unlogin pakai Liquid customer check
+  // ==========================================
+  document.getElementById('checkout-insurance-unified')?.addEventListener('click', function () {
+    sessionStorage.removeItem('ProductItems');
+
+    const ProductItems = [];
+
+    {% for item in cart.items %}
+      {% assign p = item.product %}
+      {% assign sk = p.metafields.search.key.value %}
+
+      {% capture sk_json %}
+      [
+        {% assign first = true %}
+        {% if sk != blank %}
+          {% for k in sk %}
+            {% assign label = k.name.value
+              | default: k.name
+              | default: k.title.value
+              | default: k.title
+              | default: k.system.handle
+              | default: ''
+            %}
+            {% unless label == blank %}
+              {% unless first %},{% endunless %}
+              {{ label | json }}
+              {% assign first = false %}
+            {% endunless %}
+          {% endfor %}
+        {% endif %}
+      ]
+      {% endcapture %}
+
+      ProductItems.push({
+        productTitle: {{ item.product.title | json }},
+        category: {{ item.product.metafields.product.category.value | default: item.product.metafields.product.category | json }},
+        variantType: {{ item.variant.metafields.variant.type | json }},
+        variantTitle: {{ item.variant.title | json }},
+        variantId: {{ item.variant.id }},
+        quantity: {{ item.quantity }},
+        variantCoverage: {{ sk_json | strip }}
+      });
+    {% endfor %}
+
+    if (ProductItems.length === 0) {
+      alert('Cart is empty.');
+      return;
+    }
+
+    sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+
+    {% if customer %}
+      window.location.href = '/pages/form-insurance';
+    {% else %}
+      window.location.href = '/account/login?return_url=/pages/form-insurance';
+    {% endif %}
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Cart",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}

@@ -1,271 +1,519 @@
+{% comment %}
+  tooltip
+{% endcomment %}
 {% style %}
-.invalid-popup {
-display: none;
-position: fixed;
-z-index: 9999;
-inset: 0;
-background-color: rgba(0, 0, 0, 0.5);
-}
+  [aria-label][role~='tooltip'] {
+    position: relative;
+  }
 
-.invalid-popup__content {
-  background-color: var(--color-neutral);
-  padding: 30px;
+  [aria-label][role~='tooltip']::before,
+  [aria-label][role~='tooltip']::after {
+    transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
+    opacity: 0;
+    pointer-events: none;
+    transition: all var(--microtip-transition-duration, 0.18s) var(--microtip-transition-easing, ease-in-out)
+      var(--microtip-transition-delay, 0s);
+    position: absolute;
+    box-sizing: border-box;
+    z-index: 10;
+    transform-origin: top;
+  }
 
-  max-width: 500px;
-  width: calc(100% - 40px); /* sisa margin kiri-kanan 20px */
+  [aria-label][role~='tooltip']::before {
+    background-size: 100% auto !important;
+    content: '';
+  }
 
-  border-radius: 10px;
-  text-align: center;
-  color: var(--color-primary);
-  font-size: var(--font-extra-large);
+  [aria-label][role~='tooltip']::after {
+    background: rgba(17, 17, 17, 0.9);
+    border-radius: 4px;
+    color: #ffffff;
+    content: attr(aria-label);
+    font-size: var(--microtip-font-size, 13px);
+    font-weight: var(--microtip-font-weight, normal);
+    text-transform: var(--microtip-text-transform, none);
+    padding: 0.5em 1em;
+    white-space: nowrap;
+    box-sizing: content-box;
+  }
 
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  [aria-label][role~='tooltip']:hover::before,
+  [aria-label][role~='tooltip']:hover::after,
+  [aria-label][role~='tooltip']:focus::before,
+  [aria-label][role~='tooltip']:focus::after {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
-  margin: 0; /* supaya tidak pakai margin auto yang lama */
-}
+  /* ------------------------------------------------
+  [2] Position Modifiers
+-------------------------------------------------*/
 
+  [role~='tooltip'][data-microtip-position|='top']::before {
+    background: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2236px%22%20height%3D%2212px%22%3E%3Cpath%20fill%3D%22rgba%2817,%2017,%2017,%200.9%29%22%20transform%3D%22rotate%280%29%22%20d%3D%22M2.658,0.000%20C-13.615,0.000%2050.938,0.000%2034.662,0.000%20C28.662,0.000%2023.035,12.002%2018.660,12.002%20C14.285,12.002%208.594,0.000%202.658,0.000%20Z%22/%3E%3C/svg%3E')
+      no-repeat;
+    height: 6px;
+    width: 18px;
+    margin-bottom: 5px;
+  }
 
-.invalid-popup__content h2 {
-font-size: 34px;
-font-weight: bold;
-line-height: 1.5;
-margin: 10px 0;
-color: var(--color-primary);
-}
+  [role~='tooltip'][data-microtip-position|='top']::after {
+    margin-bottom: 11px;
+  }
 
-.invalid-popup__button {
-display: flex;
-gap: 15px;
-}
+  [role~='tooltip'][data-microtip-position|='top']::before {
+    transform: translate3d(-50%, 0, 0);
+    bottom: 100%;
+    left: 50%;
+  }
 
-.invalid-popup__button button,
-#invalid-popup__button-hide,
-#btn-topup__contact-button,
-#btn-topup__buy-button {
-width: 100%;
-padding: 15px;
-border-radius: 10px;
-border: none;
-cursor: pointer;
-font-size: var(--font-large);
-}
+  [role~='tooltip'][data-microtip-position|='top']:hover::before {
+    transform: translate3d(-50%, -5px, 0);
+  }
 
-#invalid-popup__buy-button,
-#btn-topup__buy-button {
-background-color: var(--color-secondary);
-color: var(--color-neutral);
-}
+  [role~='tooltip'][data-microtip-position|='top']::after {
+    transform: translate3d(-50%, 0, 0);
+    bottom: 100%;
+    left: 50%;
+  }
 
-#invalid-popup__contact-button,
-#btn-topup__contact-button {
-background-color: #25d366;
-color: var(--color-neutral);
-}
+  [role~='tooltip'][data-microtip-position='top']:hover::after {
+    transform: translate3d(-50%, -5px, 0);
+  }
 
-#invalid-popup__button-hide {
-margin-top: 15px;
-background-color: var(--color-primary);
-color: var(--color-neutral);
-}
+  /* ------------------------------------------------
+  [2.1] Top Left
+-------------------------------------------------*/
+  [role~='tooltip'][data-microtip-position='top-left']::after {
+    transform: translate3d(calc(-100% + 16px), 0, 0);
+    bottom: 100%;
+  }
 
-#iccid {
-padding: 15px;
-border-radius: 15px;
-width: 100%;
-border: 1px solid var(--color-primary);
-background-color: var(--color-neutral);
-color: var(--color-primary);
-font-size: var(--font-large);
-}
+  [role~='tooltip'][data-microtip-position='top-left']:hover::after {
+    transform: translate3d(calc(-100% + 16px), -5px, 0);
+  }
 
-#iccid:focus {
-outline: none;
-}
+  /* ------------------------------------------------
+  [2.2] Top Right
+-------------------------------------------------*/
+  [role~='tooltip'][data-microtip-position='top-right']::after {
+    transform: translate3d(calc(0% + -16px), 0, 0);
+    bottom: 100%;
+  }
 
-#iccid::placeholder {
-color: var(--color-primary);
-}
+  [role~='tooltip'][data-microtip-position='top-right']:hover::after {
+    transform: translate3d(calc(0% + -16px), -5px, 0);
+  }
 
-#check-iccid {
-padding: 15px;
-border-radius: 15px;
-width: 100%;
-border: 1px solid var(--color-primary);
-background-color: var(--color-primary);
-color: var(--color-neutral);
-font-size: var(--font-large);
-font-weight: bold;
-margin-top: 20px;
-cursor: pointer;
-}
+  /* ------------------------------------------------
+  [2.3] Bottom
+-------------------------------------------------*/
+  [role~='tooltip'][data-microtip-position|='bottom']::before {
+    background: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2236px%22%20height%3D%2212px%22%3E%3Cpath%20fill%3D%22rgba%2817,%2017,%2017,%200.9%29%22%20transform%3D%22rotate%28180%2018%206%29%22%20d%3D%22M2.658,0.000%20C-13.615,0.000%2050.938,0.000%2034.662,0.000%20C28.662,0.000%2023.035,12.002%2018.660,12.002%20C14.285,12.002%208.594,0.000%202.658,0.000%20Z%22/%3E%3C/svg%3E')
+      no-repeat;
+    height: 6px;
+    width: 18px;
+    margin-top: 5px;
+    margin-bottom: 0;
+  }
 
-.check-data-usage__container {
-margin: 0 auto;
-max-width: 1920px;
-}
+  [role~='tooltip'][data-microtip-position|='bottom']::after {
+    margin-top: 11px;
+  }
 
-.check-data-usage__wrapper {
-padding: 20px 20%;
-}
+  [role~='tooltip'][data-microtip-position|='bottom']::before {
+    transform: translate3d(-50%, -10px, 0);
+    bottom: auto;
+    left: 50%;
+    top: 100%;
+  }
 
-.btn-topup-information {
-display: flex;
-gap: 10px;
-margin-top: 15px;
-}
+  [role~='tooltip'][data-microtip-position|='bottom']:hover::before {
+    transform: translate3d(-50%, 0, 0);
+  }
 
-.check-data-usage__esim-information,
-.check-data-usage__usage-content {
-background-color: var(--color-neutral);
-border-radius: 15px;
-padding: 15px;
-color: var(--color-primary);
-margin-top: 20px;
-font-size: var(--font-large);
-}
+  [role~='tooltip'][data-microtip-position|='bottom']::after {
+    transform: translate3d(-50%, -10px, 0);
+    top: 100%;
+    left: 50%;
+  }
 
-.button-topup__usage-wrapper {
-padding: 15px 0;
-border-radius: 15px;
-background-color: var(--color-neutral);
-margin-top: 20px;
-font-size: var(--font-extra-large);
-color: var(--color-primary);
-text-align: center;
-}
+  [role~='tooltip'][data-microtip-position='bottom']:hover::after {
+    transform: translate3d(-50%, 0, 0);
+  }
 
-.check-data-usage__esim-information {
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 10px;
-text-align: center;
-}
+  /* ------------------------------------------------
+  [2.4] Bottom Left
+-------------------------------------------------*/
+  [role~='tooltip'][data-microtip-position='bottom-left']::after {
+    transform: translate3d(calc(-100% + 16px), -10px, 0);
+    top: 100%;
+  }
 
-.check-data-usage__esim-information h3,
-.check-data-usage__usage-content h2,
-.check-data-usage__usage-content h3 {
-color: var(--color-primary);
-font-weight: bold;
-margin: 10px 0;
-line-height: 1.3;
-}
+  [role~='tooltip'][data-microtip-position='bottom-left']:hover::after {
+    transform: translate3d(calc(-100% + 16px), 0, 0);
+  }
 
-.esim-information__wrapper p {
-margin: 0;
-line-height: 1.3;
-}
+  /* ------------------------------------------------
+  [2.5] Bottom Right
+-------------------------------------------------*/
+  [role~='tooltip'][data-microtip-position='bottom-right']::after {
+    transform: translate3d(calc(0% + -16px), -10px, 0);
+    top: 100%;
+  }
 
-.esim-information__wrapper span {
-font-weight: bold;
-}
+  [role~='tooltip'][data-microtip-position='bottom-right']:hover::after {
+    transform: translate3d(calc(0% + -16px), 0, 0);
+  }
 
-.data-usage__wrapper {
-display: flex;
-justify-content: space-between;
-}
+  /* ------------------------------------------------
+  [2.6] Left
+-------------------------------------------------*/
+  [role~='tooltip'][data-microtip-position='left']::before,
+  [role~='tooltip'][data-microtip-position='left']::after {
+    bottom: auto;
+    left: auto;
+    right: 100%;
+    top: 50%;
+    transform: translate3d(10px, -50%, 0);
+  }
 
-.data-usage__wrapper p {
-margin: 0;
-width: 150px;
-}
+  [role~='tooltip'][data-microtip-position='left']::before {
+    background: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212px%22%20height%3D%2236px%22%3E%3Cpath%20fill%3D%22rgba%2817,%2017,%2017,%200.9%29%22%20transform%3D%22rotate%28-90%2018%2018%29%22%20d%3D%22M2.658,0.000%20C-13.615,0.000%2050.938,0.000%2034.662,0.000%20C28.662,0.000%2023.035,12.002%2018.660,12.002%20C14.285,12.002%208.594,0.000%202.658,0.000%20Z%22/%3E%3C/svg%3E')
+      no-repeat;
+    height: 18px;
+    width: 6px;
+    margin-right: 5px;
+    margin-bottom: 0;
+  }
 
-.data-usage__wrapper p:nth-child(3) {
-justify-content: flex-end;
-}
+  [role~='tooltip'][data-microtip-position='left']::after {
+    margin-right: 11px;
+  }
 
-.data-usage__wrapper p:nth-child(2) {
-text-align: center;
-}
+  [role~='tooltip'][data-microtip-position='left']:hover::before,
+  [role~='tooltip'][data-microtip-position='left']:hover::after {
+    transform: translate3d(0, -50%, 0);
+  }
 
-.check-data-usage__total-usage {
-margin-bottom: 15px;
-}
+  /* ------------------------------------------------
+  [2.7] Right
+-------------------------------------------------*/
+  [role~='tooltip'][data-microtip-position='right']::before,
+  [role~='tooltip'][data-microtip-position='right']::after {
+    bottom: auto;
+    left: 100%;
+    top: 50%;
+    transform: translate3d(-10px, -50%, 0);
+  }
 
-.total-data-usage__wrapper {
-padding: 15px;
-border-radius: 15px;
-border: 1px solid var(--color-border);
-display: flex;
-width: 30%;
-justify-content: space-between;
-margin-bottom: 15px;
-}
+  [role~='tooltip'][data-microtip-position='right']::before {
+    background: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212px%22%20height%3D%2236px%22%3E%3Cpath%20fill%3D%22rgba%2817,%2017,%2017,%200.9%29%22%20transform%3D%22rotate%2890%206%206%29%22%20d%3D%22M2.658,0.000%20C-13.615,0.000%2050.938,0.000%2034.662,0.000%20C28.662,0.000%2023.035,12.002%2018.660,12.002%20C14.285,12.002%208.594,0.000%202.658,0.000%20Z%22/%3E%3C/svg%3E')
+      no-repeat;
+    height: 18px;
+    width: 6px;
+    margin-bottom: 0;
+    margin-left: 5px;
+  }
 
-.total-data-usage__wrapper p {
-margin: 0;
-}
+  [role~='tooltip'][data-microtip-position='right']::after {
+    margin-left: 11px;
+  }
 
-.check-data-usage__header p {
-font-size: 24px;
-font-weight: bold;
-color: var(--color-primary);
-margin: 0;
-}
+  [role~='tooltip'][data-microtip-position='right']:hover::before,
+  [role~='tooltip'][data-microtip-position='right']:hover::after {
+    transform: translate3d(0, -50%, 0);
+  }
 
-.check-data-usage__header span {
-font-size: var(--font-large);
-color: var(--color-primary);
-}
-.data-usage__wrapper p:nth-child(3) {
-display: flex;
-justify-content: flex-end;
-}
-input[type='number']::-webkit-outer-spin-button,
-input[type='number']::-webkit-inner-spin-button {
--webkit-appearance: none;
-margin: 0;
-}
-/* Firefox */
-input[type='number'] {
--moz-appearance: textfield;
-}
+  /* ------------------------------------------------
+  [3] Size
+-------------------------------------------------*/
+  [role~='tooltip'][data-microtip-size='small']::after {
+    white-space: initial;
+    width: 80px;
+  }
 
-.top-up-plan-btn {
-margin-top: 20px;
-background-color: var(--color-primary);
-color: var(--color-neutral);
-border: none;
-padding: 15px 30px;
-border-radius: 10px;
-font-size: var(--font-large);
-cursor: pointer;
-width: 100%;
-text-align: center;
-font-weight: bold;
-}
+  [role~='tooltip'][data-microtip-size='medium']::after {
+    white-space: initial;
+    width: 150px;
+  }
 
-.info-tooltip {
-background-color: transparent;
-border: none;
-padding: 0;
-margin: 0;
-box-shadow: none;
-cursor: pointer;
+  [role~='tooltip'][data-microtip-size='large']::after {
+    white-space: initial;
+    width: 260px;
+  }
+{% endstyle %}
 
-display: inline-flex;
-align-items: center;
-justify-content: center;
-}
+{% style %}
+  .invalid-popup {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
 
-.icon-info {
-color: var(--color-primary);
-}
+  .invalid-popup__content {
+    background-color: var(--color-neutral);
+    padding: 30px;
 
-@media (max-width: 768px) {
-.check-data-usage__container {
-padding-top: 50px;
-}
-.check-data-usage__wrapper {
-padding: 20px 24px;
-}
-.total-data-usage__wrapper {
-width: 100%;
-}
-}
+    max-width: 500px;
+    width: calc(100% - 40px); /* sisa margin kiri-kanan 20px */
+
+    border-radius: 10px;
+    text-align: center;
+    color: var(--color-primary);
+    font-size: var(--font-extra-large);
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    margin: 0; /* supaya tidak pakai margin auto yang lama */
+  }
+
+  .invalid-popup__content h2 {
+    font-size: 34px;
+    font-weight: bold;
+    line-height: 1.5;
+    margin: 10px 0;
+    color: var(--color-primary);
+  }
+
+  .invalid-popup__button {
+    display: flex;
+    gap: 15px;
+  }
+
+  .invalid-popup__button button,
+  #invalid-popup__button-hide,
+  #btn-topup__contact-button,
+  #btn-topup__buy-button {
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-large);
+  }
+
+  #invalid-popup__buy-button,
+  #btn-topup__buy-button {
+    background-color: var(--color-secondary);
+    color: var(--color-neutral);
+  }
+
+  #invalid-popup__contact-button,
+  #btn-topup__contact-button {
+    background-color: #25d366;
+    color: var(--color-neutral);
+  }
+
+  #invalid-popup__button-hide {
+    margin-top: 15px;
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+  }
+
+  #iccid {
+    padding: 15px;
+    border-radius: 15px;
+    width: 100%;
+    border: 1px solid var(--color-primary);
+    background-color: var(--color-neutral);
+    color: var(--color-primary);
+    font-size: var(--font-large);
+  }
+
+  #iccid:focus {
+    outline: none;
+  }
+
+  #iccid::placeholder {
+    color: var(--color-primary);
+  }
+
+  #check-iccid {
+    padding: 15px;
+    border-radius: 15px;
+    width: 100%;
+    border: 1px solid var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+    font-size: var(--font-large);
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+
+  .check-data-usage__container {
+    margin: 0 auto;
+    max-width: 1920px;
+  }
+
+  .check-data-usage__wrapper {
+    padding: 20px 20%;
+  }
+
+  .btn-topup-information {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .check-data-usage__esim-information,
+  .check-data-usage__usage-content {
+    background-color: var(--color-neutral);
+    border-radius: 15px;
+    padding: 15px;
+    color: var(--color-primary);
+    margin-top: 20px;
+    font-size: var(--font-large);
+  }
+
+  .button-topup__usage-wrapper {
+    padding: 15px 0;
+    border-radius: 15px;
+    background-color: var(--color-neutral);
+    margin-top: 20px;
+    font-size: var(--font-extra-large);
+    color: var(--color-primary);
+    text-align: center;
+  }
+
+  .check-data-usage__esim-information {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .check-data-usage__esim-information h3,
+  .check-data-usage__usage-content h2,
+  .check-data-usage__usage-content h3 {
+    color: var(--color-primary);
+    font-weight: bold;
+    margin: 10px 0;
+    line-height: 1.3;
+  }
+
+  .esim-information__wrapper p {
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .esim-information__wrapper span {
+    font-weight: bold;
+  }
+
+  .data-usage__wrapper {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .data-usage__wrapper p {
+    margin: 0;
+    width: 150px;
+  }
+
+  .data-usage__wrapper p:nth-child(3) {
+    justify-content: flex-end;
+  }
+
+  .data-usage__wrapper p:nth-child(2) {
+    text-align: center;
+  }
+
+  .check-data-usage__total-usage {
+    margin-bottom: 15px;
+  }
+
+  .total-data-usage__wrapper {
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid var(--color-border);
+    display: flex;
+    width: 30%;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+
+  .total-data-usage__wrapper p {
+    margin: 0;
+  }
+
+  .check-data-usage__header p {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .check-data-usage__header span {
+    font-size: var(--font-large);
+    color: var(--color-primary);
+  }
+  .data-usage__wrapper p:nth-child(3) {
+    display: flex;
+    justify-content: flex-end;
+  }
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  .top-up-plan-btn {
+    margin-top: 20px;
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: var(--font-large);
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .info-tooltip {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-info {
+    color: var(--color-primary);
+  }
+
+  @media (max-width: 768px) {
+    .check-data-usage__container {
+      padding-top: 50px;
+    }
+    .check-data-usage__wrapper {
+      padding: 20px 24px;
+    }
+    .total-data-usage__wrapper {
+      width: 100%;
+    }
+  }
 {% endstyle %}
 
 <style>
@@ -286,16 +534,21 @@ width: 100%;
   <div class="check-data-usage__wrapper">
     <div class="check-data-usage__header">
       {% if template.suffix == 'check-data-usage' %}
-      <p>Check Data Usage</p>
+        <p>Check Data Usage</p>
       {% else %}
-      <p>Check Data Usage / Top Up</p>
+        <p>Check Data Usage / Top Up</p>
       {% endif %}
       <div class="flex items-center gap-2.5">
         <span>Enter your ICCID</span>
 
-        <button class="info-tooltip"
+        <button
+          class="info-tooltip"
           aria-label="• SIM Card: ICCID dapat ditemukan di belakang potongan SIM Card.&#10;&#10;• eSIM: ICCID dapat ditemukan di email pada bagian eSIM Information."
-          data-microtip-position="bottom" data-microtip-size="large" data-microtip-bullets role="tooltip">
+          data-microtip-position="bottom"
+          data-microtip-size="large"
+          data-microtip-bullets
+          role="tooltip"
+        >
           <div class="icon-info">
             {% render 'icon-info' %}
           </div>
@@ -339,14 +592,22 @@ width: 100%;
   <div class="invalid-popup__content">
     <h2>Enter ICCID</h2>
     <p>Please input your ICCID to continue to Top Up</p>
-    <input type="number" id="popup-iccid" placeholder="Input ICCID Number"
-      style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);">
-    <button id="iccid-popup-submit"
-      style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;">
+    <input
+      type="number"
+      id="popup-iccid"
+      placeholder="Input ICCID Number"
+      style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);"
+    >
+    <button
+      id="iccid-popup-submit"
+      style="padding:15px;width:100%;border-radius:10px;background-color:var(--color-primary);color:#fff;font-size:18px;"
+    >
       Continue
     </button>
-    <button id="iccid-popup-cancel"
-      style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;">
+    <button
+      id="iccid-popup-cancel"
+      style="padding:15px;width:100%;margin-top:10px;border-radius:10px;background-color:#ccc;color:#000;font-size:18px;"
+    >
       Cancel
     </button>
   </div>
@@ -360,14 +621,15 @@ width: 100%;
       <button id="topup-confirm-cancel" style="background-color: var(--color-secondary); color:var(--color-neutral);">
         Cancel
       </button>
-      <button id="topup-confirm-continue"
-        style="background-color: var(--color-primary); color: var(--color-neutral);">
+      <button
+        id="topup-confirm-continue"
+        style="background-color: var(--color-primary); color: var(--color-neutral);"
+      >
         Continue
       </button>
     </div>
   </div>
 </div>
-
 
 {% assign collection = collections['top-up-plan'] %}
 <script>
@@ -403,24 +665,32 @@ width: 100%;
       SEM: 'Top_Up_D',
     };
 
-
     function formatDateLong(str) {
-      if (!str || str === "-" || str.length < 8) return "-";
+      if (!str || str === '-' || str.length < 8) return '-';
 
       const year = str.slice(0, 4);
       const month = str.slice(4, 6);
       const day = str.slice(6, 8);
 
       const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
       ];
 
       const monthName = monthNames[Number(month) - 1];
 
       return `${day} ${monthName} ${year}`;
     }
-
 
     function detectVendor(iccid) {
       return prefixVendorMap.find((i) => iccid.startsWith(i.prefix))?.vendor || null;
@@ -454,16 +724,26 @@ width: 100%;
     }
 
     function formatDateFromTimestamp(timestamp) {
-      if (!timestamp || timestamp === "-") return "-";
+      if (!timestamp || timestamp === '-') return '-';
       const date = new Date(parseInt(timestamp));
       const year = date.getFullYear();
-      const month = date.getMonth() + 1;  // Months are 0-based, so adding 1
+      const month = date.getMonth() + 1; // Months are 0-based, so adding 1
       const day = date.getDate();
 
       // Format date as dd MMMM yyyy
       const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
       ];
       return `${day} ${monthNames[month - 1]} ${year}`;
     }
@@ -593,9 +873,9 @@ width: 100%;
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage">
               <div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
-            total,
-            vendor
-          )}</span></div>
+                total,
+                vendor
+              )}</span></div>
               ${totalUsageHtml}
             </div>
             <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
@@ -605,7 +885,6 @@ width: 100%;
 
         // === SEM ===
         if (vendor === 'SEM') {
-
           const usage = data.data_usage;
           if (usage.retCode !== '000000') {
             showInvalidPopup();
@@ -613,42 +892,38 @@ width: 100%;
           }
 
           const quotaList = usage.quotaList || [];
-          const productName =
-            data?.data_usage?.quotaList?.[0]?.productName ||
-            data?.product_name ||
-            "-";
+          const productName = data?.data_usage?.quotaList?.[0]?.productName || data?.product_name || '-';
 
           // Mapping status
           const statusMap = {
-            "0": "No Package.",
-            "1": "Your eSIM hasn’t been activated yet.",
-            "2": "Active.",
-            "3": "Your eSIM has no active plan, please top up to continue.",
-            "4": "No Package."
+            0: 'No Package.',
+            1: 'Your eSIM hasn’t been activated yet.',
+            2: 'Active.',
+            3: 'Your eSIM has no active plan, please top up to continue.',
+            4: 'No Package.',
           };
 
           const q = quotaList[0] || {};
-          const statusCode = q.status || "0";
-          const statusText = statusMap[statusCode] || "-";
+          const statusCode = q.status || '0';
+          const statusText = statusMap[statusCode] || '-';
 
-          let bundle = "-";
-          let startDate = "-";
-          let endDate = "-";
+          let bundle = '-';
+          let startDate = '-';
+          let endDate = '-';
 
           // === RULE BARU ===
           // Jika status == 2 (ACTIVE) → tampilkan data lengkap
-          if (statusCode === "2") {
+          if (statusCode === '2') {
             bundle = productName;
-            startDate = q.effTime ? q.effTime.slice(0, 8) : "-";
-            endDate = q.expTime ? q.expTime.slice(0, 8) : "-";
+            startDate = q.effTime ? q.effTime.slice(0, 8) : '-';
+            endDate = q.expTime ? q.expTime.slice(0, 8) : '-';
           }
 
           // Format usage
           const used = formatDataUsage(q.usedQuota || 0, vendor);
 
           const formatDateShort = (str) =>
-            (!str || str === "-") ? "-" :
-              `${str.slice(0, 4)}-${str.slice(4, 6)}-${str.slice(6, 8)}`;
+            !str || str === '-' ? '-' : `${str.slice(0, 4)}-${str.slice(4, 6)}-${str.slice(6, 8)}`;
 
           resultEl.innerHTML = `
     <div>
@@ -674,7 +949,6 @@ width: 100%;
           attachTopUpButtonListeners();
           return;
         }
-
 
         // === AF ===
         if (vendor === 'AF') {
@@ -707,9 +981,9 @@ width: 100%;
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage"><div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
-            total,
-            vendor
-          )}</span></div>${totalUsageHtml}</div>
+              total,
+              vendor
+            )}</span></div>${totalUsageHtml}</div>
             <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
             ${renderTopUpButton()}
           </div>`;
@@ -742,17 +1016,17 @@ width: 100%;
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage">
               <div style="display:flex;justify-content:space-between;"><h3>Total:</h3><span>${formatDataUsage(
-            total,
-            vendor
-          )}</span></div>
+                total,
+                vendor
+              )}</span></div>
               <div style="display:flex;justify-content:space-between;"><h3>Used:</h3><span>${formatDataUsage(
-            used,
-            vendor
-          )}</span></div>
+                used,
+                vendor
+              )}</span></div>
               <div style="display:flex;justify-content:space-between;"><h3>Remaining:</h3><span>${formatDataUsage(
-            remain,
-            vendor
-          )}</span></div>
+                remain,
+                vendor
+              )}</span></div>
             </div>
           </div>
           ${renderTopUpButton()}`;
@@ -791,9 +1065,9 @@ width: 100%;
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage"><div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
-            total,
-            vendor
-          )}</span></div>${totalUsageHtml}</div>
+              total,
+              vendor
+            )}</span></div>${totalUsageHtml}</div>
             <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
             ${renderTopUpButton()}
           </div>`;
@@ -805,8 +1079,6 @@ width: 100%;
       } catch (err) {
         console.error(err);
         showInvalidPopup();
-
-
       } finally {
         checkBtn.disabled = false;
         checkBtn.textContent = 'Next';
@@ -846,10 +1118,11 @@ width: 100%;
 
     // tombol cancel & continue
     if (topupConfirmCancel) topupConfirmCancel.addEventListener('click', hideTopupConfirm);
-    if (topupConfirmContinue) topupConfirmContinue.addEventListener('click', () => {
-      hideTopupConfirm();
-      proceedTopUp();
-    });
+    if (topupConfirmContinue)
+      topupConfirmContinue.addEventListener('click', () => {
+        hideTopupConfirm();
+        proceedTopUp();
+      });
 
     if (topupConfirmPopup) {
       topupConfirmPopup.addEventListener('click', (e) => {
@@ -859,26 +1132,24 @@ width: 100%;
 
     // klik tombol top-up sekarang memunculkan modal dulu
     document.addEventListener('click', (e) => {
-      const clickedTopUp =
-        e.target?.id === 'top-up-plan' || e.target?.closest?.('#top-up-plan');
+      const clickedTopUp = e.target?.id === 'top-up-plan' || e.target?.closest?.('#top-up-plan');
 
       if (clickedTopUp) {
         showTopupConfirm();
       }
     });
-
   });
 </script>
 
 {% schema %}
 {
-"name": "Check Data Usage",
-"settings": [],
-"presets": [
-{
-"name": "Check Data Usage",
-"category": "Custom"
-}
-]
+  "name": "Check Data Usage",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Check Data Usage",
+      "category": "Custom"
+    }
+  ]
 }
 {% endschema %}

@@ -162,7 +162,6 @@
   -moz-appearance: none;
   color: var(--color-primary);
   width: 100%;
-  padding-right: 4rem;
 }
 
 .localization-selector option {

@@ -1,1049 +1,561 @@
-{% style %}
-  .news-container {
-    max-width: 1920px;
-    margin: 0 auto;
-  }
-  .news__content-top {
-    padding: 0 10% 100px;
-  }
-  .news-content__wrapper {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    padding-top: 60px;
-    border-radius: 15px;
-    gap: 20px;
-  }
-  .news-content__wrapper-category {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px 15px;
-  }
-  .news__main-text {
-    text-align: center;
-    margin-top: 50px;
-  }
-  .news__main-heading {
-    color: var(--color-primary);
-    font-weight: bold;
-    font-size: 30px;
-    margin: 0;
-    line-height: 1.5;
-  }
-  .news__main-description {
-    color: var(--color-primary);
-  }
-  .news-content__card {
-    background-color: var(--color-neutral);
-    border-radius: 15px;
-    padding: 15px;
-    flex: 1;
-    transition: transform 0.3s;
-  }
-  .news-content__card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--box-shadow);
-    cursor: pointer;
-  }
-  .news-content__card img {
-    width: 100%;
-    height: auto;
-    border-radius: 15px;
-    aspect-ratio: 3 / 2;
-  }
-  .news-content__card-title {
-    color: var(--color-primary);
-    font-size: var(--font-supper-large);
-    font-weight: bold;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
-  }
-  .news-content__date {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--color-secondary);
-    font-size: 14px;
-  }
-  .news-content__card-description {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    font-size: 14px;
-    color: var(--color-primary);
-    margin: 5px 0;
-  }
-  .new-content__link {
-    text-decoration: none;
-  }
+{% capture icon_arrow_right %}
+  {% render 'icon-arrow-right', class: 'text-primary w-[24px] h-[24px]' %}
+{% endcapture %}
 
-  .news-hero-shoot {
-    display: flex;
-    justify-content: center;
-  }
-  .news__hero-wrapper {
-    padding: 70px 10%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .news__hero-wrapper h2 {
-    font-weight: bold;
-    font-size: 30px;
-  }
-  .news__hero-wrapper h2,
-  span {
-    margin: 0;
-    line-height: 1.5;
-    color: var(--color-primary);
-  }
-  .news__hero-button {
-    margin-top: 20px;
-    background-color: var(--color-primary);
-    border: none;
-    outline: none;
-    padding: 15px;
-    border-radius: 15px;
-    color: var(--color-neutral);
-    font-size: var(--font-large);
-    letter-spacing: 1px;
-  }
-  .news__hero-button:hover {
-    box-shadow: var(--box-shadow);
-  }
-  .news__hero-button:active {
-    transform: translateY(5px);
-  }
-  .news__latest-article {
-    color: var(--color-primary);
-    font-size: 28px;
-    text-align: center;
-  }
-  .news-hero {
-    width: 100%;
-    height: 450px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    padding: 0 10%;
-  }
+{% capture icon_arrow_left %}
+  {% render 'icon-arrow-right', class: 'text-primary w-[24px] h-[24px] rotate-180' %}
+{% endcapture %}
 
-  .news-hero__content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    text-align: left;
-  }
-
-  .news-hero__content h2 {
-    font-weight: bold;
-    font-size: 32px;
-    color: var(--color-neutral);
-    margin: 0;
-  }
-
-  .news-hero__content p {
-    color: var(--color-neutral);
-    margin: 0;
-  }
-
-  .article-item {
-    display: none;
-  }
-
-  .article-item.visible {
-    display: block;
-  }
-
-  .see-more-container {
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 40px;
-    display: flex;
-    justify-content: center;
-  }
-
-  .see-more-btn {
-    padding: 8px 24px;
-    background-color: var(--color-primary);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .see-more-btn:hover {
-    background-color: var(--color-secondary);
-  }
-
-  .see-more-btn.hidden {
-    display: none;
-  }
-
-  @media (max-width: 1440px) {
-    .news__content-top {
-      padding: 0 10% 100px;
-    }
-  }
-  @media (max-width: 768px) {
-    .news-content__wrapper {
-      grid-template-columns: 1fr !important;
-      padding: 20px 24px !important;
-    }
-
-    .news-content__wrapper-category {
-      grid-template-columns: 1fr !important;
-      padding: 20px 24px !important;
-    }
-
-    .news-content__card {
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-
-    .news-hero {
-      height: auto;
-      padding: 150px 10%;
-    }
-
-    .news-hero__content h2 {
-      font-size: 24px;
-    }
-  }
-
-  @media screen and (min-width: 430px) and (max-width: 440px) {
-    .news__content-top {
-      padding: 0;
-    }
-  }
-
-  @media (max-width: 426px) {
-    .news-content__wrapper {
-      grid-template-columns: 1fr !important;
-      padding: 20px 24px !important;
-    }
-
-    .news-content__wrapper-category {
-      grid-template-columns: 1fr !important;
-      padding: 20px 24px !important;
-    }
-
-    .news-content__card {
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-
-    .news__content-top {
-      padding: 0 24px;
-    }
-    .news__hero-wrapper {
-      padding: 24px 24px;
-    }
-    .news-hero {
-      height: auto;
-      padding: 150px 10%;
-    }
-  }
-{% endstyle %}
-
-<script>
-(async function () {
-  const CATEGORIES = ['news', 'travel-guide', 'travel-tips', 'event', 'tech-guide']
-    .map(s => s.toLowerCase());
-
-  let page = 1;
-  let items = [];
-
-  while (true) {
-    const url = `/search?view=news-api-json&type=page&q=%2A&page=${page}`;
-    const res = await fetch(url, { credentials: 'same-origin' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-
-    const data = await res.json();
-
-    // Filter category: ambil item yang category-nya ada di daftar CATEGORIES
-    const filtered = (data.items || []).filter(x => {
-      const cat = (x.category || '').toLowerCase().trim();
-      return CATEGORIES.includes(cat);
-    });
-
-    items = items.concat(filtered);
-
-    if (page >= data.pages) break;
-    page += 1;
-  }
-
-  console.log('Total filtered:', items.length);
-  console.log(items);
-})();
-</script>
-
-<div class="news-container">
-  <section class="news-hero" style="background-image: url({{ section.settings.news_hero_background | image_url }});">
-    <div class="news-hero__content">
-      <h2>Global Komunika Blog & News</h2>
-      <p>Find your travel inspiration wherever you’re going.</p>
+<div>
+  <section
+    class="w-full h-[450px] bg-no-repeat bg-cover bg-center flex items-center px-[10%] bg-slate-300"
+    style="background-image: url('https://cdn.shopify.com/s/files/1/0735/4204/1817/files/andrei-mike-N1ufEF8ukmI-unsplash.jpg?v=1748274093');"
+  >
+    <div class="flex flex-col gap-[10px] text-left">
+      <h2 class="text-neutral font-bold text-[30px]">Global Komunika Blog & News</h2>
+      <p class="text-neutral text-[18px]">Find your travel inspiration wherever you’re going.</p>
     </div>
   </section>
 
-  <section class="news-main">
-    {% assign main_pages = section.settings['main-first-page']
-      | append: ','
-      | append: section.settings['main-second-page']
-      | append: ','
-      | append: section.settings['main-third-page']
-      | split: ','
-    %}
-    {% if template.suffix == 'news' %}
-      <div class="news__content-top">
-        <div class="news__main-text">
-          <h2 class="news__main-heading">{{ section.settings['main-heading'] }}</h2>
-          <span class="news__main-description">{{ section.settings['main-description'] }}</span>
-        </div>
-
-        <div class="news-content__wrapper">
-          {% for page_id in main_pages %}
-            {% assign page = pages[page_id] %}
-            {% if page %}
-              <section class="news-content__card">
-                <a class="new-content__link" href="{{ page.url }}">
-                  {% assign img_parts = page.content | split: '<img' %}
-                  {% if img_parts.size > 1 %}
-                    {% assign first_img_tag = img_parts[1] | split: '>' | first | prepend: '<img' | append: '>' %}
-                    {{ first_img_tag }}
-                  {% endif %}
-                  <h2 class="news-content__card-title">{{ page.title }}</h2>
-                  <h2 class="news-content__card-description">
-                    {{ page.content | strip_html }}
-                  </h2>
-                  <div class="news-content__date">
-                    {{ page.published_at | date: '%d %B %Y' }}
-                  </div>
-                </a>
-              </section>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}
-  </section>
-
-  {% for block in section.blocks %}
-    {% assign page_ids = block.settings['first-page']
-      | append: ','
-      | append: block.settings['second-page']
-      | append: ','
-      | append: block.settings['thrid-page']
-      | split: ','
-    %}
-
-    <section class="news-content">
-      <div class="news__hero-shoot">
-        <div
-          class="news__hero-wrapper"
-          style="background-image: url({{ block.settings.hero-background | image_url }}); background-size: cover; background-position: center;"
-        >
-          <h2>{{ block.settings['hero-title'] }}</h2>
-          <span>{{ block.settings['hero-description'] }}</span>
-          {% if block.settings['show-button'] %}
-            {% assign current_locale = request.locale.iso_code %}
-            {% assign category_slug = block.settings.category %}
-
-            {%- if current_locale == 'id' -%}
-              {%- case category_slug -%}
-                {%- when 'news' -%}
-                  {%- assign translated_slug = 'berita' -%}
-                {%- when 'event' -%}
-                  {%- assign translated_slug = 'acara' -%}
-                {%- when 'travel-guide' -%}
-                  {%- assign translated_slug = 'panduan-perjalanan' -%}
-                {%- when 'travel-tips' -%}
-                  {%- assign translated_slug = 'tips-perjalanan' -%}
-                {%- else -%}
-                  {%- assign translated_slug = category_slug -%}
-              {%- endcase -%}
-              {%- assign category_url = '/id/pages/news-category/' | append: translated_slug -%}
-            {%- else -%}
-              {%- assign translated_slug = category_slug -%}
-              {%- assign category_url = '/pages/news-category/' | append: translated_slug -%}
-            {%- endif -%}
-
-            <a href="{{ category_url }}">
-              <button class="news__hero-button">
-                {%- if current_locale == 'id' -%}Baca Selengkapnya{%- else -%}Read More{%- endif -%}
-              </button>
-            </a>
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="news__content-top">
-        <div class="news-content__wrapper">
-          {% for page_id in page_ids %}
-            {% assign page = pages[page_id] %}
-            {% if page %}
-              <section class="news-content__card">
-                <a class="new-content__link" href="{{ page.url }}">
-                  {% assign img_parts = page.content | split: '<img' %}
-                  {% if img_parts.size > 1 %}
-                    {% assign first_img_tag = img_parts[1] | split: '>' | first | prepend: '<img' | append: '>' %}
-                    {{ first_img_tag }}
-                  {% endif %}
-                  <h2 class="news-content__card-title" title="{{ page.title }}">{{ page.title }}</h2>
-                  <h2 class="news-content__card-description">
-                    {{ page.content | strip_html }}
-                  </h2>
-
-                  <div class="news-content__date">
-                    {{ page.published_at | date: '%d %B %Y' }}
-                  </div>
-                </a>
-              </section>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-    </section>
-  {% endfor %}
-
-  {% assign current_locale = request.locale.iso_code %}
-  {% assign path_parts = request.path | split: '/' %}
-  {% assign last_segment = path_parts.last %}
-  {% assign valid_categories = 'news,berita,event,acara,peristiwa,travel-guide,panduan-perjalanan,travel-tips,tips-perjalanan,tech-guide,panduan-teknologi'
-    | split: ','
-  %}
-  {% assign is_valid_category = false %}
-  {% for cat in valid_categories %}
-    {% if last_segment == cat %}
-      {% assign is_valid_category = true %}
-      {% break %}
-    {% endif %}
-  {% endfor %}
-
-  {% if is_valid_category %}
-    {% assign category_slug_raw = last_segment %}
-  {% else %}
-    {% assign category_slug_raw = request.path | split: '?' | first | split: '/' | last %}
-    {% if category_slug_raw == 'news-category' %}
-      {% if current_locale == 'id' %}
-        {% assign category_slug_raw = 'berita' %}
-      {% else %}
-        {% assign category_slug_raw = 'news' %}
-      {% endif %}
-    {% endif %}
+  {% if section.settings.view_type != 'all' %}
+    <div class="wrapper md:wrapper-base mt-[10px]">
+      <h1 class="text-primary font-bold text-center text-[30px]">Stay Connected, Travel Smarter</h1>
+      <p class="text-primary text-[16px] md:text-[18px] text-center">
+        Global Komunika shares essential travel tips, destination insights, and the latest updates on eSIM and SIM card
+        solutions, helping travelers stay connected with ease wherever they go.
+      </p>
+    </div>
   {% endif %}
 
-  {% assign category_slug = category_slug_raw | downcase | handleize %}
-  {% assign category_map_id_to_en = 'berita:news,acara:event,peristiwa:event,panduan-perjalanan:travel-guide,tips-perjalanan:travel-tips,panduan-teknologi:tech-guide' %}
-  {% assign category_map_en_to_id = 'news:berita,event:acara,travel-guide:panduan-perjalanan,travel-tips:tips-perjalanan,tech-guide:panduan-teknologi' %}
-  {% assign normalized_category = category_slug %}
-  {% assign map_pairs = category_map_id_to_en | split: ',' %}
-  {% for pair in map_pairs %}
-    {% assign parts = pair | split: ':' %}
-    {% if parts[0] == category_slug %}
-      {% assign normalized_category = parts[1] %}
-      {% break %}
-    {% endif %}
-  {% endfor %}
+  <!-- Latest 3 (paling baru dari semua kategori) -->
+  <div id="latest-articles">
+    {% comment %}
+      SKELETON LOADING FOR NEWS TYPE TOP
+    {% endcomment %}
+    {% if section.settings.view_type != 'all' %}
+    <div class="space-y-[20px] pt-8">
+      <section class="wrapper md:wrapper-base grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for i in (1..3) %}
+          <div class="bg-neutral p-[15px] rounded-[15px] space-y-3">
+            <ui-skeleton class="w-full h-[220px] rounded-[15px]"></ui-skeleton>
 
-  {% assign display_slug = category_slug %}
-  {% if current_locale == 'id' %}
-    {% assign map_pairs = category_map_en_to_id | split: ',' %}
-    {% for pair in map_pairs %}
-      {% assign parts = pair | split: ':' %}
-      {% if parts[0] == normalized_category %}
-        {% assign display_slug = parts[1] %}
-        {% break %}
-      {% endif %}
-    {% endfor %}
-  {% else %}
-    {% assign display_slug = normalized_category %}
-  {% endif %}
-
-  {% assign accepted_categories = '' %}
-  {% case normalized_category %}
-    {% when 'news' %}
-      {% assign accepted_categories = 'news,berita' %}
-    {% when 'event' %}
-      {% assign accepted_categories = 'event,acara,peristiwa' %}
-    {% when 'travel-guide' %}
-      {% assign accepted_categories = 'travel-guide,panduan-perjalanan,panduan perjalanan' %}
-    {% when 'travel-tips' %}
-      {% assign accepted_categories = 'travel-tips,tips-perjalanan,tips perjalanan' %}
-    {% when 'tech-guide' %}
-      {% assign accepted_categories = 'tech-guide,panduan-teknologi,panduan teknologi' %}
-    {% else %}
-      {% assign accepted_categories = normalized_category %}
-  {% endcase %}
-
-  {% assign accepted_list = accepted_categories | split: ',' %}
-  {% assign category_pages_raw = '' %}
-
-  {% for p in pages %}
-    {% assign page_category_raw = p.metafields.pages.category.value %}
-    {% assign page_category = page_category_raw | strip | downcase | handleize %}
-
-    {% assign is_match = false %}
-    {% for accepted in accepted_list %}
-      {% assign accepted_normalized = accepted | strip | downcase | handleize %}
-      {% if page_category == accepted_normalized %}
-        {% assign is_match = true %}
-        {% break %}
-      {% endif %}
-    {% endfor %}
-
-    {% if is_match %}
-      {% assign date_key = p.published_at | date: '%Y-%m-%d-%H-%M-%S' %}
-      {% assign key = date_key | append: '|' | append: p.handle %}
-      {% if category_pages_raw == '' %}
-        {% assign category_pages_raw = key %}
-      {% else %}
-        {% assign category_pages_raw = category_pages_raw | append: ',' | append: key %}
-      {% endif %}
-    {% endif %}
-  {% endfor %}
-
-  {% if category_pages_raw != '' %}
-    {% assign category_pages_array = category_pages_raw | split: ',' | sort | reverse %}
-  {% else %}
-    {% assign category_pages_array = '' | split: ',' %}
-  {% endif %}
-
-  {% assign display_title = normalized_category | replace: '-', ' ' | capitalize %}
-  {% if current_locale == 'id' %}
-    {% case normalized_category %}
-      {% when 'news' %}
-        {% assign display_title = 'Berita' %}
-      {% when 'event' %}
-        {% assign display_title = 'Acara' %}
-      {% when 'travel-guide' %}
-        {% assign display_title = 'Panduan Perjalanan' %}
-      {% when 'travel-tips' %}
-        {% assign display_title = 'Tips Perjalanan' %}
-      {% when 'tech-guide' %}
-        {% assign display_title = 'Panduan Teknologi' %}
-    {% endcase %}
-  {% endif %}
-
-  {% unless template.suffix == 'news' %}
-    {% if category_pages_array.size > 0 %}
-      <section class="news-content">
-        <div class="news__hero-shoot">
-          <div class="news__hero-wrapper">
-            <h2>{{ display_title }}</h2>
-            {% case normalized_category %}
-              {% when 'news' %}
-                <span>{{ section.settings['news-heading'] }}</span>
-              {% when 'event' %}
-                <span>{{ section.settings['event-heading'] }}</span>
-              {% when 'travel-guide' %}
-                <span>{{ section.settings['travel-guide-heading'] }}</span>
-              {% when 'travel-tips' %}
-                <span>{{ section.settings['travel-tips-heading'] }}</span>
-              {% when 'tech-guide' %}
-                <span>{{ section.settings['tech-guide-heading'] }}</span>
-            {% endcase %}
+            <ui-skeleton class="h-[20px] w-full"></ui-skeleton>
+            <ui-skeleton class="h-[20px] w-full"></ui-skeleton>
+            <ui-skeleton class="h-[20px] w-[100px]"></ui-skeleton>
           </div>
-        </div>
+        {% endfor %}
       </section>
 
-      <section class="news__content-top">
-        <h2 class="news__latest-article" style="font-weight:bold;">
-          {% if current_locale == 'id' %}
-            Artikel Terbaru
-          {% else %}
-            Latest Article
-          {% endif %}
-        </h2>
-        <div class="news-content__wrapper-category" id="articlesContainer">
-          {% for item in category_pages_array %}
-            {% assign parts = item | split: '|' %}
-            {% assign page_handle = parts[1] %}
-            {% assign page = pages[page_handle] %}
-
-            {% if page %}
-              <a class="new-content__link article-item" href="{{ page.url }}" data-index="{{ forloop.index }}">
-                <div class="news-content__card">
-                  {% assign img_parts = page.content | split: '<img' %}
-                  {% if img_parts.size > 1 %}
-                    {% assign first_img_tag = img_parts[1] | split: '>' | first | prepend: '<img' | append: '>' %}
-                    {{ first_img_tag }}
-                  {% endif %}
-                  <h2 class="news-content__card-title" title="{{ page.title }}">{{ page.title }}</h2>
-                  <h2 class="news-content__card-description">
-                    {{ page.content | strip_html }}
-                  </h2>
-
-                  <div class="news-content__date">
-                    {{ page.published_at | date: '%d %B %Y' }}
-                  </div>
-                </div>
-              </a>
-            {% endif %}
-          {% endfor %}
+      <section class="h-[250px] w-full bg-neutral flex items-center justify-center">
+        <div class="space-y-3">
+          <ui-skeleton class="w-[200px] h-[20px] rounded-[15px] mx-auto"></ui-skeleton>
+          <ui-skeleton class="max-w-[700px] h-[20px] rounded-[15px] mx-auto"></ui-skeleton>
+          <ui-skeleton class="w-[200px] h-[50px] rounded-[15px] mx-auto"></ui-skeleton>
         </div>
-
-        {% if category_pages_array.size > 6 %}
-          <div class="see-more-container">
-            <button id="seeMoreBtn" class="see-more-btn">
-              {% if current_locale == 'id' %}
-                Lihat Lebih Banyak
-              {% else %}
-                See More
-              {% endif %}
-            </button>
-          </div>
-        {% endif %}
       </section>
-    {% else %}
-      <h2 class="news__latest-article" style="margin: 10% 0;">
-        {% if current_locale == 'id' %}
-          Artikel Tidak Ditemukan
-        {% else %}
-          Article Not Found
-        {% endif %}
-      </h2>
-    {% endif %}
-  {% endunless %}
+      <section class="wrapper md:wrapper-base grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for i in (1..3) %}
+          <div class="bg-neutral p-[15px] rounded-[15px] space-y-3">
+            <ui-skeleton class="w-full h-[220px] rounded-[15px]"></ui-skeleton>
+
+            <ui-skeleton class="h-[20px] w-full"></ui-skeleton>
+            <ui-skeleton class="h-[20px] w-full"></ui-skeleton>
+            <ui-skeleton class="h-[20px] w-[100px]"></ui-skeleton>
+          </div>
+        {% endfor %}
+      </section>
+    </div>
+  </div>
+  {% endif %}
 </div>
 
-<script>
-  (function () {
-    const currentLocale = '{{ request.locale.iso_code }}';
-    const currentPath = window.location.pathname;
-    const normalizedCategory = '{{ normalized_category }}';
+<!-- Section per-category -->
+<div id="category-sections">{% comment %}
+      SKELETON LOADING FOR NEWS TYPE ALL
+    {% endcomment %}
+    {% if section.settings.view_type == 'all' %}
+    <section class="wrapper md:wrapper-base grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {% for i in (1..9) %}
+        <div class="bg-neutral p-[15px] rounded-[15px] space-y-3">
+          <ui-skeleton class="w-full h-[220px] rounded-[15px]"></ui-skeleton>
 
-    const categoryMap = {
-      en_to_id: {
-        news: 'berita',
-        event: 'acara',
-        'travel-guide': 'panduan-perjalanan',
-        'travel-tips': 'tips-perjalanan',
-        'tech-guide': 'panduan-teknologi',
+          <ui-skeleton class="h-[20px] w-full"></ui-skeleton>
+          <ui-skeleton class="h-[20px] w-full"></ui-skeleton>
+          <ui-skeleton class="h-[20px] w-[100px]"></ui-skeleton>
+        </div>
+      {% endfor %}
+    </section>
+    {% endif %}
+</div>
+
+<script type="module" defer>
+  (async function () {
+    const ICON_NEXT = {{ icon_arrow_right | strip_newlines | json }};
+    const ICON_PREV = {{ icon_arrow_left  | strip_newlines | json }};
+
+    const CATEGORIES = ['news', 'travel-guide', 'travel-tips', 'event', 'tech-guide'].map((s) => s.toLowerCase());
+    let page = 1;
+    let itemsByCategory = {};
+    let maxItems = 3;
+
+    // ambil dari setting section (Shopify schema)
+    const SECTION_VIEW_TYPE = '{{ section.settings.view_type }}'; // 'top' | 'all'
+
+    // Ambil parameter URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryQuery = urlParams.get('q')?.toLowerCase();
+    const viewQuery = urlParams.get('view'); // optional: override via URL ?view=all
+
+    // Tentukan view yang dipakai (URL override kalau ada, kalau tidak pakai setting section)
+    const effectiveView = (viewQuery || SECTION_VIEW_TYPE || 'top').toLowerCase();
+
+    // Hero banner ikut aturan setting section (biar tetap hilang kalau setting = all)
+    const showHeroBanner = (SECTION_VIEW_TYPE || 'top').toLowerCase() !== 'all' && !categoryQuery;
+
+    // If view = all -> tampilkan semua item, else top 3
+    if (effectiveView === 'all') maxItems = 0;
+
+    // =========================
+    // PAGINATION SETTINGS (MODE ALL)
+    // =========================
+    const ITEMS_PER_PAGE = 9;
+
+    const safeId = (s) =>
+      String(s || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-');
+
+    const isMobile = () => window.matchMedia('(max-width: 640px)').matches;
+
+    const buildPageList = (current, total) => {
+      // MOBILE: tampilkan 1 2 3 4 5 ... last
+      if (isMobile()) {
+        if (total <= 6) return Array.from({ length: total }, (_, i) => i + 1);
+        return [1, 2, 3, 4, 5, '...', total];
+      }
+
+      // DESKTOP: logic lama (lebih lengkap)
+      if (total <= 9) return Array.from({ length: total }, (_, i) => i + 1);
+
+      if (current <= 5) return [1, 2, 3, 4, 5, 6, 7, '...', total];
+
+      if (current >= total - 4)
+        return [1, '...', total - 6, total - 5, total - 4, total - 3, total - 2, total - 1, total];
+
+      return [1, '...', current - 2, current - 1, current, current + 1, current + 2, '...', total];
+    };
+
+    // =========================
+    // PERFORMANCE: Lazy render section saat mendekati viewport
+    // =========================
+    const onVisible = (el, cb, options = {}) => {
+      if (!('IntersectionObserver' in window)) {
+        cb();
+        return;
+      }
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              io.disconnect();
+              cb();
+            }
+          });
+        },
+        { root: null, rootMargin: options.rootMargin || '350px 0px', threshold: 0.01 }
+      );
+      io.observe(el);
+    };
+
+    // Mapping deskripsi per category
+    const CATEGORY_DESC = {
+      news: 'Latest updates on travel, airlines, airport rules, and tourism trends.',
+      'travel-tips': 'Smart tips for easier, cheaper, and more enjoyable travel.',
+      'travel-guide': 'Explore top sights, local eats, and things to do at every destination.',
+      'tech-guide':
+        'Practical tech tips and gadget guides for smarter travel—apps, devices, connectivity, and digital safety.',
+      event: 'Find festivals, local events, and seasonal highlights worth visiting.',
+    };
+
+    // Mapping khusus HERO banner (desc + image)
+    const HERO_META = {
+      news: {
+        desc: `Stay up to date with the latest developments in travel, including <strong>airline updates</strong>, airport regulations,<strong>visa policies</strong>, and <strong>tourism trends</strong>. Perfect for keeping informed before and during your journey.`,
+        image: `//gkomunika.com/cdn/shop/files/news_1.webp?v=1747649452`,
       },
-      id_to_en: {
-        berita: 'news',
-        acara: 'event',
-        peristiwa: 'event',
-        'panduan-perjalanan': 'travel-guide',
-        'tips-perjalanan': 'travel-tips',
-        'panduan-teknologi': 'tech-guide',
+      'travel-guide': {
+        desc: `Plan your trip with in-depth guides featuring top <strong>attractions</strong>, local food spots, and <strong>fun activities</strong>. Whether you’re visiting a city for the first time or returning for more, our guides help you get the most out of every destination.`,
+        image: `//gkomunika.com/cdn/shop/files/annika-k2dh4qZ2o_I-unsplash.jpg?v=1748331635`,
+      },
+      event: {
+        desc: `Find out what’s happening around the world—from <strong>traditional festivals</strong> and <strong>cultural parades</strong> to seasonal highlights. These events can add a unique and memorable touch to your trip.`,
+        image: `//gkomunika.com/cdn/shop/files/miguel-bernardo-lAT-Z6uLYew-unsplash.jpg?v=1748331635`,
+      },
+      'travel-tips': {
+        desc: `Explore <strong>helpful tips and tricks</strong> to make your travel smoother, more affordable, and more enjoyable. From packing efficiently to saving money on transport and accommodations, we've got you covered.`,
+        image: `//gkomunika.com/cdn/shop/files/kristina-zykova-5n-Os-7qitE-unsplash.jpg?v=1748331635`,
+      },
+      'tech-guide': {
+        desc: `Break down complex tech topics into simple, traveler-friendly guides. Learn how to <strong>maximize your eSIM</strong>, <strong>optimize your device</strong>, and <strong>solve common connectivity issues</strong>, helping you stay online anywhere in the world.`,
+        image: `//gkomunika.com/cdn/shop/files/WhatsApp_Image_2025-11-20_at_16.05.04_32a9aae1.jpg?v=1763630437`,
       },
     };
 
-    function getCurrentSlug() {
-      const pathParts = currentPath.split('/').filter((p) => p);
-      return pathParts[pathParts.length - 1];
+    const formatCategoryTitle = (cat) =>
+      (cat || '')
+        .split('-')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+
+    // helper tanggal: pakai updated_at kalau ada, fallback published_at/created_at
+    const getItemDate = (item) => {
+      const raw = item.updated_at || item.published_at || item.created_at;
+      const d = raw ? new Date(raw) : new Date(0);
+      return isNaN(d.getTime()) ? new Date(0) : d;
+    };
+
+    const formatDate = (dateObj) =>
+      dateObj.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      });
+
+    const renderCard = (item) => {
+      const title = item.title || 'Untitled';
+      const excerpt = item.excerpt || 'No description available.';
+      const url = item.url || '#';
+      const img = item.image || 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/placeholder.jpg';
+      const dateObj = getItemDate(item);
+
+      return `
+        <a
+          class="bg-neutral p-[15px] rounded-[15px] space-y-3 hover:shadow-lg transition-all will-change-transform"
+          href="${url}"
+        >
+          <div class="w-full h-[220px] rounded-[15px] overflow-hidden bg-slate-300">
+            <img
+              class="w-full h-full object-cover object-center block"
+              loading="lazy"
+              decoding="async"
+              src="${img}"
+              alt="${title}"
+            >
+          </div>
+
+          <h2
+            class="text-primary text-[20px] font-bold leading-normal line-clamp-2"
+            title="${title}"
+          >
+            ${title}
+          </h2>
+          <p class="text-primary text-[14px] line-clamp-3 leading-relaxed">
+            ${excerpt}
+          </p>
+          <p class="text-secondary text-[14px]">
+            ${formatDate(dateObj)}
+          </p>
+        </a>
+      `;
+    };
+
+    // Jika parameter 'q' ada, gunakan kategori tersebut, jika tidak, tampilkan semua kategori
+    const categoriesToRender = categoryQuery && CATEGORIES.includes(categoryQuery) ? [categoryQuery] : CATEGORIES;
+
+    // Kumpulkan semua item untuk kebutuhan "Latest 3"
+    const allItems = [];
+
+    await new Promise((r) => requestAnimationFrame(() => r()));
+
+    // FETCH semua page
+    while (true) {
+      const url = `/search?view=news-api-json&type=page&q=%2A&page=${page}`;
+      const res = await fetch(url, { credentials: 'same-origin' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+
+      const data = await res.json();
+
+      const filtered = (data.items || []).filter((x) => {
+        const cat = (x.category || '').toLowerCase().trim();
+        return categoriesToRender.includes(cat);
+      });
+
+      // simpan untuk global latest
+      allItems.push(...filtered);
+
+      // simpan untuk render per-category
+      filtered.forEach((item) => {
+        const category = (item.category || '').toLowerCase().trim();
+        if (!itemsByCategory[category]) itemsByCategory[category] = [];
+        itemsByCategory[category].push(item);
+      });
+
+      if (page >= data.pages) break;
+      page += 1;
     }
 
-    function buildCategoryURL(slug) {
-      if (currentLocale === 'id') {
-        return '/id/pages/news-category/' + slug;
-      } else {
-        return '/pages/news-category/' + slug;
+    // Dedup biar aman kalau ada item dobel
+    const uniqueMap = new Map();
+    allItems.forEach((it) => {
+      const key = it.url || it.handle || it.title + '|' + (it.updated_at || it.published_at || it.created_at || '');
+      if (!uniqueMap.has(key)) uniqueMap.set(key, it);
+    });
+    const uniqueItems = Array.from(uniqueMap.values());
+
+    // Sort per-category biar newest dulu
+    Object.keys(itemsByCategory).forEach((cat) => {
+      itemsByCategory[cat].sort((a, b) => getItemDate(b).getTime() - getItemDate(a).getTime());
+    });
+
+    // =========================
+    // MODE TOP (tanpa q):
+    // - tampilkan Latest 3 di atas
+    // =========================
+    if (effectiveView !== 'all' && !categoryQuery) {
+      const latest3 = uniqueItems.sort((a, b) => getItemDate(b).getTime() - getItemDate(a).getTime()).slice(0, 3);
+
+      const latestContainer = document.querySelector('#latest-articles');
+      if (latestContainer) {
+        latestContainer.innerHTML = `
+          <div class="wrapper md:wrapper-base grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            ${latest3.map(renderCard).join('')}
+          </div>
+        `;
       }
     }
 
-    function isURLCorrect() {
-      const currentSlug = getCurrentSlug();
+    // =========================
+    // Render per-category (LAZY + pagination saat view = all)
+    // =========================
+    const sectionContainer = document.querySelector('#category-sections');
+    if (!sectionContainer) return;
 
-      if (currentSlug === 'news-category') {
-        return false;
-      }
+    sectionContainer.innerHTML = '';
 
-      const hasIdPrefix = currentPath.startsWith('/id/');
-      const shouldHaveIdPrefix = currentLocale === 'id';
+    categoriesToRender.forEach((category) => {
+      const items = itemsByCategory[category] || [];
+      if (items.length === 0) return;
 
-      if (hasIdPrefix !== shouldHaveIdPrefix) {
-        return false;
-      }
+      const categoryTitle = formatCategoryTitle(category);
 
-      const validSlugs = [
-        'news',
-        'berita',
-        'event',
-        'acara',
-        'peristiwa',
-        'travel-guide',
-        'panduan-perjalanan',
-        'travel-tips',
-        'tips-perjalanan',
-        'tech-guide',
-        'panduan-teknologi',
-      ];
+      const categoryDesc = CATEGORY_DESC[category] || 'Discover the latest articles and updates in this category.';
+      const heroDesc = HERO_META[category]?.desc || categoryDesc;
 
-      return validSlugs.includes(currentSlug);
-    }
+      const heroImage =
+        HERO_META[category]?.image ||
+        'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/andrei-mike-N1ufEF8ukmI-unsplash.jpg?v=1748274093';
 
-    function fixURLIfNeeded() {
-      if (sessionStorage.getItem('languageSwitching')) {
-        return;
-      }
+      const sid = safeId(category);
+      const gridId = `grid-${sid}`;
+      const pagerInfoId = `pager-info-${sid}`;
+      const pagerControlsId = `pager-controls-${sid}`;
 
-      if (!currentPath.includes('/news-category')) {
-        return;
-      }
+      const totalItems = items.length;
+      const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-      if (isURLCorrect()) {
-        return;
-      }
+      const section = document.createElement('section');
 
-      const currentSlug = getCurrentSlug();
-      let targetSlug;
+      // Untuk performance: mode ALL, grid awalnya kosong (diisi saat section visible)
+      const initialCards =
+        effectiveView === 'all'
+          ? ''
+          : items
+              .slice(0, maxItems || undefined)
+              .map(renderCard)
+              .join('');
 
-      if (currentSlug === 'news-category' || currentSlug === '') {
-        try {
-          const lastVisited = localStorage.getItem('lastCategoryVisited');
-          if (lastVisited) {
-            targetSlug = currentLocale === 'id' ? categoryMap.en_to_id[lastVisited] || lastVisited : lastVisited;
-            localStorage.removeItem('lastCategoryVisited');
-          } else {
-            targetSlug = currentLocale === 'id' ? 'berita' : 'news';
-          }
-        } catch (e) {
-          targetSlug = currentLocale === 'id' ? 'berita' : 'news';
+
+      section.innerHTML = `
+        ${
+          // HERO BANNER: hanya muncul saat view bukan "all"
+          showHeroBanner
+            ? `
+              <div class=container>
+                <div
+                  class="wrapper-base flex flex-col items-center justify-center min-h-[310px]"
+                  style="background-image: url('${heroImage}'); background-size: cover; background-position: center;">
+                  <h2 class="text-primary text-[30px] font-bold">${categoryTitle}</h2>
+                  <span class="text-primary text-[14px] leading-relaxed md:text-[18px] text-left md:text-center mt-2">${heroDesc}</span>
+                  <a
+                    href="/pages/news-category?q=${encodeURIComponent(category)}"
+                    class="inline-flex items-center justify-center px-[50px] py-4 mt-16 rounded-[15px] text-[16px] bg-primary text-neutral hover:opacity-90 transition"
+                  >
+                    Read more
+                  </a>
+                </div>
+              </div>
+            `
+            : ''
         }
-      } else {
-        const normalized = categoryMap.id_to_en[currentSlug] || currentSlug;
-        targetSlug = currentLocale === 'id' ? categoryMap.en_to_id[normalized] || normalized : normalized;
-      }
 
-      const targetURL = buildCategoryURL(targetSlug);
-      window.location.replace(targetURL);
-    }
+        <div class="container">
+          <div class="wrapper md:wrapper-base">
 
-    function setupLanguageSwitcher() {
-      if (currentPath.includes('/news-category/')) {
-        const currentSlug = getCurrentSlug();
-        if (currentSlug && currentSlug !== 'news-category') {
-          const normalized = categoryMap.id_to_en[currentSlug] || currentSlug;
-          try {
-            localStorage.setItem('lastCategoryVisited', normalized);
-          } catch (e) {}
-        }
-      }
+            ${
+              // HEADER MODE ALL: hanya muncul saat view = "all"
+              effectiveView === 'all'
+                ? `
+                  <div class="mb-12 mt-4">
+                    <h2 class="text-primary font-bold text-[24px] text-center">${categoryTitle}</h2>
+                    <p class="text-primary text-[18px] text-center">${categoryDesc}</p>
+                  </div>
+                `
+                : ''
+            }
 
-      const findAndInterceptLocalizationForm = () => {
-        const selectors = [
-          'localization-form',
-          '.localization-form',
-          'form[action*="localization"]',
-          '[data-localization-form]',
-        ];
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="${gridId}" aria-busy="true">
+              ${initialCards}
+            </div>
 
-        for (let selector of selectors) {
-          const form = document.querySelector(selector);
-          if (form) {
-            form.addEventListener(
-              'submit',
-              function (e) {
-                if (currentPath.includes('/news-category/')) {
-                  const currentSlug = getCurrentSlug();
-                  if (currentSlug && currentSlug !== 'news-category') {
-                    const normalized = categoryMap.id_to_en[currentSlug] || currentSlug;
-                    sessionStorage.setItem('savedCategorySlug', normalized);
-                    sessionStorage.setItem('languageSwitching', 'true');
-                    try {
-                      localStorage.setItem('lastCategoryVisited', normalized);
-                    } catch (e) {}
-                  }
-                }
-              },
-              true
-            );
-            return;
-          }
-        }
+            ${
+              // PAGINATION hanya untuk mode ALL & kalau pages > 1
+              effectiveView === 'all' && totalPages > 1
+                ? `
+                  <div class="flex flex-col items-center gap-3 mt-8">
+                    <div class="text-primary text-[14px]" id="${pagerInfoId}"></div>
+                    <div class="flex items-center gap-2 justify-center flex-nowrap" id="${pagerControlsId}"></div>
+                  </div>
+                `
+                : ''
+            }
 
-        const hreflangLinks = document.querySelectorAll('a[hreflang]');
-        hreflangLinks.forEach((link) => {
-          link.addEventListener(
-            'click',
-            function (e) {
-              if (currentPath.includes('/news-category/')) {
-                const currentSlug = getCurrentSlug();
-                if (currentSlug && currentSlug !== 'news-category') {
-                  const normalized = categoryMap.id_to_en[currentSlug] || currentSlug;
-                  sessionStorage.setItem('savedCategorySlug', normalized);
-                  sessionStorage.setItem('languageSwitching', 'true');
-                  try {
-                    localStorage.setItem('lastCategoryVisited', normalized);
-                  } catch (e) {}
-                }
-              }
-            },
-            true
-          );
-        });
+          </div>
+        </div>
+      `;
+
+      sectionContainer.appendChild(section);
+
+      // Kalau bukan mode ALL, ga perlu pagination+lazy
+      if (effectiveView !== 'all') return;
+
+      // ====== Setup pagination + lazy render ======
+      const gridEl = section.querySelector(`#${CSS.escape(gridId)}`);
+      const infoEl = section.querySelector(`#${CSS.escape(pagerInfoId)}`);
+      const controlsEl = section.querySelector(`#${CSS.escape(pagerControlsId)}`);
+
+      const state = { page: 1, hydrated: false };
+
+      const renderControls = () => {
+        if (!controlsEl) return;
+
+        const pages = buildPageList(state.page, totalPages);
+
+        const base =
+          'shrink-0 rounded-[8px] border transition ' +
+          'min-w-[32px] h-[32px] px-2 text-[13px] ' + // mobile
+          'sm:min-w-[38px] sm:h-[38px] sm:px-3 sm:text-[14px]'; // desktop
+
+        const active = 'bg-primary text-neutral border-primary';
+        const normal = 'bg-white text-primary border-[#D9DEE3] hover:bg-[#F3F4F6]';
+        const disabled = 'opacity-40 cursor-not-allowed';
+
+        const prevDisabled = state.page === 1;
+        const nextDisabled = state.page === totalPages;
+
+        const prevBtn = `
+  <button type="button" data-nav="prev"
+    class="${base} ${normal} ${prevDisabled ? disabled : ''} flex items-center justify-center"
+    ${prevDisabled ? 'disabled' : ''}
+    aria-label="Previous page"
+  >${ICON_PREV}</button>
+`;
+
+        const nextBtn = `
+  <button type="button" data-nav="next"
+    class="${base} ${normal} ${nextDisabled ? disabled : ''} flex items-center justify-center"
+    ${nextDisabled ? 'disabled' : ''}
+    aria-label="Next page"
+  >${ICON_NEXT}</button>
+`;
+
+        const pageBtns = pages
+          .map((p) => {
+            if (p === '...') return `<span class="px-1 sm:px-2 text-primary select-none shrink-0">…</span>`;
+
+            const isActive = p === state.page;
+            return `
+        <button type="button" data-page="${p}"
+          class="${base} ${isActive ? active : normal}"
+          aria-current="${isActive ? 'page' : 'false'}"
+        >${p}</button>
+      `;
+          })
+          .join('');
+
+        controlsEl.innerHTML = `${prevBtn}${pageBtns}${nextBtn}`;
       };
 
-      findAndInterceptLocalizationForm();
-      document.addEventListener('DOMContentLoaded', findAndInterceptLocalizationForm);
-    }
+      const renderInfo = () => {
+        if (!infoEl) return;
+        const start = (state.page - 1) * ITEMS_PER_PAGE + 1;
+        const end = Math.min(state.page * ITEMS_PER_PAGE, totalItems);
+        infoEl.textContent = `Showing ${start} – ${end} of ${totalItems} articles`;
+      };
 
-    function handlePostLanguageSwitch() {
-      const savedSlug = sessionStorage.getItem('savedCategorySlug');
-      const isSwitching = sessionStorage.getItem('languageSwitching');
+      const renderPage = (pageNum) => {
+        const next = Math.max(1, Math.min(totalPages, pageNum));
+        state.page = next;
 
-      let categoryToRestore = savedSlug;
-      if (!categoryToRestore) {
-        try {
-          categoryToRestore = localStorage.getItem('lastCategoryVisited');
-        } catch (e) {}
-      }
+        const startIdx = (state.page - 1) * ITEMS_PER_PAGE;
+        const pageItems = items.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
-      if (!categoryToRestore || !isSwitching) {
-        return;
-      }
+        gridEl.innerHTML = pageItems.map(renderCard).join('');
+        renderInfo();
+        renderControls();
+        gridEl.setAttribute('aria-busy', 'false');
+      };
 
-      const targetSlug =
-        currentLocale === 'id' ? categoryMap.en_to_id[categoryToRestore] || categoryToRestore : categoryToRestore;
-
-      const targetURL = buildCategoryURL(targetSlug);
-
-      sessionStorage.removeItem('savedCategorySlug');
-      sessionStorage.removeItem('languageSwitching');
-
-      if (currentPath !== targetURL) {
-        window.location.replace(targetURL);
-      } else {
-        try {
-          localStorage.removeItem('lastCategoryVisited');
-        } catch (e) {}
-      }
-    }
-
-    function initArticleDisplay() {
-      const articles = document.querySelectorAll('.article-item');
-      const seeMoreBtn = document.getElementById('seeMoreBtn');
-
-      if (articles.length === 0) {
-        return;
-      }
-
-      let isExpanded = false;
-
-      function getInitialLimit() {
-        return window.innerWidth <= 768 ? 3 : 6;
-      }
-
-      function showArticles() {
-        const limit = isExpanded ? articles.length : getInitialLimit();
-
-        articles.forEach((article, index) => {
-          if (index < limit) {
-            article.classList.add('visible');
-          } else {
-            article.classList.remove('visible');
+      if (controlsEl) {
+        controlsEl.addEventListener('click', (e) => {
+          const navBtn = e.target.closest('button[data-nav]');
+          if (navBtn) {
+            if (navBtn.dataset.nav === 'prev') renderPage(state.page - 1);
+            if (navBtn.dataset.nav === 'next') renderPage(state.page + 1);
+            window.scrollTo({ top: section.offsetTop - 80, behavior: 'smooth' });
+            return;
           }
-        });
 
-        if (seeMoreBtn) {
-          if (articles.length <= getInitialLimit()) {
-            seeMoreBtn.style.display = 'none';
-          } else {
-            seeMoreBtn.style.display = 'block';
-            seeMoreBtn.textContent = isExpanded
-              ? currentLocale === 'id'
-                ? 'Tampilkan Lebih Sedikit'
-                : 'Show Less'
-              : currentLocale === 'id'
-              ? 'Lihat Lebih Banyak'
-              : 'See More';
-          }
-        }
-      }
-
-      if (seeMoreBtn) {
-        seeMoreBtn.addEventListener('click', function () {
-          isExpanded = !isExpanded;
-          showArticles();
-
-          if (!isExpanded) {
-            const contentTop = document.querySelector('.news__content-top');
-            if (contentTop) {
-              contentTop.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-          }
+          const pageBtn = e.target.closest('button[data-page]');
+          if (!pageBtn) return;
+          renderPage(Number(pageBtn.dataset.page));
+          window.scrollTo({ top: section.offsetTop - 80, behavior: 'smooth' });
         });
       }
-      showArticles();
 
-      let resizeTimer;
-      window.addEventListener('resize', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-          if (!isExpanded) showArticles();
-        }, 250);
+      // Lazy hydrate: render halaman 1 hanya ketika section terlihat
+      onVisible(section, () => {
+        if (state.hydrated) return;
+        state.hydrated = true;
+        renderPage(1);
+        window.addEventListener('resize', () => {
+          if (!state.hydrated) return;
+          renderControls();
+        });
       });
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () {
-        setupLanguageSwitcher();
-        setTimeout(handlePostLanguageSwitch, 100);
-        setTimeout(fixURLIfNeeded, 200);
-        setTimeout(initArticleDisplay, 350);
-      });
-    } else {
-      setupLanguageSwitcher();
-      setTimeout(handlePostLanguageSwitch, 100);
-      setTimeout(fixURLIfNeeded, 200);
-      setTimeout(initArticleDisplay, 350);
-    }
+    });
   })();
 </script>
+
 
 {% schema %}
 {
   "name": "News Section",
   "settings": [
     {
-      "type": "image_picker",
-      "id": "news_hero_background",
-      "label": "News Hero Background Image"
-    },
-    {
-      "type": "text",
-      "id": "main-heading",
-      "label": "Main Heading",
-      "default": "Latest News"
-    },
-    {
-      "type": "textarea",
-      "id": "main-description",
-      "label": "Main Description",
-      "default": "Check out the latest updates from our blog or news section."
-    },
-    {
-      "type": "page",
-      "id": "main-first-page",
-      "label": "Main First Page"
-    },
-    {
-      "type": "page",
-      "id": "main-second-page",
-      "label": "Main Second Page"
-    },
-    {
-      "type": "page",
-      "id": "main-third-page",
-      "label": "Main Third Page"
-    },
-    {
-      "type": "richtext",
-      "id": "news-heading",
-      "label": "Description for news"
-    },
-    {
-      "type": "richtext",
-      "id": "event-heading",
-      "label": "Description for event"
-    },
-    {
-      "type": "richtext",
-      "id": "travel-guide-heading",
-      "label": "Description for travel guide"
-    },
-    {
-      "type": "richtext",
-      "id": "travel-tips-heading",
-      "label": "Description for travel tips"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "news_block",
-      "name": "News Block",
-      "settings": [
-        {
-          "type": "select",
-          "id": "category",
-          "label": "Kategori tombol Readmore",
-          "options": [
-            {
-              "value": "news",
-              "label": "News"
-            },
-            {
-              "value": "event",
-              "label": "Event"
-            },
-            {
-              "value": "travel-tips",
-              "label": "Travel Tips"
-            },
-            {
-              "value": "travel-guide",
-              "label": "Travel Guide"
-            },
-            {
-              "value": "tech-guide",
-              "label": "Tech Guide"
-            }
-          ],
-          "default": "news"
-        },
-        {
-          "type": "text",
-          "id": "hero-title",
-          "label": "Hero Title",
-          "default": "Featured News"
-        },
-        {
-          "type": "richtext",
-          "id": "hero-description",
-          "label": "Hero Description",
-          "default": "<p>Read our most highlighted content here.</p>"
-        },
-        {
-          "type": "page",
-          "id": "first-page",
-          "label": "First Page"
-        },
-        {
-          "type": "page",
-          "id": "second-page",
-          "label": "Second Page"
-        },
-        {
-          "type": "page",
-          "id": "thrid-page",
-          "label": "Third Page"
-        },
-        {
-          "type": "checkbox",
-          "id": "show-button",
-          "label": "Tampilkan tombol Readmore",
-          "default": true
-        },
-        {
-          "type": "image_picker",
-          "id": "hero-background",
-          "label": "Hero Background Image"
-        }
+      "type": "radio",
+      "label": "View Type",
+      "id": "view_type",
+      "default": "top",
+      "options": [
+        { "value": "top", "label": "Top 3" },
+        { "value": "all", "label": "All" }
       ]
     }
   ],
   "presets": [
     {
       "name": "News Section",
-      "category": "Custom",
-      "blocks": [
-        {
-          "type": "news_block"
-        }
-      ]
+      "category": "Custom Sections"
     }
   ]
 }

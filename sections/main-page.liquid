@@ -30,9 +30,9 @@
   }
 
   #summary {
-    /* list-style-type: none; */
     margin-left: 17px;
     color: var(--color-primary);
+    list-style-type: disc;
   }
 
   #summary li {
@@ -56,6 +56,7 @@
     flex: 2;
     min-width: 0;
   }
+
   .pages-content__latest {
     display: flex;
     gap: 20px;
@@ -114,6 +115,7 @@
   .page-content__title {
     color: var(--color-primary);
     font-weight: bold;
+    font-size: 24px;
     margin-top: 0;
   }
 
@@ -123,6 +125,65 @@
     border-radius: 15px;
   }
 
+  /* =========================
+     SPACING FIX (Y spacing)
+     ========================= */
+  .pages-content__wrapper .pages-article__date {
+    margin: 15px 0;
+  }
+
+  .pages-content__wrapper .page-content__wrapper {
+    margin-top: 16px;
+  }
+
+  .page-content__wrapper > * + * {
+    margin-top: 14px;
+  }
+
+  .page-content__wrapper h2,
+  .page-content__wrapper h3 {
+    margin-top: 28px;
+    margin-bottom: 10px;
+  }
+
+  .page-content__wrapper p,
+  .page-content__wrapper ul,
+  .page-content__wrapper ol {
+    margin: 0 0 12px;
+    font-size: 16px;
+  }
+
+  /* =========================
+   FIX: LIST (UL/OL) di page content tetap tampil bullet/number
+   ========================= */
+  .page-content__wrapper ul,
+  .page-content__wrapper ol {
+    padding-left: 1.25em; /* biar ada indent */
+    margin-left: 0; /* optional */
+    list-style-position: outside;
+  }
+
+  .page-content__wrapper ul {
+    list-style-type: disc !important; /* paksa bullet muncul */
+  }
+
+  .page-content__wrapper ol {
+    list-style-type: decimal !important; /* angka untuk ordered list */
+  }
+
+  /* pastikan li tetap jadi list-item (kadang di-reset theme) */
+  .page-content__wrapper li {
+    display: list-item;
+  }
+
+  /* optional: nested list biar lebih rapi */
+  .page-content__wrapper ul ul {
+    list-style-type: circle !important;
+  }
+  .page-content__wrapper ul ul ul {
+    list-style-type: square !important;
+  }
+
   .page-content__wrapper {
     color: var(--color-primary);
   }
@@ -130,16 +191,21 @@
   .page-content__wrapper h2 {
     color: var(--color-primary);
     font-weight: bold;
+    font-size: 20px;
   }
+
   .page-content__wrapper h3 {
     color: var(--color-primary);
     font-weight: bold;
+    font-size: 18px;
   }
 
   .page-content__wrapper img {
     max-width: 100%;
     height: auto;
     border-radius: 15px;
+    cursor: zoom-in;
+    display: block;
   }
 
   .page-content__wrapper a {
@@ -151,66 +217,6 @@
   .page-content__wrapper a:focus {
     color: #0084b6;
     text-decoration: underline;
-  }
-
-  .pages-product {
-    width: 1200px;
-    display: flex;
-    gap: 50px;
-    flex-direction: column;
-    position: sticky;
-    top: 20px;
-    align-self: flex-start;
-    height: fit-content;
-    flex-shrink: 0;
-  }
-
-  .pages-related__product {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .pages-product__image {
-    display: flex;
-    align-items: center;
-  }
-
-  .pages-product__image img {
-    border-radius: 10px;
-    border: 1px solid var(--color-border);
-  }
-
-  .pages-product__link {
-    text-decoration: none;
-  }
-
-  .pages-product__wrapper {
-    background-color: var(--color-neutral);
-    border-radius: 10px;
-    padding: 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    transition: transform 0.3s ease;
-  }
-
-  .pages-product__wrapper:hover {
-    box-shadow: var(--box-shadow);
-    transform: translateY(-5px);
-  }
-
-  .pages-product__info p {
-    margin: 0;
-    line-height: 1.2;
-  }
-
-  .pages-product__title {
-    color: var(--color-primary);
-  }
-
-  .pages-product__price {
-    color: var(--color-secondary);
   }
 
   .pages-title {
@@ -230,7 +236,6 @@
 
   .pages-article__title {
     margin: 0;
-    font-size: var(--font-supper-large);
     color: var(--color-primary);
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -337,10 +342,9 @@
     color: #333;
   }
 
-  .page-content__wrapper img {
-    cursor: zoom-in;
-  }
-
+  /* =========================
+     MOBILE / RESPONSIVE LAYOUT
+     ========================= */
   @media (max-width: 1024px) {
     .pages-wrapper {
       flex-direction: column;
@@ -355,45 +359,110 @@
   }
 
   @media (max-width: 768px) {
+    .page-content__title {
+      font-size: 20px;
+    }
+
     .pages-wrapper {
       flex-direction: column;
-      padding: 60px 24px 50px;
+      padding: 60px 16px 50px; /* lebih kecil biar gak kepotong */
       gap: 1px;
     }
+
+    .pages-content__wrapper {
+      padding: 15px 16px; /* padding card diperkecil di mobile */
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
     .pages-content__latest {
       display: flex;
       flex-direction: column;
     }
+
     .pages-content__next-container h2 {
       text-align: left;
     }
+
     .pages-summary {
       display: none;
     }
+
     .image-modal__inner {
       padding: 8px;
     }
   }
 
-  @media (max-width: 426px) {
-    .pages-wrapper {
-      flex-direction: column;
-      padding: 60px 24px 50px;
-      gap: 1px;
+  /* =========================
+     FIX MOBILE TERPOTONG (overflow)
+     ========================= */
+  .pages-container,
+  .pages-wrapper,
+  .pages-content,
+  .pages-content__wrapper,
+  .page-content__wrapper {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .pages-wrapper,
+  .pages-content__wrapper,
+  .page-content__wrapper {
+    overflow-x: hidden;
+  }
+
+  .page-content__wrapper {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* =========================
+     TABLE BORDER + RESPONSIVE
+     ========================= */
+  .page-content__wrapper table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+  }
+
+  .page-content__wrapper th,
+  .page-content__wrapper td {
+    border: 1px solid var(--color-border) !important;
+    padding: 10px 12px;
+    vertical-align: top;
+  }
+
+  .page-content__wrapper th {
+    font-weight: 700;
+  }
+
+  /* kalau tabel kepanjangan di mobile, scroll horizontal */
+  @media (max-width: 768px) {
+    .page-content__wrapper table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
-    .pages-content__latest {
-      display: flex;
-      flex-direction: column;
-    }
-    .pages-content__next-container h2 {
-      text-align: left;
-    }
-    .pages-summary {
-      display: none;
-    }
-    .image-modal__inner {
-      padding: 8px;
-    }
+  }
+
+  /* Spacing untuk card Previous & Next */
+  .pages-content__prev a,
+  .pages-content__next a {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* jarak antara image dan blok text */
+  }
+
+  /* Jarak antara title dan date */
+  .pages-content__prev .pages-article__title,
+  .pages-content__next .pages-article__title {
+    margin: 0 0 8px; /* 8px jarak ke date */
+  }
+
+  .pages-content__prev .pages-article__date,
+  .pages-content__next .pages-article__date {
+    margin: 0;
   }
 {% endstyle %}
 
@@ -474,8 +543,6 @@
           {% for related_page in page.metafields.latest.article.value %}
             <div class="related-article">
               <a href="{{ related_page.url }}">
-                {% assign content = related_page.content | strip_html %}
-
                 {% assign first_image = null %}
                 {% assign img_tag_parts = related_page.content | split: '<img' %}
 
@@ -508,55 +575,7 @@
 
       {% comment %}
         <section class="pages-product">
-          {% assign related_product = page.metafields.related.product %}
-          {% assign country = product.metafields.coverage.country.value %}
-          {% assign recomendation_product = page.metafields.recomendation.product %}
-
-          <div class="pages-related__product">
-            <h2>Related Products</h2>
-            {% if related_product %}
-              {% for related_product in related_product.value %}
-                {% assign country = related_product.metafields.coverage.country.value.first %}
-                <a class="pages-product__link" href="{{ related_product.url }}">
-                  <div class="pages-product__wrapper">
-                    <div class="pages-product__image">
-                      {% if country %}
-                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
-                      {% endif %}
-                    </div>
-                    <div class="pages-product__info">
-                      <p class="pages-product__title">{{ related_product.title }}</p>
-                      <p class="pages-product__price">Start From {{ related_product.price | money_with_currency }}</p>
-                    </div>
-                  </div>
-                </a>
-              {% endfor %}
-            {% endif %}
-          </div>
-
-          <div class="pages-related__product">
-            <h2>Recommendation Products</h2>
-            {% if page.metafields.recomendation.product %}
-              {% assign collection = page.metafields.recomendation.product.value %}
-              {% assign products = collection.products %}
-              {% for product in products limit: 5 %}
-                {% assign country = product.metafields.coverage.country.value.first %}
-                <a class="pages-product__link" href="{{ product.url }}">
-                  <div class="pages-product__wrapper">
-                    <div class="pages-product__image">
-                      {% if country %}
-                        <img src="{{ country | append: '.svg' | file_url }}" height="40px" width="40px">
-                      {% endif %}
-                    </div>
-                    <div class="pages-product__info">
-                      <p class="pages-product__title">{{ product.title }}</p>
-                      <p class="pages-product__price">Start From {{ product.price | money_with_currency }}</p>
-                    </div>
-                  </div>
-                </a>
-              {% endfor %}
-            {% endif %}
-          </div>
+          ...
         </section>
       {% endcomment %}
     </section>
@@ -565,13 +584,7 @@
 
 <div id="imageModal" class="image-modal" aria-hidden="true">
   <div class="image-modal__inner">
-    <button
-      type="button"
-      class="image-modal__close"
-      aria-label="Close image preview"
-    >
-      &times;
-    </button>
+    <button type="button" class="image-modal__close" aria-label="Close image preview">&times;</button>
     <img src="" alt="" class="image-modal__img">
     <p class="image-modal__caption"></p>
   </div>
@@ -680,42 +693,52 @@
   });
 </script>
 
+<!--
+  =========================================================
+  LINK RULES (FINAL):
+  - SEMUA link di konten page (.page-content__wrapper) => TAB BARU
+  - Kecuali anchor (#), mailto:, tel:
+  Support: theme editor / konten berubah
+  =========================================================
+-->
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const internalDomain = 'gkomunika.com';
+  (function () {
+    function applyBlankForAllContentLinks() {
+      const container = document.querySelector('.page-content__wrapper');
+      if (!container) return;
 
-    document.querySelectorAll('.page-content__wrapper a[href]').forEach(function (link) {
-      const href = link.getAttribute('href');
+      container.querySelectorAll('a[href]').forEach((link) => {
+        const href = link.getAttribute('href');
 
-      if (
-        !href ||
-        href.startsWith('#') ||
-        href.startsWith('javascript:') ||
-        href.startsWith('mailto:') ||
-        href.startsWith('tel:')
-      ) {
-        return;
-      }
+        if (
+          !href ||
+          href.startsWith('#') ||
+          href.startsWith('javascript:') ||
+          href.startsWith('mailto:') ||
+          href.startsWith('tel:')
+        ) {
+          return;
+        }
 
-      let url;
-      try {
-        url = new URL(href, window.location.origin);
-      } catch (e) {
-        return;
-      }
-
-      const isInternal =
-        url.hostname === '' || url.hostname === window.location.hostname || url.hostname.endsWith(internalDomain);
-
-      if (isInternal) {
-        link.removeAttribute('target');
-        link.removeAttribute('rel');
-      } else {
         link.setAttribute('target', '_blank');
         link.setAttribute('rel', 'noopener noreferrer');
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyBlankForAllContentLinks();
+
+      const container = document.querySelector('.page-content__wrapper');
+      if (container) {
+        const mo = new MutationObserver(() => applyBlankForAllContentLinks());
+        mo.observe(container, { childList: true, subtree: true });
       }
     });
-  });
+
+    document.addEventListener('shopify:section:load', () => {
+      applyBlankForAllContentLinks();
+    });
+  })();
 </script>
 
 {% schema %}

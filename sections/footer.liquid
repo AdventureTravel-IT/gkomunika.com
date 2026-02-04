@@ -1,23 +1,23 @@
 {{ 'section-footer.css' | asset_url | stylesheet_tag }}
+
 <div class="footer">
   <div class="footer-container__wrapper">
     <section class="footer__address">
       {% if section.settings.logo != blank %}
-        <img
-          class="footer__logo"
-          src="{{ section.settings.logo | img_url: 'master' }}"
-          width="208px"
-          height="70px"
-          alt="Site Logo"
-          loading="lazy"
-        >
+        {{
+          section.settings.logo
+          | image_url: width: 364
+          | image_tag:
+            class: 'footer__logo',
+            loading: 'lazy',
+            alt: 'Status Global Komunika',
+            widths: '208, 364, 416, 728',
+            sizes: '(max-width: 768px) 208px, 364px'
+        }}
+
         <div class="footer__address-text">
           <h2 class="footer__heading-title address">{{ section.settings.heading }}</h2>
-          <a
-            href="{{ section.settings.short_link }}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="{{ section.settings.short_link }}" target="_blank" rel="noopener noreferrer">
             <p class="footer__heading-desc">{{ section.settings.address }}</p>
           </a>
         </div>

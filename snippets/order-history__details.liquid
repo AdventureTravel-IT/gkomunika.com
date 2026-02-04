@@ -156,14 +156,78 @@
   .oh-details__product-link {
     text-decoration: underline;
   }
+  .oh-details__date-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .oh-details__status {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 8px 15px;
+    border-radius: 999px;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    color: #fff;
+  }
+
+  /* Variasi warna (sesuaikan kalau perlu) */
+  .oh-details__status--cancelled {
+    background: #e53935;
+  }
+  .oh-details__status--pending {
+    background: #f59e0b;
+  }
+  .oh-details__status--paid {
+    background: #16a34a;
+  }
+  .oh-details__status--processing {
+    background: #2563eb;
+  }
+  .oh-details__status--fulfilled {
+    background: #0ea5e9;
+  }
 {% endstyle %}
 
 <div class="oh-details__container">
   <section class="oh-details__card">
-    <div class="oh-details__date">
-      {{- 'border-inv.svg' | inline_asset_content -}}
-      <h2 class="oh-details__date-title">{{ order.created_at | date: '%d/%m/%Y %H:%M' }}</h2>
+    <div class="oh-details__date-block">
+      <div class="oh-details__date">
+        {{- 'border-inv.svg' | inline_asset_content -}}
+        <h2 class="oh-details__date-title">{{ order.created_at | date: '%d/%m/%Y %H:%M' }}</h2>
+      </div>
+
+      {%- liquid
+        assign status_text = ''
+        assign status_class = ''
+
+        if order.cancelled_at
+          assign status_text = 'Cancelled'
+          assign status_class = 'oh-details__status--cancelled'
+        elsif order.financial_status == 'paid'
+          assign status_text = 'Paid'
+          assign status_class = 'oh-details__status--paid'
+        elsif order.financial_status == 'pending' or order.financial_status == 'authorized'
+          assign status_text = 'Pending'
+          assign status_class = 'oh-details__status--pending'
+        elsif order.fulfillment_status == 'fulfilled'
+          assign status_text = 'Fulfilled'
+          assign status_class = 'oh-details__status--fulfilled'
+        else
+          assign status_text = 'Processing'
+          assign status_class = 'oh-details__status--processing'
+        endif
+      -%}
+
+      {% if status_text != blank %}
+        <span class="oh-details__status {{ status_class }}">{{ status_text }}</span>
+      {% endif %}
     </div>
+
     <h2 class="oh-details__date-id">#{{ order.name }}</h2>
   </section>
 

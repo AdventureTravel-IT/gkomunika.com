@@ -9,6 +9,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Gotham", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial", "sans-serif"],
+      },
       colors: {
         primary: "rgb(var(--color-primary-rgb) / <alpha-value>)",
         secondary: "rgb(var(--color-secondary-rgb) / <alpha-value>)",

@@ -1,118 +1,178 @@
-{{ 'component-accordion.css' | asset_url | stylesheet_tag }}
-{{ 'collapsible-content.css' | asset_url | stylesheet_tag }}
-
-{%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+<style>
+  /* Scope: hanya untuk section FAQ ini */
+  [data-gk-faq] .gk-rte p {
+    margin: 0 0 10px;
   }
 
-  @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
+  /* Bullet list */
+  [data-gk-faq] .gk-rte ul,
+  [data-gk-faq] .gk-rte ol {
+    margin: 10px 0;
+    padding-left: 22px; /* indent bullet */
   }
-{%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="collapsible-content collapsible-{{ section.settings.layout }}-layout isolate{% if section.settings.layout == 'section' %} page-width{% elsif section.settings.layout == 'none' %} content-container content-container--full-width{% endif %}">
-    <div class="collapsible-content__wrapper section-{{ section.id }}-padding{% if section.settings.layout == 'section' %} content-container color-{{ section.settings.container_color_scheme }} gradient{% endif %}">
-      <div class="{% if section.settings.image == blank %}collapsible-content-wrapper-narrow{% else %}page-width{% endif %}">
-        <div
-          class="collapsible-content__header{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-          style="text-align: {{ section.settings.heading_alignment }};"
-        >
-          {%- if section.settings.caption != blank -%}
-            <p class="caption-with-letter-spacing">
-              {{ section.settings.caption | escape }}
-            </p>
+  [data-gk-faq] .gk-rte ul {
+    list-style: disc;
+  }
+
+  [data-gk-faq] .gk-rte ol {
+    list-style: decimal;
+  }
+
+  [data-gk-faq] .gk-rte li {
+    margin: 6px 0;
+  }
+
+  /* Link / text primary */
+  [data-gk-faq] .gk-rte a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    /* Dawn (umum): accent */
+    color: rgb(var(--color-base-accent-1));
+  }
+
+  [data-gk-faq] .gk-rte a:hover {
+    opacity: 0.85;
+  }
+</style>
+
+
+<section data-gk-faq="{{ section.id }}" class="py-6">
+  <div class="max-w-[980px] mx-auto px-4">
+    <div>
+      {% if section.settings.heading != blank %}
+        <h2 class="text-[28px] text-primary font-extrabold mb-3.5">
+          {{ section.settings.heading }}
+        </h2>
+      {% endif %}
+
+      <div class="w-full" role="region" aria-label="FAQ">
+        {% for block in section.blocks %}
+          {% assign idx = forloop.index0 %}
+          {% assign is_open = false %}
+          {% if section.settings.open_first_collapsible_row and forloop.first %}
+            {% assign is_open = true %}
           {% endif %}
-          {%- if section.settings.heading != blank -%}
-            <h2 class="collapsible-content__heading inline-richtext {{ section.settings.heading_size }}">
-              {{ section.settings.heading }}
-            </h2>
-          {%- else -%}
-            <h2 class="visually-hidden">{{ 'accessibility.collapsible_content_title' | t }}</h2>
-          {% endif %}
-        </div>
-        <div class="grid grid--1-col grid--2-col-tablet collapsible-content__grid{% if section.settings.desktop_layout == 'image_second' %} collapsible-content__grid--reverse{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-          {%- if section.settings.image != blank -%}
-            <div class="grid__item collapsible-content__grid-item">
-              <div
-                class="collapsible-content__media collapsible-content__media--{{ section.settings.image_ratio }} media global-media-settings gradient"
-                {% if section.settings.image_ratio == 'adapt' %}
-                  style="padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;"
-                {% endif %}
+
+          {% assign content_id = 'gk-faq-content-' | append: section.id | append: '-' | append: idx %}
+          {% assign trigger_id = 'gk-faq-trigger-' | append: section.id | append: '-' | append: idx %}
+
+          <div class="border-b border-black/10 last:border-b-0" {{ block.shopify_attributes }}>
+            <button
+              type="button"
+              id="{{ trigger_id }}"
+              aria-controls="{{ content_id }}"
+              aria-expanded="{% if is_open %}true{% else %}false{% endif %}"
+              data-gk-trigger
+              class="w-full flex items-center justify-start gap-3 py-3.5 bg-transparent border-0 text-left cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-4 rounded-lg"
+            >
+              <span class="text-lg text-primary leading-snug break-words">
+                {{ block.settings.heading }}
+              </span>
+
+              <span
+                aria-hidden="true"
+                class="ml-auto text-lg leading-none transition-transform duration-200 [button[aria-expanded='true']_&]:rotate-180"
               >
-                {%- liquid
-                  assign padding_multiplier = 1
-                  if section.settings.layout == 'section'
-                    assign padding_multiplier = 2
-                  endif
-                  assign desktop_tablet_padding = 100 | times: padding_multiplier | append: 'px'
-                  assign mobile_padding = 30 | times: padding_multiplier | append: 'px'
-                -%}
-                {%- capture sizes -%}
-                  (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ desktop_tablet_padding }}) / 2),
-                  (min-width: 750px) calc((100vw - {{ desktop_tablet_padding }}) / 2),
-                  calc(100vw - {{ mobile_padding }})
-                {%- endcapture -%}
-                {{
-                  section.settings.image
-                  | image_url: width: 3200
-                  | image_tag:
-                    sizes: sizes,
-                    widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200'
-                }}
+                ▾
+              </span>
+            </button>
+
+            <div
+              id="{{ content_id }}"
+              role="region"
+              aria-labelledby="{{ trigger_id }}"
+              {% unless is_open %}
+                hidden
+              {% endunless %}
+              data-gk-content
+              class="overflow-hidden"
+            >
+              <div class="pb-3.5 text-base leading-relaxed gk-rte text-primary">
+                {%- if block.settings.page != blank -%}
+                  {{ pages[block.settings.page].content }}
+                {%- else -%}
+                  {{ block.settings.row_content }}
+                {%- endif -%}
               </div>
             </div>
-          {% endif %}
-          <div class="grid__item">
-            {%- for block in section.blocks -%}
-              <div
-                class="accordion{% if section.settings.layout == 'row' %} content-container color-{{ section.settings.container_color_scheme }} gradient{% endif %}"
-                {{ block.shopify_attributes }}
-              >
-                <details
-                  id="Details-{{ block.id }}-{{ section.id }}"
-                  {% if section.settings.open_first_collapsible_row and forloop.first %}
-                    open
-                  {% endif %}
-                >
-                  <summary id="Summary-{{ block.id }}-{{ section.id }}">
-                    {% render 'icon-accordion', icon: block.settings.icon %}
-                    <h3 class="accordion__title inline-richtext h3">
-                      <strong>{{ block.settings.heading | default: block.settings.page.title | escape }}</strong>
-                    </h3>
-                    {{- 'icon-caret.svg' | inline_asset_content -}}
-                  </summary>
-                  <div
-                    class="accordion__content rte"
-                    id="CollapsibleAccordion-{{ block.id }}-{{ section.id }}"
-                    role="region"
-                    aria-labelledby="Summary-{{ block.id }}-{{ section.id }}"
-                  >
-                    {{ block.settings.row_content }}
-                    {{ block.settings.page.content }}
-                  </div>
-                </details>
-              </div>
-            {%- endfor -%}
           </div>
-        </div>
+        {% endfor %}
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('a[href*="shopee"], a[href*="tokopedia"]').forEach(function (link) {
-      link.setAttribute('target', '_blank');
-      link.setAttribute('rel', 'noopener noreferrer');
+  (function () {
+    const root = document.querySelector('[data-gk-faq="{{ section.id }}"]');
+    if (!root) return;
+
+    const list = root.querySelector('[role="region"][aria-label="FAQ"]');
+    if (!list) return;
+
+    const allowMultiple = false;
+
+    function animateOpen(panel) {
+      panel.hidden = false;
+      panel.style.height = 'auto';
+      const h = panel.scrollHeight;
+      panel.style.height = '0px';
+      panel.offsetHeight;
+      panel.style.transition = 'height 200ms ease';
+      panel.style.height = h + 'px';
+      panel.addEventListener('transitionend', function onEnd() {
+        panel.style.height = 'auto';
+        panel.style.transition = '';
+        panel.removeEventListener('transitionend', onEnd);
+      });
+    }
+
+    function animateClose(panel) {
+      panel.style.height = panel.scrollHeight + 'px';
+      panel.offsetHeight;
+      panel.style.transition = 'height 200ms ease';
+      panel.style.height = '0px';
+      panel.addEventListener('transitionend', function onEnd() {
+        panel.hidden = true;
+        panel.style.height = '';
+        panel.style.transition = '';
+        panel.removeEventListener('transitionend', onEnd);
+      });
+    }
+
+    function closeAllExcept(exceptTrigger) {
+      const triggers = root.querySelectorAll('[data-gk-trigger]');
+      triggers.forEach((t) => {
+        if (t === exceptTrigger) return;
+        if (t.getAttribute('aria-expanded') === 'true') {
+          const panel = document.getElementById(t.getAttribute('aria-controls'));
+          t.setAttribute('aria-expanded', 'false');
+          if (panel) animateClose(panel);
+        }
+      });
+    }
+
+    root.addEventListener('click', function (e) {
+      const trigger = e.target.closest('[data-gk-trigger]');
+      if (!trigger) return;
+
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      const panel = document.getElementById(trigger.getAttribute('aria-controls'));
+      if (!panel) return;
+
+      if (!allowMultiple) closeAllExcept(trigger);
+
+      if (isOpen) {
+        trigger.setAttribute('aria-expanded', 'false');
+        animateClose(panel);
+      } else {
+        trigger.setAttribute('aria-expanded', 'true');
+        animateOpen(panel);
+      }
     });
-  });
+  })();
 </script>
 
 {% schema %}

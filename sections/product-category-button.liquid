@@ -1,8 +1,8 @@
 {% comment %} overflow-x-visible scroll-smooth {% endcomment %}
 <section class="max-w-[1920px] mx-auto">
-  <div class="pt-12 px-[24px] md:px-[10%] flex gap-4 items-center justify-start">
+  <div class="pt-8 px-[24px] md:px-[10%] flex gap-[5px] md:gap-4 items-center justify-start">
     
-    <a href="/pages/esim-page?sim_type=esim"
+    <a href="/pages/product-category?q=insurance"
       class="bg-primary text-neutral flex items-center justify-center gap-2
              rounded-[15px] h-[52px] w-[120px] md:w-auto md:px-5 px-4">
       {% render 'icon-qr-code', class: 'text-neutral h-[24px] w-[24px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
@@ -11,7 +11,7 @@
       </span>
     </a>
 
-    <a href="/pages/esim-page?sim_type=sim-card"
+    <a href="/pages/product-category?q=sim-card"
       class="bg-primary text-neutral flex items-center justify-center gap-2
              rounded-[15px] h-[52px] w-[120px] md:w-auto md:px-5 px-4">
       {% render 'icon-simcard', class: 'text-neutral h-[24px] w-[24px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
@@ -20,7 +20,7 @@
       </span>
     </a>
 
-    <a href="/pages/esim-page?sim_type=insurance"
+    <a href="/pages/product-category?q=insurance"
       class="bg-primary text-neutral flex items-center justify-center gap-2
              rounded-[15px] h-[52px] w-[120px] md:w-auto md:px-5 px-4">
       {% render 'icon-insurance', class: 'text-neutral h-[24px] w-[24px] md:h-[40px] md:w-[40px] flex-shrink-0' %}

@@ -11,7 +11,7 @@
   "homepage": {
     "popular_country": {
       "heading": "Popular Countries",
-      "heading_all": "All Destination",
+      "heading_all": "All Destinations",
       "details": {
         "cta": "Show All Destinations",
         "empty": "No popular products found.",
@@ -613,7 +613,7 @@
       "days": "Days",
       "days_insurance": "Up to 31 Days",
       "price": "Price",
-      "price_from_prefix": "From",
+      "price_from_prefix": "Start From",
       "button_gsim": "Choose Plan",
       "button_default": "Buy Now",
       "esim_label": "eSIM"

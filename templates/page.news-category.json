@@ -21,16 +21,7 @@
       "type": "news",
       "name": "News Section",
       "settings": {
-        "news_hero_background": "shopify://shop_images/hero-shot.jpg",
-        "main-heading": "Latest News",
-        "main-description": "Check out the latest updates from our blog or news section.",
-        "main-first-page": "",
-        "main-second-page": "",
-        "main-third-page": "",
-        "news-heading": "<p>Latest updates on travel, airlines, airport rules, and tourism trends.</p>",
-        "event-heading": "<p>Find festivals, local events, and seasonal highlights worth visiting.</p>",
-        "travel-guide-heading": "<p>Explore top sights, local eats, and things to do at every destination.</p>",
-        "travel-tips-heading": "<p>Smart tips for easier, cheaper, and more enjoyable travel.</p>"
+        "view_type": "all"
       }
     }
   },

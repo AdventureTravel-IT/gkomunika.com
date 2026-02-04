@@ -9,14 +9,6 @@
  */
 {
   "sections": {
-    "custom_image_banner_bXkiFH": {
-      "type": "custom-image-banner",
-      "name": "Banner-search",
-      "settings": {
-        "heading_text": "All Destinations",
-        "subheading_text": "Find your perfect travel data plan and stay seamlessly connected in over 180 countries."
-      }
-    },
     "main": {
       "type": "main-page",
       "disabled": true,
@@ -25,15 +17,16 @@
         "padding_bottom": 28
       }
     },
-    "product_category_pages_AKaqTj": {
-      "type": "product-category-pages",
-      "name": "Product Category Pages",
-      "settings": {}
+    "main_search_KUAam8": {
+      "type": "main-search",
+      "name": "Main Search",
+      "settings": {
+        "search_type": "category"
+      }
     }
   },
   "order": [
-    "custom_image_banner_bXkiFH",
     "main",
-    "product_category_pages_AKaqTj"
+    "main_search_KUAam8"
   ]
 }

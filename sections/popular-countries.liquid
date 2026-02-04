@@ -317,7 +317,7 @@
 
                       <a
                         href="{{ routes.search_url }}?q={{ country_name | replace: '_', ' ' | url_encode }}"
-                        class="flex items-center justify-between bg-neutral rounded-[15px] p-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all{% if shown_top > 5 %} top-hidden{% endif %}"
+                        class="flex items-center justify-between bg-neutral rounded-[15px] py-[8px] px-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all{% if shown_top > 5 %} top-hidden{% endif %}"
                       >
                         {%- assign flag_filename = flag_out | split: '/' | last -%}
                         <div class="flex items-center gap-[10px]">
@@ -332,10 +332,10 @@
                             >
                           </div>
                           <div class="flex-1">
-                            <span class="text-primary text-[16px] font-bold line-clamp-1">
+                            <span class="text-primary text-[18px] font-bold line-clamp-1">
                               {{- country_name | replace: '_', ' ' -}}
                             </span>
-                            <p class="text-primary text-[14px]"><span>Start From </span>{{ min_price | money }}</p>
+                            <p class="text-primary text-[14px] line-clamp-1"><span>Start From </span>{{ min_price | money_with_currency }}</p>
                           </div>
                         </div>
 
@@ -358,7 +358,7 @@
                 {%- if flag_out != blank -%}
                   <a
                     href="{{ routes.search_url }}?q={{ country_name | replace: '_', ' ' | url_encode }}"
-                    class="flex items-center justify-between bg-neutral rounded-[15px] p-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all"
+                    class="flex items-center justify-between bg-neutral rounded-[15px] py-[8px] px-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all"
                   >
                     {%- assign flag_filename = flag_out | split: '/' | last -%}
                     <div class="flex items-center gap-[10px]">
@@ -373,10 +373,10 @@
                         >
                       </div>
                       <div class="flex-1">
-                        <span class="text-primary text-[16px] font-bold line-clamp-1">
+                        <span class="text-primary text-[18px] font-bold line-clamp-1">
                           {{- country_name | replace: '_', ' ' -}}
                         </span>
-                        <p class="text-primary text-[14px]"><span>Start From </span>{{ min_price | money }}</p>
+                        <p class="text-primary text-[14px] line-clamp-1"><span>Start From </span>{{ min_price | money_with_currency }}</p>
                       </div>
                     </div>
 
@@ -439,7 +439,7 @@
 
                 <a
                   href="{{ routes.search_url }}?q={{ region_name | replace: '_', ' ' | url_encode }}"
-                  class="flex items-center justify-between bg-neutral rounded-[15px] p-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all"
+                  class="flex items-center justify-between bg-neutral rounded-[15px] py-[8px] px-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all"
                 >
                   <div class="flex items-center gap-[10px]">
                     {%- if reg_flag_out != blank -%}
@@ -457,10 +457,10 @@
                     {%- endif -%}
 
                     <div class="flex-1">
-                      <span class="text-primary text-[16px] font-bold line-clamp-1">
+                      <span class="text-primary text-[18px] font-bold line-clamp-1">
                         {{- region_name | replace: '_', ' ' -}}
                       </span>
-                      <p class="text-primary text-[14px]"><span>Start From </span>{{ min_price | money }}</p>
+                      <p class="text-primary text-[14px] line-clamp-1"><span>Start From </span>{{ min_price | money_with_currency }}</p>
                     </div>
                   </div>
 
@@ -478,7 +478,7 @@
 
                 <a
                   href="{{ routes.search_url }}?q={{ region_name | replace: '_', ' ' | url_encode }}"
-                  class="flex items-center justify-between bg-neutral rounded-[15px] p-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all"
+                  class="flex items-center justify-between bg-neutral rounded-[15px] py-[8px] px-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all"
                 >
                   <div class="flex items-center gap-[10px]">
                     {%- if reg_flag_out != blank -%}
@@ -496,10 +496,10 @@
                     {%- endif -%}
 
                     <div class="flex-1">
-                      <span class="text-primary text-[16px] font-bold line-clamp-1">
+                      <span class="text-primary text-[18px] font-bold line-clamp-1">
                         {{- region_name | replace: '_', ' ' -}}
                       </span>
-                      <p class="text-primary text-[14px]"><span>Start From </span>{{ min_price | money }}</p>
+                      <p class="text-primary text-[14px] line-clamp-1"><span>Start From </span>{{ min_price | money_with_currency }}</p>
                     </div>
                   </div>
 
@@ -514,7 +514,7 @@
       {%- if section.settings.show_cta -%}
         <div class="w-full flex justify-center items-center mt-8">
           <a
-            href="/pages/all-destination"
+            href="{{ pages['all-destination'].url }}"
             class="py-[15px] w-full max-w-[320px] text-center rounded-[15px] leading-relaxed bg-primary text-neutral font-semibold text-[16px]"
           >
             {{ 'homepage.popular_country.details.cta' | t }}

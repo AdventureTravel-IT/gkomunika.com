@@ -5,11 +5,7 @@
     class="container-search"
   >
     <!-- ✅ Skeleton awal: tampil instan sebelum fetch -->
-    <div
-      class="skeleton-wrap"
-      aria-busy="true"
-      aria-live="polite"
-    >
+    <div class="skeleton-wrap" aria-busy="true" aria-live="polite">
       <div class="skeleton-header">
         <div class="sk sk-title"></div>
         <div class="sk sk-subtitle"></div>
@@ -142,12 +138,6 @@
       padding: 20px 10% 10%;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
     @media (max-width: 768px) {
       .container-search {
         padding: 20px 24px;
@@ -161,7 +151,6 @@
         grid-template-columns: repeat(1, 1fr);
       }
     }
-    /* fallback grid kalau tailwind grid-cols-3 tidak ter-load */
 
     .filter-tab.is-active {
       background: var(--color-primary);
@@ -278,11 +267,9 @@
       border-radius: 5px;
       line-height: 1;
       display: none;
-      /* default: hidden */
     }
     .included-badge.is-visible {
       display: inline-block;
-      /* muncul hanya kalau ada is-visible */
     }
 
     .countries-count.has-included {
@@ -325,13 +312,12 @@
     }
 
     .tab-scroll {
-      /* supaya tab nggak ketutup arrow */
       scroll-behavior: smooth;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE/Edge */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
     .tab-scroll::-webkit-scrollbar {
-      display: none; /* Chrome/Safari */
+      display: none;
     }
 
     .tab-scroll-arrow {
@@ -369,7 +355,6 @@
       right: 0;
     }
 
-    /* optional fade */
     .tab-scroll-fade {
       position: absolute;
       top: 0;
@@ -392,21 +377,121 @@
       right: 0;
       background: linear-gradient(270deg, var(--color-neutral), rgba(255, 255, 255, 0));
     }
+    /* value di kanan (mis. 50GB - Big Data, Start From Rp...) */
+    .benefit-value {
+      max-width: 220px; /* batas lebar */
+      white-space: normal; /* boleh turun baris */
+      overflow-wrap: anywhere; /* aman untuk kata panjang */
+      word-break: break-word;
+      text-align: right; /* tetap rata kanan */
+      line-height: 1.2;
+    }
+
+    /* opsional: kalau mau maksimal 2 baris + ellipsis */
+    .benefit-value.clamp-2 {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+
+    @media screen and (max-width: 764px) {
+      .benefit-value {
+        max-width: 180px;
+      }
+    }
   </style>
 
-  <script type="module">
+  {% comment %} category title {% endcomment %}
+  <style>
+    .simtype-title {
+      position: relative;
+      min-width: 0;
+
+      /* ✅ bikin area title punya tinggi "nyaman" + center vertical */
+      min-height: 52px; /* sesuaikan: 50–56 enak */
+      display: flex;
+      align-items: center;
+
+      /* ✅ kasih ruang atas bawah biar 2 baris gak mepet */
+      padding: 4px 0;
+      --badge-adjust: -3px;
+    }
+
+    .sim-badge {
+      position: absolute;
+      left: 0;
+
+      /* ✅ default (buat 2 baris): taruh agak atas biar tidak nabrak baris 2 */
+      top: 7px;
+
+      background: var(--color-primary);
+      color: var(--color-neutral);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    /* ✅ title: max 2 baris + spacing lebih enak */
+    .sim-title {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-primary);
+
+      /* spacing 2 baris biar lega */
+      line-height: 1.4;
+
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+
+      /* indent hanya baris pertama */
+      text-indent: calc(var(--badge-w, 90px) + var(--badge-adjust) + 12px);
+    }
+
+    /* ✅ kalau 1 baris: badge center atas–bawah */
+    .simtype-title.is-singleline .sim-badge {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* opsional: kalau 2 baris, kasih sedikit lega lagi */
+    .simtype-title.is-multiline .sim-title {
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+    
+    @media screen and (max-width: 375px) {
+      .simtype-title.is-singleline .sim-badge {
+        transform: translateY(-100%);
+      }
+    }
+
+    @media screen and (max-width: 320px) {
+      .simtype-title.is-singleline .sim-badge {
+        transform: translateY(-50%);
+      }
+    }
+  </style>
+
+  <script type="module" defer>
     // =========================
     // I18N (from Shopify locale)
     // =========================
     const I18N = {
       coverage: "{{ 'product.card.coverage' | t | escape }}",
-      countries: "{{ 'product.card.countries' | t | escape }}", // ex: "{{ count }} Negara"
-      including: "{{ 'product.card.including' | t | escape }}", // ex: "Termasuk"
+      countries: "{{ 'product.card.countries' | t | escape }}",
+      including: "{{ 'product.card.including' | t | escape }}",
       data: "{{ 'product.card.data' | t | escape }}",
       days: "{{ 'product.card.days' | t | escape }}",
       price: "{{ 'product.card.price' | t | escape }}",
       price_from_prefix: "{{ 'product.card.price_from_prefix' | t | escape }}",
-      button_gsim: "{{ 'product.card.button_gsim' | t | escape }}", // bikin key ini di locale
+      button_gsim: "{{ 'product.card.button_gsim' | t | escape }}",
     };
 
     function t(key, vars = {}) {
@@ -427,7 +512,9 @@
     ];
 
     async function fetchCollection(handle) {
-      const res = await fetch(`/collections/${handle}?view=product-api-json`);
+      const res = await fetch(`/collections/${handle}?view=product-api-json`, {
+        priority: 'high',
+      });
       if (!res.ok) return { ok: false, handle, error: 'Failed to fetch data' };
       return { ok: true, handle, json: await res.json() };
     }
@@ -480,6 +567,22 @@
       return (window.Shopify && Shopify.locale) || document.documentElement.lang || 'en';
     }
 
+    function getCoverageLabelLines(opts = {}) {
+      const locale = getLocale();
+      const isID = String(locale).toLowerCase().startsWith('id');
+
+      // default label (pakai terjemahan existing)
+      const defaultLabel = "{{ 'product.card.coverage' | t | escape }}";
+
+      // ✅ khusus single-country: Coverage + Transit / Cakupan + Transit
+      if (opts.labelMode === 'coverage_transit') {
+        return isID ? { line1: 'Cakupan', line2: '+ Transit' } : { line1: 'Coverage', line2: '+ Transit' };
+      }
+
+      // fallback: 1 baris
+      return { line1: defaultLabel, line2: '' };
+    }
+
     function getCountryNameByLocale(entry, locale) {
       const c = entry?.country || {};
       const isID = String(locale).toLowerCase().startsWith('id');
@@ -501,7 +604,6 @@
 
     function normalizeImageSrc(src = '') {
       const s = normalizeUrl(src);
-      // ✅ South Korea -> South_Korea
       return escapeHtml(String(s).replace(/\s+/g, '_'));
     }
 
@@ -516,60 +618,6 @@
 
     function getValidFlags(item) {
       return getSearchKey(item).map(getCountryFlag).filter(Boolean);
-    }
-
-    function renderCountryVisual(item) {
-      const flags = getValidFlags(item);
-      const total = flags.length;
-
-      if (total === 0) {
-        return `
-          <div class="w-[50px] h-[50px] shrink-0 border border-slate-300 overflow-hidden rounded-[15px]">
-            <div class="rounded-xl bg-slate-300 h-full w-full"></div>
-          </div>
-        `;
-      }
-
-      if (total === 1) {
-        const src = normalizeImageSrc(flags[0]);
-
-        return `
-          <div class="w-[50px] h-[50px] shrink-0 border border-slate-300 overflow-hidden rounded-[15px]">
-            <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
-          </div>
-        `;
-      }
-
-      const showCounter = total > 4;
-      const displayFlags = showCounter ? flags.slice(0, 3) : flags.slice(0, 4);
-      const remaining = total - 3;
-
-      const cellsHtml = [
-        ...displayFlags.map((f) => {
-          const src = normalizeImageSrc(f);
-
-          return `
-            <div class="border border-slate-300 bg-neutral rounded-[5px] h-[24px] w-[24px] overflow-hidden shrink-0">
-              <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
-            </div>
-          `;
-        }),
-        ...(showCounter
-          ? [
-              `
-            <div class="rounded-[5px] border border-slate-300 h-[24px] w-[24px] overflow-hidden shrink-0 flex items-center justify-center">
-              <span class="text-[11px] font-bold text-primary">+${escapeHtml(remaining)}</span>
-            </div>
-          `,
-            ]
-          : []),
-      ].join('');
-
-      return `
-        <div class="w-[50px] h-[50px] gap-0.5 items-center" style="display:grid; grid-template-columns:repeat(2,1fr);">
-          ${cellsHtml}
-        </div>
-      `;
     }
 
     // =========================
@@ -587,8 +635,23 @@
       return String(raw || '').trim();
     }
 
-    function getCoverageItems(item) {
+    // ✅ NEW: ambil primary country = country pertama yang valid (flag+name)
+    function getPrimaryCountry(item) {
       const sk = getSearchKey(item);
+      for (const entry of sk) {
+        const flag = getCountryFlag(entry);
+        const name = getCountryName(entry);
+        if (flag && name) return { name, flag };
+      }
+      return null;
+    }
+
+    // ✅ UPDATED: bisa exclude primary dari coverage
+    function getCoverageItems(item, opts = {}) {
+      const sk = getSearchKey(item);
+
+      const primary = opts.excludePrimary ? getPrimaryCountry(item) : null;
+      const primaryKey = primary ? `${primary.name}__${primary.flag}` : null;
 
       const map = new Map();
       sk.forEach((entry) => {
@@ -597,25 +660,28 @@
         if (!flag || !name) return;
 
         const key = `${name}__${flag}`;
-        if (!map.has(key)) {
-          map.set(key, { name, flag });
-        }
+
+        // ✅ skip primary jika diminta
+        if (primaryKey && key === primaryKey) return;
+
+        if (!map.has(key)) map.set(key, { name, flag });
       });
 
       return Array.from(map.values());
     }
 
-    function renderCoverageBack(item) {
-      const cov = getCoverageItems(item);
+    // ✅ UPDATED: back coverage bisa excludePrimary
+    function renderCoverageBack(item, opts = {}) {
+      const cov = getCoverageItems(item, opts);
 
       if (!cov.length) {
         return `
-      <ul class="coverage" role="list">
-        <li style="padding:10px; color: var(--color-secondary); font-weight:700;">
-          No coverage data
-        </li>
-      </ul>
-    `;
+          <ul class="coverage" role="list">
+            <li style="padding:10px; color: var(--color-secondary); font-weight:700;">
+              No coverage data
+            </li>
+          </ul>
+        `;
       }
 
       const rows = cov
@@ -624,26 +690,26 @@
           const nm = escapeText(c.name);
 
           return `
-        <li>
-          <img src="${src}" alt="${nm}" loading="lazy" />
-          <span class="text-primary text-[16px]">${nm}</span>
-        </li>
-      `;
+            <li>
+              <img src="${src}" alt="${nm}" loading="lazy" />
+              <span class="text-primary text-[16px]">${nm}</span>
+            </li>
+          `;
         })
         .join('');
 
       return `
-    <ul class="coverage" role="list">
-      ${rows}
-    </ul>
-  `;
+        <ul class="coverage" role="list">
+          ${rows}
+        </ul>
+      `;
     }
 
     // =========================
     // Included (dynamic) by alias -> country name EN/ID
     // =========================
     function buildCountryAliasMap(item) {
-      const map = {}; // aliasLower -> { en: "...", id: "..." }
+      const map = {};
       const sk = getSearchKey(item);
 
       sk.forEach((entry) => {
@@ -684,7 +750,6 @@
       }
     }
 
-    // hide kalau tidak ada included
     function updateIncludedBadges(rootEl, q) {
       const locale = getLocale();
       const cards = Array.from(rootEl.querySelectorAll('.product-card-container'));
@@ -692,62 +757,74 @@
 
       cards.forEach((card) => {
         const badge = card.querySelector('.included-badge');
-        const countSpan = card.querySelector('.countries-count'); // ✅ ambil span count
+        const countSpan = card.querySelector('.countries-count');
         if (!badge) return;
 
-        // kalau input kurang dari 2 huruf: hide
         if (qTrim.length < 2) {
           badge.textContent = '';
           badge.classList.remove('is-visible');
-          if (countSpan) countSpan.classList.remove('has-included'); // ✅ reset mb
+          if (countSpan) countSpan.classList.remove('has-included');
           return;
         }
 
         const name = resolveIncludedFromQuery(card, qTrim, locale);
 
-        // kalau tidak ketemu: hide
         if (!name) {
           badge.textContent = '';
           badge.classList.remove('is-visible');
-          if (countSpan) countSpan.classList.remove('has-included'); // ✅ reset mb
+          if (countSpan) countSpan.classList.remove('has-included');
           return;
         }
 
-        // kalau ketemu: show
         badge.textContent = `Include: ${name}`;
         badge.classList.add('is-visible');
-        if (countSpan) countSpan.classList.add('has-included'); // ✅ aktifkan mb 5px
+        if (countSpan) countSpan.classList.add('has-included');
       });
     }
 
-    function renderCoverageFieldFront(item) {
-      const cov = getCoverageItems(item);
-      if (cov.length <= 1) return '';
+    // ✅ UPDATED: coverage front count bisa exclude primary (untuk collection single-country)
+    function renderCoverageFieldFront(item, opts = {}) {
+      const cov = getCoverageItems(item, opts);
+
+      // kalau excludePrimary: tampil kalau masih ada sisa >= 1
+      // kalau normal: tampil kalau total >= 2
+      const minShow = opts.excludePrimary ? 1 : 2;
+      if (cov.length < minShow) return '';
 
       const iconWorld = "{{ 'icon-park-outline_world.svg' | asset_url }}";
-      const label = "{{ 'product.card.coverage' | t }}";
       const count = cov.length;
 
+      const { line1, line2 } = getCoverageLabelLines(opts);
+
+      // ✅ label 2 baris (seperti gambar) kalau line2 ada
+      const labelHtml = line2
+        ? `
+      <div class="flex flex-col leading-tight">
+        <h3 class="text-primary font-extrabold leading-tight">${escapeHtml(line1)}</h3>
+        <h3 class="text-primary font-extrabold leading-tight">${escapeHtml(line2)}</h3>
+      </div>
+    `
+        : `<h3 class="text-primary font-bold leading-tight">${escapeHtml(line1)}</h3>`;
+
       return `
-        <div class="py-4 w-full flex items-center justify-between border-t border-slate-300">
-          <div class="flex items-center gap-2">
-            <div class="w-[33px] h-[33px] shrink-0 flex items-center justify-center">
-              <img class="w-[30px] h-[30px]" src="${iconWorld}" alt="Icon">
-            </div>
-            <h3 class="text-primary font-bold">${escapeHtml(label)}</h3>
-          </div>
-    
-          <div class="country-total-atribut">
-            <button class="flipped-trigger w-full" type="button">
-              <span class="countries-count text-secondary leading-relaxed">
-                ${escapeHtml(t('countries', { count }))}
-              </span>
-            </button>
-              <p class="included-badge text-neutral text-[12px] text-semibold bg-secondary">
-              </p>
-          </div>
+    <div class="py-4 w-full flex items-center justify-between border-t border-slate-300">
+      <div class="flex items-center gap-2">
+        <div class="w-[33px] h-[33px] shrink-0 flex items-center justify-center">
+          <img class="w-[30px] h-[30px]" src="${iconWorld}" alt="Icon">
         </div>
-      `;
+        ${labelHtml}
+      </div>
+
+      <div class="country-total-atribut">
+        <button class="flipped-trigger w-full cursor-pointer" type="button">
+          <span class="countries-count font-semibold text-secondary leading-relaxed">
+            ${escapeHtml(t('countries', { count }))}
+          </span>
+        </button>
+        <p class="included-badge text-neutral text-[12px] min-w-full text-center text-semibold bg-secondary"></p>
+      </div>
+    </div>
+  `;
     }
 
     function hasValue(v) {
@@ -760,10 +837,10 @@
       return true;
     }
 
-    function renderBenefits(item) {
+    // ✅ UPDATED: renderBenefits terima opts dan pass ke coverage front
+    function renderBenefits(item, opts = {}) {
       const benefits = [];
 
-      // ✅ HANYA push kalau ada value
       if (hasValue(item.option2)) {
         benefits.push({
           icon: "{{ 'icon-tabler_mobiledata.svg' | asset_url }}",
@@ -780,32 +857,33 @@
         });
       }
 
-      // ✅ Price selalu tampil
       benefits.push({
         icon: "{{ 'icon-dollar.svg' | asset_url }}",
         label: t('price'),
-        value: `${t('price_from_prefix')} Rp ${formatIDR(item.price_min)}`,
+        value: `${t('price_from_prefix')} ${item.price_min_money_with_currency}`,
       });
 
       return `
-    <div class="space-y-0">
-      ${renderCoverageFieldFront(item)}
-      ${benefits
-        .map(
-          (b) => `
-          <div class="py-5 w-full flex items-center justify-between border-t border-slate-300">
-            <div class="flex items-center gap-2">
-              <div class="w-[33px] h-[33px] shrink-0 flex items-center justify-center">
-                <img class="w-[30px] h-[30px]" src="${b.icon}" alt="${escapeHtml(b.label)}">
-              </div>
-              <h3 class="text-primary font-bold">${escapeHtml(b.label)}</h3>
-            </div>
-            <h3 class="text-secondary font-bold">${escapeHtml(b.value)}</h3>
-          </div>
-        `
-        )
-        .join('')}
-    </div>
+        <div class="space-y-0">
+          ${renderCoverageFieldFront(item, opts)}
+          ${benefits
+            .map(
+              (b) => `
+                <div class="py-3 w-full flex items-center justify-between border-t border-slate-300" style="min-width:0;">
+                  <div class="flex items-center gap-2">
+                    <div class="w-[33px] h-[33px] shrink-0 flex items-center justify-center">
+                      <img class="w-[30px] h-[30px]" src="${b.icon}" alt="${escapeHtml(b.label)}">
+                    </div>
+                    <h3 class="text-primary font-bold">${escapeHtml(b.label)}</h3>
+                  </div>
+                  <h3 class="text-secondary font-bold benefit-value clamp-2">
+                    ${b.isHtml ? b.value : escapeHtml(b.value)}
+                  </h3>
+                </div>
+              `
+            )
+            .join('')}
+        </div>
       `;
     }
 
@@ -830,7 +908,7 @@
         });
       });
 
-      const desired = ['sim-card', 'esim', 'gsim', 'insurance'];
+      const desired = ['sim-card', 'esim', 'insurance'];
       const types = Array.from(set);
       const ordered = desired.filter((t) => types.includes(t));
       const extras = types.filter((t) => !desired.includes(t));
@@ -874,17 +952,83 @@
       return [...title, ...handle, ...category, ...countryTokens, ...regionTokens].join(' ').toLowerCase();
     }
 
+    // ✅ UPDATED: renderCountryVisual terima opts.primaryOnly
+    function renderCountryVisual(item, opts = {}) {
+      const flags = getValidFlags(item);
+      const total = flags.length;
+
+      // khusus single-country: selalu tampil primary saja (kalau ada)
+      if (opts.primaryOnly) {
+        const primary = getPrimaryCountry(item);
+        if (primary?.flag) {
+          const src = normalizeImageSrc(primary.flag);
+          return `
+            <div class="w-[50px] h-[50px] shrink-0 border border-slate-300 overflow-hidden rounded-[15px]">
+              <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
+            </div>
+          `;
+        }
+      }
+
+      if (total === 0) {
+        return `
+          <div class="w-[50px] h-[50px] shrink-0 border border-slate-300 overflow-hidden rounded-[15px]">
+            <div class="rounded-xl bg-slate-300 h-full w-full"></div>
+          </div>
+        `;
+      }
+
+      if (total === 1) {
+        const src = normalizeImageSrc(flags[0]);
+
+        return `
+          <div class="w-[50px] h-[50px] shrink-0 border border-slate-300 overflow-hidden rounded-[15px]">
+            <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+        `;
+      }
+
+      const showCounter = total > 4;
+      const displayFlags = showCounter ? flags.slice(0, 3) : flags.slice(0, 4);
+      const remaining = total - 3;
+
+      const cellsHtml = [
+        ...displayFlags.map((f) => {
+          const src = normalizeImageSrc(f);
+
+          return `
+            <div class="border border-slate-300 bg-neutral rounded-[5px] h-[24px] w-[24px] overflow-hidden shrink-0">
+              <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
+            </div>
+          `;
+        }),
+        ...(showCounter
+          ? [
+              `
+                <div class="rounded-[5px] border border-slate-300 h-[24px] w-[24px] overflow-hidden shrink-0 flex items-center justify-center">
+                  <span class="text-[11px] font-bold text-primary">+${escapeHtml(remaining)}</span>
+                </div>
+              `,
+            ]
+          : []),
+      ].join('');
+
+      return `
+        <div class="w-[50px] h-[50px] gap-0.5 items-center" style="display:grid; grid-template-columns:repeat(2,1fr);">
+          ${cellsHtml}
+        </div>
+      `;
+    }
+
     function renderFilterBar(types = [], mode = 'main') {
       const LABELS = {
         'sim-card': "{{ 'product.sim_type.sim_card' | t }}",
         esim: "{{ 'product.sim_type.esim' | t }}",
-        gsim: 'gSIM',
         insurance: "{{ 'product.card.insurance_label' | t }}",
       };
 
       const CATEGORY_TABS = ['esim', 'sim-card', 'insurance'];
 
-      // mode category: hanya 3 tab ini (dan tanpa "All")
       const finalTabs =
         mode === 'category' ? CATEGORY_TABS.filter((t) => types.includes(t) || CATEGORY_TABS.includes(t)) : types;
 
@@ -893,97 +1037,82 @@
           ? finalTabs
               .map(
                 (t, idx) => `
-            <button
-              class="filter-tab ${
-                idx === 0 ? 'is-active' : ''
-              } whitespace-nowrap shrink-0 pb-[5px] rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
-              data-filter="${escapeHtml(t)}"
-              type="button"
-            >
-              ${escapeHtml(LABELS[t] || t.replace(/-/g, ' '))}
-            </button>
-          `
+                  <button
+                    class="filter-tab ${
+                      idx === 0 ? 'is-active' : ''
+                    } whitespace-nowrap shrink-0 pb-[5px] rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
+                    data-filter="${escapeHtml(t)}"
+                    type="button"
+                  >
+                    ${escapeHtml(LABELS[t] || t.replace(/-/g, ' '))}
+                  </button>
+                `
               )
               .join('')
           : [
               `
-          <button
-            class="filter-tab is-active rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
-            data-filter="all"
-            type="button"
-          >
-            {{ 'search.filter.all' | t }}
-          </button>
-        `,
+                <button
+                  class="filter-tab is-active rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
+                  data-filter="all"
+                  type="button"
+                >
+                  {{ 'search.filter.all' | t }}
+                </button>
+              `,
               ...finalTabs.map(
                 (t) => `
-            <button
-              class="filter-tab rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
-              data-filter="${escapeHtml(t)}"
-              type="button"
-            >
-              ${escapeHtml(LABELS[t] || t.replace(/-/g, ' '))}
-            </button>
-          `
+                  <button
+                    class="filter-tab rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
+                    data-filter="${escapeHtml(t)}"
+                    type="button"
+                  >
+                    ${escapeHtml(LABELS[t] || t.replace(/-/g, ' '))}
+                  </button>
+                `
               ),
             ].join('');
 
       return `
-    <div class="w-full mb-5">
-      <div class="w-full md:max-w-[50%] mt-[20px] mb-[50px] md:mt-[100px] md:mb-[100px] space-y-5">
-        <div class="mb-5 space-y-5">
-          <h2 class="text-[36px] font-bold text-primary">All Destinations</h2>
-          <p class="text-primary text-[18px] tracking-wider leading-normal">
-            Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries
-          </p>
-        </div>
-    
-        <div class="relative">
-          <input
-            type="search"
-            id="realtimeSearchInput"
-            placeholder="Search Your Destination"
-            class="w-full rounded-[15px] pl-[20px] pr-[65px] py-[15px] text-primary placeholder:text-primary focus:placeholder:text-primary/80 text-primary focus:outline-none"
-          />
-          
-          <div class="absolute right-[10px] top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center bg-primary rounded-[15px] w-[45px] h-[45px] shrink-0 text-neutral">
-            {% render 'icon-search' %}
+        <div class="w-full mb-5">
+          <div class="w-full md:max-w-[50%] mt-[20px] mb-[50px] md:mt-[100px] md:mb-[100px] space-y-5">
+            <div class="mb-5 space-y-5">
+              <h2 class="text-[36px] font-bold text-primary">All Destinations</h2>
+              <p class="text-primary text-[18px] tracking-wider leading-normal">
+                Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries
+              </p>
+            </div>
+
+            <div class="relative">
+              <input
+                type="search"
+                id="realtimeSearchInput"
+                placeholder="Search Your Destination"
+                class="w-full rounded-[15px] pl-[20px] pr-[65px] py-[15px] text-primary placeholder:text-primary focus:placeholder:text-primary/80 text-primary focus:outline-none"
+              />
+
+              <div class="absolute right-[10px] top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center bg-primary rounded-[15px] w-[45px] h-[45px] shrink-0 text-neutral">
+                {% render 'icon-search' %}
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-scroll-wrap">
+            <button class="tab-scroll-arrow tab-scroll-arrow--left" type="button" aria-label="Scroll left" data-tabs-left>
+              {% render 'icon-arrow-left', class: 'text-primary' %}
+            </button>
+
+            <div class="tab-scroll px-0 flex items-center gap-2 overflow-x-auto overflow-y-hidden whitespace-nowrap" data-tabs-scroll>
+              ${tabButtons}
+            </div>
+
+            <button class="tab-scroll-arrow tab-scroll-arrow--right" type="button" aria-label="Scroll right" data-tabs-right>
+              {% render 'icon-arrow-right', class: 'text-primary' %}
+            </button>
+
+            <div class="tab-scroll-fade tab-scroll-fade--left" aria-hidden="true"></div>
+            <div class="tab-scroll-fade tab-scroll-fade--right" aria-hidden="true"></div>
           </div>
         </div>
-      </div>
-    
-      <div class="tab-scroll-wrap">
-  <button
-    class="tab-scroll-arrow tab-scroll-arrow--left"
-    type="button"
-    aria-label="Scroll left"
-    data-tabs-left
-  >
-    {% render 'icon-arrow-left', class: 'text-primary' %}
-  </button>
-
-  <div
-    class="tab-scroll px-0 flex items-center gap-2 overflow-x-auto overflow-y-hidden whitespace-nowrap"
-    data-tabs-scroll
-  >
-    ${tabButtons}
-  </div>
-
-  <button
-    class="tab-scroll-arrow tab-scroll-arrow--right"
-    type="button"
-    aria-label="Scroll right"
-    data-tabs-right
-  >
-    {% render 'icon-arrow-right', class: 'text-primary' %}
-  </button>
-
-  <!-- optional: fade biar keliatan masih bisa scroll -->
-  <div class="tab-scroll-fade tab-scroll-fade--left" aria-hidden="true"></div>
-  <div class="tab-scroll-fade tab-scroll-fade--right" aria-hidden="true"></div>
-</div>
-
-    </div>
       `;
     }
 
@@ -1013,7 +1142,6 @@
         const q = (state.q || '').trim().toLowerCase();
         const keywordActive = q.length >= 2;
 
-        // hitung jumlah hasil per tipe berdasarkan keyword saja (tanpa filter tab)
         const counts = {};
         let totalMatches = 0;
 
@@ -1031,7 +1159,6 @@
         tabs.forEach((btn) => {
           const f = (btn.getAttribute('data-filter') || '').trim();
 
-          // ✅ "All" ikut hide kalau tidak ada hasil sama sekali
           if (mode !== 'category' && f === 'all') {
             btn.style.display = totalMatches > 0 ? '' : 'none';
             return;
@@ -1041,9 +1168,7 @@
           btn.style.display = c > 0 ? '' : 'none';
         });
 
-        // kalau tab aktif sekarang hidden, pindah (kalau masih ada yang visible)
         const activeBtn = tabs.find((b) => (b.getAttribute('data-filter') || '').trim() === state.filter);
-
         const activeHidden = activeBtn && activeBtn.style.display === 'none';
         if (activeHidden) {
           const firstVisible = tabs.find((b) => b.style.display !== 'none');
@@ -1055,7 +1180,7 @@
       }
 
       function apply() {
-        updateTabsVisibility(); // ✅
+        updateTabsVisibility();
         tabScrollUI.update();
 
         const filter = state.filter;
@@ -1067,7 +1192,6 @@
           const hay = card.getAttribute('data-search-text') || '';
 
           const matchType = mode === 'category' ? cardType === filter : filter === 'all' || cardType === filter;
-
           const matchSearch = !keywordActive || hay.includes(q);
 
           card.style.display = matchType && matchSearch ? 'flex' : 'none';
@@ -1079,7 +1203,6 @@
           w.style.display = anyVisible ? 'block' : 'none';
         });
 
-        // ✅ EMPTY STATE (kalau tidak ada produk yang muncul sama sekali)
         const emptyEl = rootEl.querySelector('#noResults');
         if (emptyEl) {
           const anyCardVisible = cards.some((c) => c.style.display !== 'none');
@@ -1087,7 +1210,6 @@
         }
       }
 
-      // ===== MAIN SEARCH: sync keyword -> URL ?q= (logic lama) =====
       function setUrlQueryKeyword(qValue) {
         const u = new URL(window.location.href);
         const v = String(qValue || '').trim();
@@ -1096,14 +1218,11 @@
         history.replaceState(null, '', u);
       }
 
-      // ===== CATEGORY SEARCH: sync category -> URL ?q= =====
       function normalizeCategoryParam(v) {
         const raw = String(v || '')
           .trim()
           .toLowerCase();
-        // biar kalau user kirim "Sim Card" dll tetap kebaca
-        const norm = raw.replace(/_/g, ' ').replace(/\s+/g, '-');
-        return norm;
+        return raw.replace(/_/g, ' ').replace(/\s+/g, '-');
       }
 
       function getCategoryFromUrl() {
@@ -1116,14 +1235,10 @@
       function setUrlCategory(catValue) {
         const u = new URL(window.location.href);
         const v = normalizeCategoryParam(catValue);
-
-        // sesuai request: category pakai query `q`
         u.searchParams.set('q', v);
-
         history.replaceState(null, '', u);
       }
 
-      // ===== Tab click =====
       tabs.forEach((btn) => {
         btn.addEventListener('click', () => {
           const filter = btn.getAttribute('data-filter') || (mode === 'category' ? DEFAULT_CATEGORY : 'all');
@@ -1132,19 +1247,14 @@
           setActiveTab(state.filter);
           apply();
 
-          if (mode === 'category') {
-            // klik tab = update query category via replaceState
-            setUrlCategory(state.filter);
-          }
+          if (mode === 'category') setUrlCategory(state.filter);
         });
       });
 
-      // ===== Search input =====
       let debounce = null;
 
       if (searchInput) {
         if (mode === 'main') {
-          // INIT keyword dari URL -> input
           const urlQ = new URL(window.location.href).searchParams.get('q') || '';
           if (urlQ) {
             searchInput.value = urlQ;
@@ -1170,7 +1280,6 @@
             updateIncludedBadges(rootEl, qFromUrl);
           });
         } else {
-          // CATEGORY mode: input hanya filter lokal (tidak ganggu query `q` yg dipakai category)
           searchInput.addEventListener('input', (e) => {
             const val = e.target.value || '';
             clearTimeout(debounce);
@@ -1182,7 +1291,6 @@
           });
 
           window.addEventListener('popstate', () => {
-            // kalau user back/forward, active tab ikut URL
             const cat = getCategoryFromUrl();
             state.filter = cat;
             setActiveTab(cat);
@@ -1191,9 +1299,8 @@
         }
       }
 
-      // ===== INIT active tab =====
       if (mode === 'category') {
-        const cat = getCategoryFromUrl(); // default esim kalau tidak sesuai
+        const cat = getCategoryFromUrl();
         state.filter = cat;
         setActiveTab(cat);
       } else {
@@ -1252,7 +1359,6 @@
         scroller.scrollBy({ left: getStep(), behavior: 'smooth' });
       });
 
-      // auto scroll active tab biar keliatan saat klik
       function scrollIntoView(activeBtn) {
         if (!activeBtn) return;
         const btnRect = activeBtn.getBoundingClientRect();
@@ -1292,9 +1398,7 @@
 
       document.addEventListener('click', (event) => {
         rootEl.querySelectorAll('.product-card-container.flipped').forEach((card) => {
-          if (!card.contains(event.target)) {
-            card.classList.remove('flipped');
-          }
+          if (!card.contains(event.target)) card.classList.remove('flipped');
         });
       });
     }
@@ -1317,6 +1421,9 @@
         .map((col) => {
           const groupTitle = col.title ?? col.handle ?? 'Untitled';
 
+          // ✅ FLAG & COVERAGE RULE: hanya untuk collection single-country
+          const isSingleCountryCollection = col.handle === 'single-country';
+
           const cardsHtml = (col.items ?? [])
             .map((item) => {
               const simTypeRaw = item.category ?? 'Undefined';
@@ -1327,40 +1434,46 @@
 
               const searchText = getCardSearchText(item);
 
-              // alias->name map untuk Included dynamic
               const countryMap = buildCountryAliasMap(item);
               const countryMapStr = escapeHtml(JSON.stringify(countryMap));
 
               return `
                 <section
-                  class="product-card-container bg-neutral hover:shadow-lg transition-all rounded-[20px] p-[15px] shadow-md flex flex-col h-full"
+                  class="product-card-container bg-neutral hover:shadow-lg hover:-translate-y-[5px] transition-all rounded-[20px] p-[15px] shadow-md flex flex-col h-full"
                   data-sim-type="${escapeHtml(simType)}"
                   data-search-text="${escapeHtml(searchText)}"
                   data-country-map="${countryMapStr}"
                 >
-                  <a href="${escapeHtml(href)}" class="w-full flex items-center gap-5 h-auto mb-5">
-                    ${renderCountryVisual(item)}
-    
-                    <div>
-                      <span class="bg-primary rounded-full text-white text-xl font-semibold py-2 px-5 leading-none">
-                        Sim Type: ${escapeText(simTypeRaw)}
-                      </span>
-                      <h2 class="text-3xl text-primary font-semibold line-clamp-2">
-                        ${escapeText(itemTitle)}
-                      </h2>
+                  <a href="${escapeHtml(href)}" class="w-full flex items-center gap-3 h-auto my-1">
+                    ${renderCountryVisual(item, { primaryOnly: isSingleCountryCollection })}
+
+                    <div class="min-w-0 w-full flex items-center">
+                      <div class="simtype-title">
+                        <span class="sim-badge">
+                          ${escapeText(simTypeRaw)}
+                        </span>
+
+                        <h2 class="sim-title">
+                          ${escapeText(itemTitle)}
+                        </h2>
+                      </div>
                     </div>
                   </a>
-    
+
                   <div class="product-card-content mt-3">
                     <div class="product-card-content-flip-front">
-                      ${renderBenefits(item)}
+                      ${renderBenefits(item, {
+                        excludePrimary: isSingleCountryCollection,
+                        labelMode: isSingleCountryCollection ? 'coverage_transit' : 'coverage',
+                      })}
+
                     </div>
-    
+
                     <div class="product-card-content-flip-back">
-                      ${renderCoverageBack(item)}
+                      ${renderCoverageBack(item, { excludePrimary: isSingleCountryCollection })}
                     </div>
                   </div>
-    
+
                   <a
                     href="${escapeHtml(href)}"
                     class="mt-auto flex w-full items-center justify-center bg-primary text-neutral px-5 py-4 rounded-[15px] tracking-wide"
@@ -1375,7 +1488,7 @@
           return `
             <div class="collection-wrapper mb-10">
               <h2 class="text-primary font-bold text-[30px] mb-6">${escapeHtml(groupTitle)}</h2>
-              <div class="grid gap-5 items-stretch">
+              <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-[20px] items-stretch">
                 ${cardsHtml}
               </div>
             </div>
@@ -1384,17 +1497,34 @@
         .join('');
 
       root.innerHTML = `
-      ${filterBarHtml}
-    
-      <div id="noResults" class="no-results" style="display:none;">
-    <h3 class="no-results__title">No results found</h3>
-    <p class="no-results__desc">
-      We couldn’t find any products for that destination. Try another country or check the spelling.
-    </p>
-      </div>
-    
-      ${groupsHtml}
-    `;
+        ${filterBarHtml}
+
+        <div id="noResults" class="no-results" style="display:none;">
+          <h3 class="no-results__title">No results found</h3>
+          <p class="no-results__desc">
+            We couldn’t find any products for that destination. Try another country or check the spelling.
+          </p>
+        </div>
+
+        ${groupsHtml}
+      `;
+
+      // ✅ ukur badge width dan set CSS var supaya indent pas
+      root.querySelectorAll('.simtype-title').forEach((wrap) => {
+        const badge = wrap.querySelector('.sim-badge');
+        const title = wrap.querySelector('.sim-title');
+        if (!badge || !title) return;
+
+        // set indent width
+        wrap.style.setProperty('--badge-w', `${badge.offsetWidth}px`);
+
+        // detect 1 line vs multi-line
+        const lh = parseFloat(getComputedStyle(title).lineHeight);
+        const lines = lh ? Math.round(title.scrollHeight / lh) : 2;
+
+        wrap.classList.toggle('is-singleline', lines <= 1);
+        wrap.classList.toggle('is-multiline', lines > 1);
+      });
 
       wireFilterAndSearch(root, mode);
       wireFlip(root);
@@ -1412,10 +1542,10 @@
 
     function renderError(rootEl) {
       rootEl.innerHTML = `
-    <div style="padding:16px; border:1px solid var(--color-border); border-radius:12px;">
-      <strong style="color:var(--color-primary)">Gagal memuat data.</strong>
-      <div style="margin-top:6px; color:var(--color-secondary)">Coba refresh halaman.</div>
-    </div>
+        <div style="padding:16px; border:1px solid var(--color-border); border-radius:12px;">
+          <strong style="color:var(--color-primary)">Gagal memuat data.</strong>
+          <div style="margin-top:6px; color:var(--color-secondary)">Coba refresh halaman.</div>
+        </div>
       `;
     }
 
@@ -1427,7 +1557,7 @@
 
       try {
         const results = await fetchAllCollections();
-        renderCollections(results); // ini akan replace skeleton karena root.innerHTML di renderCollections()
+        renderCollections(results);
       } catch (e) {
         console.error(e);
         renderError(root);
@@ -1438,7 +1568,7 @@
 
     [...document.querySelectorAll('.product-card-container')]
       .map((el) => el.getAttribute('data-search-text'))
-      .find((t) => t.includes('morocco'));
+      .find((t) => t && t.includes('morocco'));
   </script>
 </div>
 
@@ -1471,3 +1601,7 @@
   ]
 }
 {% endschema %}
+
+{% comment %}
+  check point
+{% endcomment %}

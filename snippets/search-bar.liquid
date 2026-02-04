@@ -1,7 +1,7 @@
-<section class="relative flex items-center" data-country-autocomplete>
+<section class="{{ class }} relative flex items-center" data-country-autocomplete>
   <form class="relative flex items-center w-full" data-country-autocomplete action="/search" method="get">
     <input
-      class="w-full rounded-[15px] py-[15px] pl-[15px] pr-[70px] text-primary placeholder:text-primary outline-none focus:outline-none"
+      class="w-full rounded-[15px] py-[17px] pl-[15px] pr-[70px] text-primary placeholder:text-primary focus:placeholder:text-primary/50 outline-none focus:outline-none"
       data-country-input
       type="search"
       name="q"
@@ -15,7 +15,7 @@
       class="max-h-[250px] overflow-auto bg-white rounded-[15px] p-[10px] shadow-lg"
       style="display:none;"
     >
-      <ul data-country-list class="flex flex-col gap-1"></ul>
+      <ul data-country-list class="flex flex-col"></ul>
     </div>
 
     <button

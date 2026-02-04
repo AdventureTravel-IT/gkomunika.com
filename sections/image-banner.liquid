@@ -44,6 +44,7 @@
 .banner__heading--desc p {
   color: var(--color-neutral);
   margin: 0;
+  font-size: 18x;
 }
 
 #default-heading {
@@ -165,7 +166,7 @@
     width: 100%;
     padding: 0 24px;
     position: absolute;
-    top: 30px;
+    top: 10px;
   }
 
   .banner__heading--search {
@@ -220,7 +221,7 @@
 {% endstyle %}
 
 <div class="banner-container">
-  <div class="banner__wrapper">
+  <div class="banner__wrapper space-y-2">
     <img 
       class="banner__image"
       src="{{ section.settings.image | img_url: 'master' }}" 
@@ -232,7 +233,7 @@
         {%- case block.type -%}
           {%- when 'heading' -%}
             <h2
-              class="banner__heading--title {{ block.settings.heading_size }}"
+              class="text-[35px]"
               {{ block.shopify_attributes }}
               id="default-heading"
             >

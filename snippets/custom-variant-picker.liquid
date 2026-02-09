@@ -697,81 +697,90 @@
 </script>
 
 <script>
-window.TopUp = (() => {
-  const vendorPrefixes = [
-    { prefix: '8985234202227', vendor: 'BE' },
-    { prefix: '8981200', vendor: 'BE' },
-    { prefix: '89859', vendor: 'AF' },
-    { prefix: '89862', vendor: 'AF' },
-    { prefix: '89810', vendor: 'TE' },
-    { prefix: '2210', vendor: 'BS' },
-  ];
+  window.TopUp = (() => {
+    const vendorPrefixes = [
+      { prefix: '8985234202227', vendor: 'BE' },
+      { prefix: '8981200', vendor: 'BE' },
+      { prefix: '89859', vendor: 'AF' },
+      { prefix: '89862', vendor: 'AF' },
+      { prefix: '89810', vendor: 'TE' },
+      { prefix: '2210', vendor: 'BS' },
+    ];
 
-  const vendorCategories = {
-    SEM: 'Top_Up_D',
-    AF: 'Top_Up_B',
-    TE: 'Top_Up_C',
-    BS: 'Top_Up_A',
-    BE: 'Top_Up_A',
-  };
+    const vendorCategories = {
+      SEM: 'Top_Up_D',
+      AF: 'Top_Up_B',
+      TE: 'Top_Up_C',
+      BS: 'Top_Up_A',
+      BE: 'Top_Up_A',
+    };
 
-  function resolveVendorByPrefix(iccidRaw) {
-    const iccid = (iccidRaw || '').trim();
-    if (!iccid) return null;
-    const best = vendorPrefixes
-      .filter((v) => iccid.startsWith(v.prefix))
-      .sort((a, b) => b.prefix.length - a.prefix.length)[0];
-    return best ? best.vendor : null;
-  }
-
-  function expectedCategoryFromICCID(iccid) {
-    const vendor = resolveVendorByPrefix(iccid);
-    return vendor ? vendorCategories[vendor] : null;
-  }
-
-  // 🔹 Validasi SEM via API
-  async function validateSemIccid(iccid) {
-    try {
-      const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ iccid }),
-      });
-      const data = await res.json();
-      return data?.data_usage?.retCode === '000000';
-    } catch (err) {
-      console.error('SEM validation failed:', err);
-      return false;
-    }
-  }
-
-  // 🔹 Fungsi utama validasi kategori ICCID
-  async function isIccidCategoryMatch(iccid, productCategory) {
-    iccid = (iccid || '').trim();
-    if (!iccid) return false;
-
-    const vendor = resolveVendorByPrefix(iccid);
-
-    // Jika prefix tidak terdeteksi, cek apakah ICCID valid SEM
-    if (!vendor) {
-      const isSem = await validateSemIccid(iccid);
-      if (isSem) return productCategory === vendorCategories.SEM;
-      return false;
+    function resolveVendorByPrefix(iccidRaw) {
+      const iccid = (iccidRaw || '').trim();
+      if (!iccid) return null;
+      const best = vendorPrefixes
+        .filter((v) => iccid.startsWith(v.prefix))
+        .sort((a, b) => b.prefix.length - a.prefix.length)[0];
+      return best ? best.vendor : null;
     }
 
-    const expected = vendorCategories[vendor];
-    return expected === productCategory;
-  }
+    function expectedCategoryFromICCID(iccid) {
+      const vendor = resolveVendorByPrefix(iccid);
+      return vendor ? vendorCategories[vendor] : null;
+    }
 
-  return {
-    resolveVendorByPrefix,
-    expectedCategoryFromICCID,
-    isIccidCategoryMatch,
-    vendorPrefixes,
-    vendorCategories,
-    validateSemIccid,
-  };
-})();
+    // 🔹 Validasi SEM via API
+    async function validateSemIccid(iccid) {
+      try {
+        const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ iccid }),
+        });
+        const data = await res.json();
+
+        // ✅ SEM response baru:
+        // success: true/false
+        // data_usage.quotaList: array
+        if (data?.success === true) return true;
+
+        // (opsional) fallback SEM versi lama kalau masih ada di beberapa ICCID
+        if (data?.data_usage?.retCode === '000000') return true;
+
+        return false;
+      } catch (err) {
+        console.error('SEM validation failed:', err);
+        return false;
+      }
+    }
+
+    // 🔹 Fungsi utama validasi kategori ICCID
+    async function isIccidCategoryMatch(iccid, productCategory) {
+      iccid = (iccid || '').trim();
+      if (!iccid) return false;
+
+      let vendor = resolveVendorByPrefix(iccid);
+
+      // Jika vendor dari prefix null → coba SEM
+      if (!vendor) {
+        const isSem = await validateSemIccid(iccid);
+        if (isSem) return productCategory === vendorCategories.SEM;
+        return false;
+      }
+
+      const expected = vendorCategories[vendor];
+      return expected === productCategory;
+    }
+
+    return {
+      resolveVendorByPrefix,
+      expectedCategoryFromICCID,
+      isIccidCategoryMatch,
+      vendorPrefixes,
+      vendorCategories,
+      validateSemIccid,
+    };
+  })();
 </script>
 
 <script>

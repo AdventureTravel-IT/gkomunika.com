@@ -1,3 +1,348 @@
+<h1 id="title" class="text-xl font-semibold"></h1>
+<div id="desc" class="prose max-w-none mt-2"></div>
+
+<div id="optionsWrap" class="mt-4 space-y-4"></div>
+
+<div class="mt-6 flex items-center gap-3">
+  <span class="text-sm font-medium text-gray-900">Qty</span>
+
+  <div class="inline-flex items-center rounded-xl border border-gray-300 overflow-hidden">
+    <button id="qtyDec" type="button" class="px-3 py-2 text-sm hover:bg-gray-100" aria-label="Decrease quantity">−</button>
+    <input id="qtyInput" type="text" value="1" readonly
+           class="w-12 text-center text-sm outline-none border-x border-gray-300 py-2" />
+    <button id="qtyInc" type="button" class="px-3 py-2 text-sm hover:bg-gray-100" aria-label="Increase quantity">+</button>
+  </div>
+</div>
+
+<div class="mt-3 text-sm leading-6">
+  <div>
+    <span class="font-semibold">Total:</span>
+    <span id="variantTotalPrice" class="money" data-cents="">-</span>
+  </div>
+</div>
+
+<div class="mt-6 text-sm leading-6">
+  <div><span class="font-semibold">Variant ID:</span> <span id="variantId">-</span></div>
+  <div><span class="font-semibold">Variant:</span> <span id="variantTitle">-</span></div>
+  <div><span class="font-semibold">Price:</span> <span id="variantPrice">-</span></div>
+  <div><span class="font-semibold">Available:</span> <span id="variantAvail">-</span></div>
+</div>
+
+<div id="variant-picker"></div>
+
+<div style="margin-top:8px;">
+  <strong id="variant-price"></strong>
+</div>
+
+<script>
+  const productData = {{ product | json }};
+
+  // priceMap berisi HTML span.money dari Liquid
+  const priceMap = {
+    {%- for v in product.variants -%}
+      "{{ v.id }}": {{ v.price | money_with_currency | json }}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  };
+
+  (function () {
+    const root = document.getElementById('variant-picker');
+    if (!root) return;
+
+    const optionCount = (productData.options || []).length;
+    const selectors = [];
+
+    function uniqueOptionValues(optionIndex1Based) {
+      const key = 'option' + optionIndex1Based;
+      const set = new Set();
+      (productData.variants || []).forEach(v => v[key] && set.add(v[key]));
+      return Array.from(set);
+    }
+
+    for (let i = 1; i <= optionCount; i++) {
+      const wrap = document.createElement('div');
+      wrap.style.marginBottom = '8px';
+
+      const label = document.createElement('label');
+      label.textContent = productData.options[i - 1] || ('Option ' + i);
+      label.style.display = 'block';
+      label.style.marginBottom = '4px';
+
+      const select = document.createElement('select');
+      select.dataset.optionIndex = String(i);
+
+      uniqueOptionValues(i).forEach(val => {
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.textContent = val;
+        select.appendChild(opt);
+      });
+
+      wrap.appendChild(label);
+      wrap.appendChild(select);
+      root.appendChild(wrap);
+
+      selectors.push(select);
+    }
+
+    const priceEl = document.getElementById('variant-price');
+
+    function findMatchingVariant() {
+      const selected = {};
+      selectors.forEach(sel => selected['option' + sel.dataset.optionIndex] = sel.value);
+
+      return (productData.variants || []).find(v => {
+        for (let i = 1; i <= optionCount; i++) {
+          const k = 'option' + i;
+          if ((selected[k] || null) !== (v[k] || null)) return false;
+        }
+        return true;
+      }) || null;
+    }
+
+    function updateUI() {
+      const variant = findMatchingVariant();
+      if (!variant) {
+        if (priceEl) priceEl.innerHTML = '';
+        return;
+      }
+
+      // IMPORTANT: pakai innerHTML supaya span.money terbentuk dan Bucks bisa convert
+      const htmlMoney = priceMap[String(variant.id)] || '';
+      if (priceEl) priceEl.innerHTML = htmlMoney;
+
+      // Optional: kalau Bucks butuh “refresh” manual setelah DOM berubah,
+      // coba panggil fungsi global converter-nya kalau ada:
+      // if (window.Bucks?.refresh) window.Bucks.refresh();
+      // if (window.Currency?.convertAll) window.Currency.convertAll();
+    }
+
+    selectors.forEach(sel => sel.addEventListener('change', updateUI));
+    updateUI();
+  })();
+</script>
+
+<script>
+(async () => {
+  const getProductHandle = () => {
+    const parts = location.pathname.split('/').filter(Boolean);
+    const i = parts.indexOf('products');
+    return i >= 0 ? parts[i + 1] : null;
+  };
+
+  const handle = getProductHandle();
+  if (!handle) return console.warn('Handle tidak ditemukan. Path:', location.pathname);
+
+  const url = `/products/${encodeURIComponent(handle)}?view=product-api-json`;
+
+  try {
+    const text = await (await fetch(url, { credentials: 'same-origin' })).text();
+    const data = JSON.parse(text);
+
+    const product = data?.product ?? {};
+    const title = product?.title ?? '';
+    const descHtml = product?.description_html ?? '';
+    const options = product?.options ?? [];
+    const variants = product?.variants ?? [];
+
+    // Render title/desc
+    const elTitle = document.getElementById('title');
+    if (elTitle) elTitle.textContent = title;
+
+    const elDesc = document.getElementById('desc');
+    if (elDesc) elDesc.innerHTML = descHtml;
+
+    const wrap = document.getElementById('optionsWrap');
+    if (!wrap) return;
+
+    // ===== Qty state + controls =====
+    const MAX_QTY = 20; // harus sama dengan range yang kamu generate di JSON view
+    let qty = 1;
+
+    const elQtyInput = document.getElementById('qtyInput');
+    const elQtyDec = document.getElementById('qtyDec');
+    const elQtyInc = document.getElementById('qtyInc');
+
+    const setQty = (next) => {
+      qty = Math.max(1, Math.min(MAX_QTY, Number(next) || 1));
+      if (elQtyInput) elQtyInput.value = String(qty);
+    };
+
+    const incrementQty = () => setQty(qty + 1);
+    const decrementQty = () => setQty(qty - 1);
+
+    if (elQtyInc) elQtyInc.addEventListener('click', () => { incrementQty(); onChange(); });
+    if (elQtyDec) elQtyDec.addEventListener('click', () => { decrementQty(); onChange(); });
+
+    // bikin select per option (Tailwind classes)
+    wrap.innerHTML = options.map((opt, idx) => {
+      const opts = (opt.values || [])
+        .map(v => `<option value="${String(v).replace(/"/g,'&quot;')}">${v}</option>`)
+        .join('');
+
+      return `
+        <div class="space-y-1">
+          <label for="opt-${idx}" class="block text-sm font-medium text-gray-900">
+            ${opt.name}
+          </label>
+
+          <div class="relative">
+            <select
+              id="opt-${idx}"
+              data-opt-name="${opt.name}"
+              class="block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900
+                     shadow-sm focus:border-gray-900 focus:ring-2 focus:ring-gray-900/20
+                     disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500">
+              <option value="">Choose Option</option>
+              ${opts}
+            </select>
+
+            <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+                 viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+
+          <p id="hint-${idx}" class="hidden text-xs text-gray-500"></p>
+        </div>
+      `;
+    }).join('');
+
+    const getSelections = () => {
+      const selects = wrap.querySelectorAll('select[id^="opt-"]');
+      const selections = {};
+      selects.forEach(sel => {
+        const name = sel.getAttribute('data-opt-name');
+        selections[name] = sel.value;
+      });
+      return selections;
+    };
+
+    const findMatchingVariant = (selections) => {
+      for (const opt of options) {
+        if (!selections[opt.name]) return null;
+      }
+
+      return variants.find(v => {
+        const so = v.selected_options || [];
+        return options.every(opt => {
+          const picked = selections[opt.name];
+          const row = so.find(x => x.name === opt.name);
+          return row && row.value === picked;
+        });
+      }) || null;
+    };
+
+    const renderVariantInfo = (variant) => {
+      const elId = document.getElementById('variantId');
+      const elT = document.getElementById('variantTitle');
+      const elP = document.getElementById('variantPrice');
+      const elA = document.getElementById('variantAvail');
+      const elTotal = document.getElementById('variantTotalPrice');
+
+      if (!variant) {
+        if (elId) elId.textContent = '-';
+        if (elT) elT.textContent = '-';
+        if (elP) elP.textContent = '-';
+        if (elA) elA.textContent = '-';
+        if (elTotal) elTotal.textContent = '-';
+        return;
+      }
+
+      if (elId) elId.textContent = variant.id ?? '-';
+      if (elT) elT.textContent = variant.title ?? '-';
+
+      // Unit price (sudah diformat Liquid di JSON view)
+      if (elP) elP.textContent = variant.price_money_with_currency ?? '-';
+
+      // Total price (ambil dari map qty yang sudah diformat Liquid)
+      const totalByQty = variant.total_money_with_currency_by_qty || {};
+      if (elTotal) elTotal.textContent = totalByQty[String(qty)] ?? '-';
+
+      if (elA) elA.textContent = variant.available ? 'Yes' : 'No';
+    };
+
+    // Disable options yang tidak mungkin menghasilkan variant AVAILABLE
+    const updateDisabledOptions = () => {
+      const selections = getSelections();
+      const availableVariants = variants.filter(v => !!v.available);
+
+      const validValuesByOption = {};
+      options.forEach(o => validValuesByOption[o.name] = new Set());
+
+      options.forEach(targetOpt => {
+        const targetName = targetOpt.name;
+        const base = { ...selections };
+        delete base[targetName];
+
+        availableVariants.forEach(v => {
+          const so = v.selected_options || [];
+
+          const matchBase = Object.entries(base).every(([name, picked]) => {
+            if (!picked) return true;
+            const row = so.find(x => x.name === name);
+            return row && row.value === picked;
+          });
+
+          if (!matchBase) return;
+
+          const rowTarget = so.find(x => x.name === targetName);
+          if (rowTarget?.value) validValuesByOption[targetName].add(rowTarget.value);
+        });
+      });
+
+      wrap.querySelectorAll('select[id^="opt-"]').forEach(sel => {
+        const optName = sel.getAttribute('data-opt-name');
+        const validSet = validValuesByOption[optName] || new Set();
+
+        Array.from(sel.options).forEach((optEl, idx) => {
+          if (idx === 0) return;
+          optEl.disabled = !validSet.has(optEl.value);
+        });
+
+        if (sel.value && !validSet.has(sel.value)) sel.value = "";
+      });
+
+      wrap.querySelectorAll('select[id^="opt-"]').forEach((sel, idx) => {
+        const optName = sel.getAttribute('data-opt-name');
+        const validSet = validValuesByOption[optName] || new Set();
+        const hint = document.getElementById(`hint-${idx}`);
+
+        const shouldDisableSelect = validSet.size === 0;
+        sel.disabled = shouldDisableSelect;
+
+        if (hint) {
+          if (shouldDisableSelect) {
+            hint.textContent = 'Tidak ada kombinasi tersedia untuk pilihan saat ini.';
+            hint.className = 'block text-xs text-gray-500';
+          } else {
+            hint.textContent = '';
+            hint.className = 'hidden text-xs text-gray-500';
+          }
+        }
+      });
+    };
+
+    const onChange = () => {
+      updateDisabledOptions();
+      const selections = getSelections();
+      const variant = findMatchingVariant(selections);
+      renderVariantInfo(variant);
+    };
+
+    wrap.querySelectorAll('select[id^="opt-"]').forEach(sel => {
+      sel.addEventListener('change', onChange);
+    });
+
+    updateDisabledOptions();
+    onChange();
+
+  } catch (err) {
+    console.error('Fetch/parse error:', err, { url });
+  }
+})();
+</script>
+
+
 <script src="{{ 'section-main-product.js' | asset_url }}" defer="defer"></script>
 
 <style>

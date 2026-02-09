@@ -349,6 +349,15 @@
   .header-search-modal__body {
     overflow: auto;
   }
+  .lang-arrow {
+    transform: rotate(90deg); /* default: arrow right */
+    transition: transform 200ms ease;
+    transform-origin: center;
+  }
+
+  .lang-arrow.is-open {
+    transform: rotate(270deg); /* active: kebalik */
+  }
 {% endstyle %}
 
 {% unless template == 'customers/login' or template == 'customers/register' %}
@@ -470,13 +479,58 @@
             <div id="bucks-floating-desktop"></div>
           </div>
 
-          <localization-form>
-            {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
-              <div class="localization-inner">
-                {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
+          {% form 'localization', id: 'LanguageFormUX', class: 'relative inline-block' %}
+            <input type="hidden" name="locale_code" id="LangLocaleInput" value="{{ localization.language.iso_code }}">
+
+            {% assign current_code = localization.language.iso_code | upcase | slice: 0, 2 %}
+
+            <button
+              type="button"
+              class="lang-trigger inline-flex items-center gap-2 px-2.5 py-2 transition select-none"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="LangMenu"
+            >
+              <span
+                class="lang-icon flex items-center w-[30px] h-[30px]"
+                aria-hidden="true"
+              >
+                {{- 'header-language.svg' | inline_asset_content -}}
+              </span>
+
+              <span class="text-sm text-primary tracking-wider">{{ current_code }}</span>
+
+              <span class="lang-arrow inline-flex items-center justify-center" aria-hidden="true">
+                {% render 'icon-arrow-right', class: 'text-primary w-[30px] h-[30px]' %}
+              </span>
+            </button>
+
+            <ul
+              class="lang-menu hidden absolute right-0 top-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+              id="LangMenu"
+              role="listbox"
+              aria-label="Select language"
+            >
+              {% for locale in localization.available_languages %}
+                {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
+                <li
+                  role="option"
+                  aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
+                >
+                  <button
+                    type="button"
+                    class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition {% if locale.iso_code == localization.language.iso_code %}bg-black/7 font-semibold{% endif %}"
+                    data-locale="{{ locale.iso_code }}"
+                  >
+                    <span>{{ code }}</span>
+                    {% if locale.iso_code == localization.language.iso_code %}
+                      <span class="opacity-80" aria-hidden="true">✓</span>
+                    {% endif %}
+                  </button>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endform %}
         </div>
 
         <nav class="header-menu" role="navigation" aria-label="Main navigation">
@@ -809,6 +863,49 @@
 {% endunless %}
 
 <div id="header-search-overlay" class="header-search-overlay" hidden></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('form#LanguageFormUX').forEach((form) => {
+      const btn = form.querySelector('.lang-trigger');
+      const menu = form.querySelector('.lang-menu');
+      const input = form.querySelector('#LangLocaleInput');
+      const arrowWrap = form.querySelector('.lang-arrow');
+
+      const open = () => {
+        menu.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        if (arrowWrap) arrowWrap.classList.add('is-open');
+      };
+
+      const close = () => {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+        if (arrowWrap) arrowWrap.classList.remove('is-open');
+      };
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        menu.classList.contains('hidden') ? open() : close();
+      });
+
+      menu.querySelectorAll('[data-locale]').forEach((item) => {
+        item.addEventListener('click', () => {
+          input.value = item.getAttribute('data-locale');
+          form.submit();
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!form.contains(e.target)) close();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+      });
+    });
+  });
+</script>
 
 <script type="module" defer>
   (() => {

@@ -538,7 +538,7 @@
       {% else %}
         <p>Check Data Usage / Top Up</p>
       {% endif %}
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-2.5 mb-2">
         <span>Enter your ICCID</span>
 
         <button
@@ -574,7 +574,7 @@
       phone settings.
     </p>
     <p>Please contact our WhatsApp Customer Service for more information</p>
-    <div class="invalid-popup__button">
+    <div class="invalid-popup__button mt-6">
       <button id="invalid-popup__buy-button">
         <span>Buy eSIM</span>
       </button>
@@ -868,13 +868,16 @@
         if (!vendor) {
           // hanya ubah vendor kalau belum terdeteksi dari prefix
           if (data.tradeCode && data.tradeData?.subOrderList) {
-            // tambahkan deteksi vendor BS berdasarkan prefix "2210"
             if (iccid.startsWith('2210')) {
               vendor = 'BS';
             } else {
               vendor = 'BE';
             }
+          } else if (data.vendor === 'MM' || data.success != null || data.data_usage?.quotaList) {
+            // SEM vendor baru: ada success true/false, vendor bisa "MM"
+            vendor = 'SEM';
           } else if (data.data_usage?.retCode) {
+            // fallback SEM versi lama
             vendor = 'SEM';
           } else {
             vendor = null;
@@ -938,14 +941,23 @@
 
         // === SEM ===
         if (vendor === 'SEM') {
-          const usage = data.data_usage;
-          if (usage.retCode !== '000000') {
+          // RULE BARU: kalau success false => popup
+          if (data.success !== true) {
             showInvalidPopup();
             return;
           }
 
+          const usage = data.data_usage || {};
           const quotaList = usage.quotaList || [];
-          const productName = data?.data_usage?.quotaList?.[0]?.productName || data?.product_name || '-';
+
+          if (!Array.isArray(quotaList) || quotaList.length === 0) {
+            showInvalidPopup();
+            return;
+          }
+
+          const q = quotaList[0] || {};
+
+          const productName = q.productName || data?.product_name || '-';
 
           // Mapping status
           const statusMap = {
@@ -956,27 +968,28 @@
             4: 'No Package.',
           };
 
-          const q = quotaList[0] || {};
-          const statusCode = q.status || '0';
+          const statusCode = String(q.status ?? '0');
           const statusText = statusMap[statusCode] || '-';
 
           let bundle = '-';
           let startDate = '-';
           let endDate = '-';
 
-          // === RULE BARU ===
-          // Jika status == 2 (ACTIVE) → tampilkan data lengkap
+          // Kalau status 2 (Active) tampilkan detail bundle & tanggal
           if (statusCode === '2') {
             bundle = productName;
-            startDate = q.effTime ? q.effTime.slice(0, 8) : '-';
-            endDate = q.expTime ? q.expTime.slice(0, 8) : '-';
+
+            // di response baru ada startTime / expTime / endTime / effTime
+            // pilih yang paling masuk akal untuk "Active Date" & "End Date"
+            const startRaw = q.startTime || q.effTime || '';
+            const endRaw = q.expTime || q.endTime || '';
+
+            startDate = startRaw ? String(startRaw).slice(0, 8) : '-';
+            endDate = endRaw ? String(endRaw).slice(0, 8) : '-';
           }
 
-          // Format usage
+          // Usage
           const used = formatDataUsage(q.usedQuota || 0, vendor);
-
-          const formatDateShort = (str) =>
-            !str || str === '-' ? '-' : `${str.slice(0, 4)}-${str.slice(4, 6)}-${str.slice(6, 8)}`;
 
           resultEl.innerHTML = `
     <div>

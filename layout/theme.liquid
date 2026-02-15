@@ -234,28 +234,14 @@
       </div>
     {% endif %}
 
-    <main
-      id="MainContent"
-      class="container"
-      role="main"
-      tabindex="-1"
-      style="background-color: var(--color-background)"
-    >
-      {{ content_for_layout }}
-    </main>
-
-    {% unless template.name == 'login' or template.name == 'register' or template.name == 'search' %}
-      {% sections 'footer-group' %}
-    {% endunless %}
-
     {% if template.name != 'login' and template.name != 'register' %}
       {% style %}
         body {
           margin-top: 80px;
         }
-        @media (max-width: 768px) {
+        @media screen and (max-width: 768px) {
           body {
-            margin-top: 32px;
+            margin-top: 55px;
           }
         }
       {% endstyle %}
@@ -266,6 +252,19 @@
         }
       {% endstyle %}
     {% endif %}
+
+    <main
+      id="MainContent"
+      class="container bg-background"
+      role="main"
+      tabindex="-1"
+    >
+      {{ content_for_layout }}
+    </main>
+
+    {% unless template.name == 'login' or template.name == 'register' or template.name == 'search' %}
+      {% sections 'footer-group' %}
+    {% endunless %}
 
     <ul hidden>
       <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>

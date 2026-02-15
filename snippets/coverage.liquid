@@ -1,134 +1,178 @@
-{% assign countries_1 = product.metafields.coverage.country.value %}
-{% assign countries_2 = product.metafields.coverage.country_2.value %}
+{%- comment -%}
+  Coverage (Metaobject-based)
+  - Source: product.metafields.search.key.value
+  - Display name (single):
+      * if language is id => country_id
+      * else => country (country_en)
+  - If name contains "_" => replace with space
+  - Text size: 20px (text-xl)
+  - Keep design same as previous (li: img + h3)
+{%- endcomment -%}
 
-{% if countries_1 == blank %}{% assign countries_1 = '' | split: ',' %}{% endif %}
-{% if countries_2 == blank %}{% assign countries_2 = '' | split: ',' %}{% endif %}
+{%- assign lang_code = localization.language.iso_code | downcase -%}
+{%- assign is_id = false -%}
+{%- if lang_code contains 'id' -%}{%- assign is_id = true -%}{%- endif -%}
 
-{% assign countries_all = countries_1 | concat: countries_2 %}
-
-{% style %}
-  .coverage {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .coverage li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .coverage h3 {
-    text-align: center;
-    font-size: 20px;
-    color: var(--color-primary);
-    margin: 0;
-  }
-  .coverage img {
-    border-radius: 15px;
-    border: 1px solid var(--color-border);
-  }
-{% endstyle %}
-
-<div id="coverage-container" class="coverage">
-  {% for country in countries_all %}
-    {% assign formatted_country = country | replace: '_', ' ' %}
-    {% assign country_with_underscore = country | replace: ' ', '_' %}
-    <div class="coverage-item" data-country="{{ formatted_country | downcase }}" data-country-raw="{{ country }}">
-      <li>
-        <img
-          class="image-countries"
-          src="//gkomunika.com/cdn/shop/files/{{ country_with_underscore }}.svg"
-          alt="{{ formatted_country }}"
-          width="50"
-          height="50"
-          loading="lazy"
-        >
-        <h3>{{ formatted_country }}</h3>
-      </li>
-    </div>
-  {% endfor %}
+<div id="coverage-container" class="flex flex-col gap-[5px]">
+  {%- comment -%} initial render handled by JS {%- endcomment -%}
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const variantDropdowns = document.querySelectorAll('.variant-dropdown');
     const coverageContainer = document.getElementById('coverage-container');
+    if (!coverageContainer) return;
+
+    const isID = {{ is_id | json }};
+    const norm = (s) => String(s || '').trim().toLowerCase();
+    const pretty = (s) => String(s || '').replace(/_/g, ' ').trim();
+
+    // MASTER LIST from metaobject
+    const masterCoverage = [
+      {% for country in product.metafields.search.key.value %}
+        {
+          country_en: {{ country.country.value | json }},
+          country_id: {{ country.country_id.value | json }},
+          country_alias: [
+            {% for alias in country.alias.value %}
+              {{ alias | json }}{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          ],
+          flag: {% if country.flag.value %}{{ country.flag.value | image_url | json }}{% else %}null{% endif %}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ];
+
+    // Build lookup index by EN/ID/alias
+    const index = new Map();
+    masterCoverage.forEach(obj => {
+      const en = norm(obj.country_en);
+      const id = norm(obj.country_id);
+      if (en) index.set(en, obj);
+      if (id) index.set(id, obj);
+
+      (obj.country_alias || []).forEach(a => {
+        const k = norm(a);
+        if (k) index.set(k, obj);
+      });
+    });
+
+    // Fallback flag if metaobject flag is empty
+    function fallbackFlag(displayName) {
+      const file = String(displayName || '').trim().replace(/\s+/g, '_');
+      return `//gkomunika.com/cdn/shop/files/${file}.svg`;
+    }
+
+    // Normalize list coming from variant metafield:
+    // - if it's object => use it
+    // - if it's string => map to metaobject by index
+    function normalizeCoverageList(list) {
+      if (!Array.isArray(list)) return [];
+
+      const out = [];
+      list.forEach(item => {
+        if (item && typeof item === 'object' && (item.country_en || item.country_id)) {
+          out.push({
+            country_en: item.country_en || '',
+            country_id: item.country_id || '',
+            country_alias: Array.isArray(item.country_alias) ? item.country_alias : [],
+            flag: item.flag || null
+          });
+          return;
+        }
+
+        const mapped = index.get(norm(item));
+        if (mapped) out.push(mapped);
+      });
+
+      // dedupe by displayed name (after pretty)
+      const seen = new Set();
+      return out.filter(o => {
+        const raw = isID ? (o.country_id || '') : (o.country_en || '');
+        const key = norm(pretty(raw));
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function renderCoverage(list) {
+      const countries = normalizeCoverageList(list);
+
+      coverageContainer.innerHTML = '';
+
+      countries.forEach(c => {
+        const rawName = isID ? c.country_id : c.country_en;
+        const displayName = pretty(rawName);
+        if (!displayName) return;
+
+        const imgUrl = c.flag || fallbackFlag(displayName);
+
+        const aliases = Array.isArray(c.country_alias) ? c.country_alias.join(' ') : '';
+        const searchable = `${displayName} ${aliases}`.trim().toLowerCase().replace(/_/g, ' ');
+
+        const el = document.createElement('div');
+        el.className = 'coverage-item';
+        el.setAttribute('data-country', searchable);
+        el.setAttribute('data-country-raw', String(displayName || '').toLowerCase());
+
+        el.innerHTML = `
+          <li class="flex items-center gap-[10px]">
+            <img
+              class="image-countries rounded-[15px] border border-border"
+              src="${imgUrl}"
+              alt="${displayName}"
+              width="50"
+              height="50"
+              loading="lazy"
+            />
+            <h3 class="text-left leading-tight text-lg text-primary m-0">${displayName}</h3>
+          </li>
+        `;
+
+        coverageContainer.appendChild(el);
+      });
+
+      if (typeof window.filterCountries === 'function') window.filterCountries();
+    }
+
+    // === Variant switching (works for your Tailwind selects option0..)
+    const variantDropdowns =
+      document.querySelectorAll('.variant-dropdown, select[id^="option"]');
 
     const variantsData = [
       {% for variant in product.variants %}
         {
-      id: {{ variant.id }},
-    options: [{% for option in variant.options %}"{{ option | escape }}"{% unless forloop.last %}, {% endunless %} {% endfor %}],
-  coverage: { { variant.metafields.variant.coverage.value | default: "[]" | json } }
+          id: {{ variant.id }},
+          options: [{% for option in variant.options %}{{ option | escape | json }}{% unless forloop.last %}, {% endunless %}{% endfor %}],
+          coverage: {{ variant.metafields.variant.coverage.value | default: "[]" | json }}
         }{% unless forloop.last %}, {% endunless %}
-  {% endfor %}
+      {% endfor %}
     ];
 
-  const baseUrl = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/';
-  const version = '?v=1739352504';
+    // default product coverage: show all from masterCoverage
+    const productCoverage = masterCoverage;
 
-  const productCoverage = {{ countries_all | json }};
-
-  function renderCoverage(countries) {
-    coverageContainer.innerHTML = '';
-
-    if (Array.isArray(countries)) {
-      countries.forEach(country => {
-        const formatted = country.replace(/_/g, ' ');
-        const imageUrl = `${baseUrl}${country}.svg${version}`;
-
-        const el = document.createElement('div');
-        el.className = 'coverage-item';
-        // Tambahan penting untuk keperluan search:
-        el.setAttribute('data-country', formatted.toLowerCase());
-        el.setAttribute('data-country-raw', country);
-
-        el.innerHTML = `
-            <li>
-              <img
-                class="image-countries"
-                src="${imageUrl}"
-                alt="${formatted}"
-                width="50"
-                height="50"
-                loading="lazy">
-              <h3>${formatted}</h3>
-            </li>
-          `;
-
-        coverageContainer.appendChild(el);
-      });
+    function getSelectedOptions() {
+      const selects = Array.from(document.querySelectorAll('select[id^="option"]'));
+      if (selects.length) return selects.map(s => s.value);
+      return Array.from(document.querySelectorAll('.variant-dropdown')).map(s => s.value);
     }
 
-    // Re-apply filter jika user sudah mengetik sesuatu
-    if (typeof window.filterCountries === 'function') {
-      window.filterCountries();
-    }
-  }
+    function updateCoverageByVariant() {
+      const selectedOptions = getSelectedOptions();
 
-  function updateMetafieldDisplay() {
-    const selectedOptions = Array.from(variantDropdowns).map(dropdown => dropdown.value);
+      const matchedVariant = variantsData.find(v =>
+        v.options.every((opt, idx) => opt === selectedOptions[idx])
+      );
 
-    const matchedVariant = variantsData.find(variant => {
-      return variant.options.every((option, index) => option === selectedOptions[index]);
-    });
-
-    if (matchedVariant) {
-      const coverage = matchedVariant.coverage;
-      if (Array.isArray(coverage) && coverage.length > 0) {
-        renderCoverage(coverage);
+      if (matchedVariant && Array.isArray(matchedVariant.coverage) && matchedVariant.coverage.length) {
+        renderCoverage(matchedVariant.coverage);
       } else {
         renderCoverage(productCoverage);
       }
-    } else {
-      renderCoverage(productCoverage);
     }
-  }
 
-  variantDropdowns.forEach(dropdown => {
-    dropdown.addEventListener('change', updateMetafieldDisplay);
-  });
-
-  updateMetafieldDisplay(); // initial render
+    variantDropdowns.forEach(el => el.addEventListener('change', updateCoverageByVariant));
+    updateCoverageByVariant();
   });
 </script>

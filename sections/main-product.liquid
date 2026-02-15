@@ -1,629 +1,1738 @@
-<h1 id="title" class="text-xl font-semibold"></h1>
-<div id="desc" class="prose max-w-none mt-2"></div>
-
-<div id="optionsWrap" class="mt-4 space-y-4"></div>
-
-<div class="mt-6 flex items-center gap-3">
-  <span class="text-sm font-medium text-gray-900">Qty</span>
-
-  <div class="inline-flex items-center rounded-xl border border-gray-300 overflow-hidden">
-    <button id="qtyDec" type="button" class="px-3 py-2 text-sm hover:bg-gray-100" aria-label="Decrease quantity">−</button>
-    <input id="qtyInput" type="text" value="1" readonly
-           class="w-12 text-center text-sm outline-none border-x border-gray-300 py-2" />
-    <button id="qtyInc" type="button" class="px-3 py-2 text-sm hover:bg-gray-100" aria-label="Increase quantity">+</button>
-  </div>
-</div>
-
-<div class="mt-3 text-sm leading-6">
-  <div>
-    <span class="font-semibold">Total:</span>
-    <span id="variantTotalPrice" class="money" data-cents="">-</span>
-  </div>
-</div>
-
-<div class="mt-6 text-sm leading-6">
-  <div><span class="font-semibold">Variant ID:</span> <span id="variantId">-</span></div>
-  <div><span class="font-semibold">Variant:</span> <span id="variantTitle">-</span></div>
-  <div><span class="font-semibold">Price:</span> <span id="variantPrice">-</span></div>
-  <div><span class="font-semibold">Available:</span> <span id="variantAvail">-</span></div>
-</div>
-
-<div id="variant-picker"></div>
-
-<div style="margin-top:8px;">
-  <strong id="variant-price"></strong>
-</div>
-
-<script>
-  const productData = {{ product | json }};
-
-  // priceMap berisi HTML span.money dari Liquid
-  const priceMap = {
-    {%- for v in product.variants -%}
-      "{{ v.id }}": {{ v.price | money_with_currency | json }}{% unless forloop.last %},{% endunless %}
-    {%- endfor -%}
-  };
-
-  (function () {
-    const root = document.getElementById('variant-picker');
-    if (!root) return;
-
-    const optionCount = (productData.options || []).length;
-    const selectors = [];
-
-    function uniqueOptionValues(optionIndex1Based) {
-      const key = 'option' + optionIndex1Based;
-      const set = new Set();
-      (productData.variants || []).forEach(v => v[key] && set.add(v[key]));
-      return Array.from(set);
-    }
-
-    for (let i = 1; i <= optionCount; i++) {
-      const wrap = document.createElement('div');
-      wrap.style.marginBottom = '8px';
-
-      const label = document.createElement('label');
-      label.textContent = productData.options[i - 1] || ('Option ' + i);
-      label.style.display = 'block';
-      label.style.marginBottom = '4px';
-
-      const select = document.createElement('select');
-      select.dataset.optionIndex = String(i);
-
-      uniqueOptionValues(i).forEach(val => {
-        const opt = document.createElement('option');
-        opt.value = val;
-        opt.textContent = val;
-        select.appendChild(opt);
-      });
-
-      wrap.appendChild(label);
-      wrap.appendChild(select);
-      root.appendChild(wrap);
-
-      selectors.push(select);
-    }
-
-    const priceEl = document.getElementById('variant-price');
-
-    function findMatchingVariant() {
-      const selected = {};
-      selectors.forEach(sel => selected['option' + sel.dataset.optionIndex] = sel.value);
-
-      return (productData.variants || []).find(v => {
-        for (let i = 1; i <= optionCount; i++) {
-          const k = 'option' + i;
-          if ((selected[k] || null) !== (v[k] || null)) return false;
-        }
-        return true;
-      }) || null;
-    }
-
-    function updateUI() {
-      const variant = findMatchingVariant();
-      if (!variant) {
-        if (priceEl) priceEl.innerHTML = '';
-        return;
-      }
-
-      // IMPORTANT: pakai innerHTML supaya span.money terbentuk dan Bucks bisa convert
-      const htmlMoney = priceMap[String(variant.id)] || '';
-      if (priceEl) priceEl.innerHTML = htmlMoney;
-
-      // Optional: kalau Bucks butuh “refresh” manual setelah DOM berubah,
-      // coba panggil fungsi global converter-nya kalau ada:
-      // if (window.Bucks?.refresh) window.Bucks.refresh();
-      // if (window.Currency?.convertAll) window.Currency.convertAll();
-    }
-
-    selectors.forEach(sel => sel.addEventListener('change', updateUI));
-    updateUI();
-  })();
-</script>
-
-<script>
-(async () => {
-  const getProductHandle = () => {
-    const parts = location.pathname.split('/').filter(Boolean);
-    const i = parts.indexOf('products');
-    return i >= 0 ? parts[i + 1] : null;
-  };
-
-  const handle = getProductHandle();
-  if (!handle) return console.warn('Handle tidak ditemukan. Path:', location.pathname);
-
-  const url = `/products/${encodeURIComponent(handle)}?view=product-api-json`;
-
-  try {
-    const text = await (await fetch(url, { credentials: 'same-origin' })).text();
-    const data = JSON.parse(text);
-
-    const product = data?.product ?? {};
-    const title = product?.title ?? '';
-    const descHtml = product?.description_html ?? '';
-    const options = product?.options ?? [];
-    const variants = product?.variants ?? [];
-
-    // Render title/desc
-    const elTitle = document.getElementById('title');
-    if (elTitle) elTitle.textContent = title;
-
-    const elDesc = document.getElementById('desc');
-    if (elDesc) elDesc.innerHTML = descHtml;
-
-    const wrap = document.getElementById('optionsWrap');
-    if (!wrap) return;
-
-    // ===== Qty state + controls =====
-    const MAX_QTY = 20; // harus sama dengan range yang kamu generate di JSON view
-    let qty = 1;
-
-    const elQtyInput = document.getElementById('qtyInput');
-    const elQtyDec = document.getElementById('qtyDec');
-    const elQtyInc = document.getElementById('qtyInc');
-
-    const setQty = (next) => {
-      qty = Math.max(1, Math.min(MAX_QTY, Number(next) || 1));
-      if (elQtyInput) elQtyInput.value = String(qty);
-    };
-
-    const incrementQty = () => setQty(qty + 1);
-    const decrementQty = () => setQty(qty - 1);
-
-    if (elQtyInc) elQtyInc.addEventListener('click', () => { incrementQty(); onChange(); });
-    if (elQtyDec) elQtyDec.addEventListener('click', () => { decrementQty(); onChange(); });
-
-    // bikin select per option (Tailwind classes)
-    wrap.innerHTML = options.map((opt, idx) => {
-      const opts = (opt.values || [])
-        .map(v => `<option value="${String(v).replace(/"/g,'&quot;')}">${v}</option>`)
-        .join('');
-
-      return `
-        <div class="space-y-1">
-          <label for="opt-${idx}" class="block text-sm font-medium text-gray-900">
-            ${opt.name}
-          </label>
-
-          <div class="relative">
-            <select
-              id="opt-${idx}"
-              data-opt-name="${opt.name}"
-              class="block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900
-                     shadow-sm focus:border-gray-900 focus:ring-2 focus:ring-gray-900/20
-                     disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500">
-              <option value="">Choose Option</option>
-              ${opts}
-            </select>
-
-            <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
-                 viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
-            </svg>
-          </div>
-
-          <p id="hint-${idx}" class="hidden text-xs text-gray-500"></p>
-        </div>
-      `;
-    }).join('');
-
-    const getSelections = () => {
-      const selects = wrap.querySelectorAll('select[id^="opt-"]');
-      const selections = {};
-      selects.forEach(sel => {
-        const name = sel.getAttribute('data-opt-name');
-        selections[name] = sel.value;
-      });
-      return selections;
-    };
-
-    const findMatchingVariant = (selections) => {
-      for (const opt of options) {
-        if (!selections[opt.name]) return null;
-      }
-
-      return variants.find(v => {
-        const so = v.selected_options || [];
-        return options.every(opt => {
-          const picked = selections[opt.name];
-          const row = so.find(x => x.name === opt.name);
-          return row && row.value === picked;
-        });
-      }) || null;
-    };
-
-    const renderVariantInfo = (variant) => {
-      const elId = document.getElementById('variantId');
-      const elT = document.getElementById('variantTitle');
-      const elP = document.getElementById('variantPrice');
-      const elA = document.getElementById('variantAvail');
-      const elTotal = document.getElementById('variantTotalPrice');
-
-      if (!variant) {
-        if (elId) elId.textContent = '-';
-        if (elT) elT.textContent = '-';
-        if (elP) elP.textContent = '-';
-        if (elA) elA.textContent = '-';
-        if (elTotal) elTotal.textContent = '-';
-        return;
-      }
-
-      if (elId) elId.textContent = variant.id ?? '-';
-      if (elT) elT.textContent = variant.title ?? '-';
-
-      // Unit price (sudah diformat Liquid di JSON view)
-      if (elP) elP.textContent = variant.price_money_with_currency ?? '-';
-
-      // Total price (ambil dari map qty yang sudah diformat Liquid)
-      const totalByQty = variant.total_money_with_currency_by_qty || {};
-      if (elTotal) elTotal.textContent = totalByQty[String(qty)] ?? '-';
-
-      if (elA) elA.textContent = variant.available ? 'Yes' : 'No';
-    };
-
-    // Disable options yang tidak mungkin menghasilkan variant AVAILABLE
-    const updateDisabledOptions = () => {
-      const selections = getSelections();
-      const availableVariants = variants.filter(v => !!v.available);
-
-      const validValuesByOption = {};
-      options.forEach(o => validValuesByOption[o.name] = new Set());
-
-      options.forEach(targetOpt => {
-        const targetName = targetOpt.name;
-        const base = { ...selections };
-        delete base[targetName];
-
-        availableVariants.forEach(v => {
-          const so = v.selected_options || [];
-
-          const matchBase = Object.entries(base).every(([name, picked]) => {
-            if (!picked) return true;
-            const row = so.find(x => x.name === name);
-            return row && row.value === picked;
-          });
-
-          if (!matchBase) return;
-
-          const rowTarget = so.find(x => x.name === targetName);
-          if (rowTarget?.value) validValuesByOption[targetName].add(rowTarget.value);
-        });
-      });
-
-      wrap.querySelectorAll('select[id^="opt-"]').forEach(sel => {
-        const optName = sel.getAttribute('data-opt-name');
-        const validSet = validValuesByOption[optName] || new Set();
-
-        Array.from(sel.options).forEach((optEl, idx) => {
-          if (idx === 0) return;
-          optEl.disabled = !validSet.has(optEl.value);
-        });
-
-        if (sel.value && !validSet.has(sel.value)) sel.value = "";
-      });
-
-      wrap.querySelectorAll('select[id^="opt-"]').forEach((sel, idx) => {
-        const optName = sel.getAttribute('data-opt-name');
-        const validSet = validValuesByOption[optName] || new Set();
-        const hint = document.getElementById(`hint-${idx}`);
-
-        const shouldDisableSelect = validSet.size === 0;
-        sel.disabled = shouldDisableSelect;
-
-        if (hint) {
-          if (shouldDisableSelect) {
-            hint.textContent = 'Tidak ada kombinasi tersedia untuk pilihan saat ini.';
-            hint.className = 'block text-xs text-gray-500';
-          } else {
-            hint.textContent = '';
-            hint.className = 'hidden text-xs text-gray-500';
-          }
-        }
-      });
-    };
-
-    const onChange = () => {
-      updateDisabledOptions();
-      const selections = getSelections();
-      const variant = findMatchingVariant(selections);
-      renderVariantInfo(variant);
-    };
-
-    wrap.querySelectorAll('select[id^="opt-"]').forEach(sel => {
-      sel.addEventListener('change', onChange);
-    });
-
-    updateDisabledOptions();
-    onChange();
-
-  } catch (err) {
-    console.error('Fetch/parse error:', err, { url });
-  }
-})();
-</script>
-
-
-<script src="{{ 'section-main-product.js' | asset_url }}" defer="defer"></script>
-
-<style>
-  .gw-full-width {
-    width: 200px !important;
-    display: flex;
-    align-items: center;
-  }
-
-  .cart-popup {
-    position: fixed !important;
-    top: 10% !important;
-    right: 5% !important;
-    background-color: var(--color-primary);
-    padding: 0 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    z-index: 9999;
-  }
-
-  .cart-popup-content {
-    text-align: center;
-    color: var(--color-neutral);
-  }
-
-  @media (max-width: 768px) {
-    .cart-popup {
-      top: 30%;
-      right: 0;
-    }
-
-    .product-title-mobile {
-      display: none !important;
-    }
-
-    .main-product-container {
-      padding-top: 50px;
-    }
-
-    .main-product-sub-images-wrapper .scroll-btn {
-      display: none !important;
-    }
-
-    .main-product-sub-images {
-      display: flex;
-      gap: 8px;
-      padding-left: 8px;
-      padding-right: 8px;
-      margin: 0;
-      scroll-padding-left: 8px;
-      scroll-padding-right: 8px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-      overscroll-behavior-x: contain;
-      background-color: transparent;
-    }
-
-    .main-product-sub-images img {
-      flex: 0 0 auto;
-      margin: 0;
-    }
-  }
-</style>
-
-<product-info
-  id="MainProduct-{{ section.id }}"
-  data-section="{{ section.id }}"
-  data-product-id="{{ product.id }}"
-  data-update-url="true"
-  data-url="{{ product.url }}"
->
-  <div id="cart-popup" class="cart-popup" style="display: none;">
-    <div class="cart-popup-content">
-      <p id="popup-product-title">Success add to cart</p>
-    </div>
-  </div>
-  <div class="main-product-container">
-    <div class="main-product-header">
-      {% if product.title %}
-        <h2 class="product-title-mobile">{{ product.title }}</h2>
-      {% endif %}
-      <div class="main-product-header-left">
-        <img
-          class="main-product-main-images"
-          id="mainImage"
-          src="{{ product.featured_image | img_url: 'master' }}"
-          alt="{{ product.title | escape }}"
-          width="auto"
-          height="auto"
-          loading="lazy"
-        >
-        <div class="main-product-sub-images-wrapper">
-          <button
-            class="scroll-btn left"
-            style="transform: rotate(180deg);"
-            onclick="scrollSubImages(-1)"
-            aria-label="Scroll left"
+<section>
+  <div class="bg-neutral md:wrapper-base flex flex-col md:gap-5 md:flex-row">
+    <div class="w-full md:w-1/2 h-auto">
+      <img
+        id="mainImage"
+        src="{{ product.featured_image | image_url }}"
+        class="bg-slate-300 md:rounded-[15px] w-full h-auto"
+        width="100%"
+        height="auto"
+        alt="{{ product.featured_image.alt }}"
+      >
+
+      <div class="px-4 md:px-0 flex gap-4 overflow-x-auto overflow-y-hidden mt-4 pb-4">
+        {% for media_item in product.media %}
+          <img
+            src="{{ media_item.preview_image.src | image_url }}"
+            class="rounded-[10px] h-[90px] cursor-pointer w-auto"
+            width="auto"
+            height="auto"
+            alt="{{ media_item.alt | default: 'Product Image' }}"
+            title="{{ media_item.alt | default: 'Product Image' }}"
+            onclick="updateMainImage('{{ media_item.preview_image.src | image_url }}')"
           >
-            {{- 'icon-arrow-back.svg' | inline_asset_content -}}
-          </button>
-          <div class="main-product-sub-images">
-            {% for image in product.images %}
-              <img
-                class="sub-image"
-                src="{{ image | img_url: 'master' }}"
-                alt="Sub Image {{ forloop.index }}"
-                width="auto"
-                height="auto"
-                data-src="{{ image | img_url: 'large' }}"
-                loading="lazy"
-              >
-            {% endfor %}
-          </div>
-          <button class="scroll-btn right" onclick="scrollSubImages(1)" aria-label="Scroll right">
-            {{- 'icon-arrow-back.svg' | inline_asset_content -}}
-          </button>
-        </div>
-      </div>
-
-      {% assign product-sold = product.metafields.product.sold %}
-      <div class="main-product-header-right">
-        {% if product.title %}
-          <h2 class="product-title">{{ product.title }}</h2>
-        {% endif %}
-        <div style="display: flex; align-items: center">
-          {%- for block in section.blocks -%}
-            {%- case block.type -%}
-              {%- when '@app' -%}
-                {% render block -%}
-                {%- if product-sold %}
-                  <ul
-                    style="
-                      padding: 0 0 0 10  px; display: flex;
-                      align-items: center;
-                    "
-                  >
-                    <li style="padding: 0; font-size: 0.875em;">{{ product-sold.value }} sold</li>
-                  </ul>
-                {% endif %}
-            {%- endcase -%}
-          {%- endfor -%}
-        </div>
-
-        {% assign min_price = product.variants.first.price %}
-        {% assign max_price = product.variants.first.price %}
-        {% for variant in product.variants %}
-          {% if variant.price < min_price %} {% assign min_price = variant.price %} {% endif %}
-          {% if variant.price > max_price %}
-            {% assign max_price = variant.price %}
-          {% endif %}
         {% endfor %}
-
-        {% assign min_price_formatted = min_price | money_with_currency %}
-        {% assign max_price_formatted = max_price | money_with_currency %}
-
-        <div id="variant-price-desktop" class="money">
-          {{ min_price_formatted -}}
-          {%- unless min_price == max_price %}
-            - {{ max_price_formatted -}}
-          {%- endunless %}
-        </div>
-        <div class="main-product-variant-picker">
-          {% render 'custom-variant-picker', product: product %}
-        </div>
       </div>
     </div>
-    <div class="main-product-main-content">
-      <div class="main-product-content">
-        <div class="main-product__content-container">
-          {% assign type = product.metafields.product.category %}
-          {% if type and type.value != 'Insurance' %}
-            <div class="main-product-content-wrapper">
-              <label>Product Details</label>
-              <div class="main-product-content-left">
-                <ul>
-                  {% for item in product.metafields.details %}
-                    {% assign key = item.first %}
-                    {% assign value = item.last %}
-                    {% if value != blank %}
-                      <div class="mp-content-wrapper">
-                        <div class="mp-content-icon-img">
-                          {{- key | append: '.svg' | inline_asset_content -}}
-                        </div>
-                        <div class="mp-content-text">
-                          <p class="title">
-                            {% if key == 'apn' %}
-                              {{ key | upcase }}
-                            {% else %}
-                              {{ key | replace: '_', ' ' | capitalize }}
-                            {% endif %}
-                          </p>
-                          {% if value.value %}
-                            {% for v in value.value %}
-                              <li>{{ v }}</li>
-                            {% endfor %}
-                          {% else %}
-                            <p>{{ value }}</p>
-                          {% endif %}
-                        </div>
-                      </div>
-                      <hr class="mp-content-divider">
-                    {% endif %}
-                  {% endfor %}
-                </ul>
-              </div>
-            </div>
-          {% else %}
-            <div class="main-product-content-wrapper">
-              <label>Product Details</label>
-              <div class="main-product-content-left">
-                <ul>
-                  {% assign fields = '' %}
-                  {% assign fields = fields | append: 'type-of-plans:type of plans,' %}
-                  {% assign fields = fields | append: 'insurance-requirements:Insurance Requirements,' %}
-                  {% assign fields = fields | append: 'children-requirements:Children Requirements' %}
 
-                  {% assign fields_array = fields | split: ',' %}
+    <div class="wrapper md:p-0 w-full md:w-1/2 flex flex-col gap-5 md:gap-3">
+      <h1 class="hidden md:block text-primary font-bold text-[30px] leading-tight">
+        {%- assign cat = product.metafields.product.category.value | default: '' -%}
 
-                  {% for field in fields_array %}
-                    {% assign field_parts = field | split: ':' %}
-                    {% assign field_key = field_parts[0] %}
-                    {% assign title = field_parts[1] %}
-                    {% assign metafield = product.metafields['insurance-product'][field_key] %}
-                    {% if metafield != blank %}
-                      <div class="mp-content-wrapper">
-                        <div class="mp-content-icon-img">
-                          {{- field_key | append: '.svg' | inline_asset_content -}}
-                        </div>
-                        <div class="mp-content-text">
-                          {% assign t = title | replace: '-', ' ' | replace: '_', ' ' | strip %}
-                          {% assign words = t | split: ' ' %}
-                          {% capture title_case %}
-                    {% for w in words %}
-                    {% if w != '' %}{{ w | capitalize }}{% unless forloop.last %} {% endunless %}{% endif %}
-                    {% endfor %}
-                    {% endcapture %}
+        <span class="bg-primary text-center px-2 rounded-[10px] leading-none text-neutral">
+          {%- if cat contains 'Top_Up_' -%}
+            Top Up Plan
+          {%- else -%}
+            {{- cat -}}
+          {%- endif -%}
+        </span>
+        {{ product.title }}
+      </h1>
 
-                          <p class="title">{{ title_case }}</p>
+      <div id="priceContainer" class="hidden md:block">
+        <!-- IDR Price -->
+        <div id="idr-price-wrapper" class="block">
+          <span
+            id="variantPriceIDR"
+            class="text-secondary font-bold text-xl whitespace-nowrap text-left inline-block"
+          ></span>
+        </div>
 
-                          {% if metafield.value %}
-                            {% for v in metafield.value %}
-                              <li style="margin-left: 20px; list-style-type: disc;">{{ v }}</li>
-                            {% endfor %}
-                          {% else %}
-                            <p>{{ metafield }}</p>
-                          {% endif %}
-                        </div>
-                      </div>
-                      <hr class="mp-content-divider">
-                    {% endif %}
-                  {% endfor %}
-                </ul>
-              </div>
-            </div>
+        <!-- USD Price -->
+        <div id="usd-price-wrapper" class="hidden">
+          <span
+            id="variantPriceUSD"
+            class="text-secondary font-bold text-xl whitespace-nowrap text-left inline-block"
+          ></span>
+        </div>
+      </div>
+
+      <!-- Dynamic Option Selectors (✅ added id target scroll) -->
+      <div id="selectorSection" class="flex items-end gap-3">
+        <div
+          id="variantSelectors"
+          class="flex gap-3 {% if product.metafields.product.category.value == 'Insurance' %}flex-col md:flex-row{% endif %}"
+        ></div>
+
+        {% if product.metafields.product.category.value != 'Insurance' %}
+          <button
+            id="resetSelectionBtn"
+            type="button"
+            onclick="resetSelection()"
+            disabled
+            aria-label="Reset selection"
+            class="inline-flex items-center justify-center gap-2.5 rounded-[16px] bg-background-third text-primary px-4 py-3 h-[50px] font-semibold leading-thight cursor-pointer transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed "
+          >
+            <span class="inline-flex items-center justify-center">
+              {% render 'icon-reset', class: 'w-[22px] h-[22px] text-primary' %}
+            </span>
+
+            <!-- 2 lines text (hidden on mobile) -->
+            <span class="hidden md:flex flex-col text-[14px] lowercase text-left leading-[1.05]">
+              <span>reset</span>
+              <span>selection</span>
+            </span>
+          </button>
+        {% endif %}
+      </div>
+
+      <!-- Insurance Add-on Selector (only for Insurance products) -->
+      <div id="insuranceAddonWrapper" class="hidden">
+        <label class="text-primary font-semibold tracking-normal block mb-2">Add On (Optional)</label>
+
+        <div class="relative md:max-w-[50%] w-full">
+          <button
+            type="button"
+            id="addon-button"
+            class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary text-left bg-neutral truncate"
+          >
+            Choose Option
+          </button>
+
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+            {% render 'icon-arrow-right', class: 'w-[20px] h-[20px] text-primary' %}
+          </div>
+        </div>
+
+        <p id="addon-error-msg" class="hidden text-[14px] mt-1 text-red-500">Please select variant options first</p>
+      </div>
+
+      <div>
+        <span class="text-primary font-semibold tracking-normal">Quantity</span>
+
+        <div class="flex items-center gap-3 mt-2 flex-wrap">
+          <div class="flex items-center border border-primary w-fit rounded-full bg-neutral">
+            <button id="qtyMinusBtn" type="button" onclick="decreaseQuantity()" class="p-2">
+              {% render 'icon-minus', class: 'w-[24px] h-[24px] text-primary' %}
+            </button>
+
+            <input
+              type="text"
+              id="variant-quantity"
+              value="1"
+              min="1"
+              max="50"
+              class="text-center text-primary w-[50px] outline-none border-l border-r border-primary bg-neutral"
+              inputmode="numeric"
+              pattern="\d*"
+            >
+
+            <button type="button" onclick="increaseQuantity()" class="p-2">
+              {% render 'icon-plus', class: 'w-[24px] h-[24px] text-primary' %}
+            </button>
+          </div>
+
+          {% if product.metafields.product.category.value == 'Insurance' %}
+            <!-- NOTE: duplicate ID fixed: using resetSelectionBtnInsurance -->
+            <button
+              id="resetSelectionBtnInsurance"
+              type="button"
+              onclick="resetSelection()"
+              disabled
+              aria-label="Reset selection"
+              class="inline-flex items-center justify-center gap-2.5 rounded-[16px] bg-background-third text-primary px-4 py-3 h-[50px] font-semibold leading-thight cursor-pointer transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed "
+            >
+              <span class="inline-flex items-center justify-center">
+                {% render 'icon-reset', class: 'w-[22px] h-[22px] text-primary' %}
+              </span>
+
+              <!-- 2 lines text (hidden on mobile) -->
+              <span class="hidden md:flex flex-col text-[14px] lowercase text-left leading-[1.05]">
+                <span>reset</span>
+                <span>selection</span>
+              </span>
+            </button>
           {% endif %}
+        </div>
+      </div>
 
-          <div class="main-product-content-wrapper">
-            <label>Coverage</label>
-            <div class="main-product-content-right">
-              <div class="main-product-content-right-wrapper">
-                {% if product.metafields.coverage.country.value.size > 10 %}
+      <div class="max-h-[200px] overflow-y-scroll">
+        <p id="productDesc" class="text-primary"></p>
+      </div>
+
+      {%- assign cat = product.metafields.product.category.value | default: '' -%}
+
+      <!-- Desktop buttons (mobile akan pakai fixed bar di bawah) -->
+      <div class="hidden md:flex items-center gap-3">
+        {%- unless cat contains 'Top_Up_' -%}
+          <button
+            type="button"
+            onclick="addToCart()"
+            class="bg-secondary text-neutral hover:opacity-80 hover:-translate-y-[3px] transition-all rounded-[15px] text-nowrap py-3 cursor-pointer font-bold flex-1 shrink-0 items-center justify-center flex"
+          >
+            Add to Cart
+          </button>
+        {%- endunless -%}
+
+        <button
+          type="button"
+          onclick="buyNow()"
+          class="bg-primary text-neutral hover:opacity-80 hover:-translate-y-[3px] transition-all rounded-[15px] text-nowrap py-3 cursor-pointer font-bold flex-1 shrink-0 items-center justify-center flex"
+        >
+          Buy Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} SECTION PRODUCT DETAILS & COVERAGE {% endcomment %}
+  <div class="wrapper md:wrapper-base">
+    <div class="bg-background">
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+        {%- assign type = product.metafields.product.category -%}
+
+        {%- comment -%} ===================== PRODUCT DETAILS ===================== {%- endcomment -%}
+        {% if type and type.value != 'Insurance' %}
+          <div class="flex w-full flex-col">
+            <label class="text-primary font-bold text-[22px] md:text-[26px]">Product Details</label>
+
+            <div class="mt-3 w-full rounded-[15px] bg-neutral p-4 md:p-5 h-[360px] overflow-hidden">
+              <ul class="m-0 list-none p-0 max-h-[320px] overflow-y-auto">
+                {% for item in product.metafields.details %}
+                  {% assign key = item.first %}
+                  {% assign value = item.last %}
+                  {% if value != blank %}
+                    <div class="flex gap-3 items-start py-2">
+                      <div class="w-[30px] h-[30px] shrink-0">
+                        {{- key | append: '.svg' | inline_asset_content -}}
+                      </div>
+
+                      <div class="flex-1">
+                        <p class="m-0 text-primary font-bold text-[16px] md:text-[18px] leading-snug">
+                          {% if key == 'apn' %}
+                            {{ key | upcase }}
+                          {% else %}
+                            {{ key | replace: '_', ' ' | capitalize }}
+                          {% endif %}
+                        </p>
+
+                        {% if value.value %}
+                          <ul class="mt-1 list-disc pl-5 space-y-1">
+                            {% for v in value.value %}
+                              <li class="text-primary text-[14px] md:text-[16px] leading-snug">{{ v }}</li>
+                            {% endfor %}
+                          </ul>
+                        {% else %}
+                          <p class="mt-1 text-primary text-[14px] md:text-[16px] leading-snug">{{ value }}</p>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <hr class="border-border my-2">
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        {% else %}
+          {%- comment -%} =============== PRODUCT DETAILS (INSURANCE) =============== {%- endcomment -%}
+          <div class="flex w-full flex-col">
+            <label class="text-primary font-bold text-[22px] md:text-[26px]">Product Details</label>
+
+            <div class="mt-3 w-full rounded-[15px] bg-neutral p-4 md:p-5 h-[360px] overflow-hidden">
+              <ul class="m-0 list-none p-0 max-h-[320px] overflow-y-auto">
+                {% assign fields = '' %}
+                {% assign fields = fields | append: 'type-of-plans:type of plans,' %}
+                {% assign fields = fields | append: 'insurance-requirements:Insurance Requirements,' %}
+                {% assign fields = fields | append: 'children-requirements:Children Requirements' %}
+                {% assign fields_array = fields | split: ',' %}
+
+                {% for field in fields_array %}
+                  {% assign field_parts = field | split: ':' %}
+                  {% assign field_key = field_parts[0] %}
+                  {% assign title = field_parts[1] %}
+                  {% assign metafield = product.metafields['insurance-product'][field_key] %}
+
+                  {% if metafield != blank %}
+                    <div class="flex gap-3 items-start py-2">
+                      <div class="w-[30px] h-[30px] shrink-0">
+                        {{- field_key | append: '.svg' | inline_asset_content -}}
+                      </div>
+
+                      <div class="flex-1">
+                        {% assign t = title | replace: '-', ' ' | replace: '_', ' ' | strip %}
+                        {% assign words = t | split: ' ' %}
+                        {% capture title_case %}
+                        {% for w in words %}
+                          {% if w != '' %}
+                            {{ w | capitalize }}{% unless forloop.last %} {% endunless %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endcapture %}
+
+                        <p class="m-0 text-primary font-bold text-[16px] md:text-[18px] leading-snug">
+                          {{ title_case }}
+                        </p>
+
+                        {% if metafield.value %}
+                          <ul class="mt-1 list-disc pl-5 space-y-1">
+                            {% for v in metafield.value %}
+                              <li class="text-primary text-[14px] md:text-[16px] leading-snug">{{ v }}</li>
+                            {% endfor %}
+                          </ul>
+                        {% else %}
+                          <p class="mt-1 text-primary text-[14px] md:text-[16px] leading-snug">{{ metafield }}</p>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <hr class="border-border my-2">
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        {% endif %}
+
+        {%- comment -%} ======================== COVERAGE ======================== {%- endcomment -%}
+        <div class="flex w-full flex-col">
+          <label class="text-primary font-bold text-[22px] md:text-[26px]">Coverage</label>
+
+          <div class="mt-3 w-full rounded-[15px] bg-neutral p-0 h-[360px] overflow-hidden">
+            <div class="h-full overflow-y-auto">
+              {% if product.metafields.search.key.value.size > 10 %}
+                <div class="sticky top-0 z-10 bg-neutral px-4 md:px-5 pt-5 md:pt-5 pb-3">
                   {% render 'coverage-search' %}
-                {% endif %}
+                </div>
+              {% endif %}
+
+              <div class="p-4">
                 {% render 'coverage' %}
               </div>
             </div>
           </div>
         </div>
-        {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-        {% if product_category == 'Insurance' %}
-          {% render 'insurance-benefits' %}
-        {% endif %}
       </div>
-      <div class="main-product-ratting"></div>
+
+      {%- comment -%} ================== INSURANCE BENEFITS (ONLY) ================== {%- endcomment -%}
+      {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
+      {% if product_category == 'Insurance' %}
+        <div class="mt-6 md:mt-8">
+          {% render 'insurance-benefits' %}
+        </div>
+      {% endif %}
     </div>
   </div>
-  <script type="application/ld+json">
-    {{ product | structured_data }}
-  </script>
-</product-info>
+</section>
+
+<!-- ✅ MOBILE FIXED BUY BAR (title + selected variant click scroll + price + buttons) -->
+<div
+  id="mobileBuyBar"
+  class="md:hidden fixed left-0 right-0 bottom-0 z-[999] bg-neutral border-t border-border"
+>
+  <div class="px-4 py-3">
+    <div class="flex items-start justify-between gap-3">
+      <div class="w-full space-y-2">
+        <!-- Title -->
+        <div id="mobileTitle" class="text-primary text-xl font-bold leading-tight line-clamp-2">
+          <span class="bg-primary px-2 rounded-[10px] leading-none text-neutral">
+            {{- product.metafields.product.category.value -}}
+          </span>
+          {{ product.title }}
+        </div>
+
+        <!-- Selected variant (click => scroll to selector) -->
+        <button
+          id="mobileSelectedVariant"
+          type="button"
+          class="text-left text-primary/80 text-[14px] underline underline-offset-2 truncate"
+          onclick="scrollToSelectors()"
+        >
+          Selected Variant
+        </button>
+
+        <!-- Price -->
+        <div>
+          <div id="mobile-idr-price-wrapper" class="block">
+            <span id="variantPriceIDRMobile" class="text-secondary font-bold text-lg whitespace-nowrap"></span>
+          </div>
+
+          <div id="mobile-usd-price-wrapper" class="hidden">
+            <span id="variantPriceUSDMobile" class="text-secondary font-bold text-lg whitespace-nowrap"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {%- assign cat = product.metafields.product.category.value | default: '' -%}
+
+    <div class="mt-3 flex items-center gap-3">
+      {%- unless cat contains 'Top_Up_' -%}
+        <button
+          type="button"
+          onclick="addToCart()"
+          class="bg-secondary text-neutral rounded-[15px] py-3 font-bold flex-1"
+        >
+          Add to Cart
+        </button>
+      {%- endunless -%}
+
+      <button
+        type="button"
+        onclick="buyNow()"
+        class="bg-primary text-neutral rounded-[15px] py-3 font-bold flex-1"
+      >
+        Buy Now
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification (Tailwind) -->
+<div
+  id="toast-notification"
+  class="
+    hidden fixed top-[90px] right-5 z-[9999] rounded-[10px] px-5 py-4 font-bold text-neutral shadow-md
+    translate-x-full opacity-0 pointer-events-none transition-all duration-300 bg-primary
+  "
+>
+  Item added to cart!
+</div>
+
+<!-- Insurance Add-on Popup (Tailwind) -->
+<div
+  id="addon-popup-overlay"
+  class="fixed inset-0 z-[1000] hidden bg-black/50 backdrop-blur-[2px]"
+>
+  <section
+    id="addon-popup"
+    class="
+      fixed left-1/2 top-1/2 z-[1001] flex h-[85vh] w-[90%] max-w-[800px] -translate-x-1/2 -translate-y-1/2 flex-col
+      overflow-hidden rounded-[15px] bg-neutral shadow-[0_10px_40px_rgba(0,0,0,0.2)]
+      md:h-[70vh] md:w-1/2
+    "
+  >
+    <div class="flex-1 overflow-y-auto p-5">
+      <div id="addonHeader" class="wrapper shadow-md mb-5 fixed top-0 left-0 w-full bg-neutral">
+        <h2 class="mb-2 text-[26px] font-bold leading-[1.2] text-primary md:text-[26px]">
+          {{ product.title }}
+        </h2>
+
+        <div class="mt-2 flex flex-wrap items-center gap-2.5">
+          <span class="text-[18px] font-bold text-primary md:text-[18px]">Insurance Plan:</span>
+
+          <div class="flex items-center gap-2 text-[16px] font-bold text-secondary md:text-[16px]">
+            <span id="display-option1">-</span>
+            <span class="opacity-50 text-primary">|</span>
+            <span id="display-option2">-</span>
+            <span class="opacity-50 text-primary">|</span>
+            <span id="display-option3">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="addonContent" style="padding-top: calc(var(--addon-header-h, 100px) - 15px);">
+        <div id="selected-addon-list">
+          <!-- Add-on checkboxes will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end border-t border-border bg-neutral px-5 py-3">
+      <button
+        id="close-popup__choose-addon"
+        type="button"
+        class="rounded-[15px] bg-secondary px-7 py-3 text-[16px] font-bold text-neutral transition-all hover:-translate-y-0.5 hover:opacity-90 md:text-[16px]"
+      >
+        Close
+      </button>
+    </div>
+  </section>
+</div>
+
+<style>
+  /* Style untuk option yang disabled (Tailwind tidak reliable untuk option:disabled) */
+  select option:disabled {
+    color: #999;
+    background-color: #f5f5f5;
+  }
+
+  body.no-scroll {
+    overflow: hidden;
+  }
+
+  /* ✅ agar konten tidak ketutup mobile fixed bar */
+  @media (max-width: 767px) {
+    body {
+      padding-bottom: 170px;
+    }
+  }
+</style>
+
+<pre id="result" class="hidden"></pre>
+
+<script>
+  /* =========================================================
+   * GLOBALS (paling atas)
+   * ========================================================= */
+  const shopCurrency = '{{ shop.currency }}';
+  const customerLoggedIn = {% if customer %}true{% else %}false{% endif %};
+
+  let cachedUSDRate = null;
+
+  // State
+  let selectedOptions = [];
+  let selectedVariant = null;
+  let lastCurrency = null;
+  let selectedAddons = [];
+  let lastSelectedVariantId = null;
+
+  // Internal timers
+  let toastTimer = null;
+  let currencyPollTimer = null;
+
+  /* =========================================================
+   * DATA (Shopify product → filtered object)
+   * ========================================================= */
+  const data = {{ product | json }};
+
+  const filtered = {
+    id: data.id,
+    title: data.title,
+    handle: data.handle,
+    description: data.description,
+    price: '{{ product.price | money_with_currency }}',
+    price_min: '{{ product.price_min | money_with_currency }}',
+    price_max: '{{ product.price_max | money_with_currency }}',
+    price_min_raw: {{ product.price_min }},
+    price_max_raw: {{ product.price_max }},
+    available: data.available,
+    images: data.images || [],
+    featured_image: data.featured_image || null,
+    media: data.media || [],
+    category: "{{ product.metafields.product.category.value }}",
+    metafields: {
+      category: "{{ product.metafields.product.category.value }}",
+      coverage: [
+        {% for country in product.metafields.search.key.value %}
+          {
+            country_en: "{{ country.country.value }}",
+            country_id: "{{ country.country_id.value }}",
+            country_alias: [
+              {% for alias in country.alias.value %}
+                "{{ alias }}"{% unless forloop.last %},{% endunless %}
+              {% endfor %}
+            ],
+            flag: {% if country.flag.value %}"{{ country.flag.value | image_url }}"{% else %}null{% endif %}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ],
+      insurance_addons: [
+        {% assign ProductAddon = product.metafields.product['insurance-addon'].value %}
+        {% if ProductAddon %}
+          {% for addon_product in ProductAddon %}
+            {
+              addon_type: "{{ addon_product.metafields.insurance['addon-type'].value }}",
+              variants: [
+                {% for variant in addon_product.variants %}
+                  {
+                    id: {{ variant.id }},
+                    title: "{{ variant.title | escape }}",
+                    option1: "{{ variant.option1 | escape }}",
+                    option2: "{{ variant.option2 | escape }}",
+                    option3: "{{ variant.option3 | escape }}",
+                    price: "{{ variant.price | money_with_currency }}",
+                    priceRaw: {{ variant.price }}
+                  }{% unless forloop.last %},{% endunless %}
+                {% endfor %}
+              ]
+            }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        {% endif %}
+      ]
+    },
+    options: data.options || [],
+    variants: [
+      {% for variant in product.variants %}
+        {
+          id: {{ variant.id }},
+          title: "{{ variant.title }}",
+          price: "{{ variant.price | money_with_currency }}",
+          priceRaw: {{ variant.price }},
+          sku: "{{ variant.sku }}",
+          available: {{ variant.available }},
+          variantType: {{ variant.metafields.variant.type | json }},
+          options: [
+            {% for option in variant.options %}
+              "{{ option }}"{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          ]
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  };
+
+  // Debug JSON output (tetap)
+  document.getElementById('result').textContent = JSON.stringify(filtered, null, 2);
+
+  /* =========================================================
+   * DOM HELPERS
+   * ========================================================= */
+  const $ = (id) => document.getElementById(id);
+
+  const dom = () => ({
+    mainImage: $('mainImage'),
+
+    variantSelectors: $('variantSelectors'),
+
+    idrWrapper: $('idr-price-wrapper'),
+    usdWrapper: $('usd-price-wrapper'),
+    priceIDR: $('variantPriceIDR'),
+    priceUSD: $('variantPriceUSD'),
+
+    resetBtnNonInsurance: $('resetSelectionBtn'),
+    resetBtnInsurance: $('resetSelectionBtnInsurance'),
+
+    qtyInput: $('variant-quantity'),
+
+    productDesc: $('productDesc'),
+
+    toast: $('toast-notification'),
+
+    // Insurance addon UI
+    addonWrapper: $('insuranceAddonWrapper'),
+    addonButton: $('addon-button'),
+    addonErrorMsg: $('addon-error-msg'),
+    addonList: $('selected-addon-list'),
+
+    popupOverlay: $('addon-popup-overlay'),
+    closePopupBtn: $('close-popup__choose-addon'),
+
+    displayOpt1: $('display-option1'),
+    displayOpt2: $('display-option2'),
+    displayOpt3: $('display-option3')
+  });
+
+  /* =========================================================
+   * MOBILE BAR HELPERS
+   * ========================================================= */
+  function scrollToSelectors() {
+    const el = document.getElementById('selectorSection');
+    const bar = document.getElementById('mobileBuyBar');
+    if (!el) return;
+
+    const offset = (bar?.offsetHeight || 0) + 16;
+    const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+
+  function updateMobileSelectedVariantLabel() {
+    const btn = document.getElementById('mobileSelectedVariant');
+    if (!btn) return;
+
+    if (selectedVariant?.title) btn.textContent = selectedVariant.title;
+    else btn.textContent = 'Selected Variant';
+  }
+
+  /* =========================================================
+   * INIT: DESCRIPTION
+   * ========================================================= */
+  function initDescription() {
+    const { productDesc } = dom();
+    if (!productDesc) return;
+
+    productDesc.innerHTML = (filtered.description || '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, '  ')
+      .trim()
+      .replace(/<a /g, '<a class="underline text-secondary" ');
+  }
+
+  /* =========================================================
+   * CURRENCY + PRICE HELPERS
+   * ========================================================= */
+  async function getExchangeRate() {
+    if (cachedUSDRate) return cachedUSDRate;
+
+    try {
+      const res = await fetch('https://api.exchangerate-api.com/v4/latest/IDR');
+      const json = await res.json();
+      cachedUSDRate = json?.rates?.USD || 0.000066;
+      return cachedUSDRate;
+    } catch (err) {
+      console.error('Failed to fetch exchange rate:', err);
+      cachedUSDRate = 0.000066; // fallback
+      return cachedUSDRate;
+    }
+  }
+
+  function convertIDRtoUSDInstant(idrAmount) {
+    const rate = cachedUSDRate || 0.000066;
+    return (idrAmount * rate).toFixed(2);
+  }
+
+  function formatIDR(amount) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
+    })
+      .format(amount)
+      .replace(/\u00A0/g, ' ');
+  }
+
+  function formatUSD(amount) {
+    return `$${parseFloat(amount).toFixed(2)}`;
+  }
+
+  function getUserCurrency() {
+    let c = sessionStorage.getItem('buckscc_customer_currency');
+    if (c) c = c.replace(/"/g, '');
+    return c || 'IDR';
+  }
+
+  function formatAddonPrice(priceRaw, quantity = 1) {
+    const totalIDR = (priceRaw / 100) * quantity;
+    const cur = getUserCurrency();
+
+    if (cur === 'USD') {
+      return formatUSD(convertIDRtoUSDInstant(totalIDR));
+    }
+    return formatIDR(totalIDR);
+  }
+
+  function toggleCurrencyDisplay() {
+    let userCurrency = sessionStorage.getItem('buckscc_customer_currency');
+    if (userCurrency) userCurrency = userCurrency.replace(/"/g, '');
+
+    const { idrWrapper, usdWrapper } = dom();
+    if (!idrWrapper || !usdWrapper) return;
+
+    // ✅ mobile wrappers
+    const mobileIDR = document.getElementById('mobile-idr-price-wrapper');
+    const mobileUSD = document.getElementById('mobile-usd-price-wrapper');
+
+    if (userCurrency === 'USD') {
+      idrWrapper.classList.add('hidden');
+      idrWrapper.classList.remove('block');
+
+      usdWrapper.classList.remove('hidden');
+      usdWrapper.classList.add('block');
+
+      mobileIDR?.classList.add('hidden');
+      mobileIDR?.classList.remove('block');
+
+      mobileUSD?.classList.remove('hidden');
+      mobileUSD?.classList.add('block');
+    } else {
+      idrWrapper.classList.remove('hidden');
+      idrWrapper.classList.add('block');
+
+      usdWrapper.classList.add('hidden');
+      usdWrapper.classList.remove('block');
+
+      mobileIDR?.classList.remove('hidden');
+      mobileIDR?.classList.add('block');
+
+      mobileUSD?.classList.add('hidden');
+      mobileUSD?.classList.remove('block');
+    }
+  }
+
+  function updateIDRPrice(priceRaw, quantity = 1) {
+    const totalIDR = (priceRaw / 100) * quantity;
+    const { priceIDR } = dom();
+    const mobile = document.getElementById('variantPriceIDRMobile');
+
+    const text = formatIDR(totalIDR);
+    if (priceIDR) priceIDR.textContent = text;
+    if (mobile) mobile.textContent = text;
+  }
+
+  async function updateUSDPrice(priceRaw, quantity = 1) {
+    const totalIDR = (priceRaw / 100) * quantity;
+
+    const { priceUSD } = dom();
+    const mobile = document.getElementById('variantPriceUSDMobile');
+
+    if (!priceUSD && !mobile) return;
+
+    // instant (cached/fallback)
+    const instant = formatUSD(convertIDRtoUSDInstant(totalIDR));
+    if (priceUSD) priceUSD.textContent = instant;
+    if (mobile) mobile.textContent = instant;
+
+    // fetch rate if belum ada
+    if (!cachedUSDRate) {
+      const rate = await getExchangeRate();
+      const finalText = formatUSD((totalIDR * rate).toFixed(2));
+      if (priceUSD) priceUSD.textContent = finalText;
+      if (mobile) mobile.textContent = finalText;
+    }
+  }
+
+  async function updatePriceDisplay(priceRaw = null) {
+    const qty = parseInt(dom().qtyInput?.value) || 1;
+    const { priceIDR, priceUSD } = dom();
+
+    if (priceRaw !== null) {
+      updateIDRPrice(priceRaw, qty);
+      await updateUSDPrice(priceRaw, qty);
+      toggleCurrencyDisplay();
+      return;
+    }
+
+    // Range price
+    if (priceIDR) {
+      const minIDR = formatIDR(filtered.price_min_raw / 100);
+      const maxIDR = formatIDR(filtered.price_max_raw / 100);
+      const range = `${minIDR} - ${maxIDR}`;
+      priceIDR.textContent = range;
+
+      const mobileIDRText = document.getElementById('variantPriceIDRMobile');
+      if (mobileIDRText) mobileIDRText.textContent = range;
+    }
+
+    if (priceUSD) {
+      const minUSD = convertIDRtoUSDInstant(filtered.price_min_raw / 100);
+      const maxUSD = convertIDRtoUSDInstant(filtered.price_max_raw / 100);
+      const range = `${formatUSD(minUSD)} - ${formatUSD(maxUSD)}`;
+      priceUSD.textContent = range;
+
+      const mobileUSDText = document.getElementById('variantPriceUSDMobile');
+      if (mobileUSDText) mobileUSDText.textContent = range;
+
+      if (!cachedUSDRate) {
+        await getExchangeRate();
+        const minFinal = convertIDRtoUSDInstant(filtered.price_min_raw / 100);
+        const maxFinal = convertIDRtoUSDInstant(filtered.price_max_raw / 100);
+        const range2 = `${formatUSD(minFinal)} - ${formatUSD(maxFinal)}`;
+        priceUSD.textContent = range2;
+        if (mobileUSDText) mobileUSDText.textContent = range2;
+      }
+    }
+
+    toggleCurrencyDisplay();
+  }
+
+  function calculateInsuranceTotalRawCents() {
+    if (!selectedVariant) return null;
+
+    const mainQty = parseInt(dom().qtyInput?.value, 10) || 1;
+
+    // main variant total (cents)
+    let total = (selectedVariant.priceRaw || 0) * mainQty;
+
+    // addons total (cents) => price addon * mainQty
+    if (Array.isArray(selectedAddons) && selectedAddons.length) {
+      total += selectedAddons.reduce((sum, a) => {
+        const pr = parseInt(a.priceRaw || 0, 10);
+        return sum + (pr * mainQty);
+      }, 0);
+    }
+
+    return total;
+  }
+
+
+  async function updateTotalPriceDisplayIfInsurance() {
+    // Kalau bukan Insurance, biarkan flow lama
+    if (filtered.category !== 'Insurance') return false;
+
+    // Kalau belum ada variant, tampilkan range (pakai function existing)
+    if (!selectedVariant) {
+      await updatePriceDisplay(null);
+      return true;
+    }
+
+    const totalRaw = calculateInsuranceTotalRawCents();
+    if (totalRaw === null) {
+      await updatePriceDisplay(null);
+      return true;
+    }
+
+    // totalRaw ini sudah final (cents), jadi render tanpa multiply qty lagi
+    const totalIDR = totalRaw / 100;
+
+    const priceIDR = document.getElementById('variantPriceIDR');
+    const priceUSD = document.getElementById('variantPriceUSD');
+    const mobileIDR = document.getElementById('variantPriceIDRMobile');
+    const mobileUSD = document.getElementById('variantPriceUSDMobile');
+
+    const idrText = formatIDR(totalIDR);
+    if (priceIDR) priceIDR.textContent = idrText;
+    if (mobileIDR) mobileIDR.textContent = idrText;
+
+    // USD (instant dulu)
+    const usdInstant = formatUSD(convertIDRtoUSDInstant(totalIDR));
+    if (priceUSD) priceUSD.textContent = usdInstant;
+    if (mobileUSD) mobileUSD.textContent = usdInstant;
+
+    // fetch rate kalau belum ada
+    if (!cachedUSDRate) {
+      const rate = await getExchangeRate();
+      const usdFinal = formatUSD((totalIDR * rate).toFixed(2));
+      if (priceUSD) priceUSD.textContent = usdFinal;
+      if (mobileUSD) mobileUSD.textContent = usdFinal;
+    }
+
+    toggleCurrencyDisplay();
+    return true;
+  }
+
+
+  /* =========================================================
+   * VARIANT SELECTORS
+   * ========================================================= */
+  function getUniqueOptionValues(optionIndex) {
+    const values = new Set();
+    filtered.variants.forEach(v => {
+      if (v.options[optionIndex]) values.add(v.options[optionIndex]);
+    });
+    return Array.from(values);
+  }
+
+  function isOptionAvailable(optionIndex, optionValue) {
+    return filtered.variants.some(v => {
+      if (!v.available) return false;
+      if (v.options[optionIndex] !== optionValue) return false;
+
+      return selectedOptions.every((selected, idx) => {
+        if (idx === optionIndex || !selected) return true;
+        return v.options[idx] === selected;
+      });
+    });
+  }
+
+  function updateAvailableOptions() {
+    filtered.options.forEach((_, index) => {
+      const selectEl = document.getElementById(`option${index}`);
+      if (!selectEl) return;
+
+      const optionEls = selectEl.querySelectorAll('option');
+      optionEls.forEach((opt, optIndex) => {
+        if (optIndex === 0) return;
+
+        const value = opt.value;
+        const available = isOptionAvailable(index, value);
+
+        opt.disabled = !available;
+
+        if (!available && !opt.textContent.includes('(Unavailable)')) {
+          opt.textContent = `${value} (Unavailable)`;
+        } else if (available && opt.textContent.includes('(Unavailable)')) {
+          opt.textContent = value;
+        }
+      });
+    });
+  }
+
+  function generateSelectors() {
+    const { variantSelectors, addonWrapper } = dom();
+    if (!variantSelectors) return;
+
+    variantSelectors.innerHTML = '';
+
+    filtered.options.forEach((optionName, index) => {
+      const optionValues = getUniqueOptionValues(index);
+
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `
+        <label for="option${index}" class="text-primary font-semibold tracking-normal">${optionName}</label>
+        <div class="relative">
+          <select
+            name="option${index}"
+            id="option${index}"
+            class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
+            onchange="handleOptionChange(${index}, this.value)"
+          >
+            <option class="text-primary" value="" disabled selected>Choose Option</option>
+            ${optionValues.map(value => {
+              const available = isOptionAvailable(index, value);
+              return `<option value="${value}" ${!available ? 'disabled' : ''}>
+                ${value}${!available ? ' (Unavailable)' : ''}
+              </option>`;
+            }).join('')}
+          </select>
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+            {% render 'icon-arrow-right', class: "w-[20px] h-[20px] text-primary" %}
+          </div>
+        </div>
+      `;
+
+      variantSelectors.appendChild(wrapper);
+    });
+
+    selectedOptions = new Array(filtered.options.length).fill(null);
+
+    // Insurance addon selector visibility
+    if (filtered.category === 'Insurance' && addonWrapper) {
+      addonWrapper.classList.remove('hidden');
+    }
+
+    updatePriceDisplay();
+    updateResetButtonState();
+    updateMobileSelectedVariantLabel();
+  }
+
+  function updateResetButtonState() {
+    const { resetBtnNonInsurance, resetBtnInsurance } = dom();
+    const hasSelection = selectedOptions.some(v => v !== null);
+
+    if (resetBtnNonInsurance) resetBtnNonInsurance.disabled = !hasSelection;
+    if (resetBtnInsurance) resetBtnInsurance.disabled = !hasSelection;
+  }
+
+  function resetSelection() {
+    selectedOptions = new Array(filtered.options.length).fill(null);
+    selectedVariant = null;
+    lastSelectedVariantId = null;
+
+    updateMobileSelectedVariantLabel();
+
+    resetAddons();
+    resetInsurancePlanPreview();
+
+    filtered.options.forEach((_, index) => {
+      const el = document.getElementById(`option${index}`);
+      if (!el) return;
+      el.value = '';
+      el.selectedIndex = 0;
+    });
+
+    const { qtyInput } = dom();
+    if (qtyInput) {
+      qtyInput.min = "1";
+      qtyInput.value = "1";
+    }
+
+    updateAvailableOptions();
+    updatePriceDisplay();
+    updateResetButtonState();
+  }
+
+  async function handleOptionChange(optionIndex, value) {
+    selectedOptions[optionIndex] = value;
+    updateAvailableOptions();
+
+    const variant = filtered.variants.find(v =>
+      selectedOptions.every((selected, idx) => !selected || v.options[idx] === selected)
+    );
+
+    const allSelected = selectedOptions.every(opt => opt !== null);
+
+    // belum lengkap
+    if (!(variant && allSelected)) {
+      selectedVariant = null;
+      lastSelectedVariantId = null;
+
+      updateMobileSelectedVariantLabel();
+
+      if (filtered.category === 'Insurance') {
+        resetAddons();
+        resetInsurancePlanPreview();
+      }
+
+      updatePriceDisplay();
+      updateResetButtonState();
+      return;
+    }
+
+    // variant fix
+    selectedVariant = variant;
+
+    updateMobileSelectedVariantLabel();
+
+    // ✅ Duo Plus → min qty 2 + auto set qty minimal 2
+    enforceMinQtyByVariant(selectedVariant);
+
+    // ✅ Insurance: total = main + addons
+    const handled = await updateTotalPriceDisplayIfInsurance();
+    if (!handled) {
+      // Non-insurance: pakai flow lama
+      updatePriceDisplay(variant.priceRaw);
+    }
+
+
+    if (filtered.category === 'Insurance') {
+      // plan berubah → reset addons total
+      if (lastSelectedVariantId && lastSelectedVariantId !== variant.id) {
+        resetAddons();
+      }
+      lastSelectedVariantId = variant.id;
+
+      updateInsuranceAddonDisplay(variant);
+    }
+
+    if (!variant.available) {
+      showToast('This variant is not available. Please select another option.', 'error');
+    }
+
+    updateResetButtonState();
+  }
+
+  /* =========================================================
+   * INSURANCE: ADDONS
+   * ========================================================= */
+  function resetInsurancePlanPreview() {
+    const { displayOpt1, displayOpt2, displayOpt3 } = dom();
+    if (displayOpt1) displayOpt1.textContent = '-';
+    if (displayOpt2) displayOpt2.textContent = '-';
+    if (displayOpt3) displayOpt3.textContent = '-';
+  }
+
+  function resetAddons() {
+    selectedAddons = [];
+    sessionStorage.removeItem('SelectedAddons');
+
+    const { addonButton, addonErrorMsg, addonList } = dom();
+
+    if (addonButton) {
+      addonButton.textContent = 'Choose Option';
+      addonButton.classList.remove('border-red-500', 'ring-2', 'ring-red-500/30');
+      addonButton.classList.add('border-primary');
+    }
+
+    if (addonErrorMsg) addonErrorMsg.classList.add('hidden');
+    if (addonList) addonList.innerHTML = '';
+  }
+
+  function updateInsuranceAddonDisplay(mainVariant) {
+    const { displayOpt1, displayOpt2, displayOpt3 } = dom();
+
+    if (displayOpt1) displayOpt1.textContent = mainVariant.options[0] || '-';
+    if (displayOpt2) displayOpt2.textContent = mainVariant.options[1] || '-';
+    if (displayOpt3) displayOpt3.textContent = mainVariant.options[2] || '-';
+
+    const matched = matchInsuranceAddons(mainVariant);
+    renderAddonList(matched);
+  }
+
+  function matchInsuranceAddons(mainVariant) {
+    const matchedList = [];
+    const qty = parseInt(dom().qtyInput?.value) || 1;
+
+    const groups = filtered?.metafields?.insurance_addons || [];
+    if (!groups.length) return matchedList;
+
+    groups.forEach(group => {
+      group.variants.forEach(v => {
+        let isMatch = false;
+
+        if (group.addon_type === 'Covid') {
+          isMatch =
+            v.option1 === mainVariant.options[0] &&
+            v.option2 === mainVariant.options[1] &&
+            v.option3 === mainVariant.options[2];
+        }
+
+        if (group.addon_type === 'General') {
+          isMatch =
+            v.option1 === mainVariant.options[0] &&
+            v.option2 === mainVariant.options[1];
+        }
+
+        if (!isMatch) return;
+
+        let title = '';
+        let benefits = [];
+
+        if (group.addon_type === 'Covid') {
+          title = 'Covid-19 Protection';
+          benefits = [
+            'Trip Cancellation',
+            'Medical Expenses Including Emergency Medical Evacuation',
+            'Additional Expenses',
+            'Trip Curtailment or Return of Children',
+            'Automatic extension of Cover'
+          ];
+        } else if (group.addon_type === 'General') {
+          title = v.option3 || v.title;
+
+          if (v.option3 === 'Business Travel') {
+            benefits = ['Staff Replacement', 'Business Equipment', 'Missed Events Fee'];
+          } else if (v.option3 === 'Cruise Cover') {
+            benefits = ['Cabin Confinement', 'Itinerary Change', 'Unused Excursion', 'Cruise Trip Interruption'];
+          } else if (v.option3 === 'Winter Sport' || v.option3 === 'Winter Sports') {
+            benefits = ['Winter Sport Pack', 'On piste Closure'];
+          }
+        }
+
+        matchedList.push({
+          title,
+          addonType: group.addon_type,
+          priceRaw: v.priceRaw,
+          id: v.id,
+          option1: v.option1,
+          option2: v.option2,
+          option3: v.option3,
+          quantity: qty,
+          benefits
+        });
+      });
+    });
+
+    return matchedList;
+  }
+
+  function renderAddonList(addons) {
+    const { addonList } = dom();
+    if (!addonList) return;
+
+    if (!addons.length) {
+      addonList.innerHTML =
+        '<p class="py-5 text-center text-primary">No matching add-ons available for this insurance plan</p>';
+      return;
+    }
+
+    addonList.innerHTML = addons.map(addon => {
+      const benefitList = (addon.benefits || [])
+        .map(b => `<li class="mb-1 leading-[1.4] text-[14px] text-primary">${b}</li>`)
+        .join('');
+
+      const isChecked = selectedAddons.some(sa => String(sa.id) === String(addon.id));
+
+      return `
+        <div
+          class="mt-4 rounded-[10px] border border-border bg-background p-4 transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] cursor-pointer select-none"
+          data-addon-card="true"
+        >
+          <div class="mb-2 flex gap-5 md:flex-row md:items-center md:justify-between">
+            <div class="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <h1 class="m-0 text-[18px] font-bold leading-[1.3] text-primary md:text-[20px]">${addon.title}</h1>
+              <span class="whitespace-nowrap text-[16px] font-bold text-secondary md:text-[18px]">
+                ${formatAddonPrice(addon.priceRaw, addon.quantity)}
+              </span>
+            </div>
+
+            <label class="flex items-center justify-between gap-2 text-primary md:justify-end">
+              <input
+                type="checkbox"
+                class="h-5 w-5 cursor-pointer accent-[var(--color-secondary)]"
+                ${isChecked ? 'checked' : ''}
+                data-id="${addon.id}"
+                data-variant-title="${addon.title}"
+                data-price-raw="${addon.priceRaw}"
+                data-option1="${addon.option1}"
+                data-option2="${addon.option2}"
+                data-option3="${addon.option3}"
+                data-quantity="${addon.quantity}"
+                onchange="handleAddonCheckboxChange(this)"
+              />
+              <span class="text-[14px] font-medium">select</span>
+            </label>
+          </div>
+
+          <div class="mt-2 pl-1">
+            <ul class="list-disc pl-5">${benefitList}</ul>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function handleAddonCheckboxChange(checkbox) {
+    const addonData = {
+      id: checkbox.dataset.id,
+      variantTitle: checkbox.dataset.variantTitle,
+      option1: checkbox.dataset.option1,
+      option2: checkbox.dataset.option2,
+      option3: checkbox.dataset.option3,
+      quantity: parseInt(checkbox.dataset.quantity || '1', 10),
+      priceRaw: parseInt(checkbox.dataset.priceRaw || '0', 10)
+    };
+
+    const card = checkbox.closest('[data-addon-card="true"]');
+    if (card) {
+      card.classList.toggle('ring-2', checkbox.checked);
+      card.classList.toggle('ring-secondary/30', checkbox.checked);
+    }
+
+    if (checkbox.checked) {
+      if (!selectedAddons.some(a => String(a.id) === String(addonData.id))) {
+        selectedAddons.push(addonData);
+      }
+    } else {
+      selectedAddons = selectedAddons.filter(a => String(a.id) !== String(addonData.id));
+    }
+
+    sessionStorage.setItem('SelectedAddons', JSON.stringify(selectedAddons));
+    updateAddonButtonPreview();
+    // ✅ update total price (main + addons)
+    updateTotalPriceDisplayIfInsurance();
+
+  }
+
+  function bindAddonCardToggle() {
+    const list = document.getElementById('selected-addon-list');
+    if (!list) return;
+
+    // event delegation (lebih aman karena list dirender ulang)
+    list.addEventListener('click', (e) => {
+      // kalau user klik elemen yang memang interactive, jangan dobel-toggle
+      const interactive = e.target.closest('input, label, a, button, select, textarea');
+      if (interactive) return;
+
+      const card = e.target.closest('[data-addon-card="true"]');
+      if (!card) return;
+
+      const checkbox = card.querySelector('input[type="checkbox"]');
+      if (!checkbox) return;
+
+      checkbox.checked = !checkbox.checked;
+
+      // panggil handler yang sudah ada (biar update selectedAddons + harga)
+      handleAddonCheckboxChange(checkbox);
+    });
+  }
+
+
+  function updateAddonButtonPreview() {
+    const { addonButton } = dom();
+    if (!addonButton) return;
+
+    if (!selectedAddons.length) {
+      addonButton.textContent = 'Choose Option';
+      return;
+    }
+
+    const titles = selectedAddons.map(a => a.variantTitle).join(', ');
+    addonButton.textContent = titles.length > 50 ? titles.slice(0, 47) + '...' : titles;
+  }
+
+  /* =========================================================
+   * QUANTITY
+   * ========================================================= */
+  function updatePriceWithQuantity() {
+    if (!selectedVariant) return;
+
+    if (filtered.category === 'Insurance') {
+      updateTotalPriceDisplayIfInsurance();
+    } else {
+      updatePriceDisplay(selectedVariant.priceRaw);
+    }
+  }
+
+
+  function decreaseQuantity() {
+    const input = dom().qtyInput;
+    if (!input) return;
+
+    const min = parseInt(input.min, 10) || 1;
+    const current = parseInt(input.value, 10);
+
+    if (current > min) {
+      input.value = String(current - 1);
+      updatePriceWithQuantity();
+
+      if (filtered.category === 'Insurance' && selectedVariant) {
+        updateInsuranceAddonDisplay(selectedVariant);
+        updateTotalPriceDisplayIfInsurance();
+      }
+    } else {
+      input.value = String(min);
+    }
+  }
+
+  function increaseQuantity() {
+    const input = dom().qtyInput;
+    if (!input) return;
+
+    const current = parseInt(input.value, 10);
+    const max = parseInt(input.max, 10);
+
+    if (current < max) {
+      input.value = String(current + 1);
+      updatePriceWithQuantity();
+
+      if (filtered.category === 'Insurance' && selectedVariant) {
+        updateInsuranceAddonDisplay(selectedVariant);
+        updateTotalPriceDisplayIfInsurance();
+      }
+    }
+  }
+
+  function updateMinusButtonState() {
+    const input = dom().qtyInput;
+    const minusBtn = document.getElementById('qtyMinusBtn');
+    if (!input || !minusBtn) return;
+
+    const min = parseInt(input.min, 10) || 1;
+    const current = parseInt(input.value, 10) || min;
+
+    const disabled = current <= min;
+
+    minusBtn.disabled = disabled;
+    minusBtn.classList.toggle('opacity-50', disabled);
+    minusBtn.classList.toggle('cursor-not-allowed', disabled);
+  }
+
+
+  function bindQuantityInput() {
+    const input = dom().qtyInput;
+    if (!input) return;
+
+    // biar gampang replace angka (auto select)
+    input.addEventListener('focus', () => {
+      input.select();
+    });
+
+    // hanya izinkan digit saat mengetik (tapi masih boleh kosong)
+    input.addEventListener('input', (e) => {
+      let v = e.target.value;
+
+      // kalau user lagi hapus semua, biarin dulu
+      if (v === '') {
+        updateMinusButtonState();
+        return;
+      }
+
+      // buang karakter non-digit
+      v = v.replace(/[^\d]/g, '');
+      e.target.value = v;
+
+      // jangan clamp min/max dulu di sini biar user bisa ngetik multi digit
+      updateMinusButtonState();
+    });
+
+    // saat user selesai (blur), baru dipaksa valid + update harga
+    input.addEventListener('blur', () => {
+      const min = parseInt(input.min, 10) || 1;
+      const max = parseInt(input.max, 10) || 50;
+
+      let val = parseInt(input.value, 10);
+
+      // kalau kosong / NaN, balikin ke min
+      if (isNaN(val)) val = min;
+
+      if (val < min) val = min;
+      if (val > max) val = max;
+
+      input.value = String(val);
+
+      updateMinusButtonState();
+      updatePriceWithQuantity();
+
+      if (filtered.category === 'Insurance' && selectedVariant) {
+        updateInsuranceAddonDisplay(selectedVariant);
+        updateTotalPriceDisplayIfInsurance(); // optional
+      }
+    });
+  }
+
+
+  /* =========================================================
+   * TOAST
+   * ========================================================= */
+  function showToast(message, type = 'success') {
+    const { toast } = dom();
+    if (!toast) return;
+
+    toast.textContent = message;
+
+    toast.classList.remove('hidden');
+
+    toast.classList.remove('bg-primary', 'bg-red-500');
+    toast.classList.add(type === 'error' ? 'bg-red-500' : 'bg-primary');
+
+    requestAnimationFrame(() => {
+      toast.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-x-0', 'opacity-100');
+    });
+
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('translate-x-0', 'opacity-100');
+      toast.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+
+      setTimeout(() => toast.classList.add('hidden'), 300);
+    }, 3000);
+  }
+
+  /* =========================================================
+   * CART
+   * ========================================================= */
+  function updateCartCount() {
+    fetch('/cart.js')
+      .then(r => r.json())
+      .then(cart => {
+        const countEl = $('cart-count');
+        if (countEl) countEl.textContent = cart.item_count;
+      })
+      .catch(err => console.error('Failed to update cart count:', err));
+  }
+
+  function addToCart() {
+    if (!selectedVariant) return showToast('Please select all options', 'error');
+    if (!selectedVariant.available) return showToast('This variant is not available', 'error');
+
+    const qty = parseInt(dom().qtyInput?.value, 10) || 1;
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({ id: selectedVariant.id, quantity: qty })
+    })
+      .then(r => r.json())
+      .then(() => {
+        showToast('Item successfully added to cart!', 'success');
+        updateCartCount();
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        showToast('Failed to add item to cart', 'error');
+      });
+  }
+
+  function getVariantType(variant) {
+    if (!variant?.variantType) return '';
+    if (Array.isArray(variant.variantType)) return variant.variantType.join(', ');
+    if (typeof variant.variantType === 'object' && variant.variantType.value) return variant.variantType.value;
+    return variant.variantType;
+  }
+
+  function enforceMinQtyByVariant(variant) {
+    const { qtyInput } = dom();
+    if (!qtyInput) return;
+
+    const variantType = getVariantType(variant);
+    const isDuoPlus = (variantType || '').toLowerCase().trim() === 'duo plus';
+
+    const minQty = isDuoPlus ? 2 : 1;
+
+    qtyInput.min = String(minQty);
+
+    let current = parseInt(qtyInput.value, 10);
+    if (isNaN(current) || current < minQty) current = minQty;
+    qtyInput.value = String(current);
+    updateMinusButtonState();
+  }
+
+  function buyNow() {
+    if (!selectedVariant) return showToast('Please select all options', 'error');
+    if (!selectedVariant.available) return showToast('This variant is not available', 'error');
+
+    const qty = parseInt(dom().qtyInput?.value, 10) || 1;
+
+    // Insurance flow
+    if (filtered.category === 'Insurance') {
+      const variantType = getVariantType(selectedVariant);
+
+      const variantCoverage = Array.from(new Set(
+        (filtered.metafields.coverage || [])
+          .map(c => (c?.country_en || '').trim())
+          .filter(Boolean)
+      ));
+
+      sessionStorage.removeItem('ProductItems');
+
+      const savedAddons = safeParseJSON(sessionStorage.getItem('SelectedAddons'), []);
+
+      const newItem = {
+        productTitle: filtered.title,
+        category: filtered.category,
+        variantType,
+        variantId: selectedVariant.id,
+        variantTitle: selectedVariant.title,
+        quantity: qty,
+        variantCoverage,
+        addonItems: (savedAddons || []).map(addon => ({
+          productTitle: addon.variantTitle,
+          variantId: addon.id,
+          variantTitle: addon.variantTitle,
+          quantity: addon.quantity,
+          option1: addon.option1,
+          option2: addon.option2,
+          option3: addon.option3
+        }))
+      };
+
+      sessionStorage.setItem('ProductItems', JSON.stringify([newItem]));
+
+      window.location.href = customerLoggedIn
+        ? '/pages/form-insurance'
+        : '/account/login?return_url=/pages/form-insurance';
+
+      return;
+    }
+
+    // Non-insurance flow
+    fetch('/cart/clear.js', { method: 'POST' })
+      .then(() => fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: selectedVariant.id, quantity: qty })
+      }))
+      .then(() => { window.location.href = '/checkout'; })
+      .catch(err => {
+        console.error('Error:', err);
+        showToast('Failed to process buy now', 'error');
+      });
+  }
+
+  /* =========================================================
+   * IMAGE
+   * ========================================================= */
+  function updateMainImage(imageSrc) {
+    const { mainImage } = dom();
+    if (mainImage) mainImage.src = imageSrc;
+  }
+
+  /* =========================================================
+   * POPUP: ADDON (Insurance)
+   * ========================================================= */
+  function bindAddonPopup() {
+    const { addonButton, addonErrorMsg, popupOverlay, closePopupBtn } = dom();
+    if (!addonButton || !popupOverlay) return;
+
+    addonButton.addEventListener('click', () => {
+      const allSelected = selectedOptions.every(opt => opt !== null);
+
+      if (!allSelected) {
+        if (addonErrorMsg) addonErrorMsg.classList.remove('hidden');
+        addonButton.classList.add('border-red-500', 'ring-2', 'ring-red-500/30');
+        addonButton.classList.remove('border-primary');
+        return;
+      }
+
+      popupOverlay.classList.remove('hidden');
+      requestAnimationFrame(() => syncAddonHeaderOffset());
+      document.body.classList.add('no-scroll');
+
+      addonButton.classList.remove('border-red-500', 'ring-2', 'ring-red-500/30');
+      addonButton.classList.add('border-primary');
+      if (addonErrorMsg) addonErrorMsg.classList.add('hidden');
+    });
+
+    popupOverlay.addEventListener('click', (e) => {
+      if (e.target === popupOverlay) {
+        popupOverlay.classList.add('hidden');
+        document.body.classList.remove('no-scroll');
+      }
+    });
+
+    closePopupBtn?.addEventListener('click', () => {
+      popupOverlay.classList.add('hidden');
+      document.body.classList.remove('no-scroll');
+    });
+  }
+
+  /* =========================================================
+   * SESSION UTILS
+   * ========================================================= */
+  function safeParseJSON(value, fallback) {
+    try {
+      return value ? JSON.parse(value) : fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  function restoreAddonsFromSession() {
+    const saved = safeParseJSON(sessionStorage.getItem('SelectedAddons'), []);
+    if (Array.isArray(saved) && saved.length) {
+      selectedAddons = saved;
+      updateAddonButtonPreview();
+    }
+  }
+
+  /* =========================================================
+   * CURRENCY MONITOR (polling)
+   * ========================================================= */
+  function startCurrencyMonitor() {
+    if (currencyPollTimer) clearInterval(currencyPollTimer);
+
+    currencyPollTimer = setInterval(() => {
+      const current = sessionStorage.getItem('buckscc_customer_currency');
+      if (current !== lastCurrency) {
+        lastCurrency = current;
+        toggleCurrencyDisplay();
+
+        if (filtered.category === 'Insurance' && selectedVariant) {
+          updateInsuranceAddonDisplay(selectedVariant);
+        }
+      }
+    }, 500);
+  }
+
+  /* =========================================================
+   * PUBLIC API (untuk inline onclick)
+   * ========================================================= */
+  window.updateMainImage = updateMainImage;
+  window.handleOptionChange = handleOptionChange;
+  window.resetSelection = resetSelection;
+  window.decreaseQuantity = decreaseQuantity;
+  window.increaseQuantity = increaseQuantity;
+  window.addToCart = addToCart;
+  window.buyNow = buyNow;
+  window.handleAddonCheckboxChange = handleAddonCheckboxChange;
+
+  // ✅ expose scroll function
+  window.scrollToSelectors = scrollToSelectors;
+
+  /* =========================================================
+   * INIT
+   * ========================================================= */
+  document.addEventListener('DOMContentLoaded', async () => {
+    initDescription();
+
+    await getExchangeRate();
+
+    generateSelectors();
+    bindQuantityInput();
+    bindAddonPopup();
+
+    lastCurrency = sessionStorage.getItem('buckscc_customer_currency');
+    toggleCurrencyDisplay();
+    startCurrencyMonitor();
+
+    restoreAddonsFromSession();
+    updateTotalPriceDisplayIfInsurance();
+
+    updateMobileSelectedVariantLabel();
+    bindAddonCardToggle(); 
+    updateMinusButtonState();
+  });
+
+  /* -------------------------------------------------------------------------- */
+  /*                         Dynamis hight add on title                         */
+  /* -------------------------------------------------------------------------- */
+
+  function syncAddonHeaderOffset() {
+    const header = document.getElementById('addonHeader');
+    const popup = document.getElementById('addon-popup'); // scope variable ke popup aja
+    if (!header || !popup) return;
+
+    const h = Math.ceil(header.getBoundingClientRect().height);
+    popup.style.setProperty('--addon-header-h', `${h}px`);
+  }
+
+  // panggil saat popup dibuka + saat resize
+  function initAddonHeaderSync() {
+    // 1) sekali saat DOM ready
+    syncAddonHeaderOffset();
+
+    // 2) saat window resize
+    window.addEventListener('resize', syncAddonHeaderOffset);
+
+    // 3) kalau isi header bisa berubah (variant text), pakai ResizeObserver
+    const header = document.getElementById('addonHeader');
+    if (header && 'ResizeObserver' in window) {
+      const ro = new ResizeObserver(() => syncAddonHeaderOffset());
+      ro.observe(header);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initAddonHeaderSync);
+</script>
+
+<script type="application/ld+json">
+  {{ product | structured_data }}
+</script>
 
 {% schema %}
 {

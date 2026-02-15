@@ -221,7 +221,8 @@
     margin: 0;
     line-height: 1.5;
     color: var(--color-primary);
-    font-size: var(--font-extra-large);
+    font-weight: 600;
+    font-size: 18px;
   }
 
   .form-itinerary-container {
@@ -595,7 +596,7 @@
           const labelEl = document.createElement('label');
           labelEl.innerHTML = `
           <input type="checkbox" id="sameInsuranceCheckbox-${product.variantId}">
-          The travel dates and the destination country are the same for all the insurance plans.
+          The travel dates and the destination country are the same for all the insurance plans.
         `;
 
           sameCheckboxDiv.appendChild(labelEl);

@@ -1,8 +1,8 @@
-<div class="search-container">
-  <form action="{{ routes.search_url }}" method="get" class="search-form" onsubmit="return false;">
-    <div class="search-box">
+<div class="search-container flex flex-col items-center w-full">
+  <form action="{{ routes.search_url }}" method="get" class="search-form flex flex-col items-center w-full" onsubmit="return false;">
+    <div class="search-box relative w-full h-[60px]">
       <input
-        class="search-fields"
+        class="search-fields w-full placeholder:text-primary placeholder:focus:text-primary/60 h-full px-[10px] text-[16px] border border-primary rounded-[15px] outline-none text-primary"
         id="search-input"
         type="search"
         name="q"
@@ -13,17 +13,22 @@
       >
     </div>
   </form>
-  <div id="search-empty" class="search-empty" style="display:none;" role="status" aria-live="polite">
-  country not found
-</div>
 
+  <div
+    id="search-empty"
+    class="search-empty w-full mt-2 p-[10px] border border-dashed border-primary rounded-[8px] text-primary"
+    style="display:none;"
+    role="status"
+    aria-live="polite"
+  >
+    country not found
+  </div>
 </div>
 
 <script>
 const searchInput = document.getElementById('search-input');
 const emptyMsg = document.getElementById('search-empty');
 
-// subsequence match supaya "chn" tetap cocok "china"
 function isSubsequence(q, t) {
   q = (q || '').toLowerCase();
   t = (t || '').toLowerCase();
@@ -33,7 +38,7 @@ function isSubsequence(q, t) {
 }
 
 function matches(haystack, needle) {
-  if (!needle) return true; // input kosong = tampilkan semua
+  if (!needle) return true;
   haystack = (haystack || '').toLowerCase();
   needle = (needle || '').toLowerCase();
   return haystack.includes(needle) || isSubsequence(needle, haystack);
@@ -55,35 +60,13 @@ function filterCountries() {
     if (show) found++;
   });
 
-  // tampilkan pesan jika ada input & tidak ada hasil
-  if (input && found === 0) {
-    emptyMsg.style.display = 'block';
-  } else {
-    emptyMsg.style.display = 'none';
-  }
-}  
+  if (input && found === 0) emptyMsg.style.display = 'block';
+  else emptyMsg.style.display = 'none';
+}
 
-// p
-
-// ekspos ke global supaya dipanggil ulang saat coverage re-render
 window.filterCountries = filterCountries;
 </script>
 
 <style>
   input[type="search"]::-webkit-search-cancel-button { display: none; }
-  .search-container, .search-form { display:flex; flex-direction:column; align-items:center; width:100%; }
-  .search-box { position:relative; width:100%; height:60px; }
-  .search-fields { width:100%; height:100%; padding:0 10px; font-size:16px; border:1px solid var(--color-primary); border-radius:15px; outline:none; color:var(--color-primary); }
-  .search-fields:focus { border-color:var(--color-primary); color:var(--color-primary); font-size:var(--font-large); }
-  .search-fields::placeholder { color:var(--color-primary); }
-
-  .search-empty {
-    width:100%;
-    margin-top:8px;
-    padding:10px;
-    border:1px dashed var(--color-primary);
-    border-radius:8px;
-    color:var(--color-primary);
-    background:transparent;
-  }
 </style>

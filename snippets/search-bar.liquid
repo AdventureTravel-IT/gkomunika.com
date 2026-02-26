@@ -129,6 +129,12 @@
         };
       });
 
+      const isEuropeItem = (it) => {
+        const en = normalize(it.country_en || '');
+        const id = normalize(it.country_id || '');
+        return en === 'europe' || id === 'eropa';
+      };
+
       const searchCountries = (q) => {
         const nq = normalize(q);
         if (nq.length < 2) return [];
@@ -144,7 +150,17 @@
             return { it, score };
           })
           .filter((x) => x.score !== 999)
-          .sort((a, b) => a.score - b.score || a.it.country_en.localeCompare(b.it.country_en))
+          .sort((a, b) => {
+            // ✅ Europe/Eropa selalu di paling atas kalau ada di hasil
+            const aEurope = isEuropeItem(a.it) ? 1 : 0;
+            const bEurope = isEuropeItem(b.it) ? 1 : 0;
+
+            return (
+              bEurope - aEurope || // prioritas Europe/Eropa dulu
+              a.score - b.score ||
+              a.it.country_en.localeCompare(b.it.country_en)
+            );
+          })
           .map((x) => x.it);
       };
 

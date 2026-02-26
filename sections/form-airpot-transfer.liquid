@@ -1,0 +1,1351 @@
+{% style %}
+  /* Menyembunyikan checkbox asli */
+  input[type='checkbox'].same-travel-variant {
+    opacity: 0;
+    position: absolute;
+  }
+
+  /* Custom tampilan checkbox */
+  input[type='checkbox'].same-travel-variant + label {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* Kotak checkbox */
+  input[type='checkbox'].same-travel-variant + label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid #333;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  /* Gaya saat checkbox dicentang - kotak berubah warna */
+  input[type='checkbox'].same-travel-variant:checked + label::before {
+    background-color: #005496;
+    border-color: #005496;
+  }
+
+  /* Tanda centang - selalu center di dalam kotak */
+  input[type='checkbox'].same-travel-variant:checked + label::after {
+    content: '✔';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: white;
+    font-weight: bold;
+    line-height: 1;
+  }
+{% endstyle %}
+
+{% style %}
+  /* Required marker */
+  .flex.flex-col:has(> :is(input, select, textarea)[required]) > label[for] {
+    display: inline-flex;
+    align-items: baseline;
+    column-gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .flex.flex-col:has(> :is(input, select, textarea)[required]) > label[for]::after {
+    content: '*';
+    color: #ef4444;
+    font-weight: 700;
+    order: 1;
+  }
+
+  .flex.flex-col:has(> :is(input, select, textarea)[required]) > label[for] > .text-secondary {
+    order: 2;
+  }
+
+  .required-group:has(:is(input, select, textarea)[required]) > .required-title {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .required-group:has(:is(input, select, textarea)[required]) > .required-title::after {
+    content: '*';
+    color: #ef4444;
+    font-weight: 700;
+  }
+
+  /* Locked purpose select */
+  select[data-purpose-locked='true'] {
+    cursor: not-allowed;
+    background-color: var(--color-background-third, #f3f4f6);
+    opacity: 0.8;
+    border-color: rgba(0, 84, 150, 0.4);
+  }
+{% endstyle %}
+
+<section class="wrapper md:wrapper-base">
+  <!-- Step indicator (hanya tampil kalau ada multi-step) -->
+  <div id="step-indicator" class="hidden wrapper md:wrapper-base pt-6">
+    <div class="flex items-center gap-2 text-sm text-primary">
+      <span
+        id="step-back-btn"
+        class="cursor-pointer underline hover:opacity-70"
+        onclick="history.back()"
+      >
+        ← Back
+      </span>
+      <span class="text-secondary" id="step-label"></span>
+    </div>
+  </div>
+  <div class="md:wrapper-base">
+    <div class="bg-neutral rounded-[15px] p-4">
+      <h2 class="text-primary font-bold text-lg md:text-2xl">Details Information</h2>
+
+      <div class="mt-5">
+        <form id="airport-transfer-form" action="" class="space-y-3">
+          <section class="flex gap-5 flex-col md:flex-row">
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="name">
+                Full Name <span class="text-secondary">(According to Passport)</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Input Your Full Name"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary"
+                required
+              >
+            </div>
+
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="email">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Input Your Email Address"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary"
+                required
+              >
+            </div>
+          </section>
+
+          <section class="flex gap-3 md:gap-5 flex-col md:flex-row">
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="whatsapp_country">Active WhatsApp Number</label>
+              <select
+                id="whatsapp_country"
+                name="whatsapp_country"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 text-primary"
+                required
+              >
+                <option value="+62" selected>Indonesia +62</option>
+                <option value="+1">United States +1</option>
+                <option value="+44">United Kingdom +44</option>
+                <option value="+60">Malaysia +60</option>
+                <option value="+65">Singapore +65</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col gap-1 flex-1 justify-end">
+              <input
+                type="number"
+                id="whatsapp_number"
+                name="whatsapp_number"
+                placeholder="Input Your WhatsApp number"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary"
+                required
+              >
+            </div>
+          </section>
+
+          <section class="flex gap-5 flex-col md:flex-row">
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="adults_passengers">Number of Adult Passengers</label>
+              <input
+                type="number"
+                id="adults_passengers"
+                name="adults_passengers"
+                min="0"
+                step="1"
+                placeholder="Number of Adult Passengers"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary"
+                required
+              >
+            </div>
+
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="children_passengers">
+                Number of Child Passengers <span class="text-secondary">(0-6 years)</span>
+              </label>
+              <input
+                type="number"
+                id="children_passengers"
+                name="children_passengers"
+                min="0"
+                step="1"
+                placeholder="Number of Child Passengers"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary"
+                required
+              >
+            </div>
+          </section>
+
+          <div class="mt-4 required-group">
+            <p class="text-base text-primary required-title">Request seat for baby</p>
+
+            <div class="mt-2 flex flex-col gap-2">
+              <label class="flex items-center gap-2 text-primary cursor-pointer select-none">
+                <input type="radio" name="request_baby_seat" value="Ya" class="accent-primary" required>
+                <span>Yes</span>
+              </label>
+
+              <label class="flex items-center gap-2 text-primary cursor-pointer select-none">
+                <input type="radio" name="request_baby_seat" value="Tidak" class="accent-primary">
+                <span>No</span>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Dynamic units injected here -->
+    <div id="transfer-variants-container"></div>
+
+    <!-- Checkout Button -->
+    <div class="wrapper md:wrapper-base mt-5 pb-10">
+      <div
+        id="checkout-error-msg"
+        class="hidden bg-red-100 border border-red-400 text-red-700 rounded-[10px] p-3 mb-3 text-sm"
+      ></div>
+      <button
+        id="btn-checkout"
+        type="button"
+        class="w-full bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-neutral font-bold text-base md:text-lg rounded-[15px] py-4 px-6 transition-all duration-200 flex items-center justify-center gap-2"
+      >
+        <span id="btn-checkout-text">Proceed to Checkout</span>
+        <svg
+          id="btn-checkout-spinner"
+          class="hidden animate-spin w-5 h-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* =========================================================
+   * UTIL
+   * ========================================================= */
+  function safeParseJSON(val, fallback) {
+    try {
+      return val ? JSON.parse(val) : fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function ordinalLabel(n) {
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  /* =========================================================
+   * PURPOSE DATA: Read from sessionStorage
+   * Saved by product page as: sessionStorage.setItem('AT_Purposes', JSON.stringify([...]))
+   * Format: ['airport_to_city', 'city_to_airport', ...]  — flat array, index = unit order
+   * ========================================================= */
+  function getAtPurposesFromSession() {
+    try {
+      const raw = sessionStorage.getItem('AT_Purposes');
+      if (!raw) return null;
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
+   * Build map { "itemIndex-unitLocalIndex": purposeValue }
+   * from flat purposes array (item0-unit0, item0-unit1, ..., item1-unit0, ...)
+   */
+  function buildPurposeMap(items, purposes) {
+    if (!purposes || !purposes.length) return {};
+    const map = {};
+    let cursor = 0;
+    items.forEach((item, itemIndex) => {
+      const qty = parseInt(item.quantity, 10) || 1;
+      for (let i = 0; i < qty; i++) {
+        map[`${itemIndex}-${i}`] = purposes[cursor] || '';
+        cursor++;
+      }
+    });
+    return map;
+  }
+
+  /* =========================================================
+   * HELPER: Build purpose <option> HTML
+   * ========================================================= */
+  function buildPurposeOptionsHTML(preselected) {
+    const opts = [
+      { value: 'airport_to_city', label: 'Airport to City' },
+      { value: 'city_to_airport', label: 'City to Airport' },
+    ];
+    const placeholder = preselected ? '' : `<option value="" disabled selected>Select Transfer Purpose</option>`;
+    const options = opts
+      .map((o) => `<option value="${o.value}"${o.value === preselected ? ' selected' : ''}>${o.label}</option>`)
+      .join('');
+    return placeholder + options;
+  }
+
+  /* =========================================================
+   * TEMPLATE: Unit card
+   * ========================================================= */
+  function transferUnitHTML({ ord, variantTitle, unitIndex, preselectedPurpose }) {
+    const purposeLocked = Boolean(preselectedPurpose);
+    const purposeOptions = buildPurposeOptionsHTML(preselectedPurpose);
+    const isCityToAirport = preselectedPurpose === 'city_to_airport';
+
+    // UI state based on preselected purpose
+    const noteHTML = isCityToAirport
+      ? '<span class="text-primary">Note:</span> The driver will wait with a tolerance of <span class="text-primary">30 minutes</span> delay from your pick up time.'
+      : '<span class="text-primary">Note:</span> The driver will wait with a tolerance of <span class="text-primary">90 minutes</span> delay from your arrival time.';
+    const timeLabel = isCityToAirport ? 'Pickup Time' : 'Arrival Time';
+    const flightHoursHidden = isCityToAirport ? '' : 'hidden';
+    const flightHoursReq = isCityToAirport ? 'required' : '';
+
+    // Lock icon SVG (shown when purpose is locked)
+    const lockIcon = `
+      <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+      </div>`;
+
+    const arrowIcon = `
+      <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px] text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </div>`;
+
+    return `
+      <div class="rounded-[15px] min-h-[100px] bg-neutral overflow-hidden mt-5"
+           data-unit="true"
+           data-unit-index="${unitIndex}">
+        <div class="h-[45px] flex gap-3 text-neutral items-center p-4 justify-start bg-primary">
+          <span class="leading-none bg-secondary rounded-full py-1 px-5">${ord}</span>
+          <span class="font-bold">${escapeHtml(variantTitle || '-')}</span>
+        </div>
+
+        <div class="p-4 space-y-5 text-primary">
+
+          <!-- Transfer Purpose + Flight Number -->
+          <section class="flex gap-5 flex-col md:flex-row">
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="transfer-purpose-${unitIndex}">
+                Transfer Purpose
+                ${purposeLocked ? '<span class="text-[12px] text-secondary ml-1">(set from product page)</span>' : ''}
+              </label>
+              <div class="relative">
+                <select
+                  id="transfer-purpose-${unitIndex}"
+                  name="transfer_purpose[${unitIndex}]"
+                  class="w-full p-3 pr-10 border rounded-[10px] outline-none text-primary appearance-none
+                    ${
+                      purposeLocked
+                        ? 'bg-background-third cursor-not-allowed opacity-80 border-primary/40'
+                        : 'border-slate-400 focus:border-primary focus:ring-1 bg-background'
+                    }"
+                  ${purposeLocked ? 'disabled data-purpose-locked="true"' : 'required'}
+                >
+                  ${purposeOptions}
+                </select>
+                ${purposeLocked ? lockIcon : arrowIcon}
+              </div>
+              ${
+                purposeLocked
+                  ? `<input type="hidden" name="transfer_purpose[${unitIndex}]" value="${preselectedPurpose}">`
+                  : ''
+              }
+            </div>
+
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="flight-number-${unitIndex}">Flight Number</label>
+              <input
+                type="text"
+                id="flight-number-${unitIndex}"
+                name="flight_number[${unitIndex}]"
+                placeholder="Input Your Flight Number"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary"
+                required
+              />
+            </div>
+          </section>
+
+          <!-- Pickup Date + Time -->
+          <section class="flex gap-5 flex-col md:flex-row">
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="pickup-date-${unitIndex}">Pickup Date</label>
+              <input
+                type="date"
+                id="pickup-date-${unitIndex}"
+                name="pickup_date[${unitIndex}]"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 text-primary"
+                required
+              />
+            </div>
+
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="pickup-time-${unitIndex}" data-pickup-time-label="${unitIndex}">
+                ${timeLabel}
+              </label>
+              <input
+                type="time"
+                id="pickup-time-${unitIndex}"
+                name="pickup_time[${unitIndex}]"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 text-primary"
+                required
+              />
+            </div>
+          </section>
+
+          <!-- Driver note -->
+          <div>
+            <p class="text-secondary leading-relaxed" data-driver-note="${unitIndex}">
+              ${noteHTML}
+            </p>
+          </div>
+
+          <!-- Flight Departure Time (city_to_airport only) -->
+          <div class="flex flex-col gap-1 ${flightHoursHidden}" data-flight-hours-wrap="${unitIndex}">
+            <label class="text-base text-primary" for="flight-hours-${unitIndex}">Flight Departure Time</label>
+            <input
+              type="time"
+              id="flight-hours-${unitIndex}"
+              name="flight_hours[${unitIndex}]"
+              ${flightHoursReq}
+              class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 text-primary"
+            />
+          </div>
+
+          <!-- Luggage -->
+          <section class="flex gap-5 flex-col md:flex-row">
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="carryon-${unitIndex}">
+                Number of Carry On Suitcases <span class="text-secondary">(Size &lt; 20 inch)</span>
+              </label>
+              <input
+                type="number"
+                id="carryon-${unitIndex}"
+                name="carryon[${unitIndex}]"
+                placeholder="Input Number of Carry On Suitcases"
+                value="0"
+                min="0"
+                step="1"
+                inputmode="numeric"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary"
+                required
+              />
+            </div>
+
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="checkin-${unitIndex}">
+                Number of Check-in Luggage <span class="text-secondary">(Size &gt; 20 inch)</span>
+              </label>
+              <input
+                type="number"
+                id="checkin-${unitIndex}"
+                name="checkin[${unitIndex}]"
+                placeholder="Input Number of Checked Luggage"
+                value="0"
+                min="0"
+                step="1"
+                inputmode="numeric"
+                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary"
+                required
+              />
+            </div>
+          </section>
+
+          <div>
+            <p class="text-secondary leading-relaxed">
+              <span class="text-primary">Note:</span> If you do not bring one suitcase size, please fill in the number "0" (Zero).
+            </p>
+          </div>
+
+          <!-- Luggage allowance accordion -->
+          <details class="bg-white border border-slate-200 rounded-[15px] overflow-hidden group">
+            <summary class="list-none cursor-pointer flex items-center justify-between p-3">
+              <h3 class="font-semibold text-base text-primary leading-relaxed">Luggage allowance based on car rental type</h3>
+              <span class="transition-transform duration-200 group-open:rotate-180">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </summary>
+
+            <div class="px-5 pb-5">
+              <ul class="list-disc pl-5 space-y-2 text-primary">
+                <li>5 Seater: 5 passengers &amp; 3 pcs (28") / 5 pcs (24")</li>
+                <li>7 Seater: 5 passengers &amp; 3 pcs (28") / 5 pcs (24")</li>
+                <li>6 Seater: 6 passengers &amp; 1 pc (28") / 2 pcs (24")</li>
+                <li>9 Seater: 9 passengers &amp; 9 pcs (28") / 14 pcs (24")</li>
+                <li>10 Seater: 9 passengers &amp; 9 pcs (28") / 14 pcs (24")</li>
+                <li>13 Seater: 13 passengers &amp; 2 pcs (21–29")</li>
+                <li>14 Seater: 11 passengers &amp; 5 pcs</li>
+                <li>18 Seater: 18 passengers &amp; 18 pcs (28") / 20 pcs (26")</li>
+                <li>21 Seater: 18 passengers &amp; 20 pcs (26") / 22 pcs (24")</li>
+                <li>30 Seater: 29 passengers &amp; 20 pcs</li>
+              </ul>
+            </div>
+          </details>
+
+          <!-- Address -->
+          <div class="flex flex-col gap-1">
+            <label class="text-base text-primary" for="address-${unitIndex}">Full Delivery Address</label>
+            <textarea
+              id="address-${unitIndex}"
+              name="address[${unitIndex}]"
+              rows="3"
+              placeholder="Input Your Full Delivery Address"
+              class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary resize-none"
+              required
+            ></textarea>
+          </div>
+
+        </div>
+      </div>
+    `;
+  }
+
+  /* =========================================================
+   * TEMPLATE: Variant header (with "same travel" checkbox)
+   * ========================================================= */
+  function variantHeaderHTML({ productTitle, variantTitle, itemIndex, qty }) {
+    return `
+      <div class="bg-neutral rounded-[15px] p-4 mt-5">
+        <h2 class="text-primary font-bold text-lg md:text-2xl">${escapeHtml(productTitle || '-')}</h2>
+        <span class="text-secondary text-base md:text-lg font-semibold">${escapeHtml(variantTitle || '-')}</span>
+
+        ${
+          qty > 1
+            ? `
+          <div class="flex items-center gap-2 mt-3">
+            <input type="checkbox" id="same-travel-${itemIndex}" name="same_travel_${itemIndex}" class="same-travel-variant">
+            <label class="text-base text-primary" for="same-travel-${itemIndex}">
+              The same travel data applies to all quantities in this variant.
+            </label>
+          </div>
+        `
+            : ''
+        }
+      </div>
+    `;
+  }
+
+  /* =========================================================
+   * RENDER: All forms — injects purposeMap from sessionStorage
+   * ========================================================= */
+  
+  function renderAirportTransferForms(container, items) {
+    container.innerHTML = '';
+
+    const hidden = document.getElementById('at_items_json');
+    if (hidden) hidden.value = JSON.stringify(items);
+
+    // ✅ Load purposes saved by product page
+    const rawPurposes = getAtPurposesFromSession();
+    const purposeMap = buildPurposeMap(items, rawPurposes);
+
+    items.forEach((item, itemIndex) => {
+      const qty = parseInt(item.quantity, 10) || 1;
+
+      container.insertAdjacentHTML(
+        'beforeend',
+        variantHeaderHTML({
+          productTitle: item.productTitle,
+          variantTitle: item.variantTitle,
+          itemIndex,
+          qty,
+        })
+      );
+
+      for (let i = 0; i < qty; i++) {
+        const unitIndex = `${itemIndex}-${i}`;
+        const ord = ordinalLabel(i + 1);
+        const preselectedPurpose = purposeMap[unitIndex] || '';
+
+        container.insertAdjacentHTML(
+          'beforeend',
+          transferUnitHTML({
+            ord,
+            variantTitle: item.variantTitle,
+            unitIndex,
+            preselectedPurpose,
+          })
+        );
+
+        // Open first accordion by default
+        if (i === 0) {
+          const unitEl = container.querySelector(`[data-unit-index="${unitIndex}"]`);
+          const detailsEl = unitEl?.querySelector('details');
+          if (detailsEl) detailsEl.open = true;
+        }
+      }
+    });
+
+    // ✅ Apply correct UI state (notes, flight hours) for locked purpose fields
+    applyLockedPurposeUI();
+  }
+
+  /* =========================================================
+   * LOCKED PURPOSE: Apply correct UI after render
+   * ========================================================= */
+  function applyLockedPurposeUI() {
+    document.querySelectorAll('input[type="hidden"][name^="transfer_purpose"]').forEach((hiddenInput) => {
+      const purpose = hiddenInput.value;
+      if (!purpose) return;
+
+      // Extract unitIndex from name: transfer_purpose[0-1] → "0-1"
+      const match = hiddenInput.name.match(/\[([^\]]+)\]/);
+      if (!match) return;
+      const unitIndex = match[1];
+
+      applyPurposeUI(unitIndex, purpose);
+    });
+  }
+
+  function applyPurposeUI(unitIndex, purpose) {
+    const noteEl = document.querySelector(`[data-driver-note="${unitIndex}"]`);
+    const wrap = document.querySelector(`[data-flight-hours-wrap="${unitIndex}"]`);
+    const input = document.getElementById(`flight-hours-${unitIndex}`);
+    const label = document.querySelector(`[data-pickup-time-label="${unitIndex}"]`);
+
+    const noteCityToAirport =
+      '<span class="text-primary">Note:</span> The driver will wait with a tolerance of <span class="text-primary">30 minutes</span> delay from your pick up time.';
+    const noteAirportToCity =
+      '<span class="text-primary">Note:</span> The driver will wait with a tolerance of <span class="text-primary">90 minutes</span> delay from your arrival time.';
+
+    if (purpose === 'city_to_airport') {
+      if (noteEl) noteEl.innerHTML = noteCityToAirport;
+      if (wrap) wrap.classList.remove('hidden');
+      if (input) input.required = true;
+      if (label) label.textContent = 'Pickup Time';
+    } else {
+      if (noteEl) noteEl.innerHTML = noteAirportToCity;
+      if (wrap) wrap.classList.add('hidden');
+      if (input) {
+        input.required = false;
+        input.value = '';
+      }
+      if (label) label.textContent = 'Arrival Time';
+    }
+  }
+
+  /* =========================================================
+   * Transfer Purpose UI: change handler (for non-locked selects)
+   * ========================================================= */
+  document.addEventListener('change', (e) => {
+    const sel = e.target;
+    if (!sel?.id?.startsWith('transfer-purpose-')) return;
+    if (sel.dataset.purposeLocked === 'true') return; // skip locked
+
+    const unitIndex = sel.id.replace('transfer-purpose-', '');
+    applyPurposeUI(unitIndex, sel.value);
+  });
+
+  /* =========================================================
+   * SAME TRAVEL (copy unit0 → others)
+   * ========================================================= */
+  function bindSameTravelData() {
+    document.querySelectorAll('.same-travel-variant').forEach((checkbox) => {
+      checkbox.addEventListener('change', () => {
+        const itemIndex = checkbox.id.replace('same-travel-', '');
+        applySameTravelVariant(itemIndex, checkbox.checked);
+      });
+    });
+  }
+
+  function applySameTravelVariant(itemIndex, isChecked) {
+    const units = Array.from(document.querySelectorAll(`[data-unit="true"][data-unit-index^="${itemIndex}-"]`));
+    if (units.length < 2) return;
+
+    if (isChecked) {
+      const unit0 = units[0];
+      const fields0 = unit0.querySelectorAll('input:not([type="hidden"]), select:not([disabled]), textarea');
+
+      units.slice(1).forEach((unitN) => {
+        // Copy values
+        const fieldsN = unitN.querySelectorAll('input:not([type="hidden"]), select:not([disabled]), textarea');
+        fields0.forEach((f0, idx) => {
+          const fN = fieldsN[idx];
+          if (!fN || f0.type === 'radio') return;
+          fN.value = f0.value;
+          fN.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+
+        // Hide unit
+        unitN.classList.add('hidden');
+        unitN.querySelectorAll('input, select, textarea').forEach((el) => {
+          if (el.required) el.dataset.wasRequired = '1';
+          el.required = false;
+          el.disabled = true;
+        });
+      });
+
+      // Sync on change
+      unit0.querySelectorAll('input:not([type="hidden"]), select:not([disabled]), textarea').forEach((f0) => {
+        f0.addEventListener('input', () => syncVariantUnit0(itemIndex), { signal: getSyncSignal(itemIndex) });
+        f0.addEventListener('change', () => syncVariantUnit0(itemIndex), { signal: getSyncSignal(itemIndex) });
+      });
+    } else {
+      abortSyncSignal(itemIndex);
+
+      units.slice(1).forEach((unitN) => {
+        unitN.classList.remove('hidden');
+        unitN.querySelectorAll('input, select, textarea').forEach((el) => {
+          el.disabled = false;
+          if (el.dataset.wasRequired === '1') {
+            el.required = true;
+            delete el.dataset.wasRequired;
+          }
+        });
+      });
+    }
+  }
+
+  function syncVariantUnit0(itemIndex) {
+    const units = Array.from(document.querySelectorAll(`[data-unit="true"][data-unit-index^="${itemIndex}-"]`));
+    if (units.length < 2) return;
+
+    const fields0 = units[0].querySelectorAll('input:not([type="hidden"]), select:not([disabled]), textarea');
+    units.slice(1).forEach((unitN) => {
+      const fieldsN = unitN.querySelectorAll('input:not([type="hidden"]), select:not([disabled]), textarea');
+      fields0.forEach((f0, idx) => {
+        const fN = fieldsN[idx];
+        if (!fN || f0.type === 'radio') return;
+        fN.value = f0.value;
+        fN.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    });
+  }
+
+  const _syncControllers = {};
+  function getSyncSignal(itemIndex) {
+    abortSyncSignal(itemIndex);
+    _syncControllers[itemIndex] = new AbortController();
+    return _syncControllers[itemIndex].signal;
+  }
+  function abortSyncSignal(itemIndex) {
+    if (_syncControllers[itemIndex]) {
+      _syncControllers[itemIndex].abort();
+      delete _syncControllers[itemIndex];
+    }
+  }
+
+  /* =========================================================
+   * INIT (DOMContentLoaded)
+   * ========================================================= */
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('transfer-variants-container');
+    if (!container) return;
+
+    const allItems = safeParseJSON(localStorage.getItem('ProductItems') || sessionStorage.getItem('ProductItems'), []);
+    const items = allItems.filter((item) => item.category?.toLowerCase() === 'airport_transfer');
+
+    if (!Array.isArray(items) || !items.length) {
+      container.innerHTML = `<div class="bg-neutral rounded-[15px] p-4 mt-5 text-primary">No transfer items found.</div>`;
+      return;
+    }
+
+    renderAirportTransferForms(container, items);
+    bindSameTravelData();
+    bindFormPersistence();
+    restoreFormData();
+  });
+
+  /* =========================================================
+   * FORM PERSISTENCE
+   * ========================================================= */
+  const FORM_STORAGE_KEY = 'FormDataAirportTransfer';
+
+  function collectFormData() {
+    const data = {};
+
+    const headerForm = document.getElementById('airport-transfer-form');
+    if (headerForm) {
+      headerForm.querySelectorAll('input, select, textarea').forEach((el) => {
+        if (!el.name) return;
+        if (el.type === 'radio') {
+          if (el.checked) data[el.name] = el.value;
+        } else if (el.type === 'checkbox') {
+          data[el.name] = el.checked;
+        } else {
+          if (el.value === '' || el.value === null) return;
+          data[el.name] = el.value;
+        }
+      });
+    }
+
+    document.querySelectorAll('.same-travel-variant').forEach((cb) => {
+      data[cb.name] = cb.checked;
+    });
+
+    document.querySelectorAll('[data-unit="true"]').forEach((unit) => {
+      const unitIndex = unit.dataset.unitIndex;
+      if (unit.classList.contains('hidden')) return;
+
+      data[unitIndex] = {};
+
+      // Get purpose from hidden input (locked) or visible select
+      const purposeHidden = unit.querySelector(`input[type="hidden"][name="transfer_purpose[${unitIndex}]"]`);
+      const purposeEl = unit.querySelector(`select[name="transfer_purpose[${unitIndex}]"]`);
+      const purposeRaw = purposeHidden?.value || purposeEl?.value || '';
+      const isCityToAirport = purposeRaw === 'city_to_airport';
+
+      unit.querySelectorAll('input, select, textarea').forEach((el) => {
+        if (!el.name || el.type === 'hidden') return;
+        const keyMatch = el.name.match(/^([^\[]+)(?:\[([^\]]+)\])?$/);
+        if (!keyMatch) return;
+        const fieldKey = keyMatch[1];
+        if (fieldKey === 'flight_hours' && !isCityToAirport) return;
+
+        if (el.type === 'radio') {
+          if (el.checked) data[unitIndex][fieldKey] = el.value;
+        } else if (el.type === 'checkbox') {
+          data[unitIndex][fieldKey] = el.checked;
+        } else {
+          if (el.disabled) return; // skip disabled (locked purpose select)
+          if (el.value === '' || el.value === null) return;
+          data[unitIndex][fieldKey] = el.value;
+        }
+      });
+
+      // Also save purpose from hidden input
+      if (purposeRaw) data[unitIndex]['transfer_purpose'] = purposeRaw;
+    });
+
+    return data;
+  }
+
+  function restoreFormData() {
+    const raw = localStorage.getItem(FORM_STORAGE_KEY);
+    if (!raw) return;
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      return;
+    }
+
+    const headerForm = document.getElementById('airport-transfer-form');
+    if (headerForm) {
+      headerForm.querySelectorAll('input, select, textarea').forEach((el) => {
+        if (!el.name || !(el.name in data)) return;
+        if (el.type === 'radio') {
+          el.checked = el.value === data[el.name];
+        } else if (el.type === 'checkbox') {
+          el.checked = Boolean(data[el.name]);
+        } else {
+          el.value = data[el.name] ?? '';
+        }
+      });
+    }
+
+    document.querySelectorAll('.same-travel-variant').forEach((cb) => {
+      if (!(cb.name in data)) return;
+      cb.checked = Boolean(data[cb.name]);
+      if (cb.checked) {
+        const itemIndex = cb.id.replace('same-travel-', '');
+        applySameTravelVariant(itemIndex, true);
+      }
+    });
+
+    document.querySelectorAll('[data-unit="true"]').forEach((unit) => {
+      const unitIndex = unit.dataset.unitIndex;
+      const saved = data[unitIndex];
+      if (!saved) return;
+
+      unit.querySelectorAll('input:not([type="hidden"]), select:not([disabled]), textarea').forEach((el) => {
+        if (!el.name) return;
+        const keyMatch = el.name.match(/^([^\[]+)(?:\[([^\]]+)\])?$/);
+        if (!keyMatch) return;
+        const fieldKey = keyMatch[1];
+        if (!(fieldKey in saved)) return;
+
+        if (el.type === 'radio') {
+          el.checked = el.value === saved[fieldKey];
+        } else if (el.type === 'checkbox') {
+          el.checked = Boolean(saved[fieldKey]);
+        } else {
+          el.value = saved[fieldKey] ?? '';
+        }
+
+        if (el.value) el.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    });
+  }
+
+  function saveFormData() {
+    const data = collectFormData();
+    localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function bindFormPersistence() {
+    document.addEventListener('input', saveFormData);
+    document.addEventListener('change', saveFormData);
+  }
+
+  function clearSavedFormData() {
+    localStorage.removeItem(FORM_STORAGE_KEY);
+  }
+
+  /* =========================================================
+   * COLLECT UNIT DATA (reads hidden input for locked purpose)
+   * ========================================================= */
+  function collectUnitData(unitIndex) {
+    const unit = document.querySelector(`[data-unit-index="${unitIndex}"]`);
+    if (!unit) return null;
+
+    const getVal = (name) => {
+      // Prefer non-disabled element, fall back to hidden input
+      const visible = unit.querySelector(`[name="${name}[${unitIndex}]"]:not([disabled]):not([type="hidden"])`);
+      const hidden = unit.querySelector(`input[type="hidden"][name="${name}[${unitIndex}]"]`);
+      return visible?.value || hidden?.value || '';
+    };
+
+    const purposeRaw = getVal('transfer_purpose');
+    const purposeEl = unit.querySelector(`select[name="transfer_purpose[${unitIndex}]"]`);
+    const purposeLabel = purposeEl?.options?.[purposeEl.selectedIndex]?.text || purposeRaw;
+
+    return {
+      purpose: purposeLabel,
+      purposeRaw,
+      flightNumber: getVal('flight_number'),
+      pickupDate: getVal('pickup_date'),
+      pickupTime: getVal('pickup_time'),
+      flightHours: purposeRaw === 'city_to_airport' ? getVal('flight_hours') : '',
+      carryon: getVal('carryon'),
+      checkin: getVal('checkin'),
+      address: getVal('address'),
+    };
+  }
+
+  /* =========================================================
+   * VALIDATION HELPERS
+   * ========================================================= */
+  function setFieldError(field, message) {
+    if (!field) return;
+    const wrapper = field.closest('.flex.flex-col') || field.parentElement;
+    if (!wrapper) return;
+    field.classList.add('border-red-500');
+    field.classList.remove('border-slate-400');
+    let span = wrapper.querySelector('.at-error-message');
+    if (!span) {
+      span = document.createElement('span');
+      span.className = 'at-error-message text-red-500 text-xs mt-1';
+      wrapper.appendChild(span);
+    }
+    span.textContent = message;
+  }
+
+  function clearFieldError(field) {
+    if (!field) return;
+    const wrapper = field.closest('.flex.flex-col') || field.parentElement;
+    if (!wrapper) return;
+    field.classList.remove('border-red-500');
+    field.classList.add('border-slate-400');
+    const span = wrapper.querySelector('.at-error-message');
+    if (span) span.textContent = '';
+  }
+
+  function showCheckoutError(message) {
+    const el = document.getElementById('checkout-error-msg');
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove('hidden');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function hideCheckoutError() {
+    const el = document.getElementById('checkout-error-msg');
+    if (el) el.classList.add('hidden');
+  }
+
+  /* =========================================================
+   * VALIDATE ALL VISIBLE REQUIRED FIELDS
+   * ========================================================= */
+  function validateAllFields() {
+    let isValid = true;
+    let firstError = null;
+
+    // Clear previous errors
+    document.querySelectorAll('.at-error-message').forEach((el) => (el.textContent = ''));
+    document.querySelectorAll('.border-red-500').forEach((el) => {
+      el.classList.remove('border-red-500');
+      el.classList.add('border-slate-400');
+    });
+
+    const allRequired = document.querySelectorAll('input[required], select[required], textarea[required]');
+    allRequired.forEach((field) => {
+      if (field.closest('[data-unit="true"]')?.classList.contains('hidden')) return;
+      if (field.disabled) return;
+      if (field.type === 'radio') return;
+
+      const value = field.value?.trim();
+      if (!value) {
+        setFieldError(field, 'This field is required');
+        isValid = false;
+        if (!firstError) firstError = field;
+      }
+    });
+
+    // Radio groups
+    const radioGroups = new Set();
+    document.querySelectorAll('input[type="radio"][required]').forEach((r) => radioGroups.add(r.name));
+    radioGroups.forEach((groupName) => {
+      const radios = document.querySelectorAll(`input[type="radio"][name="${groupName}"]`);
+      const anyChecked = Array.from(radios).some((r) => r.checked);
+      if (!anyChecked) {
+        isValid = false;
+        const firstRadio = radios[0];
+        if (firstRadio && !firstError) firstError = firstRadio;
+        const group = firstRadio?.closest('.required-group');
+        if (group) {
+          let span = group.querySelector('.at-error-message');
+          if (!span) {
+            span = document.createElement('span');
+            span.className = 'at-error-message text-red-500 text-xs mt-1 block';
+            group.appendChild(span);
+          }
+          span.textContent = 'Please select one option';
+        }
+      }
+    });
+
+    // ✅ Validate non-locked purpose selects
+    document.querySelectorAll('[data-unit="true"]').forEach((unit) => {
+      if (unit.classList.contains('hidden')) return;
+      const unitIndex = unit.dataset.unitIndex;
+      const purposeHidden = unit.querySelector(`input[type="hidden"][name="transfer_purpose[${unitIndex}]"]`);
+      if (purposeHidden?.value) return; // locked → already valid
+      const sel = unit.querySelector(`select[name="transfer_purpose[${unitIndex}]"]`);
+      if (!sel?.value) {
+        isValid = false;
+        if (!firstError) firstError = sel;
+        setFieldError(sel, 'Please select a transfer purpose');
+      }
+    });
+
+    if (firstError) {
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstError.focus?.();
+    }
+
+    return isValid;
+  }
+
+  /* =========================================================
+   * COLLECT ATTRIBUTES
+   * ========================================================= */
+  function collectHeaderData() {
+    const headerForm = document.getElementById('airport-transfer-form');
+    if (!headerForm) return {};
+    const fd = new FormData(headerForm);
+    const babySeat = headerForm.querySelector('input[name="request_baby_seat"]:checked')?.value || '';
+    const whatsappCtry = fd.get('whatsapp_country') || '';
+    const whatsappNum = fd.get('whatsapp_number') || '';
+    return {
+      name: fd.get('name') || '',
+      email: fd.get('email') || '',
+      whatsapp: `${whatsappCtry}${whatsappNum}`,
+      adults: fd.get('adults_passengers') || '0',
+      children: fd.get('children_passengers') || '0',
+      babySeat,
+    };
+  }
+
+  function buildTransferAttributes(items, headerData) {
+    const attributes = {};
+
+    attributes['Passenger Information'] = [
+      `Full Name: ${headerData.name}`,
+      `Email: ${headerData.email}`,
+      `WhatsApp: ${headerData.whatsapp}`,
+      `Adult Passengers: ${headerData.adults}`,
+      `Child Passengers (0-6 yr): ${headerData.children}`,
+      `Baby Seat Request: ${headerData.babySeat}`,
+    ].join('\n');
+
+    items.forEach((item, itemIndex) => {
+      const qty = parseInt(item.quantity, 10) || 1;
+      const sameTravelCb = document.getElementById(`same-travel-${itemIndex}`);
+      const isSame = sameTravelCb?.checked || false;
+      const unitBlocks = [];
+
+      if (isSame) {
+        const unitData = collectUnitData(`${itemIndex}-0`);
+        if (unitData) {
+          const timeLabel = unitData.purposeRaw === 'city_to_airport' ? 'Pickup Time' : 'Arrival Time';
+          const lines = [
+            `Transfer Purpose: ${unitData.purpose}`,
+            `Flight Number: ${unitData.flightNumber}`,
+            `Pickup Date: ${unitData.pickupDate}`,
+            `${timeLabel}: ${unitData.pickupTime}`,
+            ...(unitData.flightHours ? [`Flight Departure Time: ${unitData.flightHours}`] : []),
+            `Carry On Suitcases: ${unitData.carryon}`,
+            `Check-in Luggage: ${unitData.checkin}`,
+            `Delivery Address: ${unitData.address}`,
+          ];
+          unitBlocks.push(lines.join('\n'));
+        }
+      } else {
+        for (let i = 0; i < qty; i++) {
+          const unitData = collectUnitData(`${itemIndex}-${i}`);
+          if (!unitData) continue;
+          const timeLabel = unitData.purposeRaw === 'city_to_airport' ? 'Pickup Time' : 'Arrival Time';
+          const lines = [
+            `${ordinalLabel(i + 1)} Transfer`,
+            `Transfer Purpose: ${unitData.purpose}`,
+            `Flight Number: ${unitData.flightNumber}`,
+            `Pickup Date: ${unitData.pickupDate}`,
+            `${timeLabel}: ${unitData.pickupTime}`,
+            ...(unitData.flightHours ? [`Flight Departure Time: ${unitData.flightHours}`] : []),
+            `Carry On Suitcases: ${unitData.carryon}`,
+            `Check-in Luggage: ${unitData.checkin}`,
+            `Delivery Address: ${unitData.address}`,
+          ];
+          unitBlocks.push(lines.join('\n'));
+        }
+      }
+
+      const attrKey = `${qty}x - ${item.variantTitle || item.productTitle}`;
+      attributes[attrKey] = unitBlocks.join('\n\n');
+    });
+
+    return attributes;
+  }
+
+  /* =========================================================
+   * CHECKOUT HANDLER
+   * ========================================================= */
+  async function handleCheckout() {
+    hideCheckoutError();
+
+    const isValid = validateAllFields();
+    if (!isValid) {
+      showCheckoutError('Please fill in all required fields before proceeding.');
+      return;
+    }
+
+    // ── Ambil SEMUA ProductItems (insurance + transfer) ──
+    const allItems = JSON.parse(localStorage.getItem('ProductItems') || sessionStorage.getItem('ProductItems') || '[]');
+    const transferItems = allItems.filter((item) => item.category?.toLowerCase() === 'airport_transfer');
+
+    if (!transferItems.length) {
+      showCheckoutError('No transfer items found. Please go back and select your product.');
+      return;
+    }
+
+    const headerData = collectHeaderData();
+    const transferAttribs = buildTransferAttributes(transferItems, headerData);
+
+    // ── Gabungkan dengan insurance attributes (jika ada) ──
+    const insuranceAttribs = JSON.parse(
+      sessionStorage.getItem('InsuranceAttributes') || localStorage.getItem('InsuranceAttributes') || '{}'
+    );
+    // Merge: insurance attributes + transfer attributes
+    const allAttributes = { ...insuranceAttribs, ...transferAttribs };
+
+    const btn = document.getElementById('btn-checkout');
+    const btnText = document.getElementById('btn-checkout-text');
+    const spinner = document.getElementById('btn-checkout-spinner');
+
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.textContent = 'Processing...';
+    if (spinner) spinner.classList.remove('hidden');
+
+    try {
+      // ── Single item case (1 item total di cart) ──
+      // Catatan: ini untuk kasus transfer-only single item
+      // Kalau ada insurance juga, kita pakai multi-item flow
+      const hasInsurance = allItems.some((i) => i.category === 'Insurance');
+
+      if (!hasInsurance && allItems.length === 1) {
+        const product = allItems[0];
+        const queryParams = Object.entries(allAttributes)
+          .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
+          .join('&');
+
+        let cartItems = [`${product.variantId}:${product.quantity}`];
+        if (Array.isArray(product.addonItems)) {
+          product.addonItems.forEach((addon) => {
+            if (addon.variantId && addon.quantity) cartItems.push(`${addon.variantId}:${addon.quantity}`);
+          });
+        }
+
+        clearSavedFormData();
+        clearCheckoutSession();
+        window.location.href = `/cart/${cartItems.join(',')}${queryParams ? `?${queryParams}` : ''}`;
+        return;
+      }
+
+      // ── Multi-item / mixed (Insurance + Transfer) flow ──
+      await fetch('/cart/clear.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      for (const product of allItems) {
+        let itemAttributes = {};
+
+        if (product.category === 'Insurance') {
+          // Insurance attributes sudah dikumpulkan di step sebelumnya
+          const variantTitle = product.variantTitle || '';
+          const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+          if (insuranceAttribs[attrKey]) {
+            itemAttributes[attrKey] = insuranceAttribs[attrKey];
+          }
+        } else if (product.category?.toLowerCase() === 'airport_transfer') {
+          // Transfer attributes dikumpulkan di step ini
+          const attrKey = `${product.quantity}x - ${product.variantTitle || product.productTitle}`;
+          if (allAttributes['Passenger Information']) {
+            itemAttributes['Passenger Information'] = allAttributes['Passenger Information'];
+          }
+          if (allAttributes[attrKey]) {
+            itemAttributes[attrKey] = allAttributes[attrKey];
+          }
+        }
+
+        await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: product.variantId,
+            quantity: product.quantity,
+            attributes: itemAttributes,
+          }),
+        });
+
+        // Addon items (misal top-up/addon untuk transfer)
+        if (Array.isArray(product.addonItems)) {
+          for (const addon of product.addonItems) {
+            if (addon.variantId && addon.quantity) {
+              await fetch('/cart/add.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: addon.variantId, quantity: addon.quantity }),
+              });
+            }
+          }
+        }
+      }
+
+      clearSavedFormData();
+      clearCheckoutSession();
+      window.location.href = '/checkout';
+    } catch (error) {
+      console.error('Checkout error:', error);
+      showCheckoutError('There was an error during checkout. Please try again.');
+    } finally {
+      if (btn) btn.disabled = false;
+      if (btnText) btnText.textContent = 'Proceed to Checkout';
+      if (spinner) spinner.classList.add('hidden');
+    }
+  }
+
+  // ─── Helper: bersihkan semua session checkout ───
+  function clearCheckoutSession() {
+    sessionStorage.removeItem('ProductItems');
+    sessionStorage.removeItem('InsuranceAttributes');
+    sessionStorage.removeItem('CheckoutFlow');
+    localStorage.removeItem('ProductItems');
+    localStorage.removeItem('InsuranceAttributes');
+    localStorage.removeItem('CheckoutFlow');
+  }
+
+  /* =========================================================
+   * BIND CHECKOUT BUTTON + CLEAR ERRORS
+   * ========================================================= */
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnCheckout = document.getElementById('btn-checkout');
+    if (btnCheckout) btnCheckout.addEventListener('click', handleCheckout);
+
+    document.addEventListener('input', (e) => {
+      if (e.target.matches('input, textarea')) clearFieldError(e.target);
+    });
+    document.addEventListener('change', (e) => {
+      if (e.target.matches('select, input[type="date"], input[type="time"]')) clearFieldError(e.target);
+      if (e.target.matches('input[type="radio"]')) {
+        const group = e.target.closest('.required-group');
+        if (group) {
+          const span = group.querySelector('.at-error-message');
+          if (span) span.textContent = '';
+        }
+      }
+    });
+  });
+
+  // Tampilkan step indicator kalau ada flow
+  document.addEventListener('DOMContentLoaded', () => {
+    const flow = JSON.parse(sessionStorage.getItem('CheckoutFlow') || 'null');
+    if (flow && flow.steps && flow.steps.length > 1) {
+      const indicator = document.getElementById('step-indicator');
+      const label = document.getElementById('step-label');
+      if (indicator) indicator.classList.remove('hidden');
+      if (label) {
+        const current = flow.steps.indexOf('transfer') + 1;
+        label.textContent = `Step ${current} of ${flow.steps.length}: Airport Transfer Details`;
+      }
+    }
+  });
+</script>
+
+<script type="application/ld+json">
+  {{ page | structured_data }}
+</script>
+
+{% schema %}
+{
+  "name": "Form Airport Transfer",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Form Airport Transfer",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}

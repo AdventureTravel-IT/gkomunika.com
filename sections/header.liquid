@@ -1,355 +1,18 @@
-{% style %}
-  .inline-flex-center {
-    display: inline-flex;
-    align-items: center;
-  }
+<section></section>
 
-  .icon-24 {
-    width: 24px;
-    height: 24px;
-    display: inline-block;
-  }
+{% comment %}
+  FULL CODE (Tailwind refactor + JS selector pakai ID + HEADER NORMAL (NOT FIXED))
 
-  .header__container .menu-list-wrapper,
-  .header__container .sidebar-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+  FIX UTAMA:
+  - ID language desktop & mobile dibuat unik:
+    LanguageFormUX-desktop / LanguageFormUX-mobile
+    LangTrigger-desktop / LangTrigger-mobile
+    LangMenu-desktop / LangMenu-mobile
+    LangLocaleInput-desktop / LangLocaleInput-mobile
+    LangArrow-desktop / LangArrow-mobile
 
-  .header__container a {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .header-cart-icon-wrapper {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-  }
-  .header-cart__badge {
-    position: absolute;
-    top: -4px;
-    right: -6px;
-    background-color: var(--color-primary);
-    color: var(--color-neutral);
-    font-size: 10px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    line-height: 1;
-  }
-
-  .header__container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 200;
-    background-color: var(--color-neutral);
-    max-width: 1920px;
-    margin: 0 auto;
-    height: 80px;
-  }
-
-  .header__wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 24px;
-    height: 80px;
-  }
-
-  .header-conten-menu {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .header-conten-menu button {
-    border: none;
-    background: transparent;
-    padding: 0;
-    display: none;
-  }
-
-  .header-mobile-right {
-    display: none;
-    align-items: center;
-    gap: 10px;
-  }
-  .header-mobile-icon {
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .currency-language {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .currency-language-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border: 0 !important;
-    padding: 0 !important;
-    border-radius: 0 !important;
-  }
-
-  #bucks-floating-desktop {
-    display: flex;
-    align-items: center;
-  }
-
-  .header-menu {
-    display: flex;
-    align-items: center;
-  }
-
-  .menu-list-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin: 0;
-    padding: 0;
-    max-width: 100%;
-  }
-
-  .menu-list {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    color: var(--color-primary);
-    font-weight: 700;
-    line-height: 1.1;
-    white-space: nowrap;
-  }
-
-  .menu-list img,
-  .menu-list .icon-24 {
-    width: 26px;
-    height: 26px;
-    display: block;
-  }
-
-  .menu-list .menu-label {
-    font-size: 14px;
-    font-weight: 790;
-    color: var(--color-primary);
-  }
-
-  #sidebar {
-    position: relative;
-  }
-  .sidebar-panel {
-    display: none;
-  }
-  .sidebar-list {
-    margin: 0;
-    padding: 0 24px;
-  }
-  .sidebar-list li {
-    border-bottom: 1px solid #d9d9d9;
-    padding: 10px 0;
-  }
-  .sidebar-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: var(--font-large);
-    font-weight: 700;
-    color: var(--color-primary);
-    text-decoration: none;
-  }
-
-  .animated-icon {
-    position: relative;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-  }
-  .animated-icon span {
-    position: absolute;
-    width: 100%;
-    height: 3px;
-    background: var(--color-primary);
-    border-radius: 2px;
-  }
-  .animated-icon span:nth-child(1) {
-    top: 0;
-  }
-  .animated-icon span:nth-child(2) {
-    top: 8px;
-  }
-  .animated-icon span:nth-child(3) {
-    top: 16px;
-  }
-
-  @media (max-width: 768px) {
-    .header__container {
-      height: 50px;
-    }
-
-    .header__wrapper {
-      height: 50px;
-      padding: 0 24px;
-    }
-
-    .header-conten-menu {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-    }
-
-    .header-conten-menu button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      padding: 0;
-      margin: 0;
-      border: 0;
-      background: transparent;
-      line-height: 0;
-      font-size: 0;
-      box-sizing: border-box;
-      margin-left: -20px;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .header-right {
-      display: none;
-    }
-
-    .header-mobile-right {
-      display: flex;
-    }
-
-    #sidebar {
-      display: block;
-      width: 100%;
-      position: static;
-    }
-
-    .sidebar-list {
-      padding: 12px 16px;
-    }
-
-    .sidebar-list li {
-      border-bottom: 1px solid #d9d9d9;
-      padding: 12px 0;
-    }
-
-    .sidebar-panel {
-      display: block;
-      position: absolute;
-      top: 50px;
-      left: 0;
-      width: 100%;
-      background: var(--color-neutral);
-      z-index: 1000;
-      max-height: 0;
-      opacity: 0;
-      overflow-y: auto;
-    }
-
-    .sidebar-panel.active {
-      max-height: calc(100vh - 70px);
-      opacity: 1;
-    }
-
-    .currency-language-group {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      border: 0 !important;
-      padding: 0 !important;
-      border-radius: 0 !important;
-      margin-left: 20px;
-    }
-  }
-  /* === Search Modal === */
-  .header-search-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 9998; /* di bawah modal */
-  }
-
-  /* modal wrapper: sekarang transparan (tanpa bg neutral) */
-  .header-search-modal {
-    position: fixed;
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(720px, calc(100vw - 32px));
-    max-height: 400px;
-    overflow: auto;
-
-    background: transparent; /* <<< tanpa bg */
-    border-radius: 0; /* optional: ga perlu rounded karena transparan */
-    box-shadow: none; /* optional: hilangkan shadow */
-
-    z-index: 9999;
-  }
-
-  /* inner tetap jadi container konten */
-  .header-search-modal__inner {
-    position: relative; /* penting supaya close absolute ngikut inner */
-    padding: 16px;
-  }
-
-  /* header ga perlu space-between lagi karena close absolute */
-  .header-search-modal__header {
-    margin-bottom: 100px;
-  }
-
-  .header-search-modal__title {
-    color: var(--color-neutral); /* karena background modal transparan + overlay gelap */
-    font-size: 18px;
-  }
-
-  /* close button pojok kanan atas */
-  .header-search-modal__close {
-    position: absolute;
-    border-radius: 100%;
-    padding: 10px;
-    top: 10px;
-    right: 10px;
-    border: none;
-    background: #ffffff;
-    cursor: pointer;
-    line-height: 0;
-    margin-bottom: 30px;
-  }
-
-  .header-search-modal__close .icon-24 {
-    width: 24px;
-    height: 24px;
-    display: block;
-  }
-
-  /* body tetap */
-  .header-search-modal__body {
-    overflow: auto;
-  }
-{% endstyle %}
+  - JS language di-init untuk desktop & mobile.
+{% endcomment %}
 
 {% unless template == 'customers/login' or template == 'customers/register' %}
   {%- comment -%}
@@ -361,27 +24,37 @@
     {% assign locale_prefix = '' %}
   {% endif %}
 
-  <div class="header__container">
-    <div class="header__wrapper">
-      <div class="header-conten-menu">
+  {% if customer %}
+    {% assign profile_url = routes.account_url %}
+  {% else %}
+    {% assign profile_url = routes.account_login_url %}
+  {% endif %}
+
+  <header
+    class="fixed top-0 w-full z-[200] bg-neutral max-w-[1920px] mx-auto h-fit py-[5px] md:py-[15px] shadow-md"
+  >
+    <div class="flex items-center justify-between px-6">
+      <!-- LEFT -->
+      <div class="flex items-center gap-8 md:gap-2.5">
+        <!-- Mobile menu toggle -->
         <button
-          class="menu-toggle"
+          id="menu-toggle"
           type="button"
           aria-label="Open Menu"
           aria-expanded="false"
           aria-controls="sidebar-panel"
+          class="inline-flex md:hidden items-center justify-center w-[44px] h-[44px] p-0 m-0 border-0 bg-transparent leading-none text-[0px] box-border -ml-5 [-webkit-tap-highlight-color:transparent]"
         >
-          <div class="animated-icon" id="menu-icon">
-            <span></span>
-            <span></span>
-            <span></span>
+          <div id="menu-icon" class="relative w-5 h-5 cursor-pointer">
+            <span class="absolute left-0 top-0 w-full h-[3px] bg-[var(--color-primary)] rounded-[2px]"></span>
+            <span class="absolute left-0 top-2 w-full h-[3px] bg-[var(--color-primary)] rounded-[2px]"></span>
+            <span class="absolute left-0 top-4 w-full h-[3px] bg-[var(--color-primary)] rounded-[2px]"></span>
           </div>
         </button>
 
         {% assign alt_global = 'Global Komunika' %}
-
         {% if section.settings.logo != blank %}
-          <a href="{{ routes.root_url }}" class="inline-flex-center">
+          <a href="{{ routes.root_url }}" class="inline-flex items-center no-underline">
             {{
               section.settings.logo
               | image_url: width: 120
@@ -400,47 +73,47 @@
         {% endif %}
       </div>
 
-      <div class="header-mobile-right" aria-label="Quick actions">
+      <!-- MOBILE RIGHT -->
+      <div class="flex md:hidden items-center gap-2.5" aria-label="Quick actions">
         {% if template.name == 'product' %}
           <button
-            class="header-search-trigger mr-[10px]"
+            id="header-search-trigger-mobile"
             type="button"
             aria-label="Search"
             aria-haspopup="dialog"
             aria-controls="header-search-modal"
+            class="mr-[10px]"
           >
-            {% render 'icon-search', class: 'w-[24px] h-[24px] text-primary' %}
+            {% render 'icon-search', class: 'w-6 h-6 text-primary' %}
           </button>
         {% endif %}
 
-        <a href="{{ routes.cart_url }}" class="header-mobile-icon header-cart" aria-label="Cart">
-          <span class="header-cart-icon-wrapper">
+        <a href="{{ routes.cart_url }}" aria-label="Cart" class="inline-flex items-center no-underline">
+          <span class="relative inline-flex items-center">
             <img
               src="{{ 'header-cart.svg' | asset_url }}"
               alt="Cart"
-              class="icon-24"
+              class="w-6 h-6 inline-block"
               width="24"
               height="24"
               loading="eager"
               decoding="async"
             >
             {% if cart.items.size > 0 %}
-              <span class="header-cart__badge">{{ cart.items.size }}</span>
+              <span
+                class="absolute -top-1 -right-[6px] bg-[var(--color-primary)] text-[var(--color-neutral)] text-[10px] w-4 h-4 rounded-full inline-flex items-center justify-center text-center leading-none"
+              >
+                {{ cart.items.size }}
+              </span>
             {% endif %}
           </span>
         </a>
 
-        {% if customer %}
-          {% assign profile_url = routes.account_url %}
-        {% else %}
-          {% assign profile_url = routes.account_login_url %}
-        {% endif %}
-
-        <a href="{{ profile_url }}" class="header-mobile-icon" aria-label="Profile">
+        <a href="{{ profile_url }}" aria-label="Profile" class="inline-flex items-center no-underline">
           <img
             src="{{ 'header-profile.svg' | asset_url }}"
             alt="Profile"
-            class="icon-24"
+            class="w-6 h-6 inline-block"
             width="24"
             height="24"
             loading="eager"
@@ -449,202 +122,263 @@
         </a>
       </div>
 
-      <div class="header-right">
+      <!-- DESKTOP RIGHT -->
+      <div class="hidden md:flex items-center gap-3">
         {% if template.name == 'product' %}
           <button
-            class="header-search-trigger mr-[10px]"
+            id="header-search-trigger-desktop"
             type="button"
             aria-label="Search"
             aria-haspopup="dialog"
             aria-controls="header-search-modal"
+            class="mr-[10px]"
           >
-            {% render 'icon-search', class: 'w-[24px] h-[24px] text-primary' %}
+            {% render 'icon-search', class: 'w-6 h-6 text-primary' %}
           </button>
         {% endif %}
 
-        <div class="currency-language">
-          <div class="currency-language-group">
-            <div class="inline-flex-center">
+        <div class="flex items-center gap-2.5">
+          <!-- Currency -->
+          <div class="flex items-center gap-2.5 border-0 p-0 rounded-none">
+            <div class="inline-flex items-center">
               {{- 'header-currency.svg' | inline_asset_content -}}
             </div>
-            <div id="bucks-floating-desktop"></div>
+            <div id="bucks-floating-desktop" class="flex items-center"></div>
           </div>
 
-          <localization-form>
-            {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
-              <div class="localization-inner">
-                {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
+          <!-- Language (DESKTOP) -->
+          {% form 'localization', id: 'LanguageFormUX-desktop', class: 'relative inline-block' %}
+            <input type="hidden" name="locale_code" id="LangLocaleInput-desktop" value="{{ localization.language.iso_code }}">
+
+            {% assign current_code = localization.language.iso_code | upcase | slice: 0, 2 %}
+
+            <button
+              id="LangTrigger-desktop"
+              type="button"
+              class="inline-flex items-center gap-2 px-2.5 py-2 transition select-none"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="LangMenu-desktop"
+            >
+              <span class="flex items-center w-[30px] h-[30px]" aria-hidden="true">
+                {{- 'header-language.svg' | inline_asset_content -}}
+              </span>
+
+              <span class="text-sm tracking-wider text-[var(--color-primary)]">{{ current_code }}</span>
+
+              <span
+                id="LangArrow-desktop"
+                class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
+                aria-hidden="true"
+              >
+                {% render 'icon-arrow-right', class: 'text-primary w-[30px] h-[30px]' %}
+              </span>
+            </button>
+
+            <ul
+              id="LangMenu-desktop"
+              class="hidden absolute right-0 top-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+              role="listbox"
+              aria-label="Select language"
+            >
+              {% for locale in localization.available_languages %}
+                {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
+                <li
+                  role="option"
+                  aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
+                >
+                  <button
+                    type="button"
+                    class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition {% if locale.iso_code == localization.language.iso_code %}bg-black/10 font-semibold{% endif %}"
+                    data-locale="{{ locale.iso_code }}"
+                  >
+                    <span>{{ code }}</span>
+                    {% if locale.iso_code == localization.language.iso_code %}
+                      <span class="opacity-80" aria-hidden="true">✓</span>
+                    {% endif %}
+                  </button>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endform %}
         </div>
 
-        <nav class="header-menu" role="navigation" aria-label="Main navigation">
-          <ul class="menu-list-wrapper">
+        <!-- Menu desktop -->
+        <nav role="navigation" aria-label="Main navigation" class="flex items-center">
+          <ul class="flex items-center gap-3.5 flex-wrap m-0 p-0 max-w-full list-none">
+            {%- assign menu_item_class = 'inline-flex flex-col items-center justify-center gap-1 whitespace-nowrap font-bold leading-[1.1] text-[var(--color-primary)] no-underline' -%}
+            {%- assign menu_label_class = 'text-sm font-[790] text-[var(--color-primary)]' -%}
+            {%- assign icon_class = 'w-[26px] h-[26px] block' -%}
+
             <li>
-              <a href="{{ routes.root_url }}" class="menu-list">
+              <a href="{{ routes.root_url }}" class="{{ menu_item_class }}">
                 <img
                   src="{{ 'header-home.svg' | asset_url }}"
                   alt="Home icon"
-                  class="icon-24"
+                  class="{{ icon_class }}"
                   width="24"
                   height="24"
                   loading="eager"
                   decoding="async"
                 >
-                <span class="menu-label">Home</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ locale_prefix }}/pages/product-category?q=esim" class="menu-list">
-                <img
-                  src="{{ 'header-esim.svg' | asset_url }}"
-                  alt="eSIM icon"
-                  class="icon-24"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
-                <span class="menu-label">eSIM</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="{{ locale_prefix }}/pages/product-category?q=sim-card"
-                class="menu-list"
-              >
-                <img
-                  src="{{ 'header-simcard.svg' | asset_url }}"
-                  alt="SIM Card icon"
-                  class="icon-24"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
-                <span class="menu-label">SIM Card</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="{{ locale_prefix }}/pages/product-category?q=insurance"
-                class="menu-list"
-              >
-                <img
-                  src="{{ 'header-insurance.svg' | asset_url }}"
-                  alt="Insurance icon"
-                  class="icon-24"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
-                <span class="menu-label">Insurance</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ locale_prefix }}/pages/check-data-usage" class="menu-list">
-                <img
-                  src="{{ 'header-usage.svg' | asset_url }}"
-                  alt="Data Usage icon"
-                  class="icon-24"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
-                <span class="menu-label">Data Usage</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="menu-list">
-                <img
-                  src="{{ 'icon-plus.svg' | asset_url }}"
-                  alt="Top Up icon"
-                  class="icon-24"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
-                <span class="menu-label">Top Up</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ locale_prefix }}/pages/about-us" class="menu-list">
-                <img
-                  src="{{ 'header-about.svg' | asset_url }}"
-                  alt="About Us icon"
-                  class="icon-24"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
-                <span class="menu-label">About Us</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ locale_prefix }}/pages/faq" class="menu-list">
-                <img
-                  src="{{ 'header-faq.svg' | asset_url }}"
-                  alt="FAQ icon"
-                  class="icon-24"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
-                <span class="menu-label">FAQ</span>
-              </a>
-            </li>
-            <li>
-              <a href="{{ locale_prefix }}/pages/news" class="menu-list">
-                <img
-                  src="{{ 'header-news.svg' | asset_url }}"
-                  alt="News icon"
-                  class="icon-24"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
-                <span class="menu-label">News</span>
+                <span class="{{ menu_label_class }}">Home</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ routes.cart_url }}" class="menu-list header-cart-link">
-                <span class="header-cart-icon-wrapper">
+              <a href="{{ locale_prefix }}/pages/product-category?q=esim" class="{{ menu_item_class }}">
+                <img
+                  src="{{ 'header-esim.svg' | asset_url }}"
+                  alt="eSIM icon"
+                  class="{{ icon_class }}"
+                  width="24"
+                  height="24"
+                  loading="eager"
+                  decoding="async"
+                >
+                <span class="{{ menu_label_class }}">eSIM</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="{{ menu_item_class }}">
+                <img
+                  src="{{ 'header-simcard.svg' | asset_url }}"
+                  alt="SIM Card icon"
+                  class="{{ icon_class }}"
+                  width="24"
+                  height="24"
+                  loading="eager"
+                  decoding="async"
+                >
+                <span class="{{ menu_label_class }}">SIM Card</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="{{ menu_item_class }}">
+                <img
+                  src="{{ 'header-insurance.svg' | asset_url }}"
+                  alt="Insurance icon"
+                  class="{{ icon_class }}"
+                  width="24"
+                  height="24"
+                  loading="eager"
+                  decoding="async"
+                >
+                <span class="{{ menu_label_class }}">Insurance</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="{{ locale_prefix }}/pages/check-data-usage" class="{{ menu_item_class }}">
+                <img
+                  src="{{ 'header-usage.svg' | asset_url }}"
+                  alt="Data Usage icon"
+                  class="{{ icon_class }}"
+                  width="24"
+                  height="24"
+                  loading="eager"
+                  decoding="async"
+                >
+                <span class="{{ menu_label_class }}">Data Usage</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="{{ menu_item_class }}">
+                <img
+                  src="{{ 'icon-plus.svg' | asset_url }}"
+                  alt="Top Up icon"
+                  class="{{ icon_class }}"
+                  width="24"
+                  height="24"
+                  loading="eager"
+                  decoding="async"
+                >
+                <span class="{{ menu_label_class }}">Top Up</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="{{ locale_prefix }}/pages/about-us" class="{{ menu_item_class }}">
+                <img
+                  src="{{ 'header-about.svg' | asset_url }}"
+                  alt="About Us icon"
+                  class="{{ icon_class }}"
+                  width="24"
+                  height="24"
+                  loading="eager"
+                  decoding="async"
+                >
+                <span class="{{ menu_label_class }}">About Us</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="{{ locale_prefix }}/pages/faq" class="{{ menu_item_class }}">
+                <img
+                  src="{{ 'header-faq.svg' | asset_url }}"
+                  alt="FAQ icon"
+                  class="{{ icon_class }}"
+                  width="24"
+                  height="24"
+                  loading="eager"
+                  decoding="async"
+                >
+                <span class="{{ menu_label_class }}">FAQ</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="{{ locale_prefix }}/pages/news" class="{{ menu_item_class }}">
+                <img
+                  src="{{ 'header-news.svg' | asset_url }}"
+                  alt="News icon"
+                  class="{{ icon_class }}"
+                  width="24"
+                  height="24"
+                  loading="eager"
+                  decoding="async"
+                >
+                <span class="{{ menu_label_class }}">News</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="{{ routes.cart_url }}" class="{{ menu_item_class }}" aria-label="Cart">
+                <span class="relative inline-flex items-center">
                   <img
                     src="{{ 'header-cart.svg' | asset_url }}"
                     alt="Cart icon"
-                    class="icon-24"
+                    class="{{ icon_class }}"
                     width="24"
                     height="24"
                     loading="eager"
                     decoding="async"
                   >
                   {% if cart.items.size > 0 %}
-                    <span class="header-cart__badge">{{ cart.items.size }}</span>
+                    <span class="absolute -top-1 -right-[6px] bg-[var(--color-primary)] text-[var(--color-neutral)] text-[10px] w-4 h-4 rounded-full inline-flex items-center justify-center text-center leading-none">
+                      {{ cart.items.size }}
+                    </span>
                   {% endif %}
                 </span>
-                <span class="menu-label">Cart</span>
+                <span class="{{ menu_label_class }}">Cart</span>
               </a>
             </li>
+
             <li>
-              <a href="{{ profile_url }}" class="menu-list">
+              <a href="{{ profile_url }}" class="{{ menu_item_class }}">
                 <img
                   src="{{ 'header-profile.svg' | asset_url }}"
                   alt="Profile icon"
-                  class="icon-24"
+                  class="{{ icon_class }}"
                   width="24"
                   height="24"
                   loading="eager"
                   decoding="async"
                 >
-                <span class="menu-label">Profile</span>
+                <span class="{{ menu_label_class }}">Profile</span>
               </a>
             </li>
           </ul>
@@ -652,167 +386,264 @@
       </div>
     </div>
 
-    <div id="sidebar">
-      <div id="sidebar-panel" class="sidebar-panel" aria-hidden="true">
-        <ul class="sidebar-list">
-          <li>
-            <a href="{{ routes.root_url }}" class="sidebar-link"
-              ><img
-                src="{{ 'header-home.svg' | asset_url }}"
-                alt="Home icon"
-                class="icon-24"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
+    <!-- SIDEBAR MOBILE (absolute di bawah header) -->
+    <div id="sidebar" class="block md:hidden w-full">
+      <div
+        id="sidebar-panel"
+        aria-hidden="true"
+        class="
+          absolute top-[50px] left-0 w-full bg-[var(--color-neutral)] z-[1000]
+          max-h-0 opacity-0 overflow-y-auto pointer-events-none
+          transition-all duration-200
+        "
+      >
+        <ul class="m-0 p-3 list-none">
+          {%- assign sidebar_li = 'border-b border-[#d9d9d9] py-3' -%}
+          {%- assign sidebar_a = 'flex items-center gap-2.5 text-[var(--color-primary)] font-bold no-underline' -%}
 
-              ><span class="menu-label">Home</span></a
-            >
+          <li class="{{ sidebar_li }}">
+            <a href="{{ routes.root_url }}" class="{{ sidebar_a }}">
+              <img src="{{ 'header-home.svg' | asset_url }}" alt="Home icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <span class="text-sm font-[790]">Home</span>
+            </a>
           </li>
-          <li>
-            <a href="{{ locale_prefix }}/pages/esim-page?sim_type=esim" class="sidebar-link"
-              ><img
-                src="{{ 'header-esim.svg' | asset_url }}"
-                alt="eSIM icon"
-                class="icon-24"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
 
-              ><span class="menu-label">eSIM</span></a
-            >
+          <li class="{{ sidebar_li }}">
+            <a href="{{ locale_prefix }}/pages/esim-page?sim_type=esim" class="{{ sidebar_a }}">
+              <img src="{{ 'header-esim.svg' | asset_url }}" alt="eSIM icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <span class="text-sm font-[790]">eSIM</span>
+            </a>
           </li>
-          <li>
-            <a href="{{ locale_prefix }}/pages/sim-card-page?sim_type=sim-card" class="sidebar-link"
-              ><img
-                src="{{ 'header-simcard.svg' | asset_url }}"
-                alt="SIM Card icon"
-                class="icon-24"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
 
-              ><span class="menu-label">SIM Card</span></a
-            >
+          <li class="{{ sidebar_li }}">
+            <a href="{{ locale_prefix }}/pages/sim-card-page?sim_type=sim-card" class="{{ sidebar_a }}">
+              <img src="{{ 'header-simcard.svg' | asset_url }}" alt="SIM Card icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <span class="text-sm font-[790]">SIM Card</span>
+            </a>
           </li>
-          <li>
-            <a href="{{ locale_prefix }}/pages/insurance-page?sim_type=insurance" class="sidebar-link"
-              ><img
-                src="{{ 'header-insurance.svg' | asset_url }}"
-                alt="Insurance icon"
-                class="icon-24"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
 
-              ><span class="menu-label">Insurance</span></a
-            >
+          <li class="{{ sidebar_li }}">
+            <a href="{{ locale_prefix }}/pages/insurance-page?sim_type=insurance" class="{{ sidebar_a }}">
+              <img src="{{ 'header-insurance.svg' | asset_url }}" alt="Insurance icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <span class="text-sm font-[790]">Insurance</span>
+            </a>
           </li>
-          <li>
-            <a href="{{ locale_prefix }}/pages/check-data-usage" class="sidebar-link"
-              ><img
-                src="{{ 'header-usage.svg' | asset_url }}"
-                alt="Data Usage icon"
-                class="icon-24"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
 
-              ><span class="menu-label">Data Usage</span></a
-            >
+          <li class="{{ sidebar_li }}">
+            <a href="{{ locale_prefix }}/pages/check-data-usage" class="{{ sidebar_a }}">
+              <img src="{{ 'header-usage.svg' | asset_url }}" alt="Data Usage icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <span class="text-sm font-[790]">Data Usage</span>
+            </a>
           </li>
-          <li>
-            <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="sidebar-link"
-              ><img
-                src="{{ 'icon-plus.svg' | asset_url }}"
-                alt="Top Up icon"
-                class="icon-24"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
 
-              ><span class="menu-label">Top Up</span></a
-            >
+          <li class="{{ sidebar_li }}">
+            <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="{{ sidebar_a }}">
+              <img src="{{ 'icon-plus.svg' | asset_url }}" alt="Top Up icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <span class="text-sm font-[790]">Top Up</span>
+            </a>
           </li>
-          <li>
-            <a href="{{ locale_prefix }}/pages/about-us" class="sidebar-link"
-              ><img
-                src="{{ 'header-about.svg' | asset_url }}"
-                alt="About Us icon"
-                class="icon-24"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
 
-              ><span class="menu-label">About Us</span></a
-            >
+          <li class="{{ sidebar_li }}">
+            <a href="{{ locale_prefix }}/pages/about-us" class="{{ sidebar_a }}">
+              <img src="{{ 'header-about.svg' | asset_url }}" alt="About Us icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <span class="text-sm font-[790]">About Us</span>
+            </a>
           </li>
-          <li>
-            <a href="{{ locale_prefix }}/pages/faq" class="sidebar-link"
-              ><img
-                src="{{ 'header-faq.svg' | asset_url }}"
-                alt="FAQ icon"
-                class="icon-24"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
 
-              ><span class="menu-label">FAQ</span></a
-            >
+          <li class="{{ sidebar_li }}">
+            <a href="{{ locale_prefix }}/pages/faq" class="{{ sidebar_a }}">
+              <img src="{{ 'header-faq.svg' | asset_url }}" alt="FAQ icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <span class="text-sm font-[790]">FAQ</span>
+            </a>
           </li>
-          <li>
-            <a href="{{ locale_prefix }}/pages/news" class="sidebar-link"
-              ><img
-                src="{{ 'header-news.svg' | asset_url }}"
-                alt="News icon"
-                class="icon-24"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
 
-              ><span class="menu-label">News</span></a
-            >
+          <li class="{{ sidebar_li }}">
+            <a href="{{ locale_prefix }}/pages/news" class="{{ sidebar_a }}">
+              <img src="{{ 'header-news.svg' | asset_url }}" alt="News icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <span class="text-sm font-[790]">News</span>
+            </a>
           </li>
         </ul>
 
-        <div class="sidebar-mobile-block">
-          <div class="currency-language">
-            <div class="currency-language-group">
-              <div class="inline-flex-center">
+        <div class="px-4 pb-4">
+          <div class="flex items-center gap-2.5">
+            <div class="flex items-center">
+              <div class="inline-flex items-center">
                 {{- 'header-currency.svg' | inline_asset_content -}}
               </div>
               <div id="bucks-mobile"></div>
             </div>
 
-            <localization-form>
-              {%- form 'localization', id: 'FooterLanguageFormSidebar', class: 'localization-form' -%}
-                <div class="localization-inner">
-                  {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
-                </div>
-              {%- endform -%}
-            </localization-form>
+            <!-- Language (MOBILE) -->
+            {% form 'localization', id: 'LanguageFormUX-mobile', class: 'relative inline-block' %}
+              <input type="hidden" name="locale_code" id="LangLocaleInput-mobile" value="{{ localization.language.iso_code }}">
+
+              {% assign current_code_m = localization.language.iso_code | upcase | slice: 0, 2 %}
+
+              <button
+                id="LangTrigger-mobile"
+                type="button"
+                class="inline-flex items-center gap-2 px-2.5 py-2 transition select-none"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="LangMenu-mobile"
+              >
+                <span class="flex items-center w-[30px] h-[30px]" aria-hidden="true">
+                  {{- 'header-language.svg' | inline_asset_content -}}
+                </span>
+
+                <span class="text-sm tracking-wider text-[var(--color-primary)]">{{ current_code_m }}</span>
+
+                <span
+                  id="LangArrow-mobile"
+                  class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
+                  aria-hidden="true"
+                >
+                  {% render 'icon-arrow-right', class: 'text-primary w-[30px] h-[30px]' %}
+                </span>
+              </button>
+
+              <ul
+                id="LangMenu-mobile"
+                class="hidden absolute right-0 bottom-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+                role="listbox"
+                aria-label="Select language"
+              >
+                {% for locale in localization.available_languages %}
+                  {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
+                  <li
+                    role="option"
+                    aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
+                  >
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition {% if locale.iso_code == localization.language.iso_code %}bg-black/10 font-semibold{% endif %}"
+                      data-locale="{{ locale.iso_code }}"
+                    >
+                      <span>{{ code }}</span>
+                      {% if locale.iso_code == localization.language.iso_code %}
+                        <span class="opacity-80" aria-hidden="true">✓</span>
+                      {% endif %}
+                    </button>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endform %}
           </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <script src="{{ 'header-menu.js' | asset_url }}" defer></script>
+  </header>
 {% endunless %}
 
-<div id="header-search-overlay" class="header-search-overlay" hidden></div>
+<!-- SEARCH OVERLAY -->
+<div id="header-search-overlay" class="fixed inset-0 bg-black/70 z-[9998]" hidden></div>
 
+<!-- MENU MOBILE TOGGLE (ID-based) -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('menu-toggle');
+    const panel = document.getElementById('sidebar-panel');
+    if (!btn || !panel) return;
+
+    const OPEN_CLASSES = ['max-h-[calc(100vh-70px)]', 'opacity-100', 'pointer-events-auto'];
+    const CLOSE_CLASSES = ['max-h-0', 'opacity-0', 'pointer-events-none'];
+
+    const isOpen = () => btn.getAttribute('aria-expanded') === 'true';
+
+    const open = () => {
+      panel.classList.remove(...CLOSE_CLASSES);
+      panel.classList.add(...OPEN_CLASSES);
+      btn.setAttribute('aria-expanded', 'true');
+      panel.setAttribute('aria-hidden', 'false');
+    };
+
+    const close = () => {
+      panel.classList.remove(...OPEN_CLASSES);
+      panel.classList.add(...CLOSE_CLASSES);
+      btn.setAttribute('aria-expanded', 'false');
+      panel.setAttribute('aria-hidden', 'true');
+    };
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      isOpen() ? close() : open();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!isOpen()) return;
+      if (btn.contains(e.target)) return;
+      if (panel.contains(e.target)) return;
+      close();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen()) close();
+    });
+  });
+</script>
+
+<!-- LANGUAGE DROPDOWN JS (Desktop + Mobile) -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const initLang = (suffix) => {
+      const form = document.getElementById(`LanguageFormUX-${suffix}`);
+      if (!form) return;
+
+      const btn = document.getElementById(`LangTrigger-${suffix}`);
+      const menu = document.getElementById(`LangMenu-${suffix}`);
+      const input = document.getElementById(`LangLocaleInput-${suffix}`);
+      const arrowWrap = document.getElementById(`LangArrow-${suffix}`);
+
+      if (!btn || !menu || !input) return;
+
+      const open = () => {
+        menu.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        if (arrowWrap) arrowWrap.classList.add('rotate-[270deg]');
+      };
+
+      const close = () => {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+        if (arrowWrap) arrowWrap.classList.remove('rotate-[270deg]');
+      };
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        menu.classList.contains('hidden') ? open() : close();
+      });
+
+      menu.querySelectorAll('[data-locale]').forEach((item) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          input.value = item.getAttribute('data-locale');
+          form.submit();
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!form.contains(e.target)) close();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+      });
+    };
+
+    initLang('desktop');
+    initLang('mobile');
+  });
+</script>
+
+<!-- SEARCH MODAL (Tailwind + ID-based triggers) -->
 <script type="module" defer>
   (() => {
-    const triggers = document.querySelectorAll('.header-search-trigger');
+    const triggers = [
+      document.getElementById('header-search-trigger-mobile'),
+      document.getElementById('header-search-trigger-desktop'),
+    ].filter(Boolean);
+
     const modal = document.getElementById('header-search-modal');
     const overlay = document.getElementById('header-search-overlay');
     const closeBtn = document.getElementById('header-search-close');
@@ -838,9 +669,7 @@
       if (lastTrigger) lastTrigger.focus();
     };
 
-    triggers.forEach((btn) => {
-      btn.addEventListener('click', () => open(btn));
-    });
+    triggers.forEach((btn) => btn.addEventListener('click', () => open(btn)));
 
     closeBtn.addEventListener('click', close);
     overlay.addEventListener('click', close);
@@ -851,22 +680,28 @@
   })();
 </script>
 
+<!-- SEARCH MODAL MARKUP (Tailwind) -->
 <div
   id="header-search-modal"
-  class="header-search-modal"
+  class="fixed top-[30px] left-1/2 -translate-x-1/2 w-[min(720px,calc(100vw-32px))] max-h-[400px] overflow-auto bg-transparent z-[9999]"
   role="dialog"
   aria-modal="true"
   aria-labelledby="header-search-title"
   hidden
 >
-  <div class="header-search-modal__inner">
-    <div class="header-search-modal__header">
-      <button id="header-search-close" type="button" class="header-search-modal__close" aria-label="Close search">
-        {% render 'icon-close', class: 'icon-24 text-primary' %}
+  <div class="relative p-4">
+    <div class="mb-[100px]">
+      <button
+        id="header-search-close"
+        type="button"
+        aria-label="Close search"
+        class="absolute top-2.5 right-2.5 rounded-full p-2.5 bg-white cursor-pointer leading-none"
+      >
+        {% render 'icon-close', class: 'w-6 h-6 text-primary' %}
       </button>
     </div>
 
-    <div class="header-search-modal__body">
+    <div class="overflow-auto">
       {% render 'search-bar', class: 'border border-slate-300 rounded-[15px]' %}
     </div>
   </div>

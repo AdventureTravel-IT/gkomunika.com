@@ -147,7 +147,6 @@
 @media (max-width: 768px) {
   .banner__wrapper {
     height: 800px;
-    margin-top: 20px;
     overflow: hidden;
   }
 
@@ -221,7 +220,7 @@
 {% endstyle %}
 
 <div class="banner-container">
-  <div class="banner__wrapper space-y-2">
+  <div class="banner__wrapper">
     <img 
       class="banner__image"
       src="{{ section.settings.image | img_url: 'master' }}" 

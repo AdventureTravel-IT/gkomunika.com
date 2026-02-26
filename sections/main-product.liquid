@@ -1,220 +1,389 @@
-<script src="{{ 'section-main-product.js' | asset_url }}" defer="defer"></script>
+<section>
+  <div class="bg-neutral md:wrapper-base flex flex-col md:gap-5 md:flex-row">
+    <div class="w-full md:w-1/2 h-auto">
+      <img
+        id="mainImage"
+        src="{{ product.featured_image | image_url }}"
+        class="bg-slate-300 md:rounded-[15px] w-full h-auto"
+        width="300px"
+        height="220px"
+        alt="Global Komunika"
+      >
 
-<style>
-  .gw-full-width {
-    width: 200px !important;
-    display: flex;
-    align-items: center;
-  }
-
-  .cart-popup {
-    position: fixed !important;
-    top: 10% !important;
-    right: 5% !important;
-    background-color: var(--color-primary);
-    padding: 0 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    z-index: 9999;
-  }
-
-  .cart-popup-content {
-    text-align: center;
-    color: var(--color-neutral);
-  }
-
-  @media (max-width: 768px) {
-    .cart-popup {
-      top: 30%;
-      right: 0;
-    }
-
-    .product-title-mobile {
-      display: none !important;
-    }
-
-    .main-product-container {
-      padding-top: 50px;
-    }
-
-    .main-product-sub-images-wrapper .scroll-btn {
-      display: none !important;
-    }
-
-    .main-product-sub-images {
-      display: flex;
-      gap: 8px;
-      padding-left: 8px;
-      padding-right: 8px;
-      margin: 0;
-      scroll-padding-left: 8px;
-      scroll-padding-right: 8px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-      overscroll-behavior-x: contain;
-      background-color: transparent;
-    }
-
-    .main-product-sub-images img {
-      flex: 0 0 auto;
-      margin: 0;
-    }
-  }
-</style>
-
-<product-info
-  id="MainProduct-{{ section.id }}"
-  data-section="{{ section.id }}"
-  data-product-id="{{ product.id }}"
-  data-update-url="true"
-  data-url="{{ product.url }}"
->
-  <div id="cart-popup" class="cart-popup" style="display: none;">
-    <div class="cart-popup-content">
-      <p id="popup-product-title">Success add to cart</p>
-    </div>
-  </div>
-  <div class="main-product-container">
-    <div class="main-product-header">
-      {% if product.title %}
-        <h2 class="product-title-mobile">{{ product.title }}</h2>
-      {% endif %}
-      <div class="main-product-header-left">
-        <img
-          class="main-product-main-images"
-          id="mainImage"
-          src="{{ product.featured_image | img_url: 'master' }}"
-          alt="{{ product.title | escape }}"
-          width="auto"
-          height="auto"
-          loading="lazy"
-        >
-        <div class="main-product-sub-images-wrapper">
-          <button
-            class="scroll-btn left"
-            style="transform: rotate(180deg);"
-            onclick="scrollSubImages(-1)"
-            aria-label="Scroll left"
+      <div class="px-4 md:px-0 flex gap-4 overflow-x-auto overflow-y-hidden mt-4 pb-4">
+        {% for media_item in product.media %}
+          <img
+            src="{{ media_item.preview_image.src | image_url }}"
+            class="rounded-[10px] h-[90px] cursor-pointer w-auto"
+            width="auto"
+            height="auto"
+            alt="{{ media_item.alt | default: 'Product Image' }}"
+            title="{{ media_item.alt | default: 'Product Image' }}"
+            onclick="updateMainImage('{{ media_item.preview_image.src | image_url }}')"
           >
-            {{- 'icon-arrow-back.svg' | inline_asset_content -}}
-          </button>
-          <div class="main-product-sub-images">
-            {% for image in product.images %}
-              <img
-                class="sub-image"
-                src="{{ image | img_url: 'master' }}"
-                alt="Sub Image {{ forloop.index }}"
-                width="auto"
-                height="auto"
-                data-src="{{ image | img_url: 'large' }}"
-                loading="lazy"
-              >
-            {% endfor %}
-          </div>
-          <button class="scroll-btn right" onclick="scrollSubImages(1)" aria-label="Scroll right">
-            {{- 'icon-arrow-back.svg' | inline_asset_content -}}
-          </button>
-        </div>
-      </div>
-
-      {% assign product-sold = product.metafields.product.sold %}
-      <div class="main-product-header-right">
-        {% if product.title %}
-          <h2 class="product-title">{{ product.title }}</h2>
-        {% endif %}
-        <div style="display: flex; align-items: center">
-          {%- for block in section.blocks -%}
-            {%- case block.type -%}
-              {%- when '@app' -%}
-                {% render block -%}
-                {%- if product-sold %}
-                  <ul
-                    style="
-                      padding: 0 0 0 10  px; display: flex;
-                      align-items: center;
-                    "
-                  >
-                    <li style="padding: 0; font-size: 0.875em;">{{ product-sold.value }} sold</li>
-                  </ul>
-                {% endif %}
-            {%- endcase -%}
-          {%- endfor -%}
-        </div>
-
-        {% assign min_price = product.variants.first.price %}
-        {% assign max_price = product.variants.first.price %}
-        {% for variant in product.variants %}
-          {% if variant.price < min_price %} {% assign min_price = variant.price %} {% endif %}
-          {% if variant.price > max_price %}
-            {% assign max_price = variant.price %}
-          {% endif %}
         {% endfor %}
-
-        {% assign min_price_formatted = min_price | money_with_currency %}
-        {% assign max_price_formatted = max_price | money_with_currency %}
-
-        <div id="variant-price-desktop" class="money">
-          {{ min_price_formatted -}}
-          {%- unless min_price == max_price %}
-            - {{ max_price_formatted -}}
-          {%- endunless %}
-        </div>
-        <div class="main-product-variant-picker">
-          {% render 'custom-variant-picker', product: product %}
-        </div>
       </div>
     </div>
-    <div class="main-product-main-content">
-      <div class="main-product-content">
-        <div class="main-product__content-container">
-          {% assign type = product.metafields.product.category %}
-          {% if type and type.value != 'Insurance' %}
-            <div class="main-product-content-wrapper">
-              <label>Product Details</label>
-              <div class="main-product-content-left">
-                <ul>
-                  {% for item in product.metafields.details %}
-                    {% assign key = item.first %}
-                    {% assign value = item.last %}
-                    {% if value != blank %}
-                      <div class="mp-content-wrapper">
-                        <div class="mp-content-icon-img">
-                          {{- key | append: '.svg' | inline_asset_content -}}
-                        </div>
-                        <div class="mp-content-text">
-                          <p class="title">
-                            {% if key == 'apn' %}
-                              {{ key | upcase }}
-                            {% else %}
-                              {{ key | replace: '_', ' ' | capitalize }}
-                            {% endif %}
-                          </p>
-                          {% if value.value %}
-                            {% for v in value.value %}
-                              <li>{{ v }}</li>
-                            {% endfor %}
-                          {% else %}
-                            <p>{{ value }}</p>
-                          {% endif %}
-                        </div>
-                      </div>
-                      <hr class="mp-content-divider">
-                    {% endif %}
-                  {% endfor %}
-                </ul>
+
+    <div class="wrapper md:p-0 w-full md:w-1/2 flex flex-col gap-5">
+      <h1 class="hidden md:block text-primary font-bold text-[30px] leading-tight">
+        {%- assign raw_cat = product.metafields.product.category.value | default: 'Gkomunika' -%}
+        {%- assign cat_label = raw_cat | replace: '_', ' ' -%}
+
+        <span class="bg-primary text-center px-2 rounded-[10px] leading-none text-neutral">
+          {%- if raw_cat contains 'Top_Up_' -%}
+            Top Up Plan
+          {%- else -%}
+            {{- cat_label -}}
+          {%- endif -%}
+        </span>
+        {{ product.title }}
+      </h1>
+
+      <div id="priceContainer" class="hidden md:block">
+        <!-- IDR Price -->
+        <div id="idr-price-wrapper" class="block">
+          <span
+            id="variantPriceIDR"
+            class="text-secondary font-bold text-xl whitespace-nowrap text-left inline-block"
+          ></span>
+        </div>
+
+        <!-- USD Price -->
+        <div id="usd-price-wrapper" class="hidden">
+          <span
+            id="variantPriceUSD"
+            class="text-secondary font-bold text-xl whitespace-nowrap text-left inline-block"
+          ></span>
+        </div>
+      </div>
+
+      <!-- Dynamic Option Selectors (✅ added id target scroll) -->
+      <div id="selectorSection" class="flex items-end gap-3">
+        <div
+          id="variantSelectors"
+          class="flex gap-3 w-full {% if product.metafields.product.category.value == 'Insurance' %}flex-col md:flex-row{% endif %}"
+        ></div>
+
+        {% if product.metafields.product.category.value != 'Insurance' %}
+          <button
+            id="resetSelectionBtn"
+            type="button"
+            onclick="resetSelection()"
+            disabled
+            aria-label="Reset selection"
+            class="inline-flex items-center justify-center gap-2.5 rounded-[16px] bg-background-third text-primary px-4 py-3 h-[50px] font-semibold leading-thight cursor-pointer transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed "
+          >
+            <span class="inline-flex items-center justify-center">
+              {% render 'icon-reset', class: 'w-[22px] h-[22px] text-primary' %}
+            </span>
+
+            <!-- 2 lines text (hidden on mobile) -->
+            <span class="hidden md:flex flex-col text-[14px] lowercase text-left leading-[1.05]">
+              <span>reset</span>
+              <span>selection</span>
+            </span>
+          </button>
+        {% endif %}
+      </div>
+
+      <!-- Insurance Add-on Selector (only for Insurance products) -->
+      <div id="insuranceAddonWrapper" class="hidden">
+        <label class="text-primary font-semibold tracking-normal block mb-2">Add On (Optional)</label>
+
+        <div class="relative md:max-w-[50%] w-full">
+          <button
+            type="button"
+            id="addon-button"
+            class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary text-left bg-neutral truncate"
+          >
+            Choose Option
+          </button>
+
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+            {% render 'icon-arrow-right', class: 'w-[20px] h-[20px] text-primary' %}
+          </div>
+        </div>
+
+        <p id="addon-error-msg" class="hidden text-[14px] mt-1 text-red-500">Please select variant options first</p>
+      </div>
+
+      <div
+        id="atPurposeSection"
+        class="hidden"
+        aria-live="polite"
+      >
+        <!-- QTY = 1: dropdown biasa -->
+        <div id="atPurpose-single" class="hidden">
+          <div class="relative md:max-w-[50%] w-full">
+            <select
+              id="atPurposeSingle"
+              class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
+            >
+              <option value="" disabled selected>Select Transfer Purpose</option>
+              <option value="airport_to_city">Airport to City</option>
+              <option value="city_to_airport">City to Airport</option>
+            </select>
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+              {% render 'icon-arrow-right', class: 'w-[20px] h-[20px] text-primary' %}
+            </div>
+          </div>
+        </div>
+
+        <!-- QTY = 2: checkbox same + optional 2 selects -->
+        <div id="atPurpose-double" class="hidden space-y-3">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              id="atPurposeSameDouble"
+              class="w-5 h-5 cursor-pointer accent-[var(--color-secondary)]"
+              onchange="handleAtPurposeSameDouble(this.checked)"
+            >
+            <span class="text-primary text-[15px]">Both transfers have the same purpose</span>
+          </label>
+
+          <!-- Jika SAMA: 1 dropdown -->
+          <div id="atPurpose-double-same" class="hidden">
+            <div class="relative md:max-w-[50%] w-full">
+              <select
+                id="atPurposeDoubleSame"
+                class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
+              >
+                <option value="" disabled selected>Select Purpose for All</option>
+                <option value="airport_to_city">Airport to City</option>
+                <option value="city_to_airport">City to Airport</option>
+              </select>
+              <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+                {% render 'icon-arrow-right', class: 'w-[20px] h-[20px] text-primary' %}
               </div>
             </div>
-          {% else %}
-            <div class="main-product-content-wrapper">
-              <label>Product Details</label>
-              <div class="main-product-content-left">
-                <ul>
+          </div>
+
+          <!-- Jika BERBEDA: 2 dropdown -->
+          <div id="atPurpose-double-diff" class="space-y-3">
+            <div>
+              <label class="text-primary text-[14px] font-semibold mb-1 block">1st Transfer Purpose</label>
+              <div class="relative md:max-w-[50%] w-full">
+                <select
+                  id="atPurposeDouble1"
+                  class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
+                >
+                  <option value="" disabled selected>Select Purpose</option>
+                  <option value="airport_to_city">Airport to City</option>
+                  <option value="city_to_airport">City to Airport</option>
+                </select>
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+                  {% render 'icon-arrow-right', class: 'w-[20px] h-[20px] text-primary' %}
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="text-primary text-[14px] font-semibold mb-1 block">2nd Transfer Purpose</label>
+              <div class="relative md:max-w-[50%] w-full">
+                <select
+                  id="atPurposeDouble2"
+                  class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
+                >
+                  <option value="" disabled selected>Select Purpose</option>
+                  <option value="airport_to_city">Airport to City</option>
+                  <option value="city_to_airport">City to Airport</option>
+                </select>
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+                  {% render 'icon-arrow-right', class: 'w-[20px] h-[20px] text-primary' %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QTY > 2: input pergi + pulang -->
+        <div id="atPurpose-multi" class="hidden space-y-3">
+          <div class="flex flex-col md:flex-row gap-4 md:items-end">
+            <!-- Pergi -->
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-primary text-[14px] font-semibold" for="atMultiGo">
+                Airport to City (How many trips?)
+              </label>
+              <div class="flex items-center border border-primary w-fit rounded-full bg-neutral">
+                <button
+                  type="button"
+                  onclick="adjustAtMulti('go', -1)"
+                  class="p-2"
+                >
+                  {% render 'icon-minus', class: 'w-[24px] h-[24px] text-primary' %}
+                </button>
+                <input
+                  type="text"
+                  id="atMultiGo"
+                  value="0"
+                  inputmode="numeric"
+                  class="text-center text-primary w-[50px] outline-none border-l border-r border-primary bg-neutral"
+                  oninput="onAtMultiInput('go', this.value)"
+                >
+                <button
+                  type="button"
+                  onclick="adjustAtMulti('go', 1)"
+                  class="p-2"
+                >
+                  {% render 'icon-plus', class: 'w-[24px] h-[24px] text-primary' %}
+                </button>
+              </div>
+            </div>
+
+            <!-- Pulang -->
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-primary text-[14px] font-semibold" for="atMultiReturn">
+                City to Airport (How many trips?)
+              </label>
+              <div class="flex items-center border border-primary w-fit rounded-full bg-neutral">
+                <button
+                  type="button"
+                  onclick="adjustAtMulti('return', -1)"
+                  class="p-2"
+                >
+                  {% render 'icon-minus', class: 'w-[24px] h-[24px] text-primary' %}
+                </button>
+                <input
+                  type="text"
+                  id="atMultiReturn"
+                  value="0"
+                  inputmode="numeric"
+                  class="text-center text-primary w-[50px] outline-none border-l border-r border-primary bg-neutral"
+                  oninput="onAtMultiInput('return', this.value)"
+                >
+                <button
+                  type="button"
+                  onclick="adjustAtMulti('return', 1)"
+                  class="p-2"
+                >
+                  {% render 'icon-plus', class: 'w-[24px] h-[24px] text-primary' %}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sisa warning -->
+          <p id="atMultiWarning" class="hidden text-red-500 text-[13px]"></p>
+
+          <p class="text-primary/60 text-[13px]">Note: Total of both must equal the total quantity purchased.</p>
+        </div>
+      </div>
+
+      {%- assign cat = product.metafields.product.category.value | default: '' -%}
+
+      {%- unless cat contains 'Top_Up_' -%}
+        <!-- ✅ Quantity normal (non Top Up) -->
+        <div id="qtySection">
+          <span class="text-primary font-semibold tracking-normal">Quantity</span>
+
+          <div class="flex items-center gap-3 mt-2 flex-wrap">
+            <div class="flex items-center border border-primary w-fit rounded-full bg-neutral">
+              <button id="qtyMinusBtn" type="button" onclick="decreaseQuantity()" class="p-2">
+                {% render 'icon-minus', class: 'w-[24px] h-[24px] text-primary' %}
+              </button>
+
+              <input
+                type="text"
+                id="variant-quantity"
+                value="1"
+                min="1"
+                max="50"
+                class="text-center text-primary w-[50px] outline-none border-l border-r border-primary bg-neutral"
+                inputmode="numeric"
+                pattern="\d*"
+              >
+
+              <button type="button" onclick="increaseQuantity()" class="p-2">
+                {% render 'icon-plus', class: 'w-[24px] h-[24px] text-primary' %}
+              </button>
+            </div>
+
+            {% if product.metafields.product.category.value == 'Insurance' %}
+              <button
+                id="resetSelectionBtnInsurance"
+                type="button"
+                onclick="resetSelection()"
+                disabled
+                aria-label="Reset selection"
+                class="inline-flex items-center justify-center gap-2.5 rounded-[16px] bg-background-third text-primary px-4 py-3 h-[50px] font-semibold leading-thight cursor-pointer transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed "
+              >
+                <span class="inline-flex items-center justify-center">
+                  {% render 'icon-reset', class: 'w-[22px] h-[22px] text-primary' %}
+                </span>
+                <span class="hidden md:flex flex-col text-[14px] lowercase text-left leading-[1.05]">
+                  <span>reset</span>
+                  <span>selection</span>
+                </span>
+              </button>
+            {% endif %}
+          </div>
+        </div>
+
+      {%- else -%}
+        <!-- ✅ Top Up: qty selalu 1 + input tetap ada biar JS tidak error -->
+        <input type="hidden" id="variant-quantity" value="1" min="1" max="1">
+      {%- endunless -%}
+
+      <div class="max-h-[200px] overflow-y-scroll">
+        <p id="productDesc" class="text-primary"></p>
+      </div>
+
+      {%- assign cat = product.metafields.product.category.value | default: '' -%}
+
+      <!-- Desktop buttons (mobile akan pakai fixed bar di bawah) -->
+      <div class="hidden md:flex items-center gap-3">
+        {%- unless cat contains 'Top_Up_' -%}
+          <button
+            id="btnAddToCartDesktop"
+            type="button"
+            onclick="addToCart()"
+            class="bg-secondary text-neutral hover:opacity-80 hover:-translate-y-[3px] transition-all rounded-[15px] text-nowrap py-3 cursor-pointer font-bold flex-1 shrink-0 items-center justify-center flex gap-2"
+          >
+            <span data-btn-text>Add to Cart</span>
+            <span data-btn-loader class="hidden">
+              {% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}
+            </span>
+          </button>
+        {%- endunless -%}
+
+        <button
+          id="btnBuyNowDesktop"
+          type="button"
+          onclick="buyNow()"
+          class="bg-primary text-neutral hover:opacity-80 hover:-translate-y-[3px] transition-all rounded-[15px] text-nowrap py-3 cursor-pointer font-bold flex-1 shrink-0 items-center justify-center flex gap-2"
+        >
+          <span data-btn-text>Buy Now</span>
+          <span data-btn-loader class="hidden">
+            {% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} SECTION PRODUCT DETAILS & COVERAGE {% endcomment %}
+  <div class="wrapper md:wrapper-base">
+    <div class="bg-background">
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+        {%- assign type = product.metafields.product.category -%}
+
+        <div class="flex w-full flex-col">
+          <h3 class="text-primary font-bold text-[22px] md:text-[26px]">
+            {% if type and type.value == 'Airport_Transfer' %}
+              Variant Seater
+            {% else %}
+              Product Details
+            {% endif %}
+          </h3>
+
+          <div class="mt-3 w-full rounded-[15px] bg-neutral p-4 md:p-5 h-[360px] overflow-hidden">
+            <ul class="m-0 list-none p-0 max-h-[320px] overflow-y-auto">
+              {% case type.value %}
+                {% when 'Insurance' %}
                   {% assign fields = '' %}
                   {% assign fields = fields | append: 'type-of-plans:type of plans,' %}
                   {% assign fields = fields | append: 'insurance-requirements:Insurance Requirements,' %}
                   {% assign fields = fields | append: 'children-requirements:Children Requirements' %}
-
                   {% assign fields_array = fields | split: ',' %}
 
                   {% for field in fields_array %}
@@ -222,77 +391,2407 @@
                     {% assign field_key = field_parts[0] %}
                     {% assign title = field_parts[1] %}
                     {% assign metafield = product.metafields['insurance-product'][field_key] %}
+
                     {% if metafield != blank %}
-                      <div class="mp-content-wrapper">
-                        <div class="mp-content-icon-img">
+                      <div class="flex gap-3 items-start py-2">
+                        <div class="w-[30px] h-[30px] shrink-0">
                           {{- field_key | append: '.svg' | inline_asset_content -}}
                         </div>
-                        <div class="mp-content-text">
+
+                        <div class="flex-1">
                           {% assign t = title | replace: '-', ' ' | replace: '_', ' ' | strip %}
                           {% assign words = t | split: ' ' %}
                           {% capture title_case %}
-                    {% for w in words %}
-                    {% if w != '' %}{{ w | capitalize }}{% unless forloop.last %} {% endunless %}{% endif %}
-                    {% endfor %}
-                    {% endcapture %}
+                        {% for w in words %}
+                          {% if w != '' %}
+                            {{ w | capitalize }}{% unless forloop.last %} {% endunless %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endcapture %}
 
-                          <p class="title">{{ title_case }}</p>
+                          <p class="m-0 text-primary font-bold text-[16px] md:text-[18px] leading-snug">
+                            {{ title_case }}
+                          </p>
 
                           {% if metafield.value %}
-                            {% for v in metafield.value %}
-                              <li style="margin-left: 20px; list-style-type: disc;">{{ v }}</li>
-                            {% endfor %}
+                            <ul class="mt-1 list-disc pl-5 space-y-1">
+                              {% for v in metafield.value %}
+                                <li class="text-primary text-[14px] md:text-[16px] leading-snug">{{ v }}</li>
+                              {% endfor %}
+                            </ul>
                           {% else %}
-                            <p>{{ metafield }}</p>
+                            <p class="mt-1 text-primary text-[14px] md:text-[16px] leading-snug">{{ metafield }}</p>
                           {% endif %}
                         </div>
                       </div>
-                      <hr class="mp-content-divider">
+
+                      <hr class="border-border my-2">
                     {% endif %}
                   {% endfor %}
-                </ul>
-              </div>
-            </div>
-          {% endif %}
+                {% when 'Airport_Transfer' %}
+                  <div class="max-h-[320px] overflow-y-auto space-y-4 pr-1">
+                    <div>
+                      <p class="m-0 text-primary font-bold text-[18px] md:text-[20px] leading-snug">5 Seater</p>
+                      <ul class="mt-1 list-disc pl-5 space-y-1">
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Capacity: 5 passengers (Toyota Alphard / similar vehicle)
+                        </li>
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Luggage: 3 × 28", or 4 × 25", or 5 × 24"
+                        </li>
+                      </ul>
+                    </div>
+                    <hr class="border-border">
 
-          <div class="main-product-content-wrapper">
-            <label>Coverage</label>
-            <div class="main-product-content-right">
-              <div class="main-product-content-right-wrapper">
-                {% if product.metafields.coverage.country.value.size > 10 %}
-                  {% render 'coverage-search' %}
-                {% endif %}
-                {% render 'coverage' %}
-              </div>
-            </div>
+                    <div>
+                      <p class="m-0 text-primary font-bold text-[18px] md:text-[20px] leading-snug">9 Seater</p>
+                      <ul class="mt-1 list-disc pl-5 space-y-1">
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Capacity: 9 passengers (Toyota Hiace / similar vehicle)
+                        </li>
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Luggage: 9 × 28", or 10 × 26", or 14 × 24"
+                        </li>
+                      </ul>
+                    </div>
+                    <hr class="border-border">
+
+                    <div>
+                      <p class="m-0 text-primary font-bold text-[18px] md:text-[20px] leading-snug">11 Seater</p>
+                      <ul class="mt-1 list-disc pl-5 space-y-1">
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Capacity: 11 passengers (Toyota Hiace / similar vehicle)
+                        </li>
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Luggage: 7 × 28", or 8 × 26", or 8 × 24"
+                        </li>
+                      </ul>
+                    </div>
+                    <hr class="border-border">
+
+                    <div>
+                      <p class="m-0 text-primary font-bold text-[18px] md:text-[20px] leading-snug">18 Seater</p>
+                      <ul class="mt-1 list-disc pl-5 space-y-1">
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Capacity: 18 passengers (Toyota Coaster / similar vehicle)
+                        </li>
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Luggage: 18 × 28", or 20 × 26", or 2 × 24"
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                {% else %}
+                  {% for item in product.metafields.details %}
+                    {% assign key = item.first %}
+                    {% assign value = item.last %}
+                    {% if value != blank %}
+                      <div class="flex gap-3 items-start py-2">
+                        <div class="w-[30px] h-[30px] shrink-0">
+                          {{- key | append: '.svg' | inline_asset_content -}}
+                        </div>
+
+                        <div class="flex-1">
+                          <p class="m-0 text-primary font-bold text-[16px] md:text-[18px] leading-snug">
+                            {% if key == 'apn' %}
+                              {{ key | upcase }}
+                            {% else %}
+                              {{ key | replace: '_', ' ' | capitalize }}
+                            {% endif %}
+                          </p>
+
+                          {% if value.value %}
+                            <ul class="mt-1 list-disc pl-5 space-y-1">
+                              {% for v in value.value %}
+                                <li class="text-primary text-[14px] md:text-[16px] leading-snug">{{ v }}</li>
+                              {% endfor %}
+                            </ul>
+                          {% else %}
+                            <p class="mt-1 text-primary text-[14px] md:text-[16px] leading-snug">{{ value }}</p>
+                          {% endif %}
+                        </div>
+                      </div>
+
+                      <hr class="border-border my-2">
+                    {% endif %}
+                  {% endfor %}
+              {% endcase %}
+            </ul>
           </div>
         </div>
-        {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-        {% if product_category == 'Insurance' %}
-          {% render 'insurance-benefits' %}
-        {% endif %}
+
+        {%- comment -%} ======================== COVERAGE ======================== {%- endcomment -%}
+        <div class="flex w-full flex-col">
+          <h3 class="text-primary font-bold text-[22px] md:text-[26px]">
+            {% if type and type.value == 'Airport_Transfer' %}
+              Syarat &amp; Ketentuan
+            {% else %}
+              Coverage
+            {% endif %}
+          </h3>
+
+          <div class="mt-3 w-full rounded-[15px] bg-neutral p-4 md:p-5 h-[360px] overflow-hidden">
+            {% if type and type.value == 'Airport_Transfer' %}
+              <div class="h-full overflow-y-auto">
+                <ol class="list-decimal pl-5 space-y-3">
+                  <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                    Layanan Private Airport Transfer ini sudah termasuk pengemudi profesional, biaya bahan bakar, tol,
+                    dan parkir.
+                  </li>
+
+                  <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                    Penjemputan pada malam hari dikenakan biaya tambahan dengan rincian sebagai berikut:
+                    <div class="mt-2">
+                      Penjemputan malam mulai dari jam 10:00pm - 6:00am dikenakan biaya tambahan berdasarkan jangka
+                      waktu 2.000JPY - 5.000JPY. Pembayaran langsung di tempat kepada pengemudi.
+                    </div>
+                  </li>
+
+                  <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                    Waktu tunggu driver:
+                    <ul class="mt-2 list-disc pl-5 space-y-1">
+                      <li>Waktu tunggu untuk pengantaran ke Bandara: 30 menit</li>
+                      <li>Waktu tunggu untuk penjemputan di Bandara: 90 menit</li>
+                    </ul>
+
+                    <div class="mt-2 space-y-1">
+                      <div>Jika melebihi waktu tunggu akan dikenakan biaya 5.000JPY/ 1 Jam untuk 6-9 Seater</div>
+                      <div>Jika melebihi waktu tunggu akan dikenakan biaya 10.000JPY/ 1 Jam untuk 18 Seater</div>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+            {% else %}
+              <div class="h-full flex flex-col overflow-hidden">
+                {% if product.metafields.search.key.value.size > 10 %}
+                  <div class="bg-neutral shrink-0 z-10">
+                    {% render 'coverage-search' %}
+                  </div>
+                {% endif %}
+
+                <div class="flex-1 overflow-y-auto mt-3">
+                  {% render 'coverage' %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
       </div>
-      <div class="main-product-ratting"></div>
+
+      {%- comment -%} ================== INSURANCE BENEFITS (ONLY) ================== {%- endcomment -%}
+      {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
+      {% if product_category == 'Insurance' %}
+        <div class="mt-6 md:mt-8">
+          {% render 'insurance-benefits' %}
+        </div>
+      {% endif %}
     </div>
   </div>
-  <script type="application/ld+json">
-    {{ product | structured_data }}
-  </script>
-</product-info>
+</section>
 
-{% schema %}
-{
-  "name": "Main Product",
-  "settings": [],
-  "blocks": [
-    {
-      "type": "@app"
+<!-- ✅ MOBILE FIXED BUY BAR (title + selected variant click scroll + price + buttons) -->
+<div
+  id="mobileBuyBar"
+  class="md:hidden fixed left-0 right-0 bottom-0 z-[999] bg-neutral border-t border-border"
+>
+  <div class="px-4 py-3">
+    <div class="flex items-start justify-between gap-3">
+      <div class="w-full space-y-2">
+        <!-- Title -->
+        <h2 id="mobileTitle" class="text-primary text-xl font-bold leading-tight line-clamp-2">
+          {%- assign raw_cat = product.metafields.product.category.value | default: 'Gkomunika' -%}
+          {%- assign cat_label = raw_cat | replace: '_', ' ' -%}
+
+          <span class="bg-primary px-2 rounded-[10px] leading-none text-neutral">
+            {%- if raw_cat contains 'Top_Up_' -%}
+              Top Up Plan
+            {%- else -%}
+              {{- cat_label -}}
+            {%- endif -%}
+          </span>
+          {{ product.title }}
+        </h2>
+
+        <!-- Selected variant (click => scroll to selector) -->
+        <button
+          id="mobileSelectedVariant"
+          type="button"
+          class="text-left text-primary/80 text-[14px] underline underline-offset-2 truncate"
+          onclick="scrollToSelectors()"
+        >
+          Selected Variant
+        </button>
+
+        <!-- Price -->
+        <div>
+          <div id="mobile-idr-price-wrapper" class="block">
+            <span id="variantPriceIDRMobile" class="text-secondary font-bold text-lg whitespace-nowrap"></span>
+          </div>
+
+          <div id="mobile-usd-price-wrapper" class="hidden">
+            <span id="variantPriceUSDMobile" class="text-secondary font-bold text-lg whitespace-nowrap"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {%- assign cat = product.metafields.product.category.value | default: '' -%}
+
+    <div class="mt-3 flex items-center gap-3">
+      {%- unless cat contains 'Top_Up_' -%}
+        <button
+          id="btnAddToCartMobile"
+          type="button"
+          onclick="addToCart()"
+          class="bg-secondary text-neutral rounded-[15px] py-3 font-bold flex-1 flex items-center justify-center gap-2"
+        >
+          <span data-btn-text>Add to Cart</span>
+          <span data-btn-loader class="hidden">
+            {% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}
+          </span>
+        </button>
+      {%- endunless -%}
+
+      <button
+        id="btnBuyNowMobile"
+        type="button"
+        onclick="buyNow()"
+        class="bg-primary text-neutral rounded-[15px] py-3 font-bold flex-1 flex items-center justify-center gap-2"
+      >
+        <span data-btn-text>Buy Now</span>
+        <span data-btn-loader class="hidden">
+          {% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification (Tailwind) -->
+<div
+  id="toast-notification"
+  class="
+    hidden fixed top-[90px] right-5 z-[9999] rounded-[10px] px-5 py-4 font-bold text-neutral shadow-md
+    translate-x-full opacity-0 pointer-events-none transition-all duration-300 bg-primary
+  "
+>
+  Item added to cart!
+</div>
+
+<!-- Insurance Add-on Popup (Tailwind) -->
+<div
+  id="addon-popup-overlay"
+  class="fixed inset-0 z-[1000] hidden bg-black/50 backdrop-blur-[2px]"
+>
+  <section
+    id="addon-popup"
+    class="
+      fixed left-1/2 top-1/2 z-[1001] flex h-[85vh] w-[90%] max-w-[800px] -translate-x-1/2 -translate-y-1/2 flex-col
+      overflow-hidden rounded-[15px] bg-neutral shadow-[0_10px_40px_rgba(0,0,0,0.2)]
+      md:h-[70vh] md:w-1/2
+    "
+  >
+    <div class="flex-1 overflow-y-auto p-5">
+      <div id="addonHeader" class="wrapper shadow-md mb-5 fixed top-0 left-0 w-full bg-neutral">
+        <h2 class="mb-2 text-[26px] font-bold leading-[1.2] text-primary md:text-[26px]">
+          {{ product.title }}
+        </h2>
+
+        <div class="mt-2 flex flex-wrap items-center gap-2.5">
+          <span class="text-[18px] font-bold text-primary md:text-[18px]">Insurance Plan:</span>
+
+          <div class="flex items-center gap-2 text-[16px] font-bold text-secondary md:text-[16px]">
+            <span id="display-option1">-</span>
+            <span class="opacity-50 text-primary">|</span>
+            <span id="display-option2">-</span>
+            <span class="opacity-50 text-primary">|</span>
+            <span id="display-option3">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="addonContent" style="padding-top: calc(var(--addon-header-h, 100px) - 15px);">
+        <div id="selected-addon-list">
+          <!-- Add-on checkboxes will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end border-t border-border bg-neutral px-5 py-3">
+      <button
+        id="close-popup__choose-addon"
+        type="button"
+        class="rounded-[15px] bg-secondary px-7 py-3 text-[16px] font-bold text-neutral transition-all hover:-translate-y-0.5 hover:opacity-90 md:text-[16px]"
+      >
+        Close
+      </button>
+    </div>
+  </section>
+</div>
+
+<style>
+  /* Style untuk option yang disabled (Tailwind tidak reliable untuk option:disabled) */
+  select option:disabled {
+    color: #999;
+    background-color: #f5f5f5;
+  }
+
+  body.no-scroll {
+    overflow: hidden;
+  }
+
+  /* ✅ agar konten tidak ketutup mobile fixed bar */
+  @media (max-width: 767px) {
+    body {
+      padding-bottom: 170px;
     }
-  ],
-  "presets": [
-    {
-      "name": "Main Product"
+  }
+</style>
+
+<pre id="result" class="hidden"></pre>
+
+<div
+  id="iccid-modal"
+  class="hidden fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral p-4 rounded-[15px] z-[1000] w-[90%] max-w-md shadow-lg"
+>
+  <h3 class="text-primary font-bold text-lg">Enter Your ICCID</h3>
+
+  <form id="iccid-form" action="" class="flex flex-col mt-2">
+    <input
+      id="iccid-input"
+      type="text"
+      inputmode="numeric"
+      pattern="[0-9]*"
+      maxlength="25"
+      placeholder="Input ICCID Number"
+      oninput="this.value = this.value.replace(/\D/g,'')"
+      class="w-full rounded-[10px] bg-background text-primary placeholder:text-primary p-3 border border-primary focus:ring-1 focus:ring-primary focus:outline-none focus:placeholder:text-primary/50"
+    >
+
+    <div class="flex justify-end gap-2 mt-3">
+      <button
+        type="button"
+        id="iccid-cancel"
+        class="bg-background-third text-primary rounded-[10px] py-2 px-5 text-base font-semibold"
+      >
+        Cancel
+      </button>
+
+      <button
+        id="iccid-submit-btn"
+        type="submit"
+        class="bg-primary text-neutral rounded-[10px] py-2 px-8 text-base font-semibold flex items-center justify-center gap-2"
+      >
+        <span data-btn-text>Next</span>
+        <span data-btn-loader class="hidden">
+          {% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<div id="invalid-popup" class="fixed inset-0 z-[9999] hidden">
+  <!-- overlay (dipisah) -->
+  <div class="absolute inset-0 bg-black/50" data-invalid-overlay></div>
+
+  <!-- content -->
+  <div
+    class="absolute left-1/2 top-1/2 w-[calc(100%-40px)] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-[10px] bg-neutral p-[30px] text-center text-primary"
+    role="dialog"
+    aria-modal="true"
+  >
+    <h2
+      class="mb-5 text-[33px] font-bold leading-none text-primary"
+    >
+      ICCID Invalid
+    </h2>
+
+    <p>
+      Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
+      phone settings.
+    </p>
+    <p class="mt-2">Please contact our WhatsApp Customer Service for more information</p>
+
+    <div class="mt-6 flex gap-[15px]">
+      <button
+        id="invalid-popup-buy"
+        class="w-full cursor-pointer rounded-[10px] border-0 bg-secondary p-[15px] text-lg text-neutral"
+        onclick="goToBuySim()"
+      >
+        Buy SIM
+      </button>
+
+      <button
+        id="invalid-popup-contact"
+        class="w-full cursor-pointer rounded-[10px] border-0 bg-[#25d366] p-[15px] text-lg text-neutral"
+      >
+        <a href="https://wa.me/628986454071">WhatsApp CS</a>
+      </button>
+    </div>
+
+    <button
+      id="invalid-popup-close"
+      class="mt-[15px] w-full cursor-pointer rounded-[10px] border-0 bg-primary p-[15px] text-lg text-neutral"
+    >
+      <span>Cancel</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  /* =========================================================
+   * GLOBALS (paling atas)
+   * ========================================================= */
+  const shopCurrency = '{{ shop.currency }}';
+  const customerLoggedIn = {% if customer %}true{% else %}false{% endif %};
+
+  let isAddingToCart = false;
+  let isBuyingNow = false;
+  let isIccidSubmitting = false;
+
+  let cachedUSDRate = null;
+
+  // State
+  let selectedOptions = [];
+  let selectedVariant = null;
+  let lastCurrency = null;
+  let selectedAddons = [];
+  let lastSelectedVariantId = null;
+
+  // Internal timers
+  let toastTimer = null;
+  let currencyPollTimer = null;
+
+  /* =========================================================
+   * DATA (Shopify product → filtered object)
+   * ========================================================= */
+  const data = {{ product | json }};
+
+  const filtered = {
+    id: data.id,
+    title: data.title,
+    handle: data.handle,
+    description: data.description,
+    price: '{{ product.price | money_with_currency }}',
+    price_min: '{{ product.price_min | money_with_currency }}',
+    price_max: '{{ product.price_max | money_with_currency }}',
+    price_min_raw: {{ product.price_min }},
+    price_max_raw: {{ product.price_max }},
+    available: data.available,
+    images: data.images || [],
+    featured_image: data.featured_image || null,
+    media: data.media || [],
+    category: "{{ product.metafields.product.category.value }}",
+    metafields: {
+      category: "{{ product.metafields.product.category.value }}",
+      coverage: [
+        {% for country in product.metafields.search.key.value %}
+          {
+            country_en: "{{ country.country.value }}",
+            country_id: "{{ country.country_id.value }}",
+            country_alias: [
+              {% for alias in country.alias.value %}
+                "{{ alias }}"{% unless forloop.last %},{% endunless %}
+              {% endfor %}
+            ],
+            flag: {% if country.flag.value %}"{{ country.flag.value | image_url }}"{% else %}null{% endif %}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ],
+      insurance_addons: [
+        {% assign ProductAddon = product.metafields.product['insurance-addon'].value %}
+        {% if ProductAddon %}
+          {% for addon_product in ProductAddon %}
+            {
+              addon_type: "{{ addon_product.metafields.insurance['addon-type'].value }}",
+              variants: [
+                {% for variant in addon_product.variants %}
+                  {
+                    id: {{ variant.id }},
+                    title: "{{ variant.title | escape }}",
+                    option1: "{{ variant.option1 | escape }}",
+                    option2: "{{ variant.option2 | escape }}",
+                    option3: "{{ variant.option3 | escape }}",
+                    price: "{{ variant.price | money_with_currency }}",
+                    priceRaw: {{ variant.price }}
+                  }{% unless forloop.last %},{% endunless %}
+                {% endfor %}
+              ]
+            }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        {% endif %}
+      ]
+    },
+    options: data.options || [],
+    variants: [
+      {% for variant in product.variants %}
+        {
+          id: {{ variant.id }},
+          title: "{{ variant.title }}",
+          price: "{{ variant.price | money_with_currency }}",
+          priceRaw: {{ variant.price }},
+          sku: "{{ variant.sku }}",
+          available: {{ variant.available }},
+          variantType: {{ variant.metafields.variant.type | json }},
+          airportPurpose: {{ variant.metafields.airport.purpose.value | default: '' | json }},
+          options: [
+            {% for option in variant.options %}
+              "{{ option }}"{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          ]
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  };
+
+  // Debug JSON output (tetap)
+  const resultEl = document.getElementById('result');
+  if (resultEl) resultEl.textContent = JSON.stringify(filtered, null, 2);
+
+  /* =========================================================
+   * DOM HELPERS
+   * ========================================================= */
+  const $ = (id) => document.getElementById(id);
+
+  const dom = () => ({
+    mainImage: $('mainImage'),
+
+    variantSelectors: $('variantSelectors'),
+
+    idrWrapper: $('idr-price-wrapper'),
+    usdWrapper: $('usd-price-wrapper'),
+    priceIDR: $('variantPriceIDR'),
+    priceUSD: $('variantPriceUSD'),
+    btnAddToCartDesktop: $('btnAddToCartDesktop'),
+    btnBuyNowDesktop: $('btnBuyNowDesktop'),
+    btnAddToCartMobile: $('btnAddToCartMobile'),
+    btnBuyNowMobile: $('btnBuyNowMobile'),
+    iccidSubmitBtn: $('iccid-submit-btn'),
+
+
+    resetBtnNonInsurance: $('resetSelectionBtn'),
+    resetBtnInsurance: $('resetSelectionBtnInsurance'),
+
+    qtyInput: $('variant-quantity'),
+
+    productDesc: $('productDesc'),
+
+    toast: $('toast-notification'),
+
+    // Insurance addon UI
+    addonWrapper: $('insuranceAddonWrapper'),
+    addonButton: $('addon-button'),
+    addonErrorMsg: $('addon-error-msg'),
+    addonList: $('selected-addon-list'),
+
+    popupOverlay: $('addon-popup-overlay'),
+    closePopupBtn: $('close-popup__choose-addon'),
+
+    displayOpt1: $('display-option1'),
+    displayOpt2: $('display-option2'),
+    displayOpt3: $('display-option3')
+  });
+
+  function releaseBuyNowLock() {
+    isBuyingNow = false;
+    setBuyNowLoading(false);
+  }
+
+  function setButtonLoading(btn, loading) {
+    if (!btn) return;
+
+    btn.disabled = !!loading;
+    btn.setAttribute('aria-busy', loading ? 'true' : 'false');
+    btn.classList.toggle('opacity-70', loading);
+    btn.classList.toggle('pointer-events-none', loading);
+
+    const textEl = btn.querySelector('[data-btn-text]');
+    const loaderEl = btn.querySelector('[data-btn-loader]');
+
+    if (textEl) textEl.classList.toggle('hidden', loading);
+    if (loaderEl) loaderEl.classList.toggle('hidden', !loading);
+  }
+
+  function setAddToCartLoading(loading) {
+    const { btnAddToCartDesktop, btnAddToCartMobile } = dom();
+    setButtonLoading(btnAddToCartDesktop, loading);
+    setButtonLoading(btnAddToCartMobile, loading);
+  }
+
+  function setBuyNowLoading(loading) {
+    const { btnBuyNowDesktop, btnBuyNowMobile } = dom();
+    setButtonLoading(btnBuyNowDesktop, loading);
+    setButtonLoading(btnBuyNowMobile, loading);
+  }
+
+  function setIccidLoading(loading) {
+    const { iccidSubmitBtn } = dom();
+    setButtonLoading(iccidSubmitBtn, loading);
+
+    const cancelBtn = document.getElementById('iccid-cancel');
+    if (cancelBtn) cancelBtn.disabled = !!loading;
+  }
+
+
+  /* =========================================================
+   * MOBILE BAR HELPERS
+   * ========================================================= */
+  function scrollToSelectors() {
+    const el = document.getElementById('selectorSection');
+    const bar = document.getElementById('mobileBuyBar');
+    if (!el) return;
+
+    const offset = (bar?.offsetHeight || 0) + 16;
+    const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+
+  function updateMobileSelectedVariantLabel() {
+    const btn = document.getElementById('mobileSelectedVariant');
+    if (!btn) return;
+
+    if (selectedVariant?.title) btn.textContent = selectedVariant.title;
+    else btn.textContent = 'Selected Variant';
+  }
+
+  /* =========================================================
+   * INIT: DESCRIPTION
+   * ========================================================= */
+  function initDescription() {
+    const { productDesc } = dom();
+    if (!productDesc) return;
+
+    productDesc.innerHTML = (filtered.description || '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, '  ')
+      .trim()
+      .replace(/<a /g, '<a class="underline text-secondary" ');
+  }
+
+  /* =========================================================
+   * CURRENCY + PRICE HELPERS
+   * ========================================================= */
+  async function getExchangeRate() {
+    if (cachedUSDRate) return cachedUSDRate;
+
+    try {
+      const res = await fetch('https://api.exchangerate-api.com/v4/latest/IDR');
+      const json = await res.json();
+      cachedUSDRate = json?.rates?.USD || 0.000066;
+      return cachedUSDRate;
+    } catch (err) {
+      console.error('Failed to fetch exchange rate:', err);
+      cachedUSDRate = 0.000066; // fallback
+      return cachedUSDRate;
     }
-  ]
+  }
+
+  function convertIDRtoUSDInstant(idrAmount) {
+    const rate = cachedUSDRate || 0.000066;
+    return (idrAmount * rate).toFixed(2);
+  }
+
+  function formatIDR(amount) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
+    })
+      .format(amount)
+      .replace(/\u00A0/g, ' ');
+  }
+
+  function formatUSD(amount) {
+    return `$${parseFloat(amount).toFixed(2)}`;
+  }
+
+  function getUserCurrency() {
+    let c = sessionStorage.getItem('buckscc_customer_currency');
+    if (c) c = c.replace(/"/g, '');
+    return c || 'IDR';
+  }
+
+  function formatAddonPrice(priceRaw, quantity = 1) {
+    const totalIDR = (priceRaw / 100) * quantity;
+    const cur = getUserCurrency();
+
+    if (cur === 'USD') {
+      return formatUSD(convertIDRtoUSDInstant(totalIDR));
+    }
+    return formatIDR(totalIDR);
+  }
+
+  function toggleCurrencyDisplay() {
+    let userCurrency = sessionStorage.getItem('buckscc_customer_currency');
+    if (userCurrency) userCurrency = userCurrency.replace(/"/g, '');
+
+    const { idrWrapper, usdWrapper } = dom();
+    if (!idrWrapper || !usdWrapper) return;
+
+    // ✅ mobile wrappers
+    const mobileIDR = document.getElementById('mobile-idr-price-wrapper');
+    const mobileUSD = document.getElementById('mobile-usd-price-wrapper');
+
+    if (userCurrency === 'USD') {
+      idrWrapper.classList.add('hidden');
+      idrWrapper.classList.remove('block');
+
+      usdWrapper.classList.remove('hidden');
+      usdWrapper.classList.add('block');
+
+      mobileIDR?.classList.add('hidden');
+      mobileIDR?.classList.remove('block');
+
+      mobileUSD?.classList.remove('hidden');
+      mobileUSD?.classList.add('block');
+    } else {
+      idrWrapper.classList.remove('hidden');
+      idrWrapper.classList.add('block');
+
+      usdWrapper.classList.add('hidden');
+      usdWrapper.classList.remove('block');
+
+      mobileIDR?.classList.remove('hidden');
+      mobileIDR?.classList.add('block');
+
+      mobileUSD?.classList.add('hidden');
+      mobileUSD?.classList.remove('block');
+    }
+  }
+
+  function updateIDRPrice(priceRaw, quantity = 1) {
+    const totalIDR = (priceRaw / 100) * quantity;
+    const { priceIDR } = dom();
+    const mobile = document.getElementById('variantPriceIDRMobile');
+
+    const text = formatIDR(totalIDR);
+    if (priceIDR) priceIDR.textContent = text;
+    if (mobile) mobile.textContent = text;
+  }
+
+  async function updateUSDPrice(priceRaw, quantity = 1) {
+    const totalIDR = (priceRaw / 100) * quantity;
+
+    const { priceUSD } = dom();
+    const mobile = document.getElementById('variantPriceUSDMobile');
+
+    if (!priceUSD && !mobile) return;
+
+    // instant (cached/fallback)
+    const instant = formatUSD(convertIDRtoUSDInstant(totalIDR));
+    if (priceUSD) priceUSD.textContent = instant;
+    if (mobile) mobile.textContent = instant;
+
+    // fetch rate if belum ada
+    if (!cachedUSDRate) {
+      const rate = await getExchangeRate();
+      const finalText = formatUSD((totalIDR * rate).toFixed(2));
+      if (priceUSD) priceUSD.textContent = finalText;
+      if (mobile) mobile.textContent = finalText;
+    }
+  }
+
+  async function updatePriceDisplay(priceRaw = null) {
+    const qty = parseInt(dom().qtyInput?.value) || 1;
+    const { priceIDR, priceUSD } = dom();
+
+    if (priceRaw !== null) {
+      updateIDRPrice(priceRaw, qty);
+      await updateUSDPrice(priceRaw, qty);
+      toggleCurrencyDisplay();
+      return;
+    }
+
+    // Range price
+    if (priceIDR) {
+      const minIDR = formatIDR(filtered.price_min_raw / 100);
+      const maxIDR = formatIDR(filtered.price_max_raw / 100);
+      const range = `${minIDR} - ${maxIDR}`;
+      priceIDR.textContent = range;
+
+      const mobileIDRText = document.getElementById('variantPriceIDRMobile');
+      if (mobileIDRText) mobileIDRText.textContent = range;
+    }
+
+    if (priceUSD) {
+      const minUSD = convertIDRtoUSDInstant(filtered.price_min_raw / 100);
+      const maxUSD = convertIDRtoUSDInstant(filtered.price_max_raw / 100);
+      const range = `${formatUSD(minUSD)} - ${formatUSD(maxUSD)}`;
+      priceUSD.textContent = range;
+
+      const mobileUSDText = document.getElementById('variantPriceUSDMobile');
+      if (mobileUSDText) mobileUSDText.textContent = range;
+
+      if (!cachedUSDRate) {
+        await getExchangeRate();
+        const minFinal = convertIDRtoUSDInstant(filtered.price_min_raw / 100);
+        const maxFinal = convertIDRtoUSDInstant(filtered.price_max_raw / 100);
+        const range2 = `${formatUSD(minFinal)} - ${formatUSD(maxFinal)}`;
+        priceUSD.textContent = range2;
+        if (mobileUSDText) mobileUSDText.textContent = range2;
+      }
+    }
+
+    toggleCurrencyDisplay();
+  }
+
+  function calculateInsuranceTotalRawCents() {
+    if (!selectedVariant) return null;
+
+    const mainQty = parseInt(dom().qtyInput?.value, 10) || 1;
+
+    // main variant total (cents)
+    let total = (selectedVariant.priceRaw || 0) * mainQty;
+
+    // addons total (cents) => price addon * mainQty
+    if (Array.isArray(selectedAddons) && selectedAddons.length) {
+      total += selectedAddons.reduce((sum, a) => {
+        const pr = parseInt(a.priceRaw || 0, 10);
+        return sum + (pr * mainQty);
+      }, 0);
+    }
+
+    return total;
+  }
+
+  async function updateTotalPriceDisplayIfInsurance() {
+    if (filtered.category !== 'Insurance') return false;
+
+    if (!selectedVariant) {
+      await updatePriceDisplay(null);
+      return true;
+    }
+
+    const totalRaw = calculateInsuranceTotalRawCents();
+    if (totalRaw === null) {
+      await updatePriceDisplay(null);
+      return true;
+    }
+
+    const totalIDR = totalRaw / 100;
+
+    const priceIDR = document.getElementById('variantPriceIDR');
+    const priceUSD = document.getElementById('variantPriceUSD');
+    const mobileIDR = document.getElementById('variantPriceIDRMobile');
+    const mobileUSD = document.getElementById('variantPriceUSDMobile');
+
+    const idrText = formatIDR(totalIDR);
+    if (priceIDR) priceIDR.textContent = idrText;
+    if (mobileIDR) mobileIDR.textContent = idrText;
+
+    const usdInstant = formatUSD(convertIDRtoUSDInstant(totalIDR));
+    if (priceUSD) priceUSD.textContent = usdInstant;
+    if (mobileUSD) mobileUSD.textContent = usdInstant;
+
+    if (!cachedUSDRate) {
+      const rate = await getExchangeRate();
+      const usdFinal = formatUSD((totalIDR * rate).toFixed(2));
+      if (priceUSD) priceUSD.textContent = usdFinal;
+      if (mobileUSD) mobileUSD.textContent = usdFinal;
+    }
+
+    toggleCurrencyDisplay();
+    return true;
+  }
+
+  /* =========================================================
+   * VARIANT SELECTORS
+   * ========================================================= */
+  function getUniqueOptionValues(optionIndex) {
+    const values = new Set();
+    filtered.variants.forEach(v => {
+      if (v.options[optionIndex]) values.add(v.options[optionIndex]);
+    });
+    return Array.from(values);
+  }
+
+  function isOptionAvailable(optionIndex, optionValue) {
+    return filtered.variants.some(v => {
+      if (!v.available) return false;
+      if (v.options[optionIndex] !== optionValue) return false;
+
+      return selectedOptions.every((selected, idx) => {
+        if (idx === optionIndex || !selected) return true;
+        return v.options[idx] === selected;
+      });
+    });
+  }
+
+  function updateAvailableOptions() {
+    filtered.options.forEach((_, index) => {
+      const selectEl = document.getElementById(`option${index}`);
+      if (!selectEl) return;
+
+      const optionEls = selectEl.querySelectorAll('option');
+      optionEls.forEach((opt, optIndex) => {
+        if (optIndex === 0) return;
+
+        const value = opt.value;
+        const available = isOptionAvailable(index, value);
+
+        opt.disabled = !available;
+
+        if (!available && !opt.textContent.includes('(Unavailable)')) {
+          opt.textContent = `${value} (Unavailable)`;
+        } else if (available && opt.textContent.includes('(Unavailable)')) {
+          opt.textContent = value;
+        }
+      });
+    });
+  }
+
+  function generateSelectors() {
+    const { variantSelectors, addonWrapper } = dom();
+    if (!variantSelectors) return;
+
+    variantSelectors.innerHTML = '';
+
+    filtered.options.forEach((optionName, index) => {
+      const optionValues = getUniqueOptionValues(index);
+
+      const wrapper = document.createElement('div');
+      wrapper.style.width = "100%";
+      wrapper.innerHTML = `
+        <label for="option${index}" class="text-primary font-semibold tracking-normal">${optionName}</label>
+        <div class="relative">
+          <select
+            name="option${index}"
+            id="option${index}"
+            class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
+            onchange="handleOptionChange(${index}, this.value)"
+          >
+            <option class="text-primary" value="" disabled selected>Choose Option</option>
+            ${optionValues.map(value => {
+              const available = isOptionAvailable(index, value);
+              return `<option value="${value}" ${!available ? 'disabled' : ''}>
+                ${value}${!available ? ' (Unavailable)' : ''}
+              </option>`;
+            }).join('')}
+          </select>
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+            {% render 'icon-arrow-right', class: "w-[20px] h-[20px] text-primary" %}
+          </div>
+        </div>
+      `;
+
+      variantSelectors.appendChild(wrapper);
+    });
+
+    selectedOptions = new Array(filtered.options.length).fill(null);
+
+    if (filtered.category === 'Insurance' && addonWrapper) {
+      addonWrapper.classList.remove('hidden');
+    }
+
+    updatePriceDisplay();
+    updateResetButtonState();
+    updateMobileSelectedVariantLabel();
+  }
+
+  function updateResetButtonState() {
+    const { resetBtnNonInsurance, resetBtnInsurance } = dom();
+    const hasSelection = selectedOptions.some(v => v !== null);
+
+    if (resetBtnNonInsurance) resetBtnNonInsurance.disabled = !hasSelection;
+    if (resetBtnInsurance) resetBtnInsurance.disabled = !hasSelection;
+  }
+
+  function resetSelection() {
+    selectedOptions = new Array(filtered.options.length).fill(null);
+    selectedVariant = null;
+    lastSelectedVariantId = null;
+
+    updateMobileSelectedVariantLabel();
+
+    resetAddons();
+    resetInsurancePlanPreview();
+
+    filtered.options.forEach((_, index) => {
+      const el = document.getElementById(`option${index}`);
+      if (!el) return;
+      el.value = '';
+      el.selectedIndex = 0;
+    });
+
+    const { qtyInput } = dom();
+    if (qtyInput) {
+      qtyInput.min = "1";
+      qtyInput.value = "1";
+    }
+
+    updateAvailableOptions();
+    updatePriceDisplay();
+    updateResetButtonState();
+  }
+
+  async function handleOptionChange(optionIndex, value) {
+    selectedOptions[optionIndex] = value;
+    updateAvailableOptions();
+
+    const variant = filtered.variants.find(v =>
+      selectedOptions.every((selected, idx) => !selected || v.options[idx] === selected)
+    );
+
+    const allSelected = selectedOptions.every(opt => opt !== null);
+
+    if (!(variant && allSelected)) {
+      selectedVariant = null;
+      lastSelectedVariantId = null;
+
+      updateMobileSelectedVariantLabel();
+
+      if (filtered.category === 'Insurance') {
+        resetAddons();
+        resetInsurancePlanPreview();
+      }
+
+      updatePriceDisplay();
+      updateResetButtonState();
+      return;
+    }
+
+    selectedVariant = variant;
+
+    updateMobileSelectedVariantLabel();
+
+    enforceMinQtyByVariant(selectedVariant);
+
+    const handled = await updateTotalPriceDisplayIfInsurance();
+    if (!handled) {
+      updatePriceDisplay(variant.priceRaw);
+    }
+
+    if (filtered.category === 'Insurance') {
+      if (lastSelectedVariantId && lastSelectedVariantId !== variant.id) {
+        resetAddons();
+      }
+      lastSelectedVariantId = variant.id;
+
+      updateInsuranceAddonDisplay(variant);
+    }
+
+    if (!variant.available) {
+      showToast('This variant is not available. Please select another option.', 'error');
+    }
+
+    updateResetButtonState();
+  }
+
+  /* =========================================================
+   * INSURANCE: ADDONS
+   * ========================================================= */
+  function resetInsurancePlanPreview() {
+    const { displayOpt1, displayOpt2, displayOpt3 } = dom();
+    if (displayOpt1) displayOpt1.textContent = '-';
+    if (displayOpt2) displayOpt2.textContent = '-';
+    if (displayOpt3) displayOpt3.textContent = '-';
+  }
+
+  function resetAddons() {
+    selectedAddons = [];
+    sessionStorage.removeItem('SelectedAddons');
+
+    const { addonButton, addonErrorMsg, addonList } = dom();
+
+    if (addonButton) {
+      addonButton.textContent = 'Choose Option';
+      addonButton.classList.remove('border-red-500', 'ring-2', 'ring-red-500/30');
+      addonButton.classList.add('border-primary');
+    }
+
+    if (addonErrorMsg) addonErrorMsg.classList.add('hidden');
+    if (addonList) addonList.innerHTML = '';
+  }
+
+  function updateInsuranceAddonDisplay(mainVariant) {
+    const { displayOpt1, displayOpt2, displayOpt3 } = dom();
+
+    if (displayOpt1) displayOpt1.textContent = mainVariant.options[0] || '-';
+    if (displayOpt2) displayOpt2.textContent = mainVariant.options[1] || '-';
+    if (displayOpt3) displayOpt3.textContent = mainVariant.options[2] || '-';
+
+    const matched = matchInsuranceAddons(mainVariant);
+    renderAddonList(matched);
+  }
+
+  function matchInsuranceAddons(mainVariant) {
+    const matchedList = [];
+    const qty = parseInt(dom().qtyInput?.value) || 1;
+
+    const groups = filtered?.metafields?.insurance_addons || [];
+    if (!groups.length) return matchedList;
+
+    groups.forEach(group => {
+      group.variants.forEach(v => {
+        let isMatch = false;
+
+        if (group.addon_type === 'Covid') {
+          isMatch =
+            v.option1 === mainVariant.options[0] &&
+            v.option2 === mainVariant.options[1] &&
+            v.option3 === mainVariant.options[2];
+        }
+
+        if (group.addon_type === 'General') {
+          isMatch =
+            v.option1 === mainVariant.options[0] &&
+            v.option2 === mainVariant.options[1];
+        }
+
+        if (!isMatch) return;
+
+        let title = '';
+        let benefits = [];
+
+        if (group.addon_type === 'Covid') {
+          title = 'Covid-19 Protection';
+          benefits = [
+            'Trip Cancellation',
+            'Medical Expenses Including Emergency Medical Evacuation',
+            'Additional Expenses',
+            'Trip Curtailment or Return of Children',
+            'Automatic extension of Cover'
+          ];
+        } else if (group.addon_type === 'General') {
+          title = v.option3 || v.title;
+
+          if (v.option3 === 'Business Travel') {
+            benefits = ['Staff Replacement', 'Business Equipment', 'Missed Events Fee'];
+          } else if (v.option3 === 'Cruise Cover') {
+            benefits = ['Cabin Confinement', 'Itinerary Change', 'Unused Excursion', 'Cruise Trip Interruption'];
+          } else if (v.option3 === 'Winter Sport' || v.option3 === 'Winter Sports') {
+            benefits = ['Winter Sport Pack', 'On piste Closure'];
+          }
+        }
+
+        matchedList.push({
+          title,
+          addonType: group.addon_type,
+          priceRaw: v.priceRaw,
+          id: v.id,
+          option1: v.option1,
+          option2: v.option2,
+          option3: v.option3,
+          quantity: qty,
+          benefits
+        });
+      });
+    });
+
+    return matchedList;
+  }
+
+  function renderAddonList(addons) {
+    const { addonList } = dom();
+    if (!addonList) return;
+
+    if (!addons.length) {
+      addonList.innerHTML =
+        '<p class="py-5 text-center text-primary">No matching add-ons available for this insurance plan</p>';
+      return;
+    }
+
+    addonList.innerHTML = addons.map(addon => {
+      const benefitList = (addon.benefits || [])
+        .map(b => `<li class="mb-1 leading-[1.4] text-[14px] text-primary">${b}</li>`)
+        .join('');
+
+      const isChecked = selectedAddons.some(sa => String(sa.id) === String(addon.id));
+
+      return `
+        <div
+          class="mt-4 rounded-[10px] border border-border bg-background p-4 transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] cursor-pointer select-none"
+          data-addon-card="true"
+        >
+          <div class="mb-2 flex gap-5 md:flex-row md:items-center md:justify-between">
+            <div class="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <h1 class="m-0 text-[18px] font-bold leading-[1.3] text-primary md:text-[20px]">${addon.title}</h1>
+              <span class="whitespace-nowrap text-[16px] font-bold text-secondary md:text-[18px]">
+                ${formatAddonPrice(addon.priceRaw, addon.quantity)}
+              </span>
+            </div>
+
+            <label class="flex items-center justify-between gap-2 text-primary md:justify-end">
+              <input
+                type="checkbox"
+                class="h-5 w-5 cursor-pointer accent-[var(--color-secondary)]"
+                ${isChecked ? 'checked' : ''}
+                data-id="${addon.id}"
+                data-variant-title="${addon.title}"
+                data-price-raw="${addon.priceRaw}"
+                data-option1="${addon.option1}"
+                data-option2="${addon.option2}"
+                data-option3="${addon.option3}"
+                data-quantity="${addon.quantity}"
+                onchange="handleAddonCheckboxChange(this)"
+              />
+              <span class="text-[14px] font-medium">select</span>
+            </label>
+          </div>
+
+          <div class="mt-2 pl-1">
+            <ul class="list-disc pl-5">${benefitList}</ul>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function handleAddonCheckboxChange(checkbox) {
+    const addonData = {
+      id: checkbox.dataset.id,
+      variantTitle: checkbox.dataset.variantTitle,
+      option1: checkbox.dataset.option1,
+      option2: checkbox.dataset.option2,
+      option3: checkbox.dataset.option3,
+      quantity: parseInt(checkbox.dataset.quantity || '1', 10),
+      priceRaw: parseInt(checkbox.dataset.priceRaw || '0', 10)
+    };
+
+    const card = checkbox.closest('[data-addon-card="true"]');
+    if (card) {
+      card.classList.toggle('ring-2', checkbox.checked);
+      card.classList.toggle('ring-secondary/30', checkbox.checked);
+    }
+
+    if (checkbox.checked) {
+      if (!selectedAddons.some(a => String(a.id) === String(addonData.id))) {
+        selectedAddons.push(addonData);
+      }
+    } else {
+      selectedAddons = selectedAddons.filter(a => String(a.id) !== String(addonData.id));
+    }
+
+    sessionStorage.setItem('SelectedAddons', JSON.stringify(selectedAddons));
+    updateAddonButtonPreview();
+    updateTotalPriceDisplayIfInsurance();
+  }
+
+  function bindAddonCardToggle() {
+    const list = document.getElementById('selected-addon-list');
+    if (!list) return;
+
+    list.addEventListener('click', (e) => {
+      const interactive = e.target.closest('input, label, a, button, select, textarea');
+      if (interactive) return;
+
+      const card = e.target.closest('[data-addon-card="true"]');
+      if (!card) return;
+
+      const checkbox = card.querySelector('input[type="checkbox"]');
+      if (!checkbox) return;
+
+      checkbox.checked = !checkbox.checked;
+      handleAddonCheckboxChange(checkbox);
+    });
+  }
+
+  function updateAddonButtonPreview() {
+    const { addonButton } = dom();
+    if (!addonButton) return;
+
+    if (!selectedAddons.length) {
+      addonButton.textContent = 'Choose Option';
+      return;
+    }
+
+    const titles = selectedAddons.map(a => a.variantTitle).join(', ');
+    addonButton.textContent = titles.length > 50 ? titles.slice(0, 47) + '...' : titles;
+  }
+
+  /* =========================================================
+   * QUANTITY
+   * ========================================================= */
+  function updatePriceWithQuantity() {
+    if (!selectedVariant) return;
+
+    if (filtered.category === 'Insurance') {
+      updateTotalPriceDisplayIfInsurance();
+    } else {
+      updatePriceDisplay(selectedVariant.priceRaw);
+    }
+  }
+
+  function decreaseQuantity() {
+  const input = dom().qtyInput;
+  if (!input) return;
+
+  const min = parseInt(input.min, 10) || 1;
+  const current = parseInt(input.value, 10);
+
+  if (current > min) {
+    input.value = String(current - 1);
+    updatePriceWithQuantity();
+
+    if (filtered.category === 'Insurance' && selectedVariant) {
+      updateInsuranceAddonDisplay(selectedVariant);
+      updateTotalPriceDisplayIfInsurance();
+    }
+  } else {
+    input.value = String(min);
+  }
+
+  // ✅ ini penting
+  updateMinusButtonState();
 }
-{% endschema %}
+
+  function increaseQuantity() {
+  const input = dom().qtyInput;
+  if (!input) return;
+
+  const current = parseInt(input.value, 10);
+  const max = parseInt(input.max, 10);
+
+  if (current < max) {
+    input.value = String(current + 1);
+    updatePriceWithQuantity();
+
+    if (filtered.category === 'Insurance' && selectedVariant) {
+      updateInsuranceAddonDisplay(selectedVariant);
+      updateTotalPriceDisplayIfInsurance();
+    }
+  }
+
+  // ✅ ini penting
+  updateMinusButtonState();
+}
+
+  function updateMinusButtonState() {
+    const input = dom().qtyInput;
+    const minusBtn = document.getElementById('qtyMinusBtn');
+    if (!input || !minusBtn) return;
+
+    const min = parseInt(input.min, 10) || 1;
+    const current = parseInt(input.value, 10) || min;
+
+    const disabled = current <= min;
+
+    minusBtn.disabled = disabled;
+    minusBtn.classList.toggle('opacity-50', disabled);
+    minusBtn.classList.toggle('cursor-not-allowed', disabled);
+  }
+
+  function bindQuantityInput() {
+    const input = dom().qtyInput;
+    if (!input) return;
+
+    input.addEventListener('focus', () => input.select());
+
+    input.addEventListener('input', (e) => {
+      let v = e.target.value;
+
+      if (v === '') {
+        updateMinusButtonState();
+        return;
+      }
+
+      v = v.replace(/[^\d]/g, '');
+      e.target.value = v;
+
+      updateMinusButtonState();
+    });
+
+    input.addEventListener('blur', () => {
+      const min = parseInt(input.min, 10) || 1;
+      const max = parseInt(input.max, 10) || 50;
+
+      let val = parseInt(input.value, 10);
+
+      if (isNaN(val)) val = min;
+
+      if (val < min) val = min;
+      if (val > max) val = max;
+
+      input.value = String(val);
+
+      updateMinusButtonState();
+      updatePriceWithQuantity();
+
+      if (filtered.category === 'Insurance' && selectedVariant) {
+        updateInsuranceAddonDisplay(selectedVariant);
+        updateTotalPriceDisplayIfInsurance();
+      }
+    });
+  }
+
+  /* =========================================================
+   * TOAST
+   * ========================================================= */
+  function showToast(message, type = 'success') {
+    const { toast } = dom();
+    if (!toast) return;
+
+    toast.textContent = message;
+
+    toast.classList.remove('hidden');
+
+    toast.classList.remove('bg-primary', 'bg-red-500');
+    toast.classList.add(type === 'error' ? 'bg-red-500' : 'bg-primary');
+
+    requestAnimationFrame(() => {
+      toast.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-x-0', 'opacity-100');
+    });
+
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('translate-x-0', 'opacity-100');
+      toast.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+
+      setTimeout(() => toast.classList.add('hidden'), 300);
+    }, 3000);
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                         TOP UP ICCID VALIDATION                            */
+  /* -------------------------------------------------------------------------- */
+
+  // ✅ mapping vendor -> category Top Up (HANYA 1x, jangan double)
+  const categoryVendorMap = [
+    { vendor: 'BC', category: 'Top_Up_A' },
+    { vendor: 'FM', category: 'Top_Up_B' },
+    { vendor: 'TGT', category: 'Top_Up_C' },
+    { vendor: 'MM', category: 'Top_Up_D' },
+  ];
+
+  const TOPUP_CATEGORIES = new Set(['Top_Up_A', 'Top_Up_B', 'Top_Up_C', 'Top_Up_D']);
+
+  const SS_KEY_ICCID = 'iccid';
+  const SS_KEY_CATEGORY = 'category';
+
+  let pendingTopUpCheckout = null; // { variantId, qty }
+
+  function isTopUpProductCategory(cat) {
+    return TOPUP_CATEGORIES.has((cat || '').trim());
+  }
+
+  function mapVendorToTopUpCategory(vendor) {
+    const row = categoryVendorMap.find(x => String(x.vendor).toUpperCase() === String(vendor).toUpperCase());
+    return row?.category || null;
+  }
+
+  function openIccidModal() {
+    releaseBuyNowLock(); // ✅ penting biar Buy Now gak nyangkut loading
+
+    const modal = document.getElementById('iccid-modal');
+    const input = document.getElementById('iccid-input');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('no-scroll');
+
+    if (input) {
+      input.value = '';
+      setTimeout(() => input.focus(), 50);
+    }
+  }
+
+  function closeIccidModal({ releaseLock = true } = {}) {
+    if (releaseLock) releaseBuyNowLock(); // ✅ hanya release kalau memang cancel/close biasa
+
+    const modal = document.getElementById('iccid-modal');
+    if (!modal) return;
+
+    modal.classList.add('hidden');
+    document.body.classList.remove('no-scroll');
+  }
+
+  function openInvalidPopup() {
+    releaseBuyNowLock(); // ✅ juga reset di sini
+
+    const el = document.getElementById('invalid-popup');
+    if (!el) return;
+    el.classList.remove('hidden');
+    document.body.classList.add('no-scroll');
+  }
+
+  function closeInvalidPopup() {
+    releaseBuyNowLock();
+
+    const el = document.getElementById('invalid-popup');
+    if (!el) return;
+    el.classList.add('hidden');
+    document.body.classList.remove('no-scroll');
+  }
+
+  function goToBuySim() {
+    const coverage = filtered?.metafields?.coverage || [];
+    const first = coverage[0];
+
+    let query = '';
+
+    if (first) {
+      // Ambil nama negara sesuai bahasa (gunakan country_en sebagai fallback)
+      const name = first.country_en || first.country_id || '';
+      query = name.replace(/_/g, ' ').trim();
+    }
+
+    const url = query
+      ? `/search?q=${encodeURIComponent(query)}`
+      : '/search';
+
+    window.location.href = url;
+  }
+
+  window.goToBuySim = goToBuySim;
+
+
+  /**
+   * ⚠️ Sesuaikan cara kirim ICCID kalau backend kamu beda.
+   * Aku pakai query param: /check-usage?iccid=xxxx
+   */
+  async function checkUsageByICCID(iccid) {
+    try {
+      const url = new URL('https://v2.gkomunika.id/api/v1/check-usage');
+      url.searchParams.set('iccid', String(iccid || '').trim());
+
+      const res = await fetch(url.toString(), {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!res.ok) return null;
+
+      const json = await res.json();
+
+      console.log(json)
+
+      if (!json?.success) return null;
+
+      const vendor = json?.vendor || null;
+      const mappedCategory = mapVendorToTopUpCategory(vendor);
+
+      return { json, vendor, mappedCategory };
+    } catch (err) {
+      console.error('checkUsageByICCID failed:', err);
+      return null;
+    }
+  }
+
+  async function goCheckoutTopUpWithICCID({ variantId, qty, iccid }) {
+    await fetch('/cart/clear.js', { method: 'POST' });
+
+    await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: JSON.stringify({
+        id: variantId,
+        quantity: qty,
+        properties: { ICCID: String(iccid) }, // ✅ line item properties
+      }),
+    });
+
+    // ✅ cart attributes (optional)
+    try {
+      await fetch('/cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          attributes: { ICCID: String(iccid) },
+        }),
+      });
+    } catch (e) {
+      console.warn('cart attributes update failed (ignored):', e);
+    }
+
+    window.location.href = '/checkout';
+  }
+
+  async function handleTopUpBuyNow(qty) {
+    pendingTopUpCheckout = { variantId: selectedVariant?.id, qty };
+
+    const productCat = filtered.category;
+    const storedIccid = sessionStorage.getItem(SS_KEY_ICCID);
+
+    // (3) kalau kosong -> form
+    if (!storedIccid) {
+      openIccidModal();
+      return;
+    }
+
+    // cek iccid stored
+    const result = await checkUsageByICCID(storedIccid);
+
+    // vendor tidak ada map -> invalid
+    if (!result?.mappedCategory) {
+      openInvalidPopup();
+      return;
+    }
+
+    // (1) cocok -> langsung checkout
+    if (result.mappedCategory === productCat) {
+      await goCheckoutTopUpWithICCID({
+        variantId: pendingTopUpCheckout.variantId,
+        qty: pendingTopUpCheckout.qty,
+        iccid: storedIccid,
+      });
+      return;
+    }
+
+    // (2) tidak cocok -> show form input iccid
+    openIccidModal();
+  }
+
+  function bindTopUpIccidUI() {
+    document.getElementById('iccid-modal')?.classList.add('hidden');
+    document.getElementById('invalid-popup')?.classList.add('hidden');
+
+    document.getElementById('iccid-cancel')?.addEventListener('click', closeIccidModal);
+
+    const form = document.getElementById('iccid-form');
+    const input = document.getElementById('iccid-input');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (isIccidSubmitting) return;
+      isIccidSubmitting = true;
+
+      // ✅ loader di tombol Next
+      setIccidLoading(true);
+
+      // ✅ loader di tombol Buy Now juga
+      isBuyingNow = true;
+      setBuyNowLoading(true);
+
+      let willRedirect = false;
+
+      try {
+        const iccid = String(input?.value || '').trim();
+
+        if (!iccid) {
+          showToast('Please input ICCID', 'error');
+          return;
+        }
+
+        const result = await checkUsageByICCID(iccid);
+
+        if (!result?.mappedCategory) {
+          // ❌ invalid -> tidak redirect
+          closeIccidModal();        // releaseLock default true -> unlock buy now
+          openInvalidPopup();       // openInvalidPopup juga release (aman)
+          return;
+        }
+
+        sessionStorage.setItem(SS_KEY_ICCID, iccid);
+        sessionStorage.setItem(SS_KEY_CATEGORY, result.mappedCategory);
+
+        if (result.mappedCategory === filtered.category) {
+          // ✅ redirect ke checkout
+          willRedirect = true;
+
+          closeIccidModal({ releaseLock: false }); // ✅ keep Buy Now loading
+          await goCheckoutTopUpWithICCID({
+            variantId: pendingTopUpCheckout?.variantId || selectedVariant?.id,
+            qty: pendingTopUpCheckout?.qty || (parseInt(dom().qtyInput?.value, 10) || 1),
+            iccid,
+          });
+          return;
+        }
+
+        // ❌ mismatch -> redirect ke /pages/top-up setelah toast
+        willRedirect = true;
+
+        closeIccidModal({ releaseLock: false }); // ✅ keep Buy Now loading
+        showToast(
+          'ICCID invalid, please select another product',
+          'error'
+        );
+
+        setTimeout(() => {
+          window.location.href = '/pages/top-up';
+        }, 1200);
+
+      } catch (err) {
+        console.error(err);
+        showToast('Failed to validate ICCID', 'error');
+      } finally {
+        isIccidSubmitting = false;
+        setIccidLoading(false);
+
+        // ✅ kalau tidak jadi redirect, balikin state Buy Now
+        if (!willRedirect) {
+          isBuyingNow = false;
+          setBuyNowLoading(false);
+        }
+      }
+    });
+
+
+
+    document.getElementById('invalid-popup-close')?.addEventListener('click', closeInvalidPopup);
+    document.querySelector('[data-invalid-overlay]')?.addEventListener('click', closeInvalidPopup);
+  }
+
+  /* =========================================================
+   * CART
+   * ========================================================= */
+  function updateCartCount() {
+    fetch('/cart.js')
+      .then(r => r.json())
+      .then(cart => {
+        const countEl = $('cart-count');
+        if (countEl) countEl.textContent = cart.item_count;
+      })
+      .catch(err => console.error('Failed to update cart count:', err));
+  }
+
+  async function addToCart() {
+    if (isAddingToCart) return;
+
+    if (!selectedVariant) return showToast('Please select all options', 'error');
+    if (!selectedVariant.available) return showToast('This variant is not available', 'error');
+
+    const qty = parseInt(dom().qtyInput?.value, 10) || 1;
+
+    isAddingToCart = true;
+    setAddToCartLoading(true);
+
+    try {
+      const r = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ id: selectedVariant.id, quantity: qty })
+      });
+
+      if (!r.ok) {
+        const errJson = await r.json().catch(() => null);
+        throw new Error(errJson?.description || 'Failed to add item to cart');
+      }
+
+      await r.json().catch(() => null);
+      showToast('Item successfully added to cart!', 'success');
+      updateCartCount();
+    } catch (err) {
+      console.error('Error:', err);
+      showToast(err?.message || 'Failed to add item to cart', 'error');
+    } finally {
+      isAddingToCart = false;
+      setAddToCartLoading(false);
+    }
+  }
+
+
+  function getVariantType(variant) {
+    if (!variant?.variantType) return '';
+    if (Array.isArray(variant.variantType)) return variant.variantType.join(', ');
+    if (typeof variant.variantType === 'object' && variant.variantType.value) return variant.variantType.value;
+    return variant.variantType;
+  }
+
+  function enforceMinQtyByVariant(variant) {
+    const { qtyInput } = dom();
+    if (!qtyInput) return;
+
+    // ✅ Airport Transfer: selalu boleh turun sampai 1
+    if ((filtered?.category || '').trim() === 'Airport_Transfer') {
+      qtyInput.min = "1";
+      if ((parseInt(qtyInput.value,10) || 1) < 1) qtyInput.value = "1";
+      updateMinusButtonState();
+      return;
+    }
+
+    // --- logic lama tetap ---
+    const variantType = getVariantType(variant);
+    const isDuoPlus = (variantType || '').toLowerCase().trim() === 'duo plus';
+
+    const minQty = isDuoPlus ? 2 : 1;
+
+    qtyInput.min = String(minQty);
+
+    let current = parseInt(qtyInput.value, 10);
+    if (isNaN(current) || current < minQty) current = minQty;
+    qtyInput.value = String(current);
+    updateMinusButtonState();
+  }
+
+  async function buyNow() {
+    if (isBuyingNow) return;
+
+    if (!selectedVariant) return showToast('Please select all options', 'error');
+    if (!selectedVariant.available) return showToast('This variant is not available', 'error');
+
+    const qty = isTopUpProductCategory(filtered.category)
+    ? 1
+    : (parseInt(dom().qtyInput?.value, 10) || 1);
+
+
+    isBuyingNow = true;
+    setBuyNowLoading(true);
+
+    try {
+      // ✅ TOP UP ICCID FLOW
+      if (isTopUpProductCategory(filtered.category)) {
+        await handleTopUpBuyNow(qty);
+        return;
+      }
+
+      // Insurance flow
+      if (filtered.category === 'Insurance') {
+        const variantType = getVariantType(selectedVariant);
+
+        const variantCoverage = Array.from(new Set(
+          (filtered.metafields.coverage || [])
+            .map(c => (c?.country_en || '').trim())
+            .filter(Boolean)
+        ));
+
+        sessionStorage.removeItem('ProductItems');
+
+        const savedAddons = safeParseJSON(sessionStorage.getItem('SelectedAddons'), []);
+
+        const newItem = {
+          productTitle: filtered.title,
+          category: filtered.category,
+          variantType,
+          variantId: selectedVariant.id,
+          variantTitle: selectedVariant.title,
+          quantity: qty,
+          variantCoverage,
+          addonItems: (savedAddons || []).map(addon => ({
+            productTitle: addon.variantTitle,
+            variantId: addon.id,
+            variantTitle: addon.variantTitle,
+            quantity: addon.quantity,
+            option1: addon.option1,
+            option2: addon.option2,
+            option3: addon.option3
+          }))
+        };
+
+        sessionStorage.setItem('ProductItems', JSON.stringify([newItem]));
+
+        window.location.href = customerLoggedIn
+          ? '/pages/form-insurance'
+          : '/account/login?return_url=/pages/form-insurance';
+        return;
+      }
+
+      // Airport Transfer flow
+      if (filtered.category === 'Airport_Transfer') {
+        const item = {
+          productId: filtered.id,
+          productTitle: filtered.title,
+          category: filtered.category,
+          variantId: selectedVariant.id,
+          variantTitle: selectedVariant.title,
+          variantOptions: selectedVariant.options,
+          quantity: qty
+        };
+
+        sessionStorage.setItem('ProductItems', JSON.stringify([item]));
+        localStorage.setItem('ProductItems', JSON.stringify([item]));
+        
+
+        window.location.href = customerLoggedIn
+          ? '/pages/form-airport-transfer'
+          : '/account/login?return_url=/pages/form-airport-transfer';
+        return;
+      }
+
+      // Non-insurance flow
+      await fetch('/cart/clear.js', { method: 'POST' });
+
+      const r = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: selectedVariant.id, quantity: qty })
+      });
+
+      if (!r.ok) {
+        const errJson = await r.json().catch(() => null);
+        throw new Error(errJson?.description || 'Failed to process buy now');
+      }
+
+      window.location.href = '/checkout';
+    } catch (err) {
+      console.error('Error:', err);
+      showToast(err?.message || 'Failed to process buy now', 'error');
+      setBuyNowLoading(false);
+      isBuyingNow = false;
+    }
+  }
+
+
+  /* =========================================================
+   * IMAGE
+   * ========================================================= */
+  function updateMainImage(imageSrc) {
+    const { mainImage } = dom();
+    if (mainImage) mainImage.src = imageSrc;
+  }
+
+  /* =========================================================
+   * POPUP: ADDON (Insurance)
+   * ========================================================= */
+  function bindAddonPopup() {
+    const { addonButton, addonErrorMsg, popupOverlay, closePopupBtn } = dom();
+    if (!addonButton || !popupOverlay) return;
+
+    addonButton.addEventListener('click', () => {
+      const allSelected = selectedOptions.every(opt => opt !== null);
+
+      if (!allSelected) {
+        if (addonErrorMsg) addonErrorMsg.classList.remove('hidden');
+        addonButton.classList.add('border-red-500', 'ring-2', 'ring-red-500/30');
+        addonButton.classList.remove('border-primary');
+        return;
+      }
+
+      popupOverlay.classList.remove('hidden');
+      requestAnimationFrame(() => syncAddonHeaderOffset());
+      document.body.classList.add('no-scroll');
+
+      addonButton.classList.remove('border-red-500', 'ring-2', 'ring-red-500/30');
+      addonButton.classList.add('border-primary');
+      if (addonErrorMsg) addonErrorMsg.classList.add('hidden');
+    });
+
+    popupOverlay.addEventListener('click', (e) => {
+      if (e.target === popupOverlay) {
+        popupOverlay.classList.add('hidden');
+        document.body.classList.remove('no-scroll');
+      }
+    });
+
+    closePopupBtn?.addEventListener('click', () => {
+      popupOverlay.classList.add('hidden');
+      document.body.classList.remove('no-scroll');
+    });
+  }
+
+  /* =========================================================
+   * SESSION UTILS
+   * ========================================================= */
+  function safeParseJSON(value, fallback) {
+    try {
+      return value ? JSON.parse(value) : fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  function restoreAddonsFromSession() {
+    const saved = safeParseJSON(sessionStorage.getItem('SelectedAddons'), []);
+    if (Array.isArray(saved) && saved.length) {
+      selectedAddons = saved;
+      updateAddonButtonPreview();
+    }
+  }
+
+  /* =========================================================
+   * CURRENCY MONITOR (polling)
+   * ========================================================= */
+  function startCurrencyMonitor() {
+    if (currencyPollTimer) clearInterval(currencyPollTimer);
+
+    currencyPollTimer = setInterval(() => {
+      const current = sessionStorage.getItem('buckscc_customer_currency');
+      if (current !== lastCurrency) {
+        lastCurrency = current;
+        toggleCurrencyDisplay();
+
+        if (filtered.category === 'Insurance' && selectedVariant) {
+          updateInsuranceAddonDisplay(selectedVariant);
+        }
+      }
+    }, 500);
+  }
+
+  /* =========================================================
+   * PUBLIC API (untuk inline onclick)
+   * ========================================================= */
+  window.updateMainImage = updateMainImage;
+  window.handleOptionChange = handleOptionChange;
+  window.resetSelection = resetSelection;
+  window.decreaseQuantity = decreaseQuantity;
+  window.increaseQuantity = increaseQuantity;
+  window.addToCart = addToCart;
+  window.buyNow = buyNow;
+  window.handleAddonCheckboxChange = handleAddonCheckboxChange;
+  window.scrollToSelectors = scrollToSelectors;
+
+  /* =========================================================
+   * INIT
+   * ========================================================= */
+  document.addEventListener('DOMContentLoaded', async () => {
+    initDescription();
+
+    await getExchangeRate();
+
+    generateSelectors();
+    bindQuantityInput();
+    bindAddonPopup();
+
+    // ✅ bind top up iccid UI
+    bindTopUpIccidUI();
+
+    lastCurrency = sessionStorage.getItem('buckscc_customer_currency');
+    toggleCurrencyDisplay();
+    startCurrencyMonitor();
+
+    restoreAddonsFromSession();
+    updateTotalPriceDisplayIfInsurance();
+
+    updateMobileSelectedVariantLabel();
+    bindAddonCardToggle();
+    updateMinusButtonState();
+  });
+
+  function resetTransientStates() {
+    isAddingToCart = false;
+    isBuyingNow = false;
+    isIccidSubmitting = false;
+
+    setAddToCartLoading(false);
+    setBuyNowLoading(false);
+    setIccidLoading(false);
+
+    document.getElementById('iccid-modal')?.classList.add('hidden');
+    document.getElementById('invalid-popup')?.classList.add('hidden');
+    document.body.classList.remove('no-scroll');
+  }
+
+  // ✅ kepanggil saat balik (Back) maupun normal load
+  window.addEventListener('pageshow', () => {
+    resetTransientStates();
+  });
+
+
+  /* -------------------------------------------------------------------------- */
+  /*                     Dynamic height add on title                            */
+  /* -------------------------------------------------------------------------- */
+  function syncAddonHeaderOffset() {
+    const header = document.getElementById('addonHeader');
+    const popup = document.getElementById('addon-popup');
+    if (!header || !popup) return;
+
+    const h = Math.ceil(header.getBoundingClientRect().height);
+    popup.style.setProperty('--addon-header-h', `${h}px`);
+  }
+
+  function initAddonHeaderSync() {
+    syncAddonHeaderOffset();
+    window.addEventListener('resize', syncAddonHeaderOffset);
+
+    const header = document.getElementById('addonHeader');
+    if (header && 'ResizeObserver' in window) {
+      const ro = new ResizeObserver(() => syncAddonHeaderOffset());
+      ro.observe(header);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initAddonHeaderSync);
+</script>
+
+<script>
+  /* ----------------------------------------------------------
+   * AT PURPOSE: State
+   * ---------------------------------------------------------- */
+  const atPurposeState = {
+    mode: 'single', // 'single' | 'multi'
+    qty: 1,
+    requiredDir: null, // 'go' | 'return' | null
+  };
+
+  function purposeLabelToValue(label) {
+    const s = String(label || '')
+      .trim()
+      .toLowerCase();
+    if (s === 'city to airport') return 'city_to_airport';
+    if (s === 'airport to city') return 'airport_to_city';
+
+    const normalized = s.replace(/\s+/g, '_');
+    if (normalized.includes('city_to_airport')) return 'city_to_airport';
+    if (normalized.includes('airport_to_city')) return 'airport_to_city';
+    return '';
+  }
+
+  function lockSinglePurposeSelect(val, locked = true) {
+    const sel = document.getElementById('atPurposeSingle');
+    if (!sel) return;
+
+    if (val) sel.value = val;
+
+    sel.disabled = !!locked;
+    sel.classList.toggle('opacity-70', !!locked);
+    sel.classList.toggle('cursor-not-allowed', !!locked);
+  }
+
+  function requiredDirFromVariantPurpose(label) {
+    const s = String(label || '')
+      .trim()
+      .toLowerCase();
+    if (s === 'airport to city') return 'go';
+    if (s === 'city to airport') return 'return';
+    return null;
+  }
+
+  /* ----------------------------------------------------------
+   * AT PURPOSE: Show/hide mode
+   * qty = 1: ambil dari metafield & lock
+   * qty >= 2: pakai design multi (go/return)
+   * dan wajib min 1 sesuai metafield
+   * ---------------------------------------------------------- */
+  function renderAtPurposeSection() {
+    const cat = filtered?.category || '';
+    if (cat !== 'Airport_Transfer') return;
+
+    const section = document.getElementById('atPurposeSection');
+    const singleEl = document.getElementById('atPurpose-single');
+    const doubleEl = document.getElementById('atPurpose-double'); // tidak dipakai
+    const multiEl = document.getElementById('atPurpose-multi');
+
+    if (!section) return;
+
+    // butuh selectedVariant karena ambil metafield
+    if (!selectedVariant) {
+      section.classList.add('hidden');
+      return;
+    }
+
+    const qty = parseInt(document.getElementById('variant-quantity')?.value, 10) || 1;
+    atPurposeState.qty = qty;
+
+    // set required direction dari metafield variant
+    atPurposeState.requiredDir = requiredDirFromVariantPurpose(selectedVariant?.airportPurpose);
+
+    section.classList.remove('hidden');
+
+    // hide all
+    singleEl?.classList.add('hidden');
+    doubleEl?.classList.add('hidden');
+    multiEl?.classList.add('hidden');
+
+    // ---------- QTY = 1 (LOCK dari metafield) ----------
+    if (qty === 1) {
+      atPurposeState.mode = 'single';
+      singleEl?.classList.remove('hidden');
+
+      const metaLabel = selectedVariant?.airportPurpose;
+      const mappedVal = purposeLabelToValue(metaLabel);
+
+      // kalau metafield kosong, biarkan user pilih manual
+      if (!mappedVal) {
+        lockSinglePurposeSelect('', false);
+        return;
+      }
+
+      lockSinglePurposeSelect(mappedVal, true);
+      return;
+    }
+
+    // ---------- QTY >= 2 (MULTI) ----------
+    atPurposeState.mode = 'multi';
+    multiEl?.classList.remove('hidden');
+
+    const totalLabel = document.getElementById('atMultiTotalLabel');
+    if (totalLabel) totalLabel.textContent = qty;
+
+    const goEl = document.getElementById('atMultiGo');
+    const retEl = document.getElementById('atMultiReturn');
+    if (!goEl || !retEl) return;
+
+    const minGo = atPurposeState.requiredDir === 'go' ? 1 : 0;
+    const minRet = atPurposeState.requiredDir === 'return' ? 1 : 0;
+
+    // default awal: arah wajib dapat minimal 1
+    let go = 0,
+      ret = 0;
+    if (atPurposeState.requiredDir === 'return') {
+      ret = Math.max(minRet, qty); // biasanya qty
+      go = qty - ret; // 0
+    } else {
+      go = Math.max(minGo, qty); // biasanya qty
+      ret = qty - go; // 0
+    }
+
+    // clamp final supaya tetap valid
+    go = Math.max(minGo, Math.min(qty - minRet, go));
+    ret = qty - go;
+
+    goEl.value = String(go);
+    retEl.value = String(ret);
+
+    validateAtMultiSum();
+  }
+
+  /* ----------------------------------------------------------
+   * MULTI steppers (wajib min 1 sesuai metafield)
+   * ---------------------------------------------------------- */
+  function adjustAtMulti(type, delta) {
+    const qty = atPurposeState.qty;
+    const goEl = document.getElementById('atMultiGo');
+    const retEl = document.getElementById('atMultiReturn');
+    if (!goEl || !retEl) return;
+
+    const minGo = atPurposeState.requiredDir === 'go' ? 1 : 0;
+    const minRet = atPurposeState.requiredDir === 'return' ? 1 : 0;
+
+    let go = parseInt(goEl.value, 10) || 0;
+    let ret = parseInt(retEl.value, 10) || 0;
+
+    if (type === 'go') {
+      go = Math.max(minGo, Math.min(qty - minRet, go + delta));
+      ret = qty - go;
+    } else {
+      ret = Math.max(minRet, Math.min(qty - minGo, ret + delta));
+      go = qty - ret;
+    }
+
+    goEl.value = String(go);
+    retEl.value = String(ret);
+    validateAtMultiSum();
+  }
+  window.adjustAtMulti = adjustAtMulti;
+
+  function onAtMultiInput(type, rawVal) {
+    const qty = atPurposeState.qty;
+    const goEl = document.getElementById('atMultiGo');
+    const retEl = document.getElementById('atMultiReturn');
+    if (!goEl || !retEl) return;
+
+    const minGo = atPurposeState.requiredDir === 'go' ? 1 : 0;
+    const minRet = atPurposeState.requiredDir === 'return' ? 1 : 0;
+
+    const cleaned = String(rawVal).replace(/\D/g, '');
+    let val = parseInt(cleaned, 10);
+    if (isNaN(val)) val = 0;
+
+    if (type === 'go') {
+      val = Math.max(minGo, Math.min(qty - minRet, val));
+      goEl.value = String(val);
+      retEl.value = String(qty - val);
+    } else {
+      val = Math.max(minRet, Math.min(qty - minGo, val));
+      retEl.value = String(val);
+      goEl.value = String(qty - val);
+    }
+
+    validateAtMultiSum();
+  }
+  window.onAtMultiInput = onAtMultiInput;
+
+  function validateAtMultiSum() {
+    const qty = atPurposeState.qty;
+    const go = parseInt(document.getElementById('atMultiGo')?.value, 10) || 0;
+    const ret = parseInt(document.getElementById('atMultiReturn')?.value, 10) || 0;
+    const warn = document.getElementById('atMultiWarning');
+    if (!warn) return;
+
+    if (go + ret !== qty) {
+      warn.textContent = `Total trips (${go + ret}) does not match total quantity (${qty}).`;
+      warn.classList.remove('hidden');
+    } else {
+      warn.classList.add('hidden');
+    }
+  }
+
+  /* ----------------------------------------------------------
+   * Collect purposes
+   * ---------------------------------------------------------- */
+  function collectAtPurposeData() {
+    const qty = atPurposeState.qty;
+    const mode = atPurposeState.mode;
+
+    if (mode === 'single') {
+      const val = document.getElementById('atPurposeSingle')?.value || '';
+      if (!val) return null;
+      return [val];
+    }
+
+    // multi
+    const go = parseInt(document.getElementById('atMultiGo')?.value, 10) || 0;
+    const ret = parseInt(document.getElementById('atMultiReturn')?.value, 10) || 0;
+    if (go + ret !== qty) return null;
+
+    const purposes = [];
+    for (let i = 0; i < go; i++) purposes.push('airport_to_city');
+    for (let i = 0; i < ret; i++) purposes.push('city_to_airport');
+    return purposes;
+  }
+
+  /* ----------------------------------------------------------
+   * Hooks qty & variant change
+   * ---------------------------------------------------------- */
+  (function patchAtPurposeHooks() {
+    const _origDecrease = window.decreaseQuantity;
+    const _origIncrease = window.increaseQuantity;
+
+    window.decreaseQuantity = function () {
+      _origDecrease?.();
+      if (filtered?.category === 'Airport_Transfer') renderAtPurposeSection();
+    };
+
+    window.increaseQuantity = function () {
+      _origIncrease?.();
+      if (filtered?.category === 'Airport_Transfer') renderAtPurposeSection();
+    };
+
+    const _origHandleOptionChange = window.handleOptionChange;
+    window.handleOptionChange = async function (optionIndex, value) {
+      await _origHandleOptionChange?.(optionIndex, value);
+      if (filtered?.category === 'Airport_Transfer') renderAtPurposeSection();
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const qtyInput = document.getElementById('variant-quantity');
+      if (qtyInput && filtered?.category === 'Airport_Transfer') {
+        qtyInput.addEventListener('change', () => renderAtPurposeSection());
+        qtyInput.addEventListener('blur', () => renderAtPurposeSection());
+      }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+   * Patch buyNow: validate + save
+   * ---------------------------------------------------------- */
+  (function patchBuyNowForAtPurpose() {
+    const _origBuyNow = window.buyNow;
+
+    window.buyNow = async function () {
+      if (filtered?.category !== 'Airport_Transfer') {
+        return _origBuyNow?.();
+      }
+
+      const purposes = collectAtPurposeData();
+      if (!purposes) {
+        showToast('Please select Transfer Purpose for all trips', 'error');
+        document.getElementById('atPurposeSection')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      sessionStorage.setItem('AT_Purposes', JSON.stringify(purposes));
+      return _origBuyNow?.();
+    };
+  })();
+
+  /* ----------------------------------------------------------
+   * Reset hook
+   * ---------------------------------------------------------- */
+  (function patchResetForAtPurpose() {
+    const _origReset = window.resetSelection;
+    window.resetSelection = function () {
+      _origReset?.();
+      if (filtered?.category === 'Airport_Transfer') {
+        document.getElementById('atPurposeSection')?.classList.add('hidden');
+        lockSinglePurposeSelect('', false);
+      }
+    };
+  })();
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('atPurposeSection')?.classList.add('hidden');
+    if (filtered?.category === 'Airport_Transfer' && selectedVariant) {
+      renderAtPurposeSection();
+    }
+  });
+</script>

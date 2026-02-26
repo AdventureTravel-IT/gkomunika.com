@@ -177,7 +177,6 @@
     font-size: var(--font-large);
     outline: none;
     border: none;
-    width: 130px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
@@ -490,7 +489,7 @@
 
     <section class="form-insurance__checkout">
       <div style="display: flex; flex-direction: column;" id="confirmation-checkboxes">
-        <label for="check-itinerary">
+        <label for="check-itinerary-global">
           <input type="checkbox" id="check-itinerary-global" required>
           I understand that the data submitted is final and cannot be changed after submission.
         </label>
@@ -1774,7 +1773,6 @@
 
   async function handleCheckout() {
     const itineraryCheckbox = document.getElementById('check-itinerary-global');
-
     clearGlobalCheckboxError();
 
     if (!itineraryCheckbox.checked) {
@@ -1808,6 +1806,9 @@
       return;
     }
 
+    // ─────────────────────────────────────────────
+    // Kumpulkan attributes dari insurance forms
+    // ─────────────────────────────────────────────
     const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems')) || [];
     const insuranceItems = ProductItems.filter((p) => p.category === 'Insurance');
 
@@ -1833,11 +1834,9 @@
 
       if (variantProducts[0].category === 'Insurance') {
         const sectionSelector = getSectionSelector(section, variantId);
-
         const wrappers = document.querySelectorAll(
           `${sectionSelector} .form-insurance__section-wrapper[data-product-id="${variantId}"]`
         );
-
         if (!wrappers.length) continue;
 
         let sameInsuranceChecked = false;
@@ -1859,25 +1858,21 @@
 
           wrappers.forEach((wrapper, groupIndex) => {
             let itinerary = { startDate: '', endDate: '', destinationCountry: '' };
-
             if (sameInsuranceChecked && groupIndex > 0) {
               itinerary = globalItinerary;
             } else {
               const sectionTop = wrapper.querySelector('.form-insurance__section-top');
               itinerary = collectItineraryFromSectionTop(sectionTop);
             }
-
             itineraryPerGroup.push(itinerary);
 
             const forms = wrapper.querySelectorAll('form.form-family');
-
             const dataPerGroup = collectFormData(
               forms,
               section,
               forms.length ? Array(forms.length).fill(itinerary) : [],
               groupIndex
             );
-
             allFamilyFormsData = allFamilyFormsData.concat(dataPerGroup);
           });
 
@@ -1887,7 +1882,6 @@
         }
 
         let itineraryMapPerForm = [];
-
         if (!sameInsuranceChecked) {
           wrappers.forEach((wrapper) => {
             const sectionTop = wrapper.querySelector('.form-insurance__section-top');
@@ -1898,7 +1892,6 @@
         const forms = document.querySelectorAll(
           `${sectionSelector} .form-insurance__section-wrapper[data-product-id="${variantId}"] form`
         );
-
         const data = collectFormData(forms, section, sameInsuranceChecked ? null : itineraryMapPerForm);
 
         const attrKey = `Form ${section} - ${variantTitle}`;
@@ -1906,35 +1899,35 @@
       }
     }
 
-    if (ProductItems.length === 1) {
-      const product = ProductItems[0];
-      const variantTitle = product.variantTitle || '';
-      const attrKey = `Form ${product.variantType} - ${variantTitle}`;
-      const queryData = {};
+    // ─────────────────────────────────────────────
+    // Simpan insurance attributes ke sessionStorage
+    // Akan digabung dengan transfer attributes di step berikutnya
+    // ─────────────────────────────────────────────
+    sessionStorage.setItem('InsuranceAttributes', JSON.stringify(attributes));
+    localStorage.setItem('InsuranceAttributes', JSON.stringify(attributes));
 
-      if (product.category === 'Insurance' && attributes[attrKey]) {
-        queryData[attrKey] = attributes[attrKey];
+    // ─────────────────────────────────────────────
+    // Cek apakah ada step berikutnya (Airport Transfer)
+    // ─────────────────────────────────────────────
+    const flow = JSON.parse(sessionStorage.getItem('CheckoutFlow') || 'null');
+
+    if (flow && flow.steps) {
+      const currentIdx = flow.steps.indexOf('insurance');
+      const nextStep = flow.steps[currentIdx + 1];
+
+      if (nextStep === 'transfer') {
+        // Ada step transfer → lanjut ke form transfer
+        flow.currentStepIndex = currentIdx + 1;
+        sessionStorage.setItem('CheckoutFlow', JSON.stringify(flow));
+        localStorage.setItem('CheckoutFlow', JSON.stringify(flow));
+        window.location.href = '/pages/form-airport-transfer';
+        return;
       }
-
-      const queryParams = Object.entries(queryData)
-        .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
-        .join('&');
-
-      let cartItems = [`${product.variantId}:${product.quantity}`];
-
-      if (Array.isArray(product.addonItems)) {
-        product.addonItems.forEach((addon) => {
-          if (addon.variantId && addon.quantity) {
-            cartItems.push(`${addon.variantId}:${addon.quantity}`);
-          }
-        });
-      }
-
-      const checkoutUrl = `/cart/${cartItems.join(',')}${queryParams ? `?${queryParams}` : ''}`;
-      window.location.href = checkoutUrl;
-      return;
     }
 
+    // ─────────────────────────────────────────────
+    // Tidak ada step berikutnya → langsung checkout
+    // ─────────────────────────────────────────────
     try {
       await fetch('/cart/clear.js', {
         method: 'POST',
@@ -1944,7 +1937,6 @@
       for (const product of ProductItems) {
         const variantTitle = product.variantTitle || '';
         const attrKey = `Form ${product.variantType} - ${variantTitle}`;
-
         let itemAttributes = {};
         if (product.category === 'Insurance' && attributes[attrKey]) {
           itemAttributes = { [attrKey]: attributes[attrKey] };

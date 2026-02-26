@@ -5,9 +5,9 @@
         id="mainImage"
         src="{{ product.featured_image | image_url }}"
         class="bg-slate-300 md:rounded-[15px] w-full h-auto"
-        width="100%"
-        height="auto"
-        alt="{{ product.featured_image.alt }}"
+        width="300px"
+        height="220px"
+        alt="Global Komunika"
       >
 
       <div class="px-4 md:px-0 flex gap-4 overflow-x-auto overflow-y-hidden mt-4 pb-4">
@@ -25,15 +25,16 @@
       </div>
     </div>
 
-    <div class="wrapper md:p-0 w-full md:w-1/2 flex flex-col gap-5 md:gap-3">
+    <div class="wrapper md:p-0 w-full md:w-1/2 flex flex-col gap-5">
       <h1 class="hidden md:block text-primary font-bold text-[30px] leading-tight">
-        {%- assign cat = product.metafields.product.category.value | default: '' -%}
+        {%- assign raw_cat = product.metafields.product.category.value | default: 'Gkomunika' -%}
+        {%- assign cat_label = raw_cat | replace: '_', ' ' -%}
 
         <span class="bg-primary text-center px-2 rounded-[10px] leading-none text-neutral">
-          {%- if cat contains 'Top_Up_' -%}
+          {%- if raw_cat contains 'Top_Up_' -%}
             Top Up Plan
           {%- else -%}
-            {{- cat -}}
+            {{- cat_label -}}
           {%- endif -%}
         </span>
         {{ product.title }}
@@ -61,7 +62,7 @@
       <div id="selectorSection" class="flex items-end gap-3">
         <div
           id="variantSelectors"
-          class="flex gap-3 {% if product.metafields.product.category.value == 'Insurance' %}flex-col md:flex-row{% endif %}"
+          class="flex gap-3 w-full {% if product.metafields.product.category.value == 'Insurance' %}flex-col md:flex-row{% endif %}"
         ></div>
 
         {% if product.metafields.product.category.value != 'Insurance' %}
@@ -107,54 +108,221 @@
         <p id="addon-error-msg" class="hidden text-[14px] mt-1 text-red-500">Please select variant options first</p>
       </div>
 
-      <div>
-        <span class="text-primary font-semibold tracking-normal">Quantity</span>
-
-        <div class="flex items-center gap-3 mt-2 flex-wrap">
-          <div class="flex items-center border border-primary w-fit rounded-full bg-neutral">
-            <button id="qtyMinusBtn" type="button" onclick="decreaseQuantity()" class="p-2">
-              {% render 'icon-minus', class: 'w-[24px] h-[24px] text-primary' %}
-            </button>
-
-            <input
-              type="text"
-              id="variant-quantity"
-              value="1"
-              min="1"
-              max="50"
-              class="text-center text-primary w-[50px] outline-none border-l border-r border-primary bg-neutral"
-              inputmode="numeric"
-              pattern="\d*"
+      <div
+        id="atPurposeSection"
+        class="hidden"
+        aria-live="polite"
+      >
+        <!-- QTY = 1: dropdown biasa -->
+        <div id="atPurpose-single" class="hidden">
+          <div class="relative md:max-w-[50%] w-full">
+            <select
+              id="atPurposeSingle"
+              class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
             >
+              <option value="" disabled selected>Select Transfer Purpose</option>
+              <option value="airport_to_city">Airport to City</option>
+              <option value="city_to_airport">City to Airport</option>
+            </select>
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+              {% render 'icon-arrow-right', class: 'w-[20px] h-[20px] text-primary' %}
+            </div>
+          </div>
+        </div>
 
-            <button type="button" onclick="increaseQuantity()" class="p-2">
-              {% render 'icon-plus', class: 'w-[24px] h-[24px] text-primary' %}
-            </button>
+        <!-- QTY = 2: checkbox same + optional 2 selects -->
+        <div id="atPurpose-double" class="hidden space-y-3">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              id="atPurposeSameDouble"
+              class="w-5 h-5 cursor-pointer accent-[var(--color-secondary)]"
+              onchange="handleAtPurposeSameDouble(this.checked)"
+            >
+            <span class="text-primary text-[15px]">Both transfers have the same purpose</span>
+          </label>
+
+          <!-- Jika SAMA: 1 dropdown -->
+          <div id="atPurpose-double-same" class="hidden">
+            <div class="relative md:max-w-[50%] w-full">
+              <select
+                id="atPurposeDoubleSame"
+                class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
+              >
+                <option value="" disabled selected>Select Purpose for All</option>
+                <option value="airport_to_city">Airport to City</option>
+                <option value="city_to_airport">City to Airport</option>
+              </select>
+              <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+                {% render 'icon-arrow-right', class: 'w-[20px] h-[20px] text-primary' %}
+              </div>
+            </div>
           </div>
 
-          {% if product.metafields.product.category.value == 'Insurance' %}
-            <!-- NOTE: duplicate ID fixed: using resetSelectionBtnInsurance -->
-            <button
-              id="resetSelectionBtnInsurance"
-              type="button"
-              onclick="resetSelection()"
-              disabled
-              aria-label="Reset selection"
-              class="inline-flex items-center justify-center gap-2.5 rounded-[16px] bg-background-third text-primary px-4 py-3 h-[50px] font-semibold leading-thight cursor-pointer transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed "
-            >
-              <span class="inline-flex items-center justify-center">
-                {% render 'icon-reset', class: 'w-[22px] h-[22px] text-primary' %}
-              </span>
+          <!-- Jika BERBEDA: 2 dropdown -->
+          <div id="atPurpose-double-diff" class="space-y-3">
+            <div>
+              <label class="text-primary text-[14px] font-semibold mb-1 block">1st Transfer Purpose</label>
+              <div class="relative md:max-w-[50%] w-full">
+                <select
+                  id="atPurposeDouble1"
+                  class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
+                >
+                  <option value="" disabled selected>Select Purpose</option>
+                  <option value="airport_to_city">Airport to City</option>
+                  <option value="city_to_airport">City to Airport</option>
+                </select>
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+                  {% render 'icon-arrow-right', class: 'w-[20px] h-[20px] text-primary' %}
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="text-primary text-[14px] font-semibold mb-1 block">2nd Transfer Purpose</label>
+              <div class="relative md:max-w-[50%] w-full">
+                <select
+                  id="atPurposeDouble2"
+                  class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
+                >
+                  <option value="" disabled selected>Select Purpose</option>
+                  <option value="airport_to_city">Airport to City</option>
+                  <option value="city_to_airport">City to Airport</option>
+                </select>
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
+                  {% render 'icon-arrow-right', class: 'w-[20px] h-[20px] text-primary' %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-              <!-- 2 lines text (hidden on mobile) -->
-              <span class="hidden md:flex flex-col text-[14px] lowercase text-left leading-[1.05]">
-                <span>reset</span>
-                <span>selection</span>
-              </span>
-            </button>
-          {% endif %}
+        <!-- QTY > 2: input pergi + pulang -->
+        <div id="atPurpose-multi" class="hidden space-y-3">
+          <div class="flex flex-col md:flex-row gap-4 md:items-end">
+            <!-- Pergi -->
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-primary text-[14px] font-semibold" for="atMultiGo">
+                Airport to City (How many trips?)
+              </label>
+              <div class="flex items-center border border-primary w-fit rounded-full bg-neutral">
+                <button
+                  type="button"
+                  onclick="adjustAtMulti('go', -1)"
+                  class="p-2"
+                >
+                  {% render 'icon-minus', class: 'w-[24px] h-[24px] text-primary' %}
+                </button>
+                <input
+                  type="text"
+                  id="atMultiGo"
+                  value="0"
+                  inputmode="numeric"
+                  class="text-center text-primary w-[50px] outline-none border-l border-r border-primary bg-neutral"
+                  oninput="onAtMultiInput('go', this.value)"
+                >
+                <button
+                  type="button"
+                  onclick="adjustAtMulti('go', 1)"
+                  class="p-2"
+                >
+                  {% render 'icon-plus', class: 'w-[24px] h-[24px] text-primary' %}
+                </button>
+              </div>
+            </div>
+
+            <!-- Pulang -->
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-primary text-[14px] font-semibold" for="atMultiReturn">
+                City to Airport (How many trips?)
+              </label>
+              <div class="flex items-center border border-primary w-fit rounded-full bg-neutral">
+                <button
+                  type="button"
+                  onclick="adjustAtMulti('return', -1)"
+                  class="p-2"
+                >
+                  {% render 'icon-minus', class: 'w-[24px] h-[24px] text-primary' %}
+                </button>
+                <input
+                  type="text"
+                  id="atMultiReturn"
+                  value="0"
+                  inputmode="numeric"
+                  class="text-center text-primary w-[50px] outline-none border-l border-r border-primary bg-neutral"
+                  oninput="onAtMultiInput('return', this.value)"
+                >
+                <button
+                  type="button"
+                  onclick="adjustAtMulti('return', 1)"
+                  class="p-2"
+                >
+                  {% render 'icon-plus', class: 'w-[24px] h-[24px] text-primary' %}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sisa warning -->
+          <p id="atMultiWarning" class="hidden text-red-500 text-[13px]"></p>
+
+          <p class="text-primary/60 text-[13px]">Note: Total of both must equal the total quantity purchased.</p>
         </div>
       </div>
+
+      {%- assign cat = product.metafields.product.category.value | default: '' -%}
+
+      {%- unless cat contains 'Top_Up_' -%}
+        <!-- ✅ Quantity normal (non Top Up) -->
+        <div id="qtySection">
+          <span class="text-primary font-semibold tracking-normal">Quantity</span>
+
+          <div class="flex items-center gap-3 mt-2 flex-wrap">
+            <div class="flex items-center border border-primary w-fit rounded-full bg-neutral">
+              <button id="qtyMinusBtn" type="button" onclick="decreaseQuantity()" class="p-2">
+                {% render 'icon-minus', class: 'w-[24px] h-[24px] text-primary' %}
+              </button>
+
+              <input
+                type="text"
+                id="variant-quantity"
+                value="1"
+                min="1"
+                max="50"
+                class="text-center text-primary w-[50px] outline-none border-l border-r border-primary bg-neutral"
+                inputmode="numeric"
+                pattern="\d*"
+              >
+
+              <button type="button" onclick="increaseQuantity()" class="p-2">
+                {% render 'icon-plus', class: 'w-[24px] h-[24px] text-primary' %}
+              </button>
+            </div>
+
+            {% if product.metafields.product.category.value == 'Insurance' %}
+              <button
+                id="resetSelectionBtnInsurance"
+                type="button"
+                onclick="resetSelection()"
+                disabled
+                aria-label="Reset selection"
+                class="inline-flex items-center justify-center gap-2.5 rounded-[16px] bg-background-third text-primary px-4 py-3 h-[50px] font-semibold leading-thight cursor-pointer transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed "
+              >
+                <span class="inline-flex items-center justify-center">
+                  {% render 'icon-reset', class: 'w-[22px] h-[22px] text-primary' %}
+                </span>
+                <span class="hidden md:flex flex-col text-[14px] lowercase text-left leading-[1.05]">
+                  <span>reset</span>
+                  <span>selection</span>
+                </span>
+              </button>
+            {% endif %}
+          </div>
+        </div>
+
+      {%- else -%}
+        <!-- ✅ Top Up: qty selalu 1 + input tetap ada biar JS tidak error -->
+        <input type="hidden" id="variant-quantity" value="1" min="1" max="1">
+      {%- endunless -%}
 
       <div class="max-h-[200px] overflow-y-scroll">
         <p id="productDesc" class="text-primary"></p>
@@ -166,20 +334,28 @@
       <div class="hidden md:flex items-center gap-3">
         {%- unless cat contains 'Top_Up_' -%}
           <button
+            id="btnAddToCartDesktop"
             type="button"
             onclick="addToCart()"
-            class="bg-secondary text-neutral hover:opacity-80 hover:-translate-y-[3px] transition-all rounded-[15px] text-nowrap py-3 cursor-pointer font-bold flex-1 shrink-0 items-center justify-center flex"
+            class="bg-secondary text-neutral hover:opacity-80 hover:-translate-y-[3px] transition-all rounded-[15px] text-nowrap py-3 cursor-pointer font-bold flex-1 shrink-0 items-center justify-center flex gap-2"
           >
-            Add to Cart
+            <span data-btn-text>Add to Cart</span>
+            <span data-btn-loader class="hidden">
+              {% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}
+            </span>
           </button>
         {%- endunless -%}
 
         <button
+          id="btnBuyNowDesktop"
           type="button"
           onclick="buyNow()"
-          class="bg-primary text-neutral hover:opacity-80 hover:-translate-y-[3px] transition-all rounded-[15px] text-nowrap py-3 cursor-pointer font-bold flex-1 shrink-0 items-center justify-center flex"
+          class="bg-primary text-neutral hover:opacity-80 hover:-translate-y-[3px] transition-all rounded-[15px] text-nowrap py-3 cursor-pointer font-bold flex-1 shrink-0 items-center justify-center flex gap-2"
         >
-          Buy Now
+          <span data-btn-text>Buy Now</span>
+          <span data-btn-loader class="hidden">
+            {% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}
+          </span>
         </button>
       </div>
     </div>
@@ -191,78 +367,41 @@
       <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
         {%- assign type = product.metafields.product.category -%}
 
-        {%- comment -%} ===================== PRODUCT DETAILS ===================== {%- endcomment -%}
-        {% if type and type.value != 'Insurance' %}
-          <div class="flex w-full flex-col">
-            <label class="text-primary font-bold text-[22px] md:text-[26px]">Product Details</label>
+        <div class="flex w-full flex-col">
+          <h3 class="text-primary font-bold text-[22px] md:text-[26px]">
+            {% if type and type.value == 'Airport_Transfer' %}
+              Variant Seater
+            {% else %}
+              Product Details
+            {% endif %}
+          </h3>
 
-            <div class="mt-3 w-full rounded-[15px] bg-neutral p-4 md:p-5 h-[360px] overflow-hidden">
-              <ul class="m-0 list-none p-0 max-h-[320px] overflow-y-auto">
-                {% for item in product.metafields.details %}
-                  {% assign key = item.first %}
-                  {% assign value = item.last %}
-                  {% if value != blank %}
-                    <div class="flex gap-3 items-start py-2">
-                      <div class="w-[30px] h-[30px] shrink-0">
-                        {{- key | append: '.svg' | inline_asset_content -}}
-                      </div>
+          <div class="mt-3 w-full rounded-[15px] bg-neutral p-4 md:p-5 h-[360px] overflow-hidden">
+            <ul class="m-0 list-none p-0 max-h-[320px] overflow-y-auto">
+              {% case type.value %}
+                {% when 'Insurance' %}
+                  {% assign fields = '' %}
+                  {% assign fields = fields | append: 'type-of-plans:type of plans,' %}
+                  {% assign fields = fields | append: 'insurance-requirements:Insurance Requirements,' %}
+                  {% assign fields = fields | append: 'children-requirements:Children Requirements' %}
+                  {% assign fields_array = fields | split: ',' %}
 
-                      <div class="flex-1">
-                        <p class="m-0 text-primary font-bold text-[16px] md:text-[18px] leading-snug">
-                          {% if key == 'apn' %}
-                            {{ key | upcase }}
-                          {% else %}
-                            {{ key | replace: '_', ' ' | capitalize }}
-                          {% endif %}
-                        </p>
+                  {% for field in fields_array %}
+                    {% assign field_parts = field | split: ':' %}
+                    {% assign field_key = field_parts[0] %}
+                    {% assign title = field_parts[1] %}
+                    {% assign metafield = product.metafields['insurance-product'][field_key] %}
 
-                        {% if value.value %}
-                          <ul class="mt-1 list-disc pl-5 space-y-1">
-                            {% for v in value.value %}
-                              <li class="text-primary text-[14px] md:text-[16px] leading-snug">{{ v }}</li>
-                            {% endfor %}
-                          </ul>
-                        {% else %}
-                          <p class="mt-1 text-primary text-[14px] md:text-[16px] leading-snug">{{ value }}</p>
-                        {% endif %}
-                      </div>
-                    </div>
+                    {% if metafield != blank %}
+                      <div class="flex gap-3 items-start py-2">
+                        <div class="w-[30px] h-[30px] shrink-0">
+                          {{- field_key | append: '.svg' | inline_asset_content -}}
+                        </div>
 
-                    <hr class="border-border my-2">
-                  {% endif %}
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
-        {% else %}
-          {%- comment -%} =============== PRODUCT DETAILS (INSURANCE) =============== {%- endcomment -%}
-          <div class="flex w-full flex-col">
-            <label class="text-primary font-bold text-[22px] md:text-[26px]">Product Details</label>
-
-            <div class="mt-3 w-full rounded-[15px] bg-neutral p-4 md:p-5 h-[360px] overflow-hidden">
-              <ul class="m-0 list-none p-0 max-h-[320px] overflow-y-auto">
-                {% assign fields = '' %}
-                {% assign fields = fields | append: 'type-of-plans:type of plans,' %}
-                {% assign fields = fields | append: 'insurance-requirements:Insurance Requirements,' %}
-                {% assign fields = fields | append: 'children-requirements:Children Requirements' %}
-                {% assign fields_array = fields | split: ',' %}
-
-                {% for field in fields_array %}
-                  {% assign field_parts = field | split: ':' %}
-                  {% assign field_key = field_parts[0] %}
-                  {% assign title = field_parts[1] %}
-                  {% assign metafield = product.metafields['insurance-product'][field_key] %}
-
-                  {% if metafield != blank %}
-                    <div class="flex gap-3 items-start py-2">
-                      <div class="w-[30px] h-[30px] shrink-0">
-                        {{- field_key | append: '.svg' | inline_asset_content -}}
-                      </div>
-
-                      <div class="flex-1">
-                        {% assign t = title | replace: '-', ' ' | replace: '_', ' ' | strip %}
-                        {% assign words = t | split: ' ' %}
-                        {% capture title_case %}
+                        <div class="flex-1">
+                          {% assign t = title | replace: '-', ' ' | replace: '_', ' ' | strip %}
+                          {% assign words = t | split: ' ' %}
+                          {% capture title_case %}
                         {% for w in words %}
                           {% if w != '' %}
                             {{ w | capitalize }}{% unless forloop.last %} {% endunless %}
@@ -270,46 +409,171 @@
                         {% endfor %}
                       {% endcapture %}
 
-                        <p class="m-0 text-primary font-bold text-[16px] md:text-[18px] leading-snug">
-                          {{ title_case }}
-                        </p>
+                          <p class="m-0 text-primary font-bold text-[16px] md:text-[18px] leading-snug">
+                            {{ title_case }}
+                          </p>
 
-                        {% if metafield.value %}
-                          <ul class="mt-1 list-disc pl-5 space-y-1">
-                            {% for v in metafield.value %}
-                              <li class="text-primary text-[14px] md:text-[16px] leading-snug">{{ v }}</li>
-                            {% endfor %}
-                          </ul>
-                        {% else %}
-                          <p class="mt-1 text-primary text-[14px] md:text-[16px] leading-snug">{{ metafield }}</p>
-                        {% endif %}
+                          {% if metafield.value %}
+                            <ul class="mt-1 list-disc pl-5 space-y-1">
+                              {% for v in metafield.value %}
+                                <li class="text-primary text-[14px] md:text-[16px] leading-snug">{{ v }}</li>
+                              {% endfor %}
+                            </ul>
+                          {% else %}
+                            <p class="mt-1 text-primary text-[14px] md:text-[16px] leading-snug">{{ metafield }}</p>
+                          {% endif %}
+                        </div>
                       </div>
-                    </div>
 
-                    <hr class="border-border my-2">
-                  {% endif %}
-                {% endfor %}
-              </ul>
-            </div>
+                      <hr class="border-border my-2">
+                    {% endif %}
+                  {% endfor %}
+                {% when 'Airport_Transfer' %}
+                  <div class="max-h-[320px] overflow-y-auto space-y-4 pr-1">
+                    <div>
+                      <p class="m-0 text-primary font-bold text-[18px] md:text-[20px] leading-snug">5 Seater</p>
+                      <ul class="mt-1 list-disc pl-5 space-y-1">
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Capacity: 5 passengers (Toyota Alphard / similar vehicle)
+                        </li>
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Luggage: 3 × 28", or 4 × 25", or 5 × 24"
+                        </li>
+                      </ul>
+                    </div>
+                    <hr class="border-border">
+
+                    <div>
+                      <p class="m-0 text-primary font-bold text-[18px] md:text-[20px] leading-snug">9 Seater</p>
+                      <ul class="mt-1 list-disc pl-5 space-y-1">
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Capacity: 9 passengers (Toyota Hiace / similar vehicle)
+                        </li>
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Luggage: 9 × 28", or 10 × 26", or 14 × 24"
+                        </li>
+                      </ul>
+                    </div>
+                    <hr class="border-border">
+
+                    <div>
+                      <p class="m-0 text-primary font-bold text-[18px] md:text-[20px] leading-snug">11 Seater</p>
+                      <ul class="mt-1 list-disc pl-5 space-y-1">
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Capacity: 11 passengers (Toyota Hiace / similar vehicle)
+                        </li>
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Luggage: 7 × 28", or 8 × 26", or 8 × 24"
+                        </li>
+                      </ul>
+                    </div>
+                    <hr class="border-border">
+
+                    <div>
+                      <p class="m-0 text-primary font-bold text-[18px] md:text-[20px] leading-snug">18 Seater</p>
+                      <ul class="mt-1 list-disc pl-5 space-y-1">
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Capacity: 18 passengers (Toyota Coaster / similar vehicle)
+                        </li>
+                        <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                          Luggage: 18 × 28", or 20 × 26", or 2 × 24"
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                {% else %}
+                  {% for item in product.metafields.details %}
+                    {% assign key = item.first %}
+                    {% assign value = item.last %}
+                    {% if value != blank %}
+                      <div class="flex gap-3 items-start py-2">
+                        <div class="w-[30px] h-[30px] shrink-0">
+                          {{- key | append: '.svg' | inline_asset_content -}}
+                        </div>
+
+                        <div class="flex-1">
+                          <p class="m-0 text-primary font-bold text-[16px] md:text-[18px] leading-snug">
+                            {% if key == 'apn' %}
+                              {{ key | upcase }}
+                            {% else %}
+                              {{ key | replace: '_', ' ' | capitalize }}
+                            {% endif %}
+                          </p>
+
+                          {% if value.value %}
+                            <ul class="mt-1 list-disc pl-5 space-y-1">
+                              {% for v in value.value %}
+                                <li class="text-primary text-[14px] md:text-[16px] leading-snug">{{ v }}</li>
+                              {% endfor %}
+                            </ul>
+                          {% else %}
+                            <p class="mt-1 text-primary text-[14px] md:text-[16px] leading-snug">{{ value }}</p>
+                          {% endif %}
+                        </div>
+                      </div>
+
+                      <hr class="border-border my-2">
+                    {% endif %}
+                  {% endfor %}
+              {% endcase %}
+            </ul>
           </div>
-        {% endif %}
+        </div>
 
         {%- comment -%} ======================== COVERAGE ======================== {%- endcomment -%}
         <div class="flex w-full flex-col">
-          <label class="text-primary font-bold text-[22px] md:text-[26px]">Coverage</label>
+          <h3 class="text-primary font-bold text-[22px] md:text-[26px]">
+            {% if type and type.value == 'Airport_Transfer' %}
+              Syarat &amp; Ketentuan
+            {% else %}
+              Coverage
+            {% endif %}
+          </h3>
 
-          <div class="mt-3 w-full rounded-[15px] bg-neutral p-0 h-[360px] overflow-hidden">
-            <div class="h-full overflow-y-auto">
-              {% if product.metafields.search.key.value.size > 10 %}
-                <div class="sticky top-0 z-10 bg-neutral px-4 md:px-5 pt-5 md:pt-5 pb-3">
-                  {% render 'coverage-search' %}
-                </div>
-              {% endif %}
+          <div class="mt-3 w-full rounded-[15px] bg-neutral p-4 md:p-5 h-[360px] overflow-hidden">
+            {% if type and type.value == 'Airport_Transfer' %}
+              <div class="h-full overflow-y-auto">
+                <ol class="list-decimal pl-5 space-y-3">
+                  <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                    Layanan Private Airport Transfer ini sudah termasuk pengemudi profesional, biaya bahan bakar, tol,
+                    dan parkir.
+                  </li>
 
-              <div class="p-4">
-                {% render 'coverage' %}
+                  <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                    Penjemputan pada malam hari dikenakan biaya tambahan dengan rincian sebagai berikut:
+                    <div class="mt-2">
+                      Penjemputan malam mulai dari jam 10:00pm - 6:00am dikenakan biaya tambahan berdasarkan jangka
+                      waktu 2.000JPY - 5.000JPY. Pembayaran langsung di tempat kepada pengemudi.
+                    </div>
+                  </li>
+
+                  <li class="text-primary text-[14px] md:text-[16px] leading-snug">
+                    Waktu tunggu driver:
+                    <ul class="mt-2 list-disc pl-5 space-y-1">
+                      <li>Waktu tunggu untuk pengantaran ke Bandara: 30 menit</li>
+                      <li>Waktu tunggu untuk penjemputan di Bandara: 90 menit</li>
+                    </ul>
+
+                    <div class="mt-2 space-y-1">
+                      <div>Jika melebihi waktu tunggu akan dikenakan biaya 5.000JPY/ 1 Jam untuk 6-9 Seater</div>
+                      <div>Jika melebihi waktu tunggu akan dikenakan biaya 10.000JPY/ 1 Jam untuk 18 Seater</div>
+                    </div>
+                  </li>
+                </ol>
               </div>
-            </div>
+            {% else %}
+              <div class="h-full flex flex-col overflow-hidden">
+                {% if product.metafields.search.key.value.size > 10 %}
+                  <div class="bg-neutral shrink-0 z-10">
+                    {% render 'coverage-search' %}
+                  </div>
+                {% endif %}
+
+                <div class="flex-1 overflow-y-auto mt-3">
+                  {% render 'coverage' %}
+                </div>
+              </div>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -334,12 +598,19 @@
     <div class="flex items-start justify-between gap-3">
       <div class="w-full space-y-2">
         <!-- Title -->
-        <div id="mobileTitle" class="text-primary text-xl font-bold leading-tight line-clamp-2">
+        <h2 id="mobileTitle" class="text-primary text-xl font-bold leading-tight line-clamp-2">
+          {%- assign raw_cat = product.metafields.product.category.value | default: 'Gkomunika' -%}
+          {%- assign cat_label = raw_cat | replace: '_', ' ' -%}
+
           <span class="bg-primary px-2 rounded-[10px] leading-none text-neutral">
-            {{- product.metafields.product.category.value -}}
+            {%- if raw_cat contains 'Top_Up_' -%}
+              Top Up Plan
+            {%- else -%}
+              {{- cat_label -}}
+            {%- endif -%}
           </span>
           {{ product.title }}
-        </div>
+        </h2>
 
         <!-- Selected variant (click => scroll to selector) -->
         <button
@@ -369,20 +640,28 @@
     <div class="mt-3 flex items-center gap-3">
       {%- unless cat contains 'Top_Up_' -%}
         <button
+          id="btnAddToCartMobile"
           type="button"
           onclick="addToCart()"
-          class="bg-secondary text-neutral rounded-[15px] py-3 font-bold flex-1"
+          class="bg-secondary text-neutral rounded-[15px] py-3 font-bold flex-1 flex items-center justify-center gap-2"
         >
-          Add to Cart
+          <span data-btn-text>Add to Cart</span>
+          <span data-btn-loader class="hidden">
+            {% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}
+          </span>
         </button>
       {%- endunless -%}
 
       <button
+        id="btnBuyNowMobile"
         type="button"
         onclick="buyNow()"
-        class="bg-primary text-neutral rounded-[15px] py-3 font-bold flex-1"
+        class="bg-primary text-neutral rounded-[15px] py-3 font-bold flex-1 flex items-center justify-center gap-2"
       >
-        Buy Now
+        <span data-btn-text>Buy Now</span>
+        <span data-btn-loader class="hidden">
+          {% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}
+        </span>
       </button>
     </div>
   </div>
@@ -471,12 +750,105 @@
 
 <pre id="result" class="hidden"></pre>
 
+<div
+  id="iccid-modal"
+  class="hidden fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral p-4 rounded-[15px] z-[1000] w-[90%] max-w-md shadow-lg"
+>
+  <h3 class="text-primary font-bold text-lg">Enter Your ICCID</h3>
+
+  <form id="iccid-form" action="" class="flex flex-col mt-2">
+    <input
+      id="iccid-input"
+      type="text"
+      inputmode="numeric"
+      pattern="[0-9]*"
+      maxlength="25"
+      placeholder="Input ICCID Number"
+      oninput="this.value = this.value.replace(/\D/g,'')"
+      class="w-full rounded-[10px] bg-background text-primary placeholder:text-primary p-3 border border-primary focus:ring-1 focus:ring-primary focus:outline-none focus:placeholder:text-primary/50"
+    >
+
+    <div class="flex justify-end gap-2 mt-3">
+      <button
+        type="button"
+        id="iccid-cancel"
+        class="bg-background-third text-primary rounded-[10px] py-2 px-5 text-base font-semibold"
+      >
+        Cancel
+      </button>
+
+      <button
+        id="iccid-submit-btn"
+        type="submit"
+        class="bg-primary text-neutral rounded-[10px] py-2 px-8 text-base font-semibold flex items-center justify-center gap-2"
+      >
+        <span data-btn-text>Next</span>
+        <span data-btn-loader class="hidden">
+          {% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<div id="invalid-popup" class="fixed inset-0 z-[9999] hidden">
+  <!-- overlay (dipisah) -->
+  <div class="absolute inset-0 bg-black/50" data-invalid-overlay></div>
+
+  <!-- content -->
+  <div
+    class="absolute left-1/2 top-1/2 w-[calc(100%-40px)] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-[10px] bg-neutral p-[30px] text-center text-primary"
+    role="dialog"
+    aria-modal="true"
+  >
+    <h2
+      class="mb-5 text-[33px] font-bold leading-none text-primary"
+    >
+      ICCID Invalid
+    </h2>
+
+    <p>
+      Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
+      phone settings.
+    </p>
+    <p class="mt-2">Please contact our WhatsApp Customer Service for more information</p>
+
+    <div class="mt-6 flex gap-[15px]">
+      <button
+        id="invalid-popup-buy"
+        class="w-full cursor-pointer rounded-[10px] border-0 bg-secondary p-[15px] text-lg text-neutral"
+        onclick="goToBuySim()"
+      >
+        Buy SIM
+      </button>
+
+      <button
+        id="invalid-popup-contact"
+        class="w-full cursor-pointer rounded-[10px] border-0 bg-[#25d366] p-[15px] text-lg text-neutral"
+      >
+        <a href="https://wa.me/628986454071">WhatsApp CS</a>
+      </button>
+    </div>
+
+    <button
+      id="invalid-popup-close"
+      class="mt-[15px] w-full cursor-pointer rounded-[10px] border-0 bg-primary p-[15px] text-lg text-neutral"
+    >
+      <span>Cancel</span>
+    </button>
+  </div>
+</div>
+
 <script>
   /* =========================================================
    * GLOBALS (paling atas)
    * ========================================================= */
   const shopCurrency = '{{ shop.currency }}';
   const customerLoggedIn = {% if customer %}true{% else %}false{% endif %};
+
+  let isAddingToCart = false;
+  let isBuyingNow = false;
+  let isIccidSubmitting = false;
 
   let cachedUSDRate = null;
 
@@ -562,6 +934,7 @@
           sku: "{{ variant.sku }}",
           available: {{ variant.available }},
           variantType: {{ variant.metafields.variant.type | json }},
+          airportPurpose: {{ variant.metafields.airport.purpose.value | default: '' | json }},
           options: [
             {% for option in variant.options %}
               "{{ option }}"{% unless forloop.last %},{% endunless %}
@@ -573,7 +946,8 @@
   };
 
   // Debug JSON output (tetap)
-  document.getElementById('result').textContent = JSON.stringify(filtered, null, 2);
+  const resultEl = document.getElementById('result');
+  if (resultEl) resultEl.textContent = JSON.stringify(filtered, null, 2);
 
   /* =========================================================
    * DOM HELPERS
@@ -589,6 +963,12 @@
     usdWrapper: $('usd-price-wrapper'),
     priceIDR: $('variantPriceIDR'),
     priceUSD: $('variantPriceUSD'),
+    btnAddToCartDesktop: $('btnAddToCartDesktop'),
+    btnBuyNowDesktop: $('btnBuyNowDesktop'),
+    btnAddToCartMobile: $('btnAddToCartMobile'),
+    btnBuyNowMobile: $('btnBuyNowMobile'),
+    iccidSubmitBtn: $('iccid-submit-btn'),
+
 
     resetBtnNonInsurance: $('resetSelectionBtn'),
     resetBtnInsurance: $('resetSelectionBtnInsurance'),
@@ -612,6 +992,47 @@
     displayOpt2: $('display-option2'),
     displayOpt3: $('display-option3')
   });
+
+  function releaseBuyNowLock() {
+    isBuyingNow = false;
+    setBuyNowLoading(false);
+  }
+
+  function setButtonLoading(btn, loading) {
+    if (!btn) return;
+
+    btn.disabled = !!loading;
+    btn.setAttribute('aria-busy', loading ? 'true' : 'false');
+    btn.classList.toggle('opacity-70', loading);
+    btn.classList.toggle('pointer-events-none', loading);
+
+    const textEl = btn.querySelector('[data-btn-text]');
+    const loaderEl = btn.querySelector('[data-btn-loader]');
+
+    if (textEl) textEl.classList.toggle('hidden', loading);
+    if (loaderEl) loaderEl.classList.toggle('hidden', !loading);
+  }
+
+  function setAddToCartLoading(loading) {
+    const { btnAddToCartDesktop, btnAddToCartMobile } = dom();
+    setButtonLoading(btnAddToCartDesktop, loading);
+    setButtonLoading(btnAddToCartMobile, loading);
+  }
+
+  function setBuyNowLoading(loading) {
+    const { btnBuyNowDesktop, btnBuyNowMobile } = dom();
+    setButtonLoading(btnBuyNowDesktop, loading);
+    setButtonLoading(btnBuyNowMobile, loading);
+  }
+
+  function setIccidLoading(loading) {
+    const { iccidSubmitBtn } = dom();
+    setButtonLoading(iccidSubmitBtn, loading);
+
+    const cancelBtn = document.getElementById('iccid-cancel');
+    if (cancelBtn) cancelBtn.disabled = !!loading;
+  }
+
 
   /* =========================================================
    * MOBILE BAR HELPERS
@@ -835,12 +1256,9 @@
     return total;
   }
 
-
   async function updateTotalPriceDisplayIfInsurance() {
-    // Kalau bukan Insurance, biarkan flow lama
     if (filtered.category !== 'Insurance') return false;
 
-    // Kalau belum ada variant, tampilkan range (pakai function existing)
     if (!selectedVariant) {
       await updatePriceDisplay(null);
       return true;
@@ -852,7 +1270,6 @@
       return true;
     }
 
-    // totalRaw ini sudah final (cents), jadi render tanpa multiply qty lagi
     const totalIDR = totalRaw / 100;
 
     const priceIDR = document.getElementById('variantPriceIDR');
@@ -864,12 +1281,10 @@
     if (priceIDR) priceIDR.textContent = idrText;
     if (mobileIDR) mobileIDR.textContent = idrText;
 
-    // USD (instant dulu)
     const usdInstant = formatUSD(convertIDRtoUSDInstant(totalIDR));
     if (priceUSD) priceUSD.textContent = usdInstant;
     if (mobileUSD) mobileUSD.textContent = usdInstant;
 
-    // fetch rate kalau belum ada
     if (!cachedUSDRate) {
       const rate = await getExchangeRate();
       const usdFinal = formatUSD((totalIDR * rate).toFixed(2));
@@ -880,7 +1295,6 @@
     toggleCurrencyDisplay();
     return true;
   }
-
 
   /* =========================================================
    * VARIANT SELECTORS
@@ -938,6 +1352,7 @@
       const optionValues = getUniqueOptionValues(index);
 
       const wrapper = document.createElement('div');
+      wrapper.style.width = "100%";
       wrapper.innerHTML = `
         <label for="option${index}" class="text-primary font-semibold tracking-normal">${optionName}</label>
         <div class="relative">
@@ -966,7 +1381,6 @@
 
     selectedOptions = new Array(filtered.options.length).fill(null);
 
-    // Insurance addon selector visibility
     if (filtered.category === 'Insurance' && addonWrapper) {
       addonWrapper.classList.remove('hidden');
     }
@@ -1022,7 +1436,6 @@
 
     const allSelected = selectedOptions.every(opt => opt !== null);
 
-    // belum lengkap
     if (!(variant && allSelected)) {
       selectedVariant = null;
       lastSelectedVariantId = null;
@@ -1039,24 +1452,18 @@
       return;
     }
 
-    // variant fix
     selectedVariant = variant;
 
     updateMobileSelectedVariantLabel();
 
-    // ✅ Duo Plus → min qty 2 + auto set qty minimal 2
     enforceMinQtyByVariant(selectedVariant);
 
-    // ✅ Insurance: total = main + addons
     const handled = await updateTotalPriceDisplayIfInsurance();
     if (!handled) {
-      // Non-insurance: pakai flow lama
       updatePriceDisplay(variant.priceRaw);
     }
 
-
     if (filtered.category === 'Insurance') {
-      // plan berubah → reset addons total
       if (lastSelectedVariantId && lastSelectedVariantId !== variant.id) {
         resetAddons();
       }
@@ -1259,18 +1666,14 @@
 
     sessionStorage.setItem('SelectedAddons', JSON.stringify(selectedAddons));
     updateAddonButtonPreview();
-    // ✅ update total price (main + addons)
     updateTotalPriceDisplayIfInsurance();
-
   }
 
   function bindAddonCardToggle() {
     const list = document.getElementById('selected-addon-list');
     if (!list) return;
 
-    // event delegation (lebih aman karena list dirender ulang)
     list.addEventListener('click', (e) => {
-      // kalau user klik elemen yang memang interactive, jangan dobel-toggle
       const interactive = e.target.closest('input, label, a, button, select, textarea');
       if (interactive) return;
 
@@ -1281,12 +1684,9 @@
       if (!checkbox) return;
 
       checkbox.checked = !checkbox.checked;
-
-      // panggil handler yang sudah ada (biar update selectedAddons + harga)
       handleAddonCheckboxChange(checkbox);
     });
   }
-
 
   function updateAddonButtonPreview() {
     const { addonButton } = dom();
@@ -1314,44 +1714,49 @@
     }
   }
 
-
   function decreaseQuantity() {
-    const input = dom().qtyInput;
-    if (!input) return;
+  const input = dom().qtyInput;
+  if (!input) return;
 
-    const min = parseInt(input.min, 10) || 1;
-    const current = parseInt(input.value, 10);
+  const min = parseInt(input.min, 10) || 1;
+  const current = parseInt(input.value, 10);
 
-    if (current > min) {
-      input.value = String(current - 1);
-      updatePriceWithQuantity();
+  if (current > min) {
+    input.value = String(current - 1);
+    updatePriceWithQuantity();
 
-      if (filtered.category === 'Insurance' && selectedVariant) {
-        updateInsuranceAddonDisplay(selectedVariant);
-        updateTotalPriceDisplayIfInsurance();
-      }
-    } else {
-      input.value = String(min);
+    if (filtered.category === 'Insurance' && selectedVariant) {
+      updateInsuranceAddonDisplay(selectedVariant);
+      updateTotalPriceDisplayIfInsurance();
     }
+  } else {
+    input.value = String(min);
   }
+
+  // ✅ ini penting
+  updateMinusButtonState();
+}
 
   function increaseQuantity() {
-    const input = dom().qtyInput;
-    if (!input) return;
+  const input = dom().qtyInput;
+  if (!input) return;
 
-    const current = parseInt(input.value, 10);
-    const max = parseInt(input.max, 10);
+  const current = parseInt(input.value, 10);
+  const max = parseInt(input.max, 10);
 
-    if (current < max) {
-      input.value = String(current + 1);
-      updatePriceWithQuantity();
+  if (current < max) {
+    input.value = String(current + 1);
+    updatePriceWithQuantity();
 
-      if (filtered.category === 'Insurance' && selectedVariant) {
-        updateInsuranceAddonDisplay(selectedVariant);
-        updateTotalPriceDisplayIfInsurance();
-      }
+    if (filtered.category === 'Insurance' && selectedVariant) {
+      updateInsuranceAddonDisplay(selectedVariant);
+      updateTotalPriceDisplayIfInsurance();
     }
   }
+
+  // ✅ ini penting
+  updateMinusButtonState();
+}
 
   function updateMinusButtonState() {
     const input = dom().qtyInput;
@@ -1368,42 +1773,32 @@
     minusBtn.classList.toggle('cursor-not-allowed', disabled);
   }
 
-
   function bindQuantityInput() {
     const input = dom().qtyInput;
     if (!input) return;
 
-    // biar gampang replace angka (auto select)
-    input.addEventListener('focus', () => {
-      input.select();
-    });
+    input.addEventListener('focus', () => input.select());
 
-    // hanya izinkan digit saat mengetik (tapi masih boleh kosong)
     input.addEventListener('input', (e) => {
       let v = e.target.value;
 
-      // kalau user lagi hapus semua, biarin dulu
       if (v === '') {
         updateMinusButtonState();
         return;
       }
 
-      // buang karakter non-digit
       v = v.replace(/[^\d]/g, '');
       e.target.value = v;
 
-      // jangan clamp min/max dulu di sini biar user bisa ngetik multi digit
       updateMinusButtonState();
     });
 
-    // saat user selesai (blur), baru dipaksa valid + update harga
     input.addEventListener('blur', () => {
       const min = parseInt(input.min, 10) || 1;
       const max = parseInt(input.max, 10) || 50;
 
       let val = parseInt(input.value, 10);
 
-      // kalau kosong / NaN, balikin ke min
       if (isNaN(val)) val = min;
 
       if (val < min) val = min;
@@ -1416,11 +1811,10 @@
 
       if (filtered.category === 'Insurance' && selectedVariant) {
         updateInsuranceAddonDisplay(selectedVariant);
-        updateTotalPriceDisplayIfInsurance(); // optional
+        updateTotalPriceDisplayIfInsurance();
       }
     });
   }
-
 
   /* =========================================================
    * TOAST
@@ -1450,6 +1844,290 @@
     }, 3000);
   }
 
+  /* -------------------------------------------------------------------------- */
+  /*                         TOP UP ICCID VALIDATION                            */
+  /* -------------------------------------------------------------------------- */
+
+  // ✅ mapping vendor -> category Top Up (HANYA 1x, jangan double)
+  const categoryVendorMap = [
+    { vendor: 'BC', category: 'Top_Up_A' },
+    { vendor: 'FM', category: 'Top_Up_B' },
+    { vendor: 'TGT', category: 'Top_Up_C' },
+    { vendor: 'MM', category: 'Top_Up_D' },
+  ];
+
+  const TOPUP_CATEGORIES = new Set(['Top_Up_A', 'Top_Up_B', 'Top_Up_C', 'Top_Up_D']);
+
+  const SS_KEY_ICCID = 'iccid';
+  const SS_KEY_CATEGORY = 'category';
+
+  let pendingTopUpCheckout = null; // { variantId, qty }
+
+  function isTopUpProductCategory(cat) {
+    return TOPUP_CATEGORIES.has((cat || '').trim());
+  }
+
+  function mapVendorToTopUpCategory(vendor) {
+    const row = categoryVendorMap.find(x => String(x.vendor).toUpperCase() === String(vendor).toUpperCase());
+    return row?.category || null;
+  }
+
+  function openIccidModal() {
+    releaseBuyNowLock(); // ✅ penting biar Buy Now gak nyangkut loading
+
+    const modal = document.getElementById('iccid-modal');
+    const input = document.getElementById('iccid-input');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('no-scroll');
+
+    if (input) {
+      input.value = '';
+      setTimeout(() => input.focus(), 50);
+    }
+  }
+
+  function closeIccidModal({ releaseLock = true } = {}) {
+    if (releaseLock) releaseBuyNowLock(); // ✅ hanya release kalau memang cancel/close biasa
+
+    const modal = document.getElementById('iccid-modal');
+    if (!modal) return;
+
+    modal.classList.add('hidden');
+    document.body.classList.remove('no-scroll');
+  }
+
+  function openInvalidPopup() {
+    releaseBuyNowLock(); // ✅ juga reset di sini
+
+    const el = document.getElementById('invalid-popup');
+    if (!el) return;
+    el.classList.remove('hidden');
+    document.body.classList.add('no-scroll');
+  }
+
+  function closeInvalidPopup() {
+    releaseBuyNowLock();
+
+    const el = document.getElementById('invalid-popup');
+    if (!el) return;
+    el.classList.add('hidden');
+    document.body.classList.remove('no-scroll');
+  }
+
+  function goToBuySim() {
+    const coverage = filtered?.metafields?.coverage || [];
+    const first = coverage[0];
+
+    let query = '';
+
+    if (first) {
+      // Ambil nama negara sesuai bahasa (gunakan country_en sebagai fallback)
+      const name = first.country_en || first.country_id || '';
+      query = name.replace(/_/g, ' ').trim();
+    }
+
+    const url = query
+      ? `/search?q=${encodeURIComponent(query)}`
+      : '/search';
+
+    window.location.href = url;
+  }
+
+  window.goToBuySim = goToBuySim;
+
+
+  /**
+   * ⚠️ Sesuaikan cara kirim ICCID kalau backend kamu beda.
+   * Aku pakai query param: /check-usage?iccid=xxxx
+   */
+  async function checkUsageByICCID(iccid) {
+    try {
+      const url = new URL('https://v2.gkomunika.id/api/v1/check-usage');
+      url.searchParams.set('iccid', String(iccid || '').trim());
+
+      const res = await fetch(url.toString(), {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!res.ok) return null;
+
+      const json = await res.json();
+
+      console.log(json)
+
+      if (!json?.success) return null;
+
+      const vendor = json?.vendor || null;
+      const mappedCategory = mapVendorToTopUpCategory(vendor);
+
+      return { json, vendor, mappedCategory };
+    } catch (err) {
+      console.error('checkUsageByICCID failed:', err);
+      return null;
+    }
+  }
+
+  async function goCheckoutTopUpWithICCID({ variantId, qty, iccid }) {
+    await fetch('/cart/clear.js', { method: 'POST' });
+
+    await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: JSON.stringify({
+        id: variantId,
+        quantity: qty,
+        properties: { ICCID: String(iccid) }, // ✅ line item properties
+      }),
+    });
+
+    // ✅ cart attributes (optional)
+    try {
+      await fetch('/cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          attributes: { ICCID: String(iccid) },
+        }),
+      });
+    } catch (e) {
+      console.warn('cart attributes update failed (ignored):', e);
+    }
+
+    window.location.href = '/checkout';
+  }
+
+  async function handleTopUpBuyNow(qty) {
+    pendingTopUpCheckout = { variantId: selectedVariant?.id, qty };
+
+    const productCat = filtered.category;
+    const storedIccid = sessionStorage.getItem(SS_KEY_ICCID);
+
+    // (3) kalau kosong -> form
+    if (!storedIccid) {
+      openIccidModal();
+      return;
+    }
+
+    // cek iccid stored
+    const result = await checkUsageByICCID(storedIccid);
+
+    // vendor tidak ada map -> invalid
+    if (!result?.mappedCategory) {
+      openInvalidPopup();
+      return;
+    }
+
+    // (1) cocok -> langsung checkout
+    if (result.mappedCategory === productCat) {
+      await goCheckoutTopUpWithICCID({
+        variantId: pendingTopUpCheckout.variantId,
+        qty: pendingTopUpCheckout.qty,
+        iccid: storedIccid,
+      });
+      return;
+    }
+
+    // (2) tidak cocok -> show form input iccid
+    openIccidModal();
+  }
+
+  function bindTopUpIccidUI() {
+    document.getElementById('iccid-modal')?.classList.add('hidden');
+    document.getElementById('invalid-popup')?.classList.add('hidden');
+
+    document.getElementById('iccid-cancel')?.addEventListener('click', closeIccidModal);
+
+    const form = document.getElementById('iccid-form');
+    const input = document.getElementById('iccid-input');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (isIccidSubmitting) return;
+      isIccidSubmitting = true;
+
+      // ✅ loader di tombol Next
+      setIccidLoading(true);
+
+      // ✅ loader di tombol Buy Now juga
+      isBuyingNow = true;
+      setBuyNowLoading(true);
+
+      let willRedirect = false;
+
+      try {
+        const iccid = String(input?.value || '').trim();
+
+        if (!iccid) {
+          showToast('Please input ICCID', 'error');
+          return;
+        }
+
+        const result = await checkUsageByICCID(iccid);
+
+        if (!result?.mappedCategory) {
+          // ❌ invalid -> tidak redirect
+          closeIccidModal();        // releaseLock default true -> unlock buy now
+          openInvalidPopup();       // openInvalidPopup juga release (aman)
+          return;
+        }
+
+        sessionStorage.setItem(SS_KEY_ICCID, iccid);
+        sessionStorage.setItem(SS_KEY_CATEGORY, result.mappedCategory);
+
+        if (result.mappedCategory === filtered.category) {
+          // ✅ redirect ke checkout
+          willRedirect = true;
+
+          closeIccidModal({ releaseLock: false }); // ✅ keep Buy Now loading
+          await goCheckoutTopUpWithICCID({
+            variantId: pendingTopUpCheckout?.variantId || selectedVariant?.id,
+            qty: pendingTopUpCheckout?.qty || (parseInt(dom().qtyInput?.value, 10) || 1),
+            iccid,
+          });
+          return;
+        }
+
+        // ❌ mismatch -> redirect ke /pages/top-up setelah toast
+        willRedirect = true;
+
+        closeIccidModal({ releaseLock: false }); // ✅ keep Buy Now loading
+        showToast(
+          'ICCID invalid, please select another product',
+          'error'
+        );
+
+        setTimeout(() => {
+          window.location.href = '/pages/top-up';
+        }, 1200);
+
+      } catch (err) {
+        console.error(err);
+        showToast('Failed to validate ICCID', 'error');
+      } finally {
+        isIccidSubmitting = false;
+        setIccidLoading(false);
+
+        // ✅ kalau tidak jadi redirect, balikin state Buy Now
+        if (!willRedirect) {
+          isBuyingNow = false;
+          setBuyNowLoading(false);
+        }
+      }
+    });
+
+
+
+    document.getElementById('invalid-popup-close')?.addEventListener('click', closeInvalidPopup);
+    document.querySelector('[data-invalid-overlay]')?.addEventListener('click', closeInvalidPopup);
+  }
+
   /* =========================================================
    * CART
    * ========================================================= */
@@ -1463,30 +2141,44 @@
       .catch(err => console.error('Failed to update cart count:', err));
   }
 
-  function addToCart() {
+  async function addToCart() {
+    if (isAddingToCart) return;
+
     if (!selectedVariant) return showToast('Please select all options', 'error');
     if (!selectedVariant.available) return showToast('This variant is not available', 'error');
 
     const qty = parseInt(dom().qtyInput?.value, 10) || 1;
 
-    fetch('/cart/add.js', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-      body: JSON.stringify({ id: selectedVariant.id, quantity: qty })
-    })
-      .then(r => r.json())
-      .then(() => {
-        showToast('Item successfully added to cart!', 'success');
-        updateCartCount();
-      })
-      .catch(err => {
-        console.error('Error:', err);
-        showToast('Failed to add item to cart', 'error');
+    isAddingToCart = true;
+    setAddToCartLoading(true);
+
+    try {
+      const r = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ id: selectedVariant.id, quantity: qty })
       });
+
+      if (!r.ok) {
+        const errJson = await r.json().catch(() => null);
+        throw new Error(errJson?.description || 'Failed to add item to cart');
+      }
+
+      await r.json().catch(() => null);
+      showToast('Item successfully added to cart!', 'success');
+      updateCartCount();
+    } catch (err) {
+      console.error('Error:', err);
+      showToast(err?.message || 'Failed to add item to cart', 'error');
+    } finally {
+      isAddingToCart = false;
+      setAddToCartLoading(false);
+    }
   }
+
 
   function getVariantType(variant) {
     if (!variant?.variantType) return '';
@@ -1499,6 +2191,15 @@
     const { qtyInput } = dom();
     if (!qtyInput) return;
 
+    // ✅ Airport Transfer: selalu boleh turun sampai 1
+    if ((filtered?.category || '').trim() === 'Airport_Transfer') {
+      qtyInput.min = "1";
+      if ((parseInt(qtyInput.value,10) || 1) < 1) qtyInput.value = "1";
+      updateMinusButtonState();
+      return;
+    }
+
+    // --- logic lama tetap ---
     const variantType = getVariantType(variant);
     const isDuoPlus = (variantType || '').toLowerCase().trim() === 'duo plus';
 
@@ -1512,67 +2213,113 @@
     updateMinusButtonState();
   }
 
-  function buyNow() {
+  async function buyNow() {
+    if (isBuyingNow) return;
+
     if (!selectedVariant) return showToast('Please select all options', 'error');
     if (!selectedVariant.available) return showToast('This variant is not available', 'error');
 
-    const qty = parseInt(dom().qtyInput?.value, 10) || 1;
+    const qty = isTopUpProductCategory(filtered.category)
+    ? 1
+    : (parseInt(dom().qtyInput?.value, 10) || 1);
 
-    // Insurance flow
-    if (filtered.category === 'Insurance') {
-      const variantType = getVariantType(selectedVariant);
 
-      const variantCoverage = Array.from(new Set(
-        (filtered.metafields.coverage || [])
-          .map(c => (c?.country_en || '').trim())
-          .filter(Boolean)
-      ));
+    isBuyingNow = true;
+    setBuyNowLoading(true);
 
-      sessionStorage.removeItem('ProductItems');
+    try {
+      // ✅ TOP UP ICCID FLOW
+      if (isTopUpProductCategory(filtered.category)) {
+        await handleTopUpBuyNow(qty);
+        return;
+      }
 
-      const savedAddons = safeParseJSON(sessionStorage.getItem('SelectedAddons'), []);
+      // Insurance flow
+      if (filtered.category === 'Insurance') {
+        const variantType = getVariantType(selectedVariant);
 
-      const newItem = {
-        productTitle: filtered.title,
-        category: filtered.category,
-        variantType,
-        variantId: selectedVariant.id,
-        variantTitle: selectedVariant.title,
-        quantity: qty,
-        variantCoverage,
-        addonItems: (savedAddons || []).map(addon => ({
-          productTitle: addon.variantTitle,
-          variantId: addon.id,
-          variantTitle: addon.variantTitle,
-          quantity: addon.quantity,
-          option1: addon.option1,
-          option2: addon.option2,
-          option3: addon.option3
-        }))
-      };
+        const variantCoverage = Array.from(new Set(
+          (filtered.metafields.coverage || [])
+            .map(c => (c?.country_en || '').trim())
+            .filter(Boolean)
+        ));
 
-      sessionStorage.setItem('ProductItems', JSON.stringify([newItem]));
+        sessionStorage.removeItem('ProductItems');
 
-      window.location.href = customerLoggedIn
-        ? '/pages/form-insurance'
-        : '/account/login?return_url=/pages/form-insurance';
+        const savedAddons = safeParseJSON(sessionStorage.getItem('SelectedAddons'), []);
 
-      return;
-    }
+        const newItem = {
+          productTitle: filtered.title,
+          category: filtered.category,
+          variantType,
+          variantId: selectedVariant.id,
+          variantTitle: selectedVariant.title,
+          quantity: qty,
+          variantCoverage,
+          addonItems: (savedAddons || []).map(addon => ({
+            productTitle: addon.variantTitle,
+            variantId: addon.id,
+            variantTitle: addon.variantTitle,
+            quantity: addon.quantity,
+            option1: addon.option1,
+            option2: addon.option2,
+            option3: addon.option3
+          }))
+        };
 
-    // Non-insurance flow
-    fetch('/cart/clear.js', { method: 'POST' })
-      .then(() => fetch('/cart/add.js', {
+        sessionStorage.setItem('ProductItems', JSON.stringify([newItem]));
+
+        window.location.href = customerLoggedIn
+          ? '/pages/form-insurance'
+          : '/account/login?return_url=/pages/form-insurance';
+        return;
+      }
+
+      // Airport Transfer flow
+      if (filtered.category === 'Airport_Transfer') {
+        const item = {
+          productId: filtered.id,
+          productTitle: filtered.title,
+          category: filtered.category,
+          variantId: selectedVariant.id,
+          variantTitle: selectedVariant.title,
+          variantOptions: selectedVariant.options,
+          quantity: qty
+        };
+
+        sessionStorage.setItem('ProductItems', JSON.stringify([item]));
+        localStorage.setItem('ProductItems', JSON.stringify([item]));
+        
+
+        window.location.href = customerLoggedIn
+          ? '/pages/form-airport-transfer'
+          : '/account/login?return_url=/pages/form-airport-transfer';
+        return;
+      }
+
+      // Non-insurance flow
+      await fetch('/cart/clear.js', { method: 'POST' });
+
+      const r = await fetch('/cart/add.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: selectedVariant.id, quantity: qty })
-      }))
-      .then(() => { window.location.href = '/checkout'; })
-      .catch(err => {
-        console.error('Error:', err);
-        showToast('Failed to process buy now', 'error');
       });
+
+      if (!r.ok) {
+        const errJson = await r.json().catch(() => null);
+        throw new Error(errJson?.description || 'Failed to process buy now');
+      }
+
+      window.location.href = '/checkout';
+    } catch (err) {
+      console.error('Error:', err);
+      showToast(err?.message || 'Failed to process buy now', 'error');
+      setBuyNowLoading(false);
+      isBuyingNow = false;
+    }
   }
+
 
   /* =========================================================
    * IMAGE
@@ -1670,8 +2417,6 @@
   window.addToCart = addToCart;
   window.buyNow = buyNow;
   window.handleAddonCheckboxChange = handleAddonCheckboxChange;
-
-  // ✅ expose scroll function
   window.scrollToSelectors = scrollToSelectors;
 
   /* =========================================================
@@ -1686,6 +2431,9 @@
     bindQuantityInput();
     bindAddonPopup();
 
+    // ✅ bind top up iccid UI
+    bindTopUpIccidUI();
+
     lastCurrency = sessionStorage.getItem('buckscc_customer_currency');
     toggleCurrencyDisplay();
     startCurrencyMonitor();
@@ -1694,32 +2442,46 @@
     updateTotalPriceDisplayIfInsurance();
 
     updateMobileSelectedVariantLabel();
-    bindAddonCardToggle(); 
+    bindAddonCardToggle();
     updateMinusButtonState();
   });
 
-  /* -------------------------------------------------------------------------- */
-  /*                         Dynamis hight add on title                         */
-  /* -------------------------------------------------------------------------- */
+  function resetTransientStates() {
+    isAddingToCart = false;
+    isBuyingNow = false;
+    isIccidSubmitting = false;
 
+    setAddToCartLoading(false);
+    setBuyNowLoading(false);
+    setIccidLoading(false);
+
+    document.getElementById('iccid-modal')?.classList.add('hidden');
+    document.getElementById('invalid-popup')?.classList.add('hidden');
+    document.body.classList.remove('no-scroll');
+  }
+
+  // ✅ kepanggil saat balik (Back) maupun normal load
+  window.addEventListener('pageshow', () => {
+    resetTransientStates();
+  });
+
+
+  /* -------------------------------------------------------------------------- */
+  /*                     Dynamic height add on title                            */
+  /* -------------------------------------------------------------------------- */
   function syncAddonHeaderOffset() {
     const header = document.getElementById('addonHeader');
-    const popup = document.getElementById('addon-popup'); // scope variable ke popup aja
+    const popup = document.getElementById('addon-popup');
     if (!header || !popup) return;
 
     const h = Math.ceil(header.getBoundingClientRect().height);
     popup.style.setProperty('--addon-header-h', `${h}px`);
   }
 
-  // panggil saat popup dibuka + saat resize
   function initAddonHeaderSync() {
-    // 1) sekali saat DOM ready
     syncAddonHeaderOffset();
-
-    // 2) saat window resize
     window.addEventListener('resize', syncAddonHeaderOffset);
 
-    // 3) kalau isi header bisa berubah (variant text), pakai ResizeObserver
     const header = document.getElementById('addonHeader');
     if (header && 'ResizeObserver' in window) {
       const ro = new ResizeObserver(() => syncAddonHeaderOffset());
@@ -1730,23 +2492,306 @@
   document.addEventListener('DOMContentLoaded', initAddonHeaderSync);
 </script>
 
-<script type="application/ld+json">
-  {{ product | structured_data }}
-</script>
+<script>
+  /* ----------------------------------------------------------
+   * AT PURPOSE: State
+   * ---------------------------------------------------------- */
+  const atPurposeState = {
+    mode: 'single', // 'single' | 'multi'
+    qty: 1,
+    requiredDir: null, // 'go' | 'return' | null
+  };
 
-{% schema %}
-{
-  "name": "Main Product",
-  "settings": [],
-  "blocks": [
-    {
-      "type": "@app"
+  function purposeLabelToValue(label) {
+    const s = String(label || '')
+      .trim()
+      .toLowerCase();
+    if (s === 'city to airport') return 'city_to_airport';
+    if (s === 'airport to city') return 'airport_to_city';
+
+    const normalized = s.replace(/\s+/g, '_');
+    if (normalized.includes('city_to_airport')) return 'city_to_airport';
+    if (normalized.includes('airport_to_city')) return 'airport_to_city';
+    return '';
+  }
+
+  function lockSinglePurposeSelect(val, locked = true) {
+    const sel = document.getElementById('atPurposeSingle');
+    if (!sel) return;
+
+    if (val) sel.value = val;
+
+    sel.disabled = !!locked;
+    sel.classList.toggle('opacity-70', !!locked);
+    sel.classList.toggle('cursor-not-allowed', !!locked);
+  }
+
+  function requiredDirFromVariantPurpose(label) {
+    const s = String(label || '')
+      .trim()
+      .toLowerCase();
+    if (s === 'airport to city') return 'go';
+    if (s === 'city to airport') return 'return';
+    return null;
+  }
+
+  /* ----------------------------------------------------------
+   * AT PURPOSE: Show/hide mode
+   * qty = 1: ambil dari metafield & lock
+   * qty >= 2: pakai design multi (go/return)
+   * dan wajib min 1 sesuai metafield
+   * ---------------------------------------------------------- */
+  function renderAtPurposeSection() {
+    const cat = filtered?.category || '';
+    if (cat !== 'Airport_Transfer') return;
+
+    const section = document.getElementById('atPurposeSection');
+    const singleEl = document.getElementById('atPurpose-single');
+    const doubleEl = document.getElementById('atPurpose-double'); // tidak dipakai
+    const multiEl = document.getElementById('atPurpose-multi');
+
+    if (!section) return;
+
+    // butuh selectedVariant karena ambil metafield
+    if (!selectedVariant) {
+      section.classList.add('hidden');
+      return;
     }
-  ],
-  "presets": [
-    {
-      "name": "Main Product"
+
+    const qty = parseInt(document.getElementById('variant-quantity')?.value, 10) || 1;
+    atPurposeState.qty = qty;
+
+    // set required direction dari metafield variant
+    atPurposeState.requiredDir = requiredDirFromVariantPurpose(selectedVariant?.airportPurpose);
+
+    section.classList.remove('hidden');
+
+    // hide all
+    singleEl?.classList.add('hidden');
+    doubleEl?.classList.add('hidden');
+    multiEl?.classList.add('hidden');
+
+    // ---------- QTY = 1 (LOCK dari metafield) ----------
+    if (qty === 1) {
+      atPurposeState.mode = 'single';
+      singleEl?.classList.remove('hidden');
+
+      const metaLabel = selectedVariant?.airportPurpose;
+      const mappedVal = purposeLabelToValue(metaLabel);
+
+      // kalau metafield kosong, biarkan user pilih manual
+      if (!mappedVal) {
+        lockSinglePurposeSelect('', false);
+        return;
+      }
+
+      lockSinglePurposeSelect(mappedVal, true);
+      return;
     }
-  ]
-}
-{% endschema %}
+
+    // ---------- QTY >= 2 (MULTI) ----------
+    atPurposeState.mode = 'multi';
+    multiEl?.classList.remove('hidden');
+
+    const totalLabel = document.getElementById('atMultiTotalLabel');
+    if (totalLabel) totalLabel.textContent = qty;
+
+    const goEl = document.getElementById('atMultiGo');
+    const retEl = document.getElementById('atMultiReturn');
+    if (!goEl || !retEl) return;
+
+    const minGo = atPurposeState.requiredDir === 'go' ? 1 : 0;
+    const minRet = atPurposeState.requiredDir === 'return' ? 1 : 0;
+
+    // default awal: arah wajib dapat minimal 1
+    let go = 0,
+      ret = 0;
+    if (atPurposeState.requiredDir === 'return') {
+      ret = Math.max(minRet, qty); // biasanya qty
+      go = qty - ret; // 0
+    } else {
+      go = Math.max(minGo, qty); // biasanya qty
+      ret = qty - go; // 0
+    }
+
+    // clamp final supaya tetap valid
+    go = Math.max(minGo, Math.min(qty - minRet, go));
+    ret = qty - go;
+
+    goEl.value = String(go);
+    retEl.value = String(ret);
+
+    validateAtMultiSum();
+  }
+
+  /* ----------------------------------------------------------
+   * MULTI steppers (wajib min 1 sesuai metafield)
+   * ---------------------------------------------------------- */
+  function adjustAtMulti(type, delta) {
+    const qty = atPurposeState.qty;
+    const goEl = document.getElementById('atMultiGo');
+    const retEl = document.getElementById('atMultiReturn');
+    if (!goEl || !retEl) return;
+
+    const minGo = atPurposeState.requiredDir === 'go' ? 1 : 0;
+    const minRet = atPurposeState.requiredDir === 'return' ? 1 : 0;
+
+    let go = parseInt(goEl.value, 10) || 0;
+    let ret = parseInt(retEl.value, 10) || 0;
+
+    if (type === 'go') {
+      go = Math.max(minGo, Math.min(qty - minRet, go + delta));
+      ret = qty - go;
+    } else {
+      ret = Math.max(minRet, Math.min(qty - minGo, ret + delta));
+      go = qty - ret;
+    }
+
+    goEl.value = String(go);
+    retEl.value = String(ret);
+    validateAtMultiSum();
+  }
+  window.adjustAtMulti = adjustAtMulti;
+
+  function onAtMultiInput(type, rawVal) {
+    const qty = atPurposeState.qty;
+    const goEl = document.getElementById('atMultiGo');
+    const retEl = document.getElementById('atMultiReturn');
+    if (!goEl || !retEl) return;
+
+    const minGo = atPurposeState.requiredDir === 'go' ? 1 : 0;
+    const minRet = atPurposeState.requiredDir === 'return' ? 1 : 0;
+
+    const cleaned = String(rawVal).replace(/\D/g, '');
+    let val = parseInt(cleaned, 10);
+    if (isNaN(val)) val = 0;
+
+    if (type === 'go') {
+      val = Math.max(minGo, Math.min(qty - minRet, val));
+      goEl.value = String(val);
+      retEl.value = String(qty - val);
+    } else {
+      val = Math.max(minRet, Math.min(qty - minGo, val));
+      retEl.value = String(val);
+      goEl.value = String(qty - val);
+    }
+
+    validateAtMultiSum();
+  }
+  window.onAtMultiInput = onAtMultiInput;
+
+  function validateAtMultiSum() {
+    const qty = atPurposeState.qty;
+    const go = parseInt(document.getElementById('atMultiGo')?.value, 10) || 0;
+    const ret = parseInt(document.getElementById('atMultiReturn')?.value, 10) || 0;
+    const warn = document.getElementById('atMultiWarning');
+    if (!warn) return;
+
+    if (go + ret !== qty) {
+      warn.textContent = `Total trips (${go + ret}) does not match total quantity (${qty}).`;
+      warn.classList.remove('hidden');
+    } else {
+      warn.classList.add('hidden');
+    }
+  }
+
+  /* ----------------------------------------------------------
+   * Collect purposes
+   * ---------------------------------------------------------- */
+  function collectAtPurposeData() {
+    const qty = atPurposeState.qty;
+    const mode = atPurposeState.mode;
+
+    if (mode === 'single') {
+      const val = document.getElementById('atPurposeSingle')?.value || '';
+      if (!val) return null;
+      return [val];
+    }
+
+    // multi
+    const go = parseInt(document.getElementById('atMultiGo')?.value, 10) || 0;
+    const ret = parseInt(document.getElementById('atMultiReturn')?.value, 10) || 0;
+    if (go + ret !== qty) return null;
+
+    const purposes = [];
+    for (let i = 0; i < go; i++) purposes.push('airport_to_city');
+    for (let i = 0; i < ret; i++) purposes.push('city_to_airport');
+    return purposes;
+  }
+
+  /* ----------------------------------------------------------
+   * Hooks qty & variant change
+   * ---------------------------------------------------------- */
+  (function patchAtPurposeHooks() {
+    const _origDecrease = window.decreaseQuantity;
+    const _origIncrease = window.increaseQuantity;
+
+    window.decreaseQuantity = function () {
+      _origDecrease?.();
+      if (filtered?.category === 'Airport_Transfer') renderAtPurposeSection();
+    };
+
+    window.increaseQuantity = function () {
+      _origIncrease?.();
+      if (filtered?.category === 'Airport_Transfer') renderAtPurposeSection();
+    };
+
+    const _origHandleOptionChange = window.handleOptionChange;
+    window.handleOptionChange = async function (optionIndex, value) {
+      await _origHandleOptionChange?.(optionIndex, value);
+      if (filtered?.category === 'Airport_Transfer') renderAtPurposeSection();
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const qtyInput = document.getElementById('variant-quantity');
+      if (qtyInput && filtered?.category === 'Airport_Transfer') {
+        qtyInput.addEventListener('change', () => renderAtPurposeSection());
+        qtyInput.addEventListener('blur', () => renderAtPurposeSection());
+      }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+   * Patch buyNow: validate + save
+   * ---------------------------------------------------------- */
+  (function patchBuyNowForAtPurpose() {
+    const _origBuyNow = window.buyNow;
+
+    window.buyNow = async function () {
+      if (filtered?.category !== 'Airport_Transfer') {
+        return _origBuyNow?.();
+      }
+
+      const purposes = collectAtPurposeData();
+      if (!purposes) {
+        showToast('Please select Transfer Purpose for all trips', 'error');
+        document.getElementById('atPurposeSection')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      sessionStorage.setItem('AT_Purposes', JSON.stringify(purposes));
+      return _origBuyNow?.();
+    };
+  })();
+
+  /* ----------------------------------------------------------
+   * Reset hook
+   * ---------------------------------------------------------- */
+  (function patchResetForAtPurpose() {
+    const _origReset = window.resetSelection;
+    window.resetSelection = function () {
+      _origReset?.();
+      if (filtered?.category === 'Airport_Transfer') {
+        document.getElementById('atPurposeSection')?.classList.add('hidden');
+        lockSinglePurposeSelect('', false);
+      }
+    };
+  })();
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('atPurposeSection')?.classList.add('hidden');
+    if (filtered?.category === 'Airport_Transfer' && selectedVariant) {
+      renderAtPurposeSection();
+    }
+  });
+</script>

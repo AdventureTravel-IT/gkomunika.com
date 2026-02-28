@@ -1,40 +1,104 @@
-<div class="language-popup__container" id="languagePopup">
-  <div class="language-popup__content">
-    <h2 class="language-popup__content-title">Welcome to Global Komunika!</h2>
-    <p class="language-popup__content-paragraph">Please select your language and currency from the options below</p>
+{% if request.page_type == 'index' %}
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('languagePopupDismissed') === 'true') {
+          document.documentElement.classList.add('hide-language-popup');
+        }
+      } catch (e) {}
+    })();
+  </script>
 
-    <div class="language-popup__option-wrapper">
-      <span>Currency</span>
-      <section id="bucks-floating-desktop" class="bucks-floating-desktop"></section>
+  <style>
+    .hide-language-popup #languagePopup {
+      display: none !important;
+    }
+    .no-scroll {
+      overflow: hidden;
+    }
+  </style>
 
-      <span>Language</span>
-      <section>
-        <form class="language-selector-form" onsubmit="event.preventDefault();">
-          <select id="language-select" style="padding: 15px;">
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const popup = document.getElementById('languagePopup');
+      if (!popup) return;
+
+      if (localStorage.getItem('languagePopupDismissed') === 'true') {
+        popup.remove();
+      } else {
+        document.body.classList.add('no-scroll');
+      }
+    });
+
+    function saveLanguageSelection() {
+      const locale = document.getElementById('language-select').value;
+      const currency = document.getElementById('currency-select').value;
+
+      localStorage.setItem('languagePopupDismissed', 'true');
+      sessionStorage.setItem('buckscc_customer_currency', JSON.stringify(currency));
+      document.body.classList.remove('no-scroll');
+
+      // Gunakan origin saat ini agar tidak redirect ke production
+      const origin = window.location.origin;
+
+      // Shopify default locale tidak pakai prefix, locale lain pakai /locale_code
+      const defaultLocale = '{{ localization.available_languages | map: "iso_code" | first }}';
+      const path = locale === defaultLocale ? '/' : '/' + locale;
+
+      window.location.href = origin + path;
+    }
+  </script>
+
+  <!-- Language & Currency Popup -->
+  <div id="languagePopup" class="fixed inset-0 z-[999] flex items-center justify-center bg-black/30">
+    <div class="w-[400px] max-sm:w-full max-sm:mx-6 bg-neutral rounded-2xl shadow-lg p-6 space-y-4">
+      <!-- Header -->
+      <div>
+        <h2 class="text-xl font-bold text-primary leading-tight">Welcome to Global Komunika!</h2>
+        <p class="text-primary mt-1 text-sm">Please select your language and currency.</p>
+      </div>
+
+      <!-- Language -->
+      <div class="space-y-1">
+        <label for="language-select" class="text-primary font-semibold text-sm">Language</label>
+        <select
+          id="language-select"
+          class="w-full rounded-xl text-base text-primary border border-primary outline-none px-4 py-3"
+        >
+          {% for language in localization.available_languages %}
             <option
-              value="https://gkomunika.com"
-              {% if request.locale.iso_code == 'en' %}
+              value="{{ language.iso_code }}"
+              {% if language.iso_code == localization.language.iso_code %}
                 selected
               {% endif %}
             >
-              English
+              {{ language.endonym_name }}
             </option>
+          {% endfor %}
+        </select>
+      </div>
 
-            <option
-              value="https://gkomunika.com/id"
-              {% if request.locale.iso_code == 'id' %}
-                selected
-              {% endif %}
-            >
-              Indonesia
-            </option>
-          </select>
-        </form>
-      </section>
-    </div>
+      <!-- Currency -->
+      <div class="space-y-1">
+        <label for="currency-select" class="text-primary font-semibold text-sm">Currency</label>
+        <select
+          id="currency-select"
+          class="w-full rounded-xl text-base text-primary border border-primary outline-none px-4 py-3"
+        >
+          <option value="USD">USD</option>
+          <option value="IDR">IDR</option>
+        </select>
+      </div>
 
-    <div class="language-popup__footer">
-      <button class="language-popup__button" onclick="saveLanguageSelection()">Save</button>
+      <!-- Action -->
+      <div class="flex justify-end pt-2">
+        <button
+          onclick="saveLanguageSelection()"
+          class="px-6 py-2.5 bg-primary text-neutral text-base font-medium rounded-xl cursor-pointer hover:opacity-90 transition-opacity"
+        >
+          Save
+        </button>
+      </div>
     </div>
   </div>
-</div>
+{% endif %}

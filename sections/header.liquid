@@ -139,16 +139,64 @@
 
         <div class="flex items-center gap-2.5">
           <!-- Currency -->
-          <div class="flex items-center gap-2.5 border-0 p-0 rounded-none">
-            <div class="inline-flex items-center">
-              {{- 'header-currency.svg' | inline_asset_content -}}
-            </div>
-            <div id="bucks-floating-desktop" class="flex items-center"></div>
+          <!-- Currency (DESKTOP) -->
+          <div class="relative inline-block" id="CurrencyForm-desktop">
+            <button
+              id="CurrencyTrigger-desktop"
+              type="button"
+              class="inline-flex items-center gap-3 px-2.5 py-2 transition select-none"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="CurrencyMenu-desktop"
+            >
+              <span class="inline-flex items-center">
+                {{- 'header-currency.svg' | inline_asset_content -}}
+              </span>
+              <span id="CurrencyLabel-desktop" class="text-sm tracking-wider text-[var(--color-primary)]">USD</span>
+              <span
+                id="CurrencyArrow-desktop"
+                class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
+                aria-hidden="true"
+              >
+                {% render 'icon-arrow-right', class: 'text-primary w-[30px] h-[30px]' %}
+              </span>
+            </button>
+
+            <ul
+              id="CurrencyMenu-desktop"
+              class="hidden absolute right-0 top-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+              role="listbox"
+              aria-label="Select currency"
+            >
+              <li role="option">
+                <button
+                  type="button"
+                  data-currency="USD"
+                  class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
+                >
+                  <span>USD</span>
+                </button>
+              </li>
+              <li role="option">
+                <button
+                  type="button"
+                  data-currency="IDR"
+                  class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
+                >
+                  <span>IDR</span>
+                </button>
+              </li>
+            </ul>
           </div>
 
           <!-- Language (DESKTOP) -->
           {% form 'localization', id: 'LanguageFormUX-desktop', class: 'relative inline-block' %}
-            <input type="hidden" name="locale_code" id="LangLocaleInput-desktop" value="{{ localization.language.iso_code }}">
+            <input
+              type="hidden"
+              name="locale_code"
+              id="LangLocaleInput-desktop"
+              value="{{ localization.language.iso_code }}"
+            >
 
             {% assign current_code = localization.language.iso_code | upcase | slice: 0, 2 %}
 
@@ -403,63 +451,135 @@
 
           <li class="{{ sidebar_li }}">
             <a href="{{ routes.root_url }}" class="{{ sidebar_a }}">
-              <img src="{{ 'header-home.svg' | asset_url }}" alt="Home icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <img
+                src="{{ 'header-home.svg' | asset_url }}"
+                alt="Home icon"
+                class="w-6 h-6 inline-block"
+                width="24"
+                height="24"
+                loading="lazy"
+                decoding="async"
+              >
               <span class="text-sm font-[790]">Home</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/esim-page?sim_type=esim" class="{{ sidebar_a }}">
-              <img src="{{ 'header-esim.svg' | asset_url }}" alt="eSIM icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <img
+                src="{{ 'header-esim.svg' | asset_url }}"
+                alt="eSIM icon"
+                class="w-6 h-6 inline-block"
+                width="24"
+                height="24"
+                loading="lazy"
+                decoding="async"
+              >
               <span class="text-sm font-[790]">eSIM</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/sim-card-page?sim_type=sim-card" class="{{ sidebar_a }}">
-              <img src="{{ 'header-simcard.svg' | asset_url }}" alt="SIM Card icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <img
+                src="{{ 'header-simcard.svg' | asset_url }}"
+                alt="SIM Card icon"
+                class="w-6 h-6 inline-block"
+                width="24"
+                height="24"
+                loading="lazy"
+                decoding="async"
+              >
               <span class="text-sm font-[790]">SIM Card</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/insurance-page?sim_type=insurance" class="{{ sidebar_a }}">
-              <img src="{{ 'header-insurance.svg' | asset_url }}" alt="Insurance icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <img
+                src="{{ 'header-insurance.svg' | asset_url }}"
+                alt="Insurance icon"
+                class="w-6 h-6 inline-block"
+                width="24"
+                height="24"
+                loading="lazy"
+                decoding="async"
+              >
               <span class="text-sm font-[790]">Insurance</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/check-data-usage" class="{{ sidebar_a }}">
-              <img src="{{ 'header-usage.svg' | asset_url }}" alt="Data Usage icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <img
+                src="{{ 'header-usage.svg' | asset_url }}"
+                alt="Data Usage icon"
+                class="w-6 h-6 inline-block"
+                width="24"
+                height="24"
+                loading="lazy"
+                decoding="async"
+              >
               <span class="text-sm font-[790]">Data Usage</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="{{ sidebar_a }}">
-              <img src="{{ 'icon-plus.svg' | asset_url }}" alt="Top Up icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <img
+                src="{{ 'icon-plus.svg' | asset_url }}"
+                alt="Top Up icon"
+                class="w-6 h-6 inline-block"
+                width="24"
+                height="24"
+                loading="lazy"
+                decoding="async"
+              >
               <span class="text-sm font-[790]">Top Up</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/about-us" class="{{ sidebar_a }}">
-              <img src="{{ 'header-about.svg' | asset_url }}" alt="About Us icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <img
+                src="{{ 'header-about.svg' | asset_url }}"
+                alt="About Us icon"
+                class="w-6 h-6 inline-block"
+                width="24"
+                height="24"
+                loading="lazy"
+                decoding="async"
+              >
               <span class="text-sm font-[790]">About Us</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/faq" class="{{ sidebar_a }}">
-              <img src="{{ 'header-faq.svg' | asset_url }}" alt="FAQ icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <img
+                src="{{ 'header-faq.svg' | asset_url }}"
+                alt="FAQ icon"
+                class="w-6 h-6 inline-block"
+                width="24"
+                height="24"
+                loading="lazy"
+                decoding="async"
+              >
               <span class="text-sm font-[790]">FAQ</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/news" class="{{ sidebar_a }}">
-              <img src="{{ 'header-news.svg' | asset_url }}" alt="News icon" class="w-6 h-6 inline-block" width="24" height="24" loading="lazy" decoding="async">
+              <img
+                src="{{ 'header-news.svg' | asset_url }}"
+                alt="News icon"
+                class="w-6 h-6 inline-block"
+                width="24"
+                height="24"
+                loading="lazy"
+                decoding="async"
+              >
               <span class="text-sm font-[790]">News</span>
             </a>
           </li>
@@ -468,15 +588,65 @@
         <div class="px-4 pb-4">
           <div class="flex items-center gap-2.5">
             <div class="flex items-center">
-              <div class="inline-flex items-center">
-                {{- 'header-currency.svg' | inline_asset_content -}}
+              <!-- Currency (MOBILE) -->
+              <div class="relative inline-block" id="CurrencyForm-mobile">
+                <button
+                  id="CurrencyTrigger-mobile"
+                  type="button"
+                  class="inline-flex items-center gap-2 px-2.5 py-2 transition select-none"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="CurrencyMenu-mobile"
+                >
+                  <span class="inline-flex items-center">
+                    {{- 'header-currency.svg' | inline_asset_content -}}
+                  </span>
+                  <span id="CurrencyLabel-mobile" class="text-sm tracking-wider text-[var(--color-primary)]">USD</span>
+                  <span
+                    id="CurrencyArrow-mobile"
+                    class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
+                    aria-hidden="true"
+                  >
+                    {% render 'icon-arrow-right', class: 'text-primary w-[30px] h-[30px]' %}
+                  </span>
+                </button>
+
+                <ul
+                  id="CurrencyMenu-mobile"
+                  class="hidden absolute right-0 bottom-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+                  role="listbox"
+                  aria-label="Select currency"
+                >
+                  <li role="option">
+                    <button
+                      type="button"
+                      data-currency="USD"
+                      class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
+                    >
+                      <span>USD</span>
+                    </button>
+                  </li>
+                  <li role="option">
+                    <button
+                      type="button"
+                      data-currency="IDR"
+                      class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
+                    >
+                      <span>IDR</span>
+                    </button>
+                  </li>
+                </ul>
               </div>
-              <div id="bucks-mobile"></div>
             </div>
 
             <!-- Language (MOBILE) -->
             {% form 'localization', id: 'LanguageFormUX-mobile', class: 'relative inline-block' %}
-              <input type="hidden" name="locale_code" id="LangLocaleInput-mobile" value="{{ localization.language.iso_code }}">
+              <input
+                type="hidden"
+                name="locale_code"
+                id="LangLocaleInput-mobile"
+                value="{{ localization.language.iso_code }}"
+              >
 
               {% assign current_code_m = localization.language.iso_code | upcase | slice: 0, 2 %}
 
@@ -706,6 +876,93 @@
     </div>
   </div>
 </div>
+
+<!-- CURRENCY DROPDOWN JS (Desktop + Mobile) -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const initCurrency = (suffix) => {
+      const wrap = document.getElementById(`CurrencyForm-${suffix}`);
+      if (!wrap) return;
+
+      const btn     = document.getElementById(`CurrencyTrigger-${suffix}`);
+      const menu    = document.getElementById(`CurrencyMenu-${suffix}`);
+      const label   = document.getElementById(`CurrencyLabel-${suffix}`);
+      const arrow   = document.getElementById(`CurrencyArrow-${suffix}`);
+
+      if (!btn || !menu || !label) return;
+
+      // Restore saved currency
+      const saved = sessionStorage.getItem('buckscc_customer_currency');
+      if (saved) {
+        try {
+          const val = JSON.parse(saved);
+          label.textContent = val;
+          // Mark active item
+          menu.querySelectorAll('[data-currency]').forEach(item => {
+            const isActive = item.dataset.currency === val;
+            item.classList.toggle('bg-black/10', isActive);
+            item.classList.toggle('font-semibold', isActive);
+          });
+        } catch (e) {}
+      }
+
+      const open = () => {
+        menu.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        if (arrow) arrow.classList.add('rotate-[270deg]');
+      };
+
+      const close = () => {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+        if (arrow) arrow.classList.remove('rotate-[270deg]');
+      };
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        menu.classList.contains('hidden') ? open() : close();
+      });
+
+      menu.querySelectorAll('[data-currency]').forEach((item) => {
+        item.addEventListener('click', () => {
+          const val = item.dataset.currency;
+
+          // Save to sessionStorage
+          sessionStorage.setItem('buckscc_customer_currency', JSON.stringify(val));
+
+          // Update label both desktop & mobile
+          ['desktop', 'mobile'].forEach(s => {
+            const lbl = document.getElementById(`CurrencyLabel-${s}`);
+            if (lbl) lbl.textContent = val;
+
+            // Update active state
+            const m = document.getElementById(`CurrencyMenu-${s}`);
+            if (m) {
+              m.querySelectorAll('[data-currency]').forEach(i => {
+                const isActive = i.dataset.currency === val;
+                i.classList.toggle('bg-black/10', isActive);
+                i.classList.toggle('font-semibold', isActive);
+              });
+            }
+          });
+
+          close();
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!wrap.contains(e.target)) close();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+      });
+    };
+
+    initCurrency('desktop');
+    initCurrency('mobile');
+  });
+</script>
 
 {% schema %}
 {

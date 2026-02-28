@@ -697,16 +697,20 @@
     }
 
     function renderCoverageBack(item, opts = {}) {
-      const cov = getCoverageItems(item, opts);
+      let cov = getCoverageItems(item, opts);
+
+      if (!cov.length && opts.excludePrimary) {
+        cov = getCoverageItems(item, { ...opts, excludePrimary: false });
+      }
 
       if (!cov.length) {
         return `
-          <ul class="coverage" role="list">
-            <li style="padding:10px; color: var(--color-secondary); font-weight:700;">
-              No coverage data
-            </li>
-          </ul>
-        `;
+      <ul class="coverage" role="list">
+        <li style="padding:10px; color: var(--color-secondary); font-weight:700;">
+          No coverage data
+        </li>
+      </ul>
+    `;
       }
 
       const rows = cov
@@ -822,7 +826,7 @@
     function renderCoverageFieldFront(item, opts = {}) {
       const cov = getCoverageItems(item, opts);
 
-      const minShow = opts.excludePrimary ? 1 : 2;
+      const minShow = opts.minCount !== undefined ? opts.minCount : opts.excludePrimary ? 1 : 2;
       if (cov.length < minShow) return '';
 
       const iconWorld = "{{ 'icon-park-outline_world.svg' | asset_url }}";
@@ -851,7 +855,7 @@
       <div class="country-total-atribut">
         <button class="flipped-trigger w-full cursor-pointer" type="button">
           <span class="countries-count font-semibold text-secondary leading-relaxed">
-            ${escapeHtml(t('countries', { count }))}
+           ${escapeHtml(count === 1 ? `${count} Country` : t('countries', { count }))}
           </span>
         </button>
         <p class="included-badge text-neutral text-[12px] min-w-full text-center text-semibold bg-secondary"></p>
@@ -893,7 +897,15 @@
       });
 
       // ✅ render coverage dulu, supaya kita tahu ada coverage atau tidak
-      const coverageHtml = renderCoverageFieldFront(item, opts);
+      let coverageHtml = renderCoverageFieldFront(item, opts);
+      if (!coverageHtml.trim() && opts.excludePrimary) {
+        coverageHtml = renderCoverageFieldFront(item, {
+          ...opts,
+          excludePrimary: false,
+          labelMode: 'coverage',
+          minCount: 1,
+        });
+      }
       const hasCoverage = Boolean((coverageHtml || '').trim());
 
       return `

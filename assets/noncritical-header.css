@@ -190,9 +190,11 @@
 }
 
 .htu__cutomer-content.wrapper {
-  background-color: var(--color-primary);
+  background-color: var(--color-neutral);
+  border: 2px solid var(--color-primary);
   border-radius: 15px;
   padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .htu__customer-profile {
@@ -207,7 +209,7 @@
 
 .htu__customer-comment {
   font-size: var(--font-large);
-  color: var(--color-neutral);
+  color: var(--color-primary);
   text-align: center;
 }
 

@@ -182,6 +182,7 @@
 
   .form-insurance__checkout-button {
     background-color: var(--color-primary);
+    display: flex;
   }
 
   .insurance-form__add-form {
@@ -193,9 +194,12 @@
     box-shadow: var(--box-shadow);
   }
 
-  #add-form-button,
-  #checkout-button {
+  #add-form-button {
     margin-left: auto;
+    margin-top: 10px;
+  }
+
+  #checkout-button {
     margin-top: 10px;
   }
 
@@ -461,6 +465,19 @@
 </div>
 {% endcapture %}
 
+<div id="step-indicator" class="hidden wrapper md:px-[20%] md:py-[20px] pt-6">
+  <div class="flex items-center gap-2 text-sm text-primary">
+    <span
+      id="step-back-btn"
+      class="cursor-pointer bg-primary text-neutral flex items-center px-3 py-2 rounded-[10px]"
+      onclick="history.back()"
+    >
+      {% render 'icon-arrow-left', class: 'text-neutral' %} Back
+    </span>
+    <span class="text-secondary font-semibold" id="step-label"></span>
+  </div>
+</div>
+
 <div class="form-insurance__container">
   <div class="form-insurance__content-wrapper">
     <div class="form-insurance__form-section">
@@ -495,10 +512,48 @@
         </label>
       </div>
 
-      <button id="checkout-button" type="button" class="form-insurance__checkout-button" onclick="handleCheckout()">
-        Checkout
+      <button
+        id="checkout-button"
+        type="button"
+        class="form-insurance__checkout-button flex gap-2"
+        onclick="handleCheckout()"
+      >
+        <span id="checkout-btn-text">Checkout</span>
+        <span id="checkout-btn-loading" class="hidden flex items-center gap-2"
+          ><span>Processing</span>{% render 'loading' -%}
+        </span>
       </button>
     </section>
+  </div>
+</div>
+
+<!-- Checkout Confirmation Modal -->
+<!-- Checkout Confirmation Modal -->
+<div id="checkout-modal" class="hidden fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center">
+  <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center shadow-2xl">
+    <h2 class="text-xl font-semibold text-primary">Thank you!</h2>
+    <h2 class="text-xl font-semibold text-primary mb-4">Data received.</h2>
+
+    <div class="bg-gray-50 rounded-xl text-left mb-6 text-primary text-sm leading-relaxed">
+      <p class="text-base mb-2">Please complete payment and confirm to:</p>
+      <a
+        href="https://wa.me/628986454071"
+        target="_blank"
+        class="text-green-600 font-semibold flex items-center gap-1 mt-1"
+      >
+        📞 +628986454071
+      </a>
+    </div>
+
+    <button
+      id="modal-checkout-btn"
+      class="w-full bg-primary flex justify-center text-white border-none rounded-xl py-3 px-9 text-base cursor-pointer hover:opacity-85 transition-opacity"
+    >
+      <span id="modal-btn-text">Proceed to Checkout</span>
+      <span id="modal-btn-loading" class="hidden flex items-center gap-2"
+        ><span>Processing</span>{% render 'loading' -%}
+      </span>
+    </button>
   </div>
 </div>
 
@@ -1771,6 +1826,32 @@
     return result.trim();
   }
 
+  function resetModalBtn() {
+    const modalBtn = document.getElementById('modal-checkout-btn');
+    const modalBtnText = document.getElementById('modal-btn-text');
+    const modalBtnLoading = document.getElementById('modal-btn-loading');
+
+    if (!modalBtn) return;
+    modalBtn.disabled = false;
+    modalBtnText.classList.remove('hidden');
+    modalBtnLoading.classList.add('hidden');
+  }
+
+  function setCheckoutLoading(isLoading) {
+    const btn = document.getElementById('checkout-button');
+    const btnText = document.getElementById('checkout-btn-text');
+    const btnLoading = document.getElementById('checkout-btn-loading');
+
+    const itineraryCheckbox = document.getElementById('check-itinerary-global');
+    btn.disabled = isLoading ? true : !itineraryCheckbox.checked;
+
+    btnText.classList.toggle('hidden', isLoading);
+    btnLoading.classList.toggle('hidden', !isLoading);
+
+    // ✅ Reset modal button juga setiap kali loading selesai
+    if (!isLoading) resetModalBtn();
+  }
+
   async function handleCheckout() {
     const itineraryCheckbox = document.getElementById('check-itinerary-global');
     clearGlobalCheckboxError();
@@ -1806,6 +1887,8 @@
       return;
     }
 
+    setCheckoutLoading(true);
+
     // ─────────────────────────────────────────────
     // Kumpulkan attributes dari insurance forms
     // ─────────────────────────────────────────────
@@ -1814,6 +1897,7 @@
 
     if (insuranceItems.length === 0) {
       setGlobalCheckboxError('No insurance product selected.');
+      setCheckoutLoading(false);
       return;
     }
 
@@ -1928,6 +2012,15 @@
     // ─────────────────────────────────────────────
     // Tidak ada step berikutnya → langsung checkout
     // ─────────────────────────────────────────────
+
+    // ─── Gabungkan dengan transfer attributes jika sudah ada (flow: transfer → insurance) ───
+    const savedTransferAttribs = JSON.parse(
+      sessionStorage.getItem('TransferAttributes') || localStorage.getItem('TransferAttributes') || '{}'
+    );
+    const savedTransferHeaderData = JSON.parse(
+      sessionStorage.getItem('TransferHeaderData') || localStorage.getItem('TransferHeaderData') || 'null'
+    );
+
     try {
       await fetch('/cart/clear.js', {
         method: 'POST',
@@ -1936,10 +2029,29 @@
 
       for (const product of ProductItems) {
         const variantTitle = product.variantTitle || '';
-        const attrKey = `Form ${product.variantType} - ${variantTitle}`;
         let itemAttributes = {};
-        if (product.category === 'Insurance' && attributes[attrKey]) {
-          itemAttributes = { [attrKey]: attributes[attrKey] };
+
+        if (product.category === 'Insurance') {
+          const attrKey = `Form ${product.variantType} - ${variantTitle}`;
+          if (attributes[attrKey]) {
+            itemAttributes[attrKey] = attributes[attrKey];
+          }
+        } else if (product.category === 'Airport_Transfer') {
+          // Gunakan transfer attributes yang sudah disimpan sebelumnya
+          const attrKey = `${product.quantity}x - ${product.variantTitle || product.productTitle}`;
+          if (savedTransferHeaderData) {
+            itemAttributes['Passenger Information'] = [
+              `Full Name: ${savedTransferHeaderData.name}`,
+              `Email: ${savedTransferHeaderData.email}`,
+              `WhatsApp: ${savedTransferHeaderData.whatsapp}`,
+              `Adult Passengers: ${savedTransferHeaderData.adults}`,
+              `Child Passengers (0-6 yr): ${savedTransferHeaderData.children}`,
+              `Baby Seat Request: ${savedTransferHeaderData.babySeat}`,
+            ].join('\n');
+          }
+          if (savedTransferAttribs[attrKey]) {
+            itemAttributes[attrKey] = savedTransferAttribs[attrKey];
+          }
         }
 
         await fetch('/cart/add.js', {
@@ -1953,9 +2065,27 @@
         });
       }
 
-      window.location.href = '/checkout';
+      setCheckoutLoading(false);
+
+      const modal = document.getElementById('checkout-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      document.getElementById('modal-checkout-btn').onclick = () => {
+        // ✅ Loading untuk modal button
+        const modalBtn = document.getElementById('modal-checkout-btn');
+        const modalBtnText = document.getElementById('modal-btn-text');
+        const modalBtnLoading = document.getElementById('modal-btn-loading');
+
+        modalBtn.disabled = true;
+        modalBtnText.classList.add('hidden');
+        modalBtnLoading.classList.remove('hidden');
+
+        window.location.href = '/checkout';
+      };
     } catch (error) {
       console.error('Checkout error:', error);
+      setCheckoutLoading(false);
       setGlobalCheckboxError('There was an error during checkout. Please try again.');
     }
   }
@@ -1990,6 +2120,32 @@
         clearGlobalCheckboxError();
         checkoutBtn.disabled = !itineraryCheckbox.checked;
       });
+    }
+
+    // ← Tambahkan di sini
+    document.getElementById('checkout-modal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        this.classList.add('hidden');
+        this.classList.remove('flex');
+        resetModalBtn();
+      }
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const flow = JSON.parse(sessionStorage.getItem('CheckoutFlow') || 'null');
+    if (flow && flow.steps && flow.steps.length > 1) {
+      const currentIdx = flow.steps.indexOf('insurance');
+      const isLastStep = currentIdx === flow.steps.length - 1;
+
+      if (isLastStep) {
+        const indicator = document.getElementById('step-indicator');
+        const label = document.getElementById('step-label');
+        if (indicator) indicator.classList.remove('hidden');
+        if (label) {
+          label.textContent = `Step ${currentIdx + 1} of ${flow.steps.length}: Insurance Details`;
+        }
+      }
     }
   });
 </script>

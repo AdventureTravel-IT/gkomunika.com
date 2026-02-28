@@ -261,6 +261,16 @@
           {% assign days_value = item.properties.Days | default: '' %}
           {% assign data_plan_value = item.properties['Data Plan'] | default: '' %}
 
+          {%- assign variant_purpose = '' -%}
+          {%- if item.product.metafields.product.category.value == 'Airport_Transfer' -%}
+            {%- assign variant_purpose = item.variant.metafields.airport.purpose -%}
+            {%- assign auto_variantId = item.variant.metafields.airport.auto_variant.value.id | default: '' | json -%}
+            {%- assign auto_variantTitle = item.variant.metafields.airport.auto_variant.value.title
+              | default: ''
+              | json
+            -%}
+          {%- endif -%}
+
           <!-- ITEM WRAP (mobile tetap rapih, desktop seperti design yang kamu mau) -->
           <div
             class="py-7 relative md:static"
@@ -289,7 +299,10 @@
 
                 <div class="min-w-0 flex-1">
                   {%- if item.variant.available %}
-                    <a href="{{ item.url }}" class="mb-2 block text-base font-semibold text-primary underline">
+                    <a
+                      href="{{ item.url }}"
+                      class="mb-2 block mr-[50px] text-base font-semibold text-primary underline"
+                    >
                       {{ item.product.title }}
                     </a>
                   {% else %}
@@ -405,7 +418,7 @@
                 <div class="flex items-center gap-3 md:gap-4">
                   <button
                     type="button"
-                    class="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed absolute top-[15px] right-0 md:static md:top-auto md:right-auto"
+                    class="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed absolute top-[17px] right-0 md:static md:top-auto md:right-auto"
                     data-remove
                     data-line="{{ forloop.index }}"
                     aria-label="Remove item"
@@ -903,6 +916,40 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
   sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
   localStorage.setItem('ProductItems', JSON.stringify(ProductItems));
 
+  // ── Build AT_Purposes untuk item Airport Transfer ──
+  (function buildAndSaveAtPurposes() {
+    function purposeLabelToValue(label) {
+      const s = String(label || '').trim().toLowerCase();
+      if (s === 'city to airport' || s.includes('city_to_airport')) return 'city_to_airport';
+      if (s === 'airport to city' || s.includes('airport_to_city')) return 'airport_to_city';
+      return '';
+    }
+
+    const transferItems = ProductItems.filter(i => i.category === 'Airport_Transfer');
+    if (!transferItems.length) return;
+
+    const purposes = [];
+    transferItems.forEach(item => {
+      const qty = parseInt(item.quantity, 10) || 1;
+      const lockedPurpose = item.defaultPurpose
+        ? purposeLabelToValue(item.defaultPurpose)
+        : '';
+
+      for (let i = 0; i < qty; i++) {
+        if (i === 0) {
+          // Unit pertama → lock dari metafield
+          purposes.push(lockedPurpose);
+        } else {
+          // Unit ke-2, ke-3, dst → bebas dipilih user
+          purposes.push('');
+        }
+      }
+    });
+
+    sessionStorage.setItem('AT_Purposes', JSON.stringify(purposes));
+    localStorage.setItem('AT_Purposes', JSON.stringify(purposes));
+  })();
+
   // ------------------------------------------------
   // Tentukan flow berdasarkan kategori yang ada
   // ------------------------------------------------
@@ -915,8 +962,8 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
     hasTransfer,
     // Step mana yang perlu dikunjungi (urutan tetap: insurance dulu, lalu transfer)
     steps: [
-      ...(hasInsurance ? ['insurance'] : []),
       ...(hasTransfer  ? ['transfer']  : []),
+      ...(hasInsurance ? ['insurance'] : []),
     ],
     currentStepIndex: 0,
   };

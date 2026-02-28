@@ -30,7 +30,19 @@
         {%- assign raw_cat = product.metafields.product.category.value | default: 'Gkomunika' -%}
         {%- assign cat_label = raw_cat | replace: '_', ' ' -%}
 
-        <span class="bg-primary text-center px-2 rounded-[10px] leading-none text-neutral">
+        {%- assign cat_normalized = raw_cat | downcase | replace: ' ', '_' | replace: '-', '_' -%}
+
+        {%- if cat_normalized == 'sim_card' -%}
+          {%- assign badge_style = 'background:var(--color-secondary); color:var(--color-neutral);' -%}
+        {%- elsif cat_normalized == 'insurance' -%}
+          {%- assign badge_style = 'background:#CFEFFC; color:var(--color-primary);' -%}
+        {%- elsif cat_normalized == 'airport_transfer' -%}
+          {%- assign badge_style = 'background:#007BB0; color:var(--color-neutral);' -%}
+        {%- else -%}
+          {%- assign badge_style = 'background:var(--color-primary); color:var(--color-neutral);' -%}
+        {%- endif -%}
+
+        <span class="text-center px-2 rounded-[10px] leading-none font-bold" style="{{ badge_style }}">
           {%- if raw_cat contains 'Top_Up_' -%}
             Top Up Plan
           {%- else -%}
@@ -39,6 +51,17 @@
         </span>
         {{ product.title }}
       </h1>
+
+      <div class="flex gap-2 tracking-wider text-sm items-center text-primary">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {% render block -%}
+          {%- endcase -%}
+        {%- endfor -%}
+
+        <span>- {{ product.metafields.product.sold.value | default: '-' }} sold</span>
+      </div>
 
       <div id="priceContainer" class="hidden md:block">
         <!-- IDR Price -->
@@ -601,8 +624,19 @@
         <h2 id="mobileTitle" class="text-primary text-xl font-bold leading-tight line-clamp-2">
           {%- assign raw_cat = product.metafields.product.category.value | default: 'Gkomunika' -%}
           {%- assign cat_label = raw_cat | replace: '_', ' ' -%}
+          {%- assign cat_normalized = raw_cat | downcase | replace: ' ', '_' | replace: '-', '_' -%}
 
-          <span class="bg-primary px-2 rounded-[10px] leading-none text-neutral">
+          {%- if cat_normalized == 'sim_card' -%}
+            {%- assign badge_style = 'background:var(--color-secondary); color:var(--color-neutral);' -%}
+          {%- elsif cat_normalized == 'insurance' -%}
+            {%- assign badge_style = 'background:#CFEFFC; color:var(--color-primary);' -%}
+          {%- elsif cat_normalized == 'airport_transfer' -%}
+            {%- assign badge_style = 'background:#007BB0; color:var(--color-neutral);' -%}
+          {%- else -%}
+            {%- assign badge_style = 'background:var(--color-primary); color:var(--color-neutral);' -%}
+          {%- endif -%}
+
+          <span class="px-2 rounded-[10px] leading-none font-bold" style="{{ badge_style }}">
             {%- if raw_cat contains 'Top_Up_' -%}
               Top Up Plan
             {%- else -%}
@@ -754,7 +788,7 @@
   id="iccid-modal"
   class="hidden fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral p-4 rounded-[15px] z-[1000] w-[90%] max-w-md shadow-lg"
 >
-  <h3 class="text-primary font-bold text-lg">Enter Your ICCID</h3>
+  <h3 class="text-primary font-bold text-lg">{{ 'products.top_up.label_input_iccid' | t }}</h3>
 
   <form id="iccid-form" action="" class="flex flex-col mt-2">
     <input
@@ -763,7 +797,7 @@
       inputmode="numeric"
       pattern="[0-9]*"
       maxlength="25"
-      placeholder="Input ICCID Number"
+      placeholder="{{ 'products.top_up.placeholder_form_iccid' | t }}"
       oninput="this.value = this.value.replace(/\D/g,'')"
       class="w-full rounded-[10px] bg-background text-primary placeholder:text-primary p-3 border border-primary focus:ring-1 focus:ring-primary focus:outline-none focus:placeholder:text-primary/50"
     >
@@ -804,14 +838,13 @@
     <h2
       class="mb-5 text-[33px] font-bold leading-none text-primary"
     >
-      ICCID Invalid
+      {{ 'products.top_up.iccid_invalid' | t }}
     </h2>
 
     <p>
-      Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
-      phone settings.
+      {{ 'products.top_up.invalid_topup' | t }}
     </p>
-    <p class="mt-2">Please contact our WhatsApp Customer Service for more information</p>
+    <p class="mt-2">{{ 'products.top_up.contant_cs' | t }}</p>
 
     <div class="mt-6 flex gap-[15px]">
       <button
@@ -819,7 +852,7 @@
         class="w-full cursor-pointer rounded-[10px] border-0 bg-secondary p-[15px] text-lg text-neutral"
         onclick="goToBuySim()"
       >
-        Buy SIM
+        {{ 'products.top_up.button_buysim' | t }}
       </button>
 
       <button
@@ -834,7 +867,7 @@
       id="invalid-popup-close"
       class="mt-[15px] w-full cursor-pointer rounded-[10px] border-0 bg-primary p-[15px] text-lg text-neutral"
     >
-      <span>Cancel</span>
+      <span>{{ 'products.top_up.button_cancel' | t }}</span>
     </button>
   </div>
 </div>
@@ -935,6 +968,8 @@
           available: {{ variant.available }},
           variantType: {{ variant.metafields.variant.type | json }},
           airportPurpose: {{ variant.metafields.airport.purpose.value | default: '' | json }},
+          airportAutoVariantId: {{ variant.metafields.airport.auto_variant.value.id | default: '' | json }},
+          airportAutoVariantTitle: {{ variant.metafields.airport.auto_variant.value.title | default: 0 | json }},
           options: [
             {% for option in variant.options %}
               "{{ option }}"{% unless forloop.last %},{% endunless %}
@@ -2124,7 +2159,10 @@
 
 
 
-    document.getElementById('invalid-popup-close')?.addEventListener('click', closeInvalidPopup);
+    document.getElementById('invalid-popup-close')?.addEventListener('click', () => {
+      closeInvalidPopup();
+      openIccidModal();
+    });
     document.querySelector('[data-invalid-overlay]')?.addEventListener('click', closeInvalidPopup);
   }
 
@@ -2277,19 +2315,92 @@
 
       // Airport Transfer flow
       if (filtered.category === 'Airport_Transfer') {
-        const item = {
-          productId: filtered.id,
-          productTitle: filtered.title,
-          category: filtered.category,
-          variantId: selectedVariant.id,
-          variantTitle: selectedVariant.title,
-          variantOptions: selectedVariant.options,
-          quantity: qty
-        };
+        const savedPurposes = JSON.parse(sessionStorage.getItem('AT_Purposes') || '[]');
 
-        sessionStorage.setItem('ProductItems', JSON.stringify([item]));
-        localStorage.setItem('ProductItems', JSON.stringify([item]));
-        
+        const goCount  = savedPurposes.filter(p => p === 'airport_to_city').length;
+        const retCount = savedPurposes.filter(p => p === 'city_to_airport').length;
+
+        const autoVariantId    = selectedVariant.airportAutoVariantId    || null;
+        const autoVariantTitle = selectedVariant.airportAutoVariantTitle || selectedVariant.title;
+
+        // Tentukan arah variant utama yang dipilih user
+        const rawPurpose      = String(selectedVariant.airportPurpose || '').trim().toLowerCase();
+        const selectedIsGo    = rawPurpose === 'airport to city';   // variant utama = Airport to City
+        const selectedIsRet   = rawPurpose === 'city to airport';   // variant utama = City to Airport
+
+        const items           = [];
+        const orderedPurposes = [];
+
+        const hasMixed = goCount > 0 && retCount > 0;
+
+        if (hasMixed && autoVariantId) {
+          // ── MIXED: dua arah, masing-masing pakai variantId yang sesuai ──────
+          if (selectedIsGo) {
+            // selectedVariant  = Airport to City  → pakai untuk go trips
+            // autoVariant      = City to Airport  → pakai untuk ret trips
+            items.push({
+              productId    : filtered.id,
+              productTitle : filtered.title,
+              category     : filtered.category,
+              variantId    : selectedVariant.id,
+              variantTitle : selectedVariant.title,
+              variantOptions: selectedVariant.options,
+              quantity     : goCount,
+            });
+            items.push({
+              productId    : filtered.id,
+              productTitle : filtered.title,
+              category     : filtered.category,
+              variantId    : autoVariantId,
+              variantTitle : autoVariantTitle,
+              variantOptions: selectedVariant.options,
+              quantity     : retCount,
+            });
+          } else {
+            // selectedVariant  = City to Airport  → pakai untuk ret trips
+            // autoVariant      = Airport to City  → pakai untuk go trips
+            items.push({
+              productId    : filtered.id,
+              productTitle : filtered.title,
+              category     : filtered.category,
+              variantId    : autoVariantId,
+              variantTitle : autoVariantTitle,
+              variantOptions: selectedVariant.options,
+              quantity     : goCount,
+            });
+            items.push({
+              productId    : filtered.id,
+              productTitle : filtered.title,
+              category     : filtered.category,
+              variantId    : selectedVariant.id,
+              variantTitle : selectedVariant.title,
+              variantOptions: selectedVariant.options,
+              quantity     : retCount,
+            });
+          }
+
+          // Urutan purposes: airport_to_city dulu, baru city_to_airport
+          for (let i = 0; i < goCount;  i++) orderedPurposes.push('airport_to_city');
+          for (let i = 0; i < retCount; i++) orderedPurposes.push('city_to_airport');
+          sessionStorage.setItem('AT_Purposes', JSON.stringify(orderedPurposes));
+
+        } else {
+          // ── SINGLE ARAH: semua trip satu arah, cukup 1 item ────────────────
+          // Tidak perlu auto variant, pakai selectedVariant saja
+          items.push({
+            productId    : filtered.id,
+            productTitle : filtered.title,
+            category     : filtered.category,
+            variantId    : selectedVariant.id,
+            variantTitle : selectedVariant.title,
+            variantOptions: selectedVariant.options,
+            quantity     : qty,
+          });
+          // AT_Purposes sudah benar dari patched buyNow, tidak perlu reorder
+        }
+
+        sessionStorage.setItem('ProductItems', JSON.stringify(items));
+        localStorage.setItem('ProductItems',  JSON.stringify(items));
 
         window.location.href = customerLoggedIn
           ? '/pages/form-airport-transfer'
@@ -2795,3 +2906,21 @@
     }
   });
 </script>
+
+{% schema %}
+{
+  "name": "Main Product",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main Products",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}

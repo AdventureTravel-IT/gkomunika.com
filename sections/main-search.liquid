@@ -807,6 +807,18 @@
       });
     }
 
+    function updateSearchPageTitle(rootEl, q) {
+      const titleEl = rootEl.querySelector('#searchPageTitle');
+      if (!titleEl) return;
+
+      const trimmed = String(q || '').trim();
+      if (trimmed.length >= 1) {
+        titleEl.textContent = `Search Result for "${trimmed}"`;
+      } else {
+        titleEl.textContent = 'All Destinations';
+      }
+    }
+
     function renderCoverageFieldFront(item, opts = {}) {
       const cov = getCoverageItems(item, opts);
 
@@ -1189,7 +1201,7 @@
         <div class="w-full mb-5">
           <div class="w-full md:max-w-[50%] mt-[20px] mb-[50px] md:mt-[100px] md:mb-[100px] space-y-5">
             <div class="mb-5 space-y-5">
-              <h2 class="text-[36px] font-bold text-primary">All Destinations</h2>
+              <h2 id="searchPageTitle" class="text-[36px] font-bold text-primary">All Destinations</h2>
               <p class="text-primary text-[18px] tracking-wider leading-normal">
                 Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries
               </p>
@@ -1209,6 +1221,7 @@
             </div>
           </div>
 
+          <p class="text-primary text-[14px] font-semibold mb-2">Category:</p>
           <div class="tab-scroll-wrap">
             <button class="tab-scroll-arrow tab-scroll-arrow--left" type="button" aria-label="Scroll left" data-tabs-left>
               {% render 'icon-arrow-left', class: 'text-primary' %}
@@ -1509,14 +1522,15 @@
           searchInput.addEventListener('input', (e) => {
             const val = e.target.value || '';
             clearTimeout(debounce);
-            setSearchButtonLoading(rootEl, true); // ← tambah ini
+            setSearchButtonLoading(rootEl, true);
             debounce = setTimeout(() => {
               state.q = val;
               apply();
               sortSingleCountryByTitle(rootEl, val);
               updateIncludedBadges(rootEl, val);
               setUrlQueryKeyword(val);
-              setSearchButtonLoading(rootEl, false); // ← tambah ini
+              setSearchButtonLoading(rootEl, false);
+              updateSearchPageTitle(rootEl, val);
             }, 80);
           });
 
@@ -1530,18 +1544,19 @@
             sortSingleCountryByTitle(rootEl, qFromUrl);
 
             updateIncludedBadges(rootEl, qFromUrl);
+            updateSearchPageTitle(rootEl, qFromUrl);
           });
         } else {
           searchInput.addEventListener('input', (e) => {
             const val = e.target.value || '';
             clearTimeout(debounce);
-            setSearchButtonLoading(rootEl, true); // ← tambah ini
+            setSearchButtonLoading(rootEl, true);
             debounce = setTimeout(() => {
               state.q = val;
               apply();
               sortSingleCountryByTitle(rootEl, val);
               updateIncludedBadges(rootEl, val);
-              setSearchButtonLoading(rootEl, false); // ← tambah ini
+              setSearchButtonLoading(rootEl, false);
             }, 80);
           });
 
@@ -1572,6 +1587,7 @@
 
       // ✅ NEW: sort on initial render
       sortSingleCountryByTitle(rootEl, initialQ);
+      updateSearchPageTitle(rootEl, initialQ);
     }
 
     function wireTabScrollArrows(rootEl) {
@@ -1730,6 +1746,37 @@
       });
     }
 
+    // =========================
+    // CATEGORY BADGE STYLING
+    // =========================
+    function getCategoryBadgeStyle(item, mode) {
+      if (mode === 'topup') {
+        return 'background:var(--color-primary); color:var(--color-neutral);';
+      }
+
+      const raw = String(item?.category_raw || item?.category || '')
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '_')
+        .replace(/-/g, '_');
+
+      if (raw === 'esim') {
+        return 'background:var(--color-primary); color:var(--color-neutral);';
+      }
+      if (raw === 'sim_card') {
+        return 'background:var(--color-secondary); color:var(--color-neutral);';
+      }
+      if (raw === 'insurance') {
+        return 'background:#CFEFFC; color:var(--color-primary);';
+      }
+      if (raw === 'airport_transfer') {
+        return 'background:#007BB0; color:var(--color-neutral);';
+      }
+
+      // fallback
+      return 'background:var(--color-primary); color:var(--color-neutral);';
+    }
+
     function renderCollections(results) {
       const root = document.getElementById('collections');
       if (!root) return;
@@ -1789,9 +1836,10 @@
 
                     <div class="min-w-0 w-full flex items-center">
                       <h2 class="text-[20px] text-primary font-bold leading-tight line-clamp-2 overflow-hidden">
-                        <span class="bg-primary text-center px-2 rounded-[10px] leading-none text-neutral">${escapeText(
-                          getCategoryLabel(item, mode)
-                        )}</span> ${escapeText(itemTitle)}
+                        <span class="text-center px-2 rounded-[10px] leading-none font-bold" style="${getCategoryBadgeStyle(
+                          item,
+                          mode
+                        )}">${escapeText(getCategoryLabel(item, mode))}</span> ${escapeText(itemTitle)}
                       </h2>
                     </div>
                   </a>

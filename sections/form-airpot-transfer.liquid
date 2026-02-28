@@ -96,16 +96,16 @@
 
 <section class="wrapper md:wrapper-base">
   <!-- Step indicator (hanya tampil kalau ada multi-step) -->
-  <div id="step-indicator" class="hidden wrapper md:wrapper-base pt-6">
+  <div id="step-indicator" class="hidden wrapper md:px-[20%] md:py-[20px] pt-6">
     <div class="flex items-center gap-2 text-sm text-primary">
       <span
         id="step-back-btn"
-        class="cursor-pointer underline hover:opacity-70"
+        class="cursor-pointer bg-primary text-neutral flex items-center px-3 py-2 rounded-[10px]"
         onclick="history.back()"
       >
-        ← Back
+        {% render 'icon-arrow-left', class: 'text-neutral' %} Back
       </span>
-      <span class="text-secondary" id="step-label"></span>
+      <span class="text-secondary font-semibold" id="step-label"></span>
     </div>
   </div>
   <div class="md:wrapper-base">
@@ -142,36 +142,34 @@
             </div>
           </section>
 
-          <section class="flex gap-3 md:gap-5 flex-col md:flex-row">
-            <div class="flex flex-col gap-1 flex-1">
-              <label class="text-base text-primary" for="whatsapp_country">Active WhatsApp Number</label>
-              <select
-                id="whatsapp_country"
-                name="whatsapp_country"
-                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 text-primary"
-                required
-              >
-                <option value="+62" selected>Indonesia +62</option>
-                <option value="+1">United States +1</option>
-                <option value="+44">United Kingdom +44</option>
-                <option value="+60">Malaysia +60</option>
-                <option value="+65">Singapore +65</option>
-              </select>
-            </div>
-
-            <div class="flex flex-col gap-1 flex-1 justify-end">
-              <input
-                type="number"
-                id="whatsapp_number"
-                name="whatsapp_number"
-                placeholder="Input Your WhatsApp number"
-                class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary"
-                required
-              >
-            </div>
-          </section>
-
           <section class="flex gap-5 flex-col md:flex-row">
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-base text-primary" for="whatsapp_number"
+                >Active WhatsApp Number <span class="text-red-500 font-bold">*</span></label
+              >
+              <div class="flex gap-2">
+                <select
+                  id="whatsapp_country"
+                  name="whatsapp_country"
+                  class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 text-primary w-[180px] shrink-0"
+                >
+                  <option value="+62" selected>Indonesia +62</option>
+                  <option value="+1">United States +1</option>
+                  <option value="+44">United Kingdom +44</option>
+                  <option value="+60">Malaysia +60</option>
+                  <option value="+65">Singapore +65</option>
+                </select>
+                <input
+                  type="number"
+                  id="whatsapp_number"
+                  name="whatsapp_number"
+                  placeholder="Input Your WhatsApp number"
+                  class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary flex-1 min-w-0"
+                  required
+                >
+              </div>
+            </div>
+
             <div class="flex flex-col gap-1 flex-1">
               <label class="text-base text-primary" for="adults_passengers">Number of Adult Passengers</label>
               <input
@@ -185,7 +183,9 @@
                 required
               >
             </div>
+          </section>
 
+          <section class="flex gap-5 flex-col md:flex-row">
             <div class="flex flex-col gap-1 flex-1">
               <label class="text-base text-primary" for="children_passengers">
                 Number of Child Passengers <span class="text-secondary">(0-6 years)</span>
@@ -226,7 +226,7 @@
     <div id="transfer-variants-container"></div>
 
     <!-- Checkout Button -->
-    <div class="wrapper md:wrapper-base mt-5 pb-10">
+    <div class="mt-8">
       <div
         id="checkout-error-msg"
         class="hidden bg-red-100 border border-red-400 text-red-700 rounded-[10px] p-3 mb-3 text-sm"
@@ -234,9 +234,9 @@
       <button
         id="btn-checkout"
         type="button"
-        class="w-full bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-neutral font-bold text-base md:text-lg rounded-[15px] py-4 px-6 transition-all duration-200 flex items-center justify-center gap-2"
+        class="w-fit bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-neutral font-bold text-base md:text-lg rounded-[15px] py-3 px-10 transition-all duration-200 flex items-center justify-center gap-2"
       >
-        <span id="btn-checkout-text">Proceed to Checkout</span>
+        <span id="btn-checkout-text">Checkout</span>
         <svg
           id="btn-checkout-spinner"
           class="hidden animate-spin w-5 h-5"
@@ -534,12 +534,14 @@
 
           <!-- Address -->
           <div class="flex flex-col gap-1">
-            <label class="text-base text-primary" for="address-${unitIndex}">Full Delivery Address</label>
+            <label class="text-base text-primary" for="address-${unitIndex}" data-address-label="${unitIndex}">
+              ${isCityToAirport ? 'Full Pickup Address' : 'Full Drop Off Address'}
+            </label>
             <textarea
               id="address-${unitIndex}"
               name="address[${unitIndex}]"
               rows="3"
-              placeholder="Input Your Full Delivery Address"
+              placeholder="Input Your Full Address"
               class="rounded-[10px] border border-slate-400 focus:border-primary focus:outline-none focus:ring-1 bg-background p-3 placeholder:text-primary placeholder:focus:text-primary/50 text-primary resize-none"
               required
             ></textarea>
@@ -578,7 +580,7 @@
   /* =========================================================
    * RENDER: All forms — injects purposeMap from sessionStorage
    * ========================================================= */
-  
+
   function renderAirportTransferForms(container, items) {
     container.innerHTML = '';
 
@@ -652,6 +654,8 @@
     const wrap = document.querySelector(`[data-flight-hours-wrap="${unitIndex}"]`);
     const input = document.getElementById(`flight-hours-${unitIndex}`);
     const label = document.querySelector(`[data-pickup-time-label="${unitIndex}"]`);
+    const addressLabel = document.querySelector(`[data-address-label="${unitIndex}"]`);
+    const addressTextarea = document.getElementById(`address-${unitIndex}`);
 
     const noteCityToAirport =
       '<span class="text-primary">Note:</span> The driver will wait with a tolerance of <span class="text-primary">30 minutes</span> delay from your pick up time.';
@@ -663,6 +667,8 @@
       if (wrap) wrap.classList.remove('hidden');
       if (input) input.required = true;
       if (label) label.textContent = 'Pickup Time';
+      if (addressLabel) addressLabel.textContent = 'Full Pickup Address';
+      if (addressTextarea) addressTextarea.placeholder = 'Input Your Full Pickup Address';
     } else {
       if (noteEl) noteEl.innerHTML = noteAirportToCity;
       if (wrap) wrap.classList.add('hidden');
@@ -671,6 +677,8 @@
         input.value = '';
       }
       if (label) label.textContent = 'Arrival Time';
+      if (addressLabel) addressLabel.textContent = 'Full Drop off Address';
+      if (addressTextarea) addressTextarea.placeholder = 'Input Your Full Drop off Address';
     }
   }
 
@@ -707,7 +715,7 @@
       const fields0 = unit0.querySelectorAll('input:not([type="hidden"]), select:not([disabled]), textarea');
 
       units.slice(1).forEach((unitN) => {
-        // Copy values
+        // Copy values dari unit0
         const fieldsN = unitN.querySelectorAll('input:not([type="hidden"]), select:not([disabled]), textarea');
         fields0.forEach((f0, idx) => {
           const fN = fieldsN[idx];
@@ -716,7 +724,7 @@
           fN.dispatchEvent(new Event('change', { bubbles: true }));
         });
 
-        // Hide unit
+        // Hide unit + disable semua field
         unitN.classList.add('hidden');
         unitN.querySelectorAll('input, select, textarea').forEach((el) => {
           if (el.required) el.dataset.wasRequired = '1';
@@ -725,7 +733,7 @@
         });
       });
 
-      // Sync on change
+      // Sync on change unit0
       unit0.querySelectorAll('input:not([type="hidden"]), select:not([disabled]), textarea').forEach((f0) => {
         f0.addEventListener('input', () => syncVariantUnit0(itemIndex), { signal: getSyncSignal(itemIndex) });
         f0.addEventListener('change', () => syncVariantUnit0(itemIndex), { signal: getSyncSignal(itemIndex) });
@@ -736,6 +744,9 @@
       units.slice(1).forEach((unitN) => {
         unitN.classList.remove('hidden');
         unitN.querySelectorAll('input, select, textarea').forEach((el) => {
+          // ✅ SKIP: jangan re-enable select yang locked (purpose sudah di-lock dari product page)
+          if (el.dataset.purposeLocked === 'true') return;
+
           el.disabled = false;
           if (el.dataset.wasRequired === '1') {
             el.required = true;
@@ -930,6 +941,7 @@
 
   function clearSavedFormData() {
     localStorage.removeItem(FORM_STORAGE_KEY);
+    localStorage.removeItem('FormDataAirportTransfer_signature');
   }
 
   /* =========================================================
@@ -1090,7 +1102,7 @@
     return {
       name: fd.get('name') || '',
       email: fd.get('email') || '',
-      whatsapp: `${whatsappCtry}${whatsappNum}`,
+      whatsapp: whatsappCtry === '+62' ? `0${String(whatsappNum).replace(/^0+/, '')}` : `${whatsappCtry}${whatsappNum}`,
       adults: fd.get('adults_passengers') || '0',
       children: fd.get('children_passengers') || '0',
       babySeat,
@@ -1222,6 +1234,30 @@
         return;
       }
 
+      // ─── Cek apakah ada step berikutnya (Insurance) ───
+      const flowData = JSON.parse(sessionStorage.getItem('CheckoutFlow') || 'null');
+
+      if (flowData && flowData.steps) {
+        const currentIdx = flowData.steps.indexOf('transfer');
+        const nextStep = flowData.steps[currentIdx + 1];
+
+        if (nextStep === 'insurance') {
+          // Simpan transfer attributes dulu, lanjut ke form insurance
+          sessionStorage.setItem('TransferAttributes', JSON.stringify(transferAttribs));
+          localStorage.setItem('TransferAttributes', JSON.stringify(transferAttribs));
+          // Simpan header data juga
+          sessionStorage.setItem('TransferHeaderData', JSON.stringify(headerData));
+          localStorage.setItem('TransferHeaderData', JSON.stringify(headerData));
+
+          flowData.currentStepIndex = currentIdx + 1;
+          sessionStorage.setItem('CheckoutFlow', JSON.stringify(flowData));
+          localStorage.setItem('CheckoutFlow', JSON.stringify(flowData));
+
+          window.location.href = '/pages/form-insurance';
+          return;
+        }
+      }
+
       // ── Multi-item / mixed (Insurance + Transfer) flow ──
       await fetch('/cart/clear.js', {
         method: 'POST',
@@ -1281,8 +1317,17 @@
       showCheckoutError('There was an error during checkout. Please try again.');
     } finally {
       if (btn) btn.disabled = false;
-      if (btnText) btnText.textContent = 'Proceed to Checkout';
       if (spinner) spinner.classList.add('hidden');
+
+      // ✅ Kembalikan teks tombol ke semula (Next atau Checkout)
+      const flow = JSON.parse(sessionStorage.getItem('CheckoutFlow') || 'null');
+      if (flow && flow.steps && flow.steps.length > 1) {
+        const currentIdx = flow.steps.indexOf('transfer');
+        const isLastStep = currentIdx === flow.steps.length - 1;
+        if (btnText) btnText.textContent = isLastStep ? 'Checkout' : 'Next';
+      } else {
+        if (btnText) btnText.textContent = 'Checkout';
+      }
     }
   }
 
@@ -1290,9 +1335,13 @@
   function clearCheckoutSession() {
     sessionStorage.removeItem('ProductItems');
     sessionStorage.removeItem('InsuranceAttributes');
+    sessionStorage.removeItem('TransferAttributes'); // ← tambah
+    sessionStorage.removeItem('TransferHeaderData'); // ← tambah
     sessionStorage.removeItem('CheckoutFlow');
     localStorage.removeItem('ProductItems');
     localStorage.removeItem('InsuranceAttributes');
+    localStorage.removeItem('TransferAttributes'); // ← tambah
+    localStorage.removeItem('TransferHeaderData'); // ← tambah
     localStorage.removeItem('CheckoutFlow');
   }
 
@@ -1319,15 +1368,24 @@
   });
 
   // Tampilkan step indicator kalau ada flow
+  // Tampilkan step indicator hanya kalau ini step TERAKHIR
   document.addEventListener('DOMContentLoaded', () => {
     const flow = JSON.parse(sessionStorage.getItem('CheckoutFlow') || 'null');
     if (flow && flow.steps && flow.steps.length > 1) {
-      const indicator = document.getElementById('step-indicator');
-      const label = document.getElementById('step-label');
-      if (indicator) indicator.classList.remove('hidden');
-      if (label) {
-        const current = flow.steps.indexOf('transfer') + 1;
-        label.textContent = `Step ${current} of ${flow.steps.length}: Airport Transfer Details`;
+      const currentIdx = flow.steps.indexOf('transfer');
+      const isLastStep = currentIdx === flow.steps.length - 1;
+
+      if (isLastStep) {
+        const indicator = document.getElementById('step-indicator');
+        const label = document.getElementById('step-label');
+        if (indicator) indicator.classList.remove('hidden');
+        if (label) {
+          label.textContent = `Step ${currentIdx + 1} of ${flow.steps.length}: Airport Transfer Details`;
+        }
+      } else {
+        // Bukan step terakhir → ubah teks tombol jadi "Next"
+        const btnText = document.getElementById('btn-checkout-text');
+        if (btnText) btnText.textContent = 'Next';
       }
     }
   });

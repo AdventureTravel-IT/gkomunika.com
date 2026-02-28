@@ -779,6 +779,10 @@ video {
   top: calc(100% + 8px);
 }
 
+.top-\[17px\] {
+  top: 17px;
+}
+
 .isolate {
   isolation: isolate;
 }
@@ -825,6 +829,11 @@ video {
 
 .m-0 {
   margin: 0px;
+}
+
+.mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .mx-auto {
@@ -909,6 +918,10 @@ video {
 
 .mr-\[10px\] {
   margin-right: 10px;
+}
+
+.mr-\[50px\] {
+  margin-right: 50px;
 }
 
 .mt-1 {
@@ -2115,6 +2128,16 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
 
+.bg-\[\#007BB0\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 123 176 / var(--tw-bg-opacity, 1));
+}
+
+.bg-\[\#CFEFFC\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(207 239 252 / var(--tw-bg-opacity, 1));
+}
+
 .bg-gradient-to-b {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
@@ -2193,6 +2216,10 @@ video {
   padding: 1.25rem;
 }
 
+.p-8 {
+  padding: 2rem;
+}
+
 .p-\[10px\] {
   padding: 10px;
 }
@@ -2217,6 +2244,11 @@ video {
 .px-1 {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
+}
+
+.px-10 {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
 }
 
 .px-2 {
@@ -2257,6 +2289,11 @@ video {
 .px-8 {
   padding-left: 2rem;
   padding-right: 2rem;
+}
+
+.px-9 {
+  padding-left: 2.25rem;
+  padding-right: 2.25rem;
 }
 
 .px-\[10\%\] {
@@ -2407,10 +2444,6 @@ video {
 .py-\[8px\] {
   padding-top: 8px;
   padding-bottom: 8px;
-}
-
-.pb-10 {
-  padding-bottom: 2.5rem;
 }
 
 .pb-16 {
@@ -2739,6 +2772,11 @@ video {
   color: var(--color-primary);
 }
 
+.text-green-600 {
+  --tw-text-opacity: 1;
+  color: rgb(22 163 74 / var(--tw-text-opacity, 1));
+}
+
 .text-inherit {
   color: inherit;
 }
@@ -2982,6 +3020,12 @@ video {
   transition-duration: 150ms;
 }
 
+.transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .transition-transform {
   transition-property: transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -3139,12 +3183,12 @@ video {
   opacity: 0.8;
 }
 
-.hover\:opacity-90:hover {
-  opacity: 0.9;
+.hover\:opacity-85:hover {
+  opacity: 0.85;
 }
 
-.hover\:opacity-70:hover {
-  opacity: 0.7;
+.hover\:opacity-90:hover {
+  opacity: 0.9;
 }
 
 .hover\:shadow-\[0_4px_12px_rgba\(0\2c 0\2c 0\2c 0\.1\)\]:hover {
@@ -3498,6 +3542,11 @@ video {
     padding-right: 15%;
   }
 
+  .md\:px-\[20\%\] {
+    padding-left: 20%;
+    padding-right: 20%;
+  }
+
   .md\:px-\[20px\] {
     padding-left: 20px;
     padding-right: 20px;
@@ -3521,6 +3570,11 @@ video {
   .md\:py-\[15px\] {
     padding-top: 15px;
     padding-bottom: 15px;
+  }
+
+  .md\:py-\[20px\] {
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
 
   .md\:py-\[50px\] {

@@ -63,7 +63,6 @@
                 <div class="htu__customer-comment">{{ block.settings['comment-top'] }}</div>
               </section>
               <section class="htu__cutomer-content wrapper">
-                {{ arrow_svg }}
                 <div class="htu__customer-profile">
                   {{ block.settings['profile-top1'] }}
                   <div>{{ rating_svg }}</div>
@@ -75,7 +74,7 @@
 
           {% for block in review_bottom_blocks %}
             <div class="htu__customer-content bottom">
-              <section class="htu__cutomer-content wrapper">
+              <section class="htu__cutomer-content wrapper bg-neutral text-primary">
                 <div class="htu__customer-profile">
                   {{ block.settings['profile-bottom'] }}
                   <div>{{ rating_svg }}</div>

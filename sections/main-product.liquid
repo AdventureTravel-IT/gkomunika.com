@@ -30,19 +30,7 @@
         {%- assign raw_cat = product.metafields.product.category.value | default: 'Gkomunika' -%}
         {%- assign cat_label = raw_cat | replace: '_', ' ' -%}
 
-        {%- assign cat_normalized = raw_cat | downcase | replace: ' ', '_' | replace: '-', '_' -%}
-
-        {%- if cat_normalized == 'sim_card' -%}
-          {%- assign badge_style = 'background:var(--color-secondary); color:var(--color-neutral);' -%}
-        {%- elsif cat_normalized == 'insurance' -%}
-          {%- assign badge_style = 'background:#CFEFFC; color:var(--color-primary);' -%}
-        {%- elsif cat_normalized == 'airport_transfer' -%}
-          {%- assign badge_style = 'background:#007BB0; color:var(--color-neutral);' -%}
-        {%- else -%}
-          {%- assign badge_style = 'background:var(--color-primary); color:var(--color-neutral);' -%}
-        {%- endif -%}
-
-        <span class="text-center px-2 rounded-[10px] leading-none font-bold" style="{{ badge_style }}">
+        <span class="bg-primary text-center px-2 rounded-[10px] leading-none text-neutral">
           {%- if raw_cat contains 'Top_Up_' -%}
             Top Up Plan
           {%- else -%}
@@ -624,19 +612,8 @@
         <h2 id="mobileTitle" class="text-primary text-xl font-bold leading-tight line-clamp-2">
           {%- assign raw_cat = product.metafields.product.category.value | default: 'Gkomunika' -%}
           {%- assign cat_label = raw_cat | replace: '_', ' ' -%}
-          {%- assign cat_normalized = raw_cat | downcase | replace: ' ', '_' | replace: '-', '_' -%}
 
-          {%- if cat_normalized == 'sim_card' -%}
-            {%- assign badge_style = 'background:var(--color-secondary); color:var(--color-neutral);' -%}
-          {%- elsif cat_normalized == 'insurance' -%}
-            {%- assign badge_style = 'background:#CFEFFC; color:var(--color-primary);' -%}
-          {%- elsif cat_normalized == 'airport_transfer' -%}
-            {%- assign badge_style = 'background:#007BB0; color:var(--color-neutral);' -%}
-          {%- else -%}
-            {%- assign badge_style = 'background:var(--color-primary); color:var(--color-neutral);' -%}
-          {%- endif -%}
-
-          <span class="px-2 rounded-[10px] leading-none font-bold" style="{{ badge_style }}">
+          <span class="bg-primary px-2 rounded-[10px] leading-none text-neutral">
             {%- if raw_cat contains 'Top_Up_' -%}
               Top Up Plan
             {%- else -%}

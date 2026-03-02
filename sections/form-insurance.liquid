@@ -22,15 +22,22 @@
     --label-info-color: red;
   }
 
+  /* ── Container ── */
   .form-insurance__container {
     max-width: 1920px;
     margin: 0 auto;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;
   }
 
   .form-insurance__content-wrapper {
     padding: 20px 20%;
+    box-sizing: border-box;
+    width: 100%;
   }
 
+  /* ── Form row ── */
   .form-insurance {
     display: flex;
     gap: 10px;
@@ -38,6 +45,8 @@
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 15px;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .form-insurance__right {
@@ -45,8 +54,10 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    min-width: 0;
   }
 
+  /* ── Wrapper & Field ── */
   .form-insurance__wrapper {
     display: flex;
     gap: 15px;
@@ -60,10 +71,12 @@
     display: flex;
     flex: 1;
     gap: 10px;
+    min-width: 0;
   }
 
   .form-insurance__wrapper-item .form-insurance__field {
     flex: 1;
+    min-width: 0;
   }
 
   .form-insurance__field {
@@ -71,6 +84,8 @@
     flex-direction: column;
     flex: 1;
     max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .form-insurance__field label,
@@ -85,6 +100,7 @@
     width: 100%;
     box-sizing: border-box;
     font-size: 14px;
+    min-width: 0;
   }
 
   .form-insurance__field select,
@@ -128,6 +144,7 @@
     padding: 0 15px;
     height: 45px;
     border-radius: 15px 15px 0 0;
+    box-sizing: border-box;
   }
 
   .form-insurance__label-title {
@@ -151,6 +168,8 @@
     border-radius: 15px;
     background-color: var(--color-neutral);
     margin-bottom: 15px;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .form-insurance__form {
@@ -158,6 +177,8 @@
     border-radius: 0 0 15px 15px;
     background-color: var(--color-neutral);
     margin-bottom: 20px;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .form-insurance__checkout {
@@ -167,6 +188,7 @@
     position: relative;
     border-radius: 15px;
     color: var(--color-primary);
+    box-sizing: border-box;
   }
 
   .form-insurance__checkout-button,
@@ -295,26 +317,66 @@
     opacity: 1;
   }
 
+  /* ── Tablet ── */
   @media (max-width: 768px) {
     .form-insurance__content-wrapper {
       padding: 20px 24px;
     }
   }
 
-  @media (max-width: 426px) {
-    .form-insurance {
-      flex-direction: column;
+  /* ── Mobile ≤ 520px: stack semua wrapper jadi kolom ── */
+  @media (max-width: 520px) {
+    .form-insurance__content-wrapper {
+      padding: 20px 16px;
     }
-    .form-insurance__right {
+
+    .form-insurance__wrapper {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .form-insurance__wrapper-item {
+      flex-wrap: nowrap;
       width: 100%;
+    }
+
+    .form-insurance__wrapper-item .form-insurance__field {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .form-insurance__field {
+      width: 100%;
+      min-width: 0;
     }
   }
 
-  @media (max-width: 376px) {
-    .form-insurance__field {
-      flex-grow: 1;
-      flex-shrink: initial;
-      flex-basis: auto;
+  /* ── Mobile ≤ 426px: form flex jadi kolom ── */
+  @media (max-width: 426px) {
+    .form-insurance {
+      flex-direction: column;
+      padding: 12px;
+    }
+
+    .form-insurance__right {
+      width: 100%;
+    }
+
+    .form-insurance__section-top,
+    .form-insurance__form {
+      padding: 12px;
+    }
+  }
+
+  /* ── Mobile ≤ 375px: padding minimal ── */
+  @media (max-width: 375px) {
+    .form-insurance__content-wrapper {
+      padding: 12px 10px;
+    }
+
+    .form-insurance__wrapper-item .form-insurance__field {
+      flex: 1 1 0;
+      min-width: 0;
     }
   }
 {% endstyle %}
@@ -2037,7 +2099,6 @@
             itemAttributes[attrKey] = attributes[attrKey];
           }
         } else if (product.category === 'Airport_Transfer') {
-          // Gunakan transfer attributes yang sudah disimpan sebelumnya
           const attrKey = `${product.quantity}x - ${product.variantTitle || product.productTitle}`;
           if (savedTransferHeaderData) {
             itemAttributes['Passenger Information'] = [
@@ -2063,6 +2124,23 @@
             attributes: itemAttributes,
           }),
         });
+
+        // ✅ TAMBAHAN BARU: add addon items ke cart
+        if (product.addonItems && product.addonItems.length > 0) {
+          for (const addon of product.addonItems) {
+            await fetch('/cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id: addon.variantId,
+                quantity: product.quantity,
+                attributes: {
+                  'Add On For': product.variantTitle || product.productTitle,
+                },
+              }),
+            });
+          }
+        }
       }
 
       setCheckoutLoading(false);

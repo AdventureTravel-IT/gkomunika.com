@@ -37,7 +37,7 @@
             {{- cat_label -}}
           {%- endif -%}
         </span>
-        {{ product.title }}
+        {{ product.title | remove: 'Top Up ' }}
       </h1>
 
       <div class="flex gap-2 tracking-wider text-sm items-center text-primary">
@@ -620,7 +620,7 @@
               {{- cat_label -}}
             {%- endif -%}
           </span>
-          {{ product.title }}
+          {{ product.title | remove: 'Top Up ' }}
         </h2>
 
         <!-- Selected variant (click => scroll to selector) -->
@@ -812,6 +812,14 @@
     role="dialog"
     aria-modal="true"
   >
+    <button
+      type="button"
+      onclick="closeInvalidPopup()"
+      class="absolute top-4 right-4 flex items-center border ring-1 ring-primary justify-center hover:opacity-70 transition-opacity"
+      aria-label="Close"
+    >
+      {% render 'icon-close', class: 'w-[22px] h-[22px] text-primary' %}
+    </button>
     <h2
       class="mb-5 text-[33px] font-bold leading-none text-primary"
     >
@@ -1968,7 +1976,7 @@
 
       const json = await res.json();
 
-      console.log(json)
+      console.log('[checkUsage] response:', JSON.stringify(json, null, 2))
 
       if (!json?.success) return null;
 

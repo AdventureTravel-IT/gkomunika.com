@@ -23,11 +23,11 @@
   "products": {
     "top_up": {
       "iccid_invalid": "ICCID Invalid",
-      "invalid_topup": "We couldn’t detect your ICCID. Please check and try again, or select a new SIM product. For assistance, contact Customer Service.",
+      "invalid_topup": "We couldn’t detect your ICCID. Please check and try again, or select a new SIM product.",
       "contant_cs": "For assistance, contact Customer Service.",
       "label_input_iccid": "Enter Your ICCID",
       "button_buysim": "Buy SIM",
-      "button_cancel": "Cancel",
+      "button_cancel": "Input ICCID",
       "placeholder_form_iccid": "Input ICCID Number"
     }
   },

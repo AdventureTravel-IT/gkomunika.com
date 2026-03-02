@@ -23,11 +23,11 @@
   "products": {
     "top_up": {
       "iccid_invalid": "ICCID Tidak Valid",
-      "invalid_topup": "ICCID Anda tidak terdeteksi. Cek kembali dan coba lagi, atau pilih produk SIM baru. Hubungi Customer Service kami untuk bantuan.",
+      "invalid_topup": "ICCID Anda tidak terdeteksi. Cek kembali dan coba lagi, atau pilih produk SIM baru.",
       "contant_cs": "Hubungi Customer Service kami untuk bantuan.",
       "label_input_iccid": "Masukan ICCID",
       "button_buysim": "Buy New SIM",
-      "button_cancel": "Try Again",
+      "button_cancel": "Input ICCID",
       "placeholder_form_iccid": "Masukkan Nomor ICCID"
     }
   },

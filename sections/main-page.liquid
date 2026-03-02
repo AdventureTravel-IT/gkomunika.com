@@ -188,6 +188,30 @@
     color: var(--color-primary);
   }
 
+  .page-content__wrapper {
+    text-align: left !important;
+  }
+
+  .page-content__wrapper ul,
+  .page-content__wrapper ol {
+    text-align: left !important;
+    padding-left: 2.1em !important;
+    margin-left: 0 !important;
+    list-style-position: outside;
+  }
+
+  .page-content__wrapper li {
+    text-align: left !important;
+    display: list-item;
+  }
+
+  .page-content__wrapper p,
+  .page-content__wrapper h2,
+  .page-content__wrapper h3,
+  .page-content__wrapper h4 {
+    text-align: left !important;
+  }
+
   .page-content__wrapper h2 {
     color: var(--color-primary);
     font-weight: bold;
@@ -615,12 +639,6 @@
         <h2 class="pages-title">Article Summary</h2>
         <ul id="summary" class="page-summary__wrapper"></ul>
       </section>
-
-      {% comment %}
-        <section class="pages-product">
-          ...
-        </section>
-      {% endcomment %}
     </section>
   </div>
 </div>
@@ -817,3 +835,23 @@
   ]
 }
 {% endschema %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const contentWrapper = document.querySelector('.page-content__wrapper');
+    if (!contentWrapper) return;
+
+    // Fungsi bersihkan &nbsp; dari semua text node
+    function cleanNbsp(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        node.textContent = node.textContent.replace(/\u00A0/g, ' ').trim() 
+          ? node.textContent.replace(/\u00A0/g, ' ') 
+          : node.textContent;
+      } else {
+        node.childNodes.forEach(cleanNbsp);
+      }
+    }
+
+    cleanNbsp(contentWrapper);
+  });
+</script>

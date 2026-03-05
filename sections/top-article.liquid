@@ -31,7 +31,7 @@
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-secondary text-[14px]">
-                                {{ pages.published_at | default: pages.created_at | date: "%d %B %Y" }}
+                               {{ pages.published_at | default: pages.created_at | date: "%d %b %Y" }}
                             </span>
                             <button class="bg-primary text-neutral px-5 py-1 rounded-full w-fit text-[14px] hover:bg-primary/30 hover:text-primary font-semibold">Read More</button>
                         </div>

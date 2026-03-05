@@ -2531,6 +2531,45 @@
 
     await getExchangeRate();
 
+    // ✅ FIX: Fetch semua variants (bypass limit 100 dari Liquid)
+    try {
+      let allVariants = [];
+      let page = 1;
+
+      while (true) {
+        const res = await fetch(`/products/${filtered.handle}.json?limit=250&page=${page}`);
+        const json = await res.json();
+        const variants = json.product?.variants || [];
+
+        const mapped = variants.map(v => ({
+          id: v.id,
+          title: v.title,
+          priceRaw: Math.round(parseFloat(v.price) * 100), // ✅ string "289000.00" → cents
+          sku: v.sku || '',
+          available: v.inventory_management === null
+            ? true
+            : (v.inventory_quantity > 0 || v.inventory_policy === 'continue'),
+          variantType: null,
+          airportPurpose: '',
+          airportAutoVariantId: '',
+          airportAutoVariantTitle: 0,
+          options: [v.option1, v.option2, v.option3].filter(o => o != null && o !== '')
+        }));
+
+        allVariants = allVariants.concat(mapped);
+
+        if (variants.length < 250) break;
+        page++;
+      }
+
+      if (allVariants.length > 0) {
+        filtered.variants = allVariants;
+        console.log('✅ Total variants loaded:', filtered.variants.length);
+      }
+    } catch (err) {
+      console.warn('⚠️ Gagal fetch variants, pakai data Liquid:', err);
+    }
+
     generateSelectors();
     bindQuantityInput();
     bindAddonPopup();

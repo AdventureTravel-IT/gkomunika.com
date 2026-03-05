@@ -1,19 +1,3 @@
-<section></section>
-
-{% comment %}
-  FULL CODE (Tailwind refactor + JS selector pakai ID + HEADER NORMAL (NOT FIXED))
-
-  FIX UTAMA:
-  - ID language desktop & mobile dibuat unik:
-    LanguageFormUX-desktop / LanguageFormUX-mobile
-    LangTrigger-desktop / LangTrigger-mobile
-    LangMenu-desktop / LangMenu-mobile
-    LangLocaleInput-desktop / LangLocaleInput-mobile
-    LangArrow-desktop / LangArrow-mobile
-
-  - JS language di-init untuk desktop & mobile.
-{% endcomment %}
-
 {% unless template == 'customers/login' or template == 'customers/register' %}
   {%- comment -%}
     Deteksi bahasa aktif untuk menambahkan prefix /id pada bahasa Indonesia
@@ -30,12 +14,39 @@
     {% assign profile_url = routes.account_login_url %}
   {% endif %}
 
+  <style>
+    #sidebar-panel {
+      max-height: 0 !important;
+      overflow: hidden !important;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #sidebar-panel.is-open {
+      max-height: calc(100vh - 70px) !important;
+      overflow-y: auto !important;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #CurrencyMenu-desktop,
+    #CurrencyMenu-mobile,
+    #LangMenu-desktop,
+    #LangMenu-mobile {
+      display: none !important;
+    }
+    #CurrencyMenu-desktop.is-open,
+    #CurrencyMenu-mobile.is-open,
+    #LangMenu-desktop.is-open,
+    #LangMenu-mobile.is-open {
+      display: block !important;
+    }
+  </style>
+
   <header
     class="fixed top-0 w-full z-[200] bg-neutral max-w-[1920px] mx-auto h-fit py-[5px] md:py-[15px] shadow-md"
   >
     <div class="flex items-center justify-between px-6">
       <!-- LEFT -->
-      <div class="flex items-center gap-8 md:gap-2.5">
+      <div class="flex items-center gap-2.5">
         <!-- Mobile menu toggle -->
         <button
           id="menu-toggle"
@@ -46,35 +57,36 @@
           class="inline-flex md:hidden items-center justify-center w-[44px] h-[44px] p-0 m-0 border-0 bg-transparent leading-none text-[0px] box-border -ml-5 [-webkit-tap-highlight-color:transparent]"
         >
           <div id="menu-icon" class="relative w-5 h-5 cursor-pointer">
-            <span class="absolute left-0 top-0 w-full h-[3px] bg-[var(--color-primary)] rounded-[2px]"></span>
-            <span class="absolute left-0 top-2 w-full h-[3px] bg-[var(--color-primary)] rounded-[2px]"></span>
-            <span class="absolute left-0 top-4 w-full h-[3px] bg-[var(--color-primary)] rounded-[2px]"></span>
+            <span class="absolute left-0 top-0 w-full h-[3px] bg-primary rounded-[2px] pointer-events-none"></span>
+            <span class="absolute left-0 top-2 w-full h-[3px] bg-primary rounded-[2px] pointer-events-none"></span>
+            <span class="absolute left-0 top-4 w-full h-[3px] bg-primary rounded-[2px] pointer-events-none"></span>
           </div>
         </button>
 
         {% assign alt_global = 'Global Komunika' %}
         {% if section.settings.logo != blank %}
           <a href="{{ routes.root_url }}" class="inline-flex items-center no-underline">
-            {{
-              section.settings.logo
-              | image_url: width: 120
-              | image_tag:
-                class: 'header-content-logo',
-                widths: '120, 240',
-                sizes: '120px',
-                alt: alt_global,
-                loading: 'eager',
-                fetchpriority: 'high',
-                decoding: 'async',
-                width: 120,
-                height: 40
-            }}
+            <img
+              src="{{ section.settings.logo | image_url: width: 120 }}"
+              srcset="
+                {{ section.settings.logo | image_url: width: 120 }} 1x,
+                {{ section.settings.logo | image_url: width: 240 }} 2x,
+                {{ section.settings.logo | image_url: width: 360 }} 3x
+              "
+              class="header-content-logo"
+              alt="{{ alt_global }}"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              width="120"
+              height="40"
+            >
           </a>
         {% endif %}
       </div>
 
       <!-- MOBILE RIGHT -->
-      <div class="flex md:hidden items-center gap-2.5" aria-label="Quick actions">
+      <div class="flex md:hidden items-center gap-5" aria-label="Quick actions">
         {% if template.name == 'product' %}
           <button
             id="header-search-trigger-mobile"
@@ -82,26 +94,18 @@
             aria-label="Search"
             aria-haspopup="dialog"
             aria-controls="header-search-modal"
-            class="mr-[10px]"
+            class="p-2 -m-2"
           >
-            {% render 'icon-search', class: 'w-6 h-6 text-primary' %}
+            {% render 'icon-search', class: 'w-6 h-6 text-primary pointer-events-none' %}
           </button>
         {% endif %}
 
-        <a href="{{ routes.cart_url }}" aria-label="Cart" class="inline-flex items-center no-underline">
-          <span class="relative inline-flex items-center">
-            <img
-              src="{{ 'header-cart.svg' | asset_url }}"
-              alt="Cart"
-              class="w-6 h-6 inline-block"
-              width="24"
-              height="24"
-              loading="eager"
-              decoding="async"
-            >
+        <a href="{{ routes.cart_url }}" aria-label="Cart" class="inline-flex items-center no-underline p-2 -m-2">
+          <span class="relative inline-flex items-center pointer-events-none">
+            {% render 'icon-cart', class: 'w-[28px] h-[28px] text-primary' %}
             {% if cart.items.size > 0 %}
               <span
-                class="absolute -top-1 -right-[6px] bg-[var(--color-primary)] text-[var(--color-neutral)] text-[10px] w-4 h-4 rounded-full inline-flex items-center justify-center text-center leading-none"
+                class="absolute -top-1 -right-[6px] bg-primary text-[var(--color-neutral)] text-[10px] w-4 h-4 rounded-full inline-flex items-center justify-center text-center leading-none"
               >
                 {{ cart.items.size }}
               </span>
@@ -109,16 +113,8 @@
           </span>
         </a>
 
-        <a href="{{ profile_url }}" aria-label="Profile" class="inline-flex items-center no-underline">
-          <img
-            src="{{ 'header-profile.svg' | asset_url }}"
-            alt="Profile"
-            class="w-6 h-6 inline-block"
-            width="24"
-            height="24"
-            loading="eager"
-            decoding="async"
-          >
+        <a href="{{ profile_url }}" aria-label="Profile" class="inline-flex items-center no-underline p-2 -m-2">
+          {% render 'icon-profile-outline', class: 'w-[28px] h-[28px] text-primary pointer-events-none' %}
         </a>
       </div>
 
@@ -133,12 +129,11 @@
             aria-controls="header-search-modal"
             class="mr-[10px]"
           >
-            {% render 'icon-search', class: 'w-6 h-6 text-primary' %}
+            {% render 'icon-search', class: 'w-[26px] h-[26px] text-primary' %}
           </button>
         {% endif %}
 
         <div class="flex items-center gap-2.5">
-          <!-- Currency -->
           <!-- Currency (DESKTOP) -->
           <div class="relative inline-block" id="CurrencyForm-desktop">
             <button
@@ -152,19 +147,19 @@
               <span class="inline-flex items-center">
                 {{- 'header-currency.svg' | inline_asset_content -}}
               </span>
-              <span id="CurrencyLabel-desktop" class="text-sm tracking-wider text-[var(--color-primary)]">USD</span>
+              <span id="CurrencyLabel-desktop" class="text-sm tracking-wider text-primary">USD</span>
               <span
                 id="CurrencyArrow-desktop"
                 class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
                 aria-hidden="true"
               >
-                {% render 'icon-arrow-right', class: 'text-primary w-[30px] h-[30px]' %}
+                {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
               </span>
             </button>
 
             <ul
               id="CurrencyMenu-desktop"
-              class="hidden absolute right-0 top-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+              class="absolute right-0 top-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
               role="listbox"
               aria-label="Select currency"
             >
@@ -172,7 +167,7 @@
                 <button
                   type="button"
                   data-currency="USD"
-                  class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
+                  class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
                 >
                   <span>USD</span>
                 </button>
@@ -181,7 +176,7 @@
                 <button
                   type="button"
                   data-currency="IDR"
-                  class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
+                  class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
                 >
                   <span>IDR</span>
                 </button>
@@ -212,20 +207,20 @@
                 {{- 'header-language.svg' | inline_asset_content -}}
               </span>
 
-              <span class="text-sm tracking-wider text-[var(--color-primary)]">{{ current_code }}</span>
+              <span class="text-sm tracking-wider text-primary">{{ current_code }}</span>
 
               <span
                 id="LangArrow-desktop"
                 class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
                 aria-hidden="true"
               >
-                {% render 'icon-arrow-right', class: 'text-primary w-[30px] h-[30px]' %}
+                {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
               </span>
             </button>
 
             <ul
               id="LangMenu-desktop"
-              class="hidden absolute right-0 top-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+              class="absolute right-0 top-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
               role="listbox"
               aria-label="Select language"
             >
@@ -237,7 +232,7 @@
                 >
                   <button
                     type="button"
-                    class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition {% if locale.iso_code == localization.language.iso_code %}bg-black/10 font-semibold{% endif %}"
+                    class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition {% if locale.iso_code == localization.language.iso_code %}bg-black/10 font-semibold{% endif %}"
                     data-locale="{{ locale.iso_code }}"
                   >
                     <span>{{ code }}</span>
@@ -254,21 +249,13 @@
         <!-- Menu desktop -->
         <nav role="navigation" aria-label="Main navigation" class="flex items-center">
           <ul class="flex items-center gap-3.5 flex-wrap m-0 p-0 max-w-full list-none">
-            {%- assign menu_item_class = 'inline-flex flex-col items-center justify-center gap-1 whitespace-nowrap font-bold leading-[1.1] text-[var(--color-primary)] no-underline' -%}
-            {%- assign menu_label_class = 'text-sm font-[790] text-[var(--color-primary)]' -%}
+            {%- assign menu_item_class = 'inline-flex flex-col items-center justify-center gap-1 whitespace-nowrap font-bold leading-[1.1] text-primary no-underline' -%}
+            {%- assign menu_label_class = 'text-sm text-primary' -%}
             {%- assign icon_class = 'w-[26px] h-[26px] block' -%}
 
             <li>
               <a href="{{ routes.root_url }}" class="{{ menu_item_class }}">
-                <img
-                  src="{{ 'header-home.svg' | asset_url }}"
-                  alt="Home icon"
-                  class="{{ icon_class }}"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
+                {% render 'icon-home', class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="{{ menu_label_class }}">Home</span>
               </a>
             </li>
@@ -290,105 +277,49 @@
 
             <li>
               <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="{{ menu_item_class }}">
-                <img
-                  src="{{ 'header-simcard.svg' | asset_url }}"
-                  alt="SIM Card icon"
-                  class="{{ icon_class }}"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
+                {% render 'icon-simcard', class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="{{ menu_label_class }}">SIM Card</span>
               </a>
             </li>
 
             <li>
               <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="{{ menu_item_class }}">
-                <img
-                  src="{{ 'header-insurance.svg' | asset_url }}"
-                  alt="Insurance icon"
-                  class="{{ icon_class }}"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
+                {% render 'icon-insurance', class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="{{ menu_label_class }}">Insurance</span>
               </a>
             </li>
 
             <li>
               <a href="{{ locale_prefix }}/pages/check-data-usage" class="{{ menu_item_class }}">
-                <img
-                  src="{{ 'header-usage.svg' | asset_url }}"
-                  alt="Data Usage icon"
-                  class="{{ icon_class }}"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
+                {% render 'icon-chart-donut', class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="{{ menu_label_class }}">Data Usage</span>
               </a>
             </li>
 
             <li>
               <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="{{ menu_item_class }}">
-                <img
-                  src="{{ 'icon-plus.svg' | asset_url }}"
-                  alt="Top Up icon"
-                  class="{{ icon_class }}"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
+                {% render 'icon-plus', class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="{{ menu_label_class }}">Top Up</span>
               </a>
             </li>
 
             <li>
               <a href="{{ locale_prefix }}/pages/about-us" class="{{ menu_item_class }}">
-                <img
-                  src="{{ 'header-about.svg' | asset_url }}"
-                  alt="About Us icon"
-                  class="{{ icon_class }}"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
+                {% render 'icon-people-outline', class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="{{ menu_label_class }}">About Us</span>
               </a>
             </li>
 
             <li>
               <a href="{{ locale_prefix }}/pages/faq" class="{{ menu_item_class }}">
-                <img
-                  src="{{ 'header-faq.svg' | asset_url }}"
-                  alt="FAQ icon"
-                  class="{{ icon_class }}"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
+                {% render 'icon-comment-question', class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="{{ menu_label_class }}">FAQ</span>
               </a>
             </li>
 
             <li>
               <a href="{{ locale_prefix }}/pages/news" class="{{ menu_item_class }}">
-                <img
-                  src="{{ 'header-news.svg' | asset_url }}"
-                  alt="News icon"
-                  class="{{ icon_class }}"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
+                {% render 'icon-news', class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="{{ menu_label_class }}">News</span>
               </a>
             </li>
@@ -396,17 +327,9 @@
             <li>
               <a href="{{ routes.cart_url }}" class="{{ menu_item_class }}" aria-label="Cart">
                 <span class="relative inline-flex items-center">
-                  <img
-                    src="{{ 'header-cart.svg' | asset_url }}"
-                    alt="Cart icon"
-                    class="{{ icon_class }}"
-                    width="24"
-                    height="24"
-                    loading="eager"
-                    decoding="async"
-                  >
+                  {% render 'icon-cart', class: 'text-primary w-[26px] h-[26px]' %}
                   {% if cart.items.size > 0 %}
-                    <span class="absolute -top-1 -right-[6px] bg-[var(--color-primary)] text-[var(--color-neutral)] text-[10px] w-4 h-4 rounded-full inline-flex items-center justify-center text-center leading-none">
+                    <span class="absolute -top-1 -right-[6px] bg-primary text-[var(--color-neutral)] text-[10px] w-4 h-4 rounded-full inline-flex items-center justify-center text-center leading-none">
                       {{ cart.items.size }}
                     </span>
                   {% endif %}
@@ -417,15 +340,7 @@
 
             <li>
               <a href="{{ profile_url }}" class="{{ menu_item_class }}">
-                <img
-                  src="{{ 'header-profile.svg' | asset_url }}"
-                  alt="Profile icon"
-                  class="{{ icon_class }}"
-                  width="24"
-                  height="24"
-                  loading="eager"
-                  decoding="async"
-                >
+                {% render 'icon-profile-outline', class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="{{ menu_label_class }}">Profile</span>
               </a>
             </li>
@@ -439,33 +354,21 @@
       <div
         id="sidebar-panel"
         aria-hidden="true"
-        class="
-          absolute top-[50px] left-0 w-full bg-[var(--color-neutral)] z-[1000]
-          max-h-0 opacity-0 overflow-y-auto pointer-events-none
-          transition-all duration-200
-        "
+        class="absolute top-[50px] left-0 w-full bg-neutral z-[1000] transition-[max-height,opacity] duration-200"
       >
-        <ul class="m-0 p-3 list-none">
+        <ul class="m-0 px-3 list-none">
           {%- assign sidebar_li = 'border-b border-[#d9d9d9] py-3' -%}
-          {%- assign sidebar_a = 'flex items-center gap-2.5 text-[var(--color-primary)] font-bold no-underline' -%}
+          {%- assign sidebar_a = 'flex items-center gap-2.5 text-primary font-bold no-underline' -%}
 
           <li class="{{ sidebar_li }}">
             <a href="{{ routes.root_url }}" class="{{ sidebar_a }}">
-              <img
-                src="{{ 'header-home.svg' | asset_url }}"
-                alt="Home icon"
-                class="w-6 h-6 inline-block"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="text-sm font-[790]">Home</span>
+              {% render 'icon-home', class: 'text-primary w-[26px] h-[26px]' %}
+              <span class="text-sm">Home</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/esim-page?sim_type=esim" class="{{ sidebar_a }}">
+            <a href="{{ locale_prefix }}/pages/product-category?q=esim" class="{{ sidebar_a }}">
               <img
                 src="{{ 'header-esim.svg' | asset_url }}"
                 alt="eSIM icon"
@@ -475,117 +378,61 @@
                 loading="lazy"
                 decoding="async"
               >
-              <span class="text-sm font-[790]">eSIM</span>
+              <span class="text-sm">eSIM</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/sim-card-page?sim_type=sim-card" class="{{ sidebar_a }}">
-              <img
-                src="{{ 'header-simcard.svg' | asset_url }}"
-                alt="SIM Card icon"
-                class="w-6 h-6 inline-block"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="text-sm font-[790]">SIM Card</span>
+            <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="{{ sidebar_a }}">
+              {% render 'icon-simcard', class: 'text-primary w-[26px] h-[26px]' %}
+              <span class="text-sm">SIM Card</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/insurance-page?sim_type=insurance" class="{{ sidebar_a }}">
-              <img
-                src="{{ 'header-insurance.svg' | asset_url }}"
-                alt="Insurance icon"
-                class="w-6 h-6 inline-block"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="text-sm font-[790]">Insurance</span>
+            <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="{{ sidebar_a }}">
+              {% render 'icon-insurance', class: 'text-primary w-[26px] h-[26px]' %}
+              <span class="text-sm">Insurance</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/check-data-usage" class="{{ sidebar_a }}">
-              <img
-                src="{{ 'header-usage.svg' | asset_url }}"
-                alt="Data Usage icon"
-                class="w-6 h-6 inline-block"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="text-sm font-[790]">Data Usage</span>
+              {% render 'icon-chart-donut', class: 'text-primary w-[26px] h-[26px]' %}
+              <span class="text-sm">Data Usage</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="{{ sidebar_a }}">
-              <img
-                src="{{ 'icon-plus.svg' | asset_url }}"
-                alt="Top Up icon"
-                class="w-6 h-6 inline-block"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="text-sm font-[790]">Top Up</span>
+              {% render 'icon-plus', class: 'text-primary w-[26px] h-[26px]' %}
+              <span class="text-sm">Top Up</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/about-us" class="{{ sidebar_a }}">
-              <img
-                src="{{ 'header-about.svg' | asset_url }}"
-                alt="About Us icon"
-                class="w-6 h-6 inline-block"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="text-sm font-[790]">About Us</span>
+              {% render 'icon-people-outline', class: 'text-primary w-[26px] h-[26px]' %}
+              <span class="text-sm">About Us</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/faq" class="{{ sidebar_a }}">
-              <img
-                src="{{ 'header-faq.svg' | asset_url }}"
-                alt="FAQ icon"
-                class="w-6 h-6 inline-block"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="text-sm font-[790]">FAQ</span>
+              {% render 'icon-comment-question', class: 'text-primary w-[26px] h-[26px]' %}
+              <span class="text-sm">FAQ</span>
             </a>
           </li>
 
           <li class="{{ sidebar_li }}">
             <a href="{{ locale_prefix }}/pages/news" class="{{ sidebar_a }}">
-              <img
-                src="{{ 'header-news.svg' | asset_url }}"
-                alt="News icon"
-                class="w-6 h-6 inline-block"
-                width="24"
-                height="24"
-                loading="lazy"
-                decoding="async"
-              >
-              <span class="text-sm font-[790]">News</span>
+              {% render 'icon-news', class: 'text-primary w-[26px] h-[26px]' %}
+              <span class="text-sm">News</span>
             </a>
           </li>
         </ul>
 
-        <div class="px-4 pb-4">
+        <div class="px-2 pb-4">
           <div class="flex items-center gap-2.5">
             <div class="flex items-center">
               <!-- Currency (MOBILE) -->
@@ -601,19 +448,19 @@
                   <span class="inline-flex items-center">
                     {{- 'header-currency.svg' | inline_asset_content -}}
                   </span>
-                  <span id="CurrencyLabel-mobile" class="text-sm tracking-wider text-[var(--color-primary)]">USD</span>
+                  <span id="CurrencyLabel-mobile" class="text-sm tracking-wider text-primary">USD</span>
                   <span
                     id="CurrencyArrow-mobile"
                     class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
                     aria-hidden="true"
                   >
-                    {% render 'icon-arrow-right', class: 'text-primary w-[30px] h-[30px]' %}
+                    {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
                   </span>
                 </button>
 
                 <ul
                   id="CurrencyMenu-mobile"
-                  class="hidden absolute right-0 bottom-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+                  class="absolute right-0 bottom-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
                   role="listbox"
                   aria-label="Select currency"
                 >
@@ -621,7 +468,7 @@
                     <button
                       type="button"
                       data-currency="USD"
-                      class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
+                      class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
                     >
                       <span>USD</span>
                     </button>
@@ -630,7 +477,7 @@
                     <button
                       type="button"
                       data-currency="IDR"
-                      class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
+                      class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
                     >
                       <span>IDR</span>
                     </button>
@@ -662,20 +509,20 @@
                   {{- 'header-language.svg' | inline_asset_content -}}
                 </span>
 
-                <span class="text-sm tracking-wider text-[var(--color-primary)]">{{ current_code_m }}</span>
+                <span class="text-sm tracking-wider text-primary">{{ current_code_m }}</span>
 
                 <span
                   id="LangArrow-mobile"
                   class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
                   aria-hidden="true"
                 >
-                  {% render 'icon-arrow-right', class: 'text-primary w-[30px] h-[30px]' %}
+                  {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
                 </span>
               </button>
 
               <ul
                 id="LangMenu-mobile"
-                class="hidden absolute right-0 bottom-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+                class="absolute right-0 bottom-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
                 role="listbox"
                 aria-label="Select language"
               >
@@ -687,7 +534,7 @@
                   >
                     <button
                       type="button"
-                      class="w-full flex items-center justify-between gap-2 text-[var(--color-primary)] px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition {% if locale.iso_code == localization.language.iso_code %}bg-black/10 font-semibold{% endif %}"
+                      class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition {% if locale.iso_code == localization.language.iso_code %}bg-black/10 font-semibold{% endif %}"
                       data-locale="{{ locale.iso_code }}"
                     >
                       <span>{{ code }}</span>
@@ -716,21 +563,16 @@
     const panel = document.getElementById('sidebar-panel');
     if (!btn || !panel) return;
 
-    const OPEN_CLASSES = ['max-h-[calc(100vh-70px)]', 'opacity-100', 'pointer-events-auto'];
-    const CLOSE_CLASSES = ['max-h-0', 'opacity-0', 'pointer-events-none'];
-
     const isOpen = () => btn.getAttribute('aria-expanded') === 'true';
 
     const open = () => {
-      panel.classList.remove(...CLOSE_CLASSES);
-      panel.classList.add(...OPEN_CLASSES);
+      panel.classList.add('is-open');
       btn.setAttribute('aria-expanded', 'true');
       panel.setAttribute('aria-hidden', 'false');
     };
 
     const close = () => {
-      panel.classList.remove(...OPEN_CLASSES);
-      panel.classList.add(...CLOSE_CLASSES);
+      panel.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
       panel.setAttribute('aria-hidden', 'true');
     };
@@ -738,6 +580,10 @@
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       isOpen() ? close() : open();
+    });
+
+    panel.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => close());
     });
 
     document.addEventListener('click', (e) => {
@@ -768,20 +614,20 @@
       if (!btn || !menu || !input) return;
 
       const open = () => {
-        menu.classList.remove('hidden');
+        menu.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
         if (arrowWrap) arrowWrap.classList.add('rotate-[270deg]');
       };
 
       const close = () => {
-        menu.classList.add('hidden');
+        menu.classList.remove('is-open');
         btn.setAttribute('aria-expanded', 'false');
         if (arrowWrap) arrowWrap.classList.remove('rotate-[270deg]');
       };
 
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        menu.classList.contains('hidden') ? open() : close();
+        menu.classList.contains('is-open') ? close() : open();
       });
 
       menu.querySelectorAll('[data-locale]').forEach((item) => {
@@ -884,10 +730,10 @@
       const wrap = document.getElementById(`CurrencyForm-${suffix}`);
       if (!wrap) return;
 
-      const btn     = document.getElementById(`CurrencyTrigger-${suffix}`);
-      const menu    = document.getElementById(`CurrencyMenu-${suffix}`);
-      const label   = document.getElementById(`CurrencyLabel-${suffix}`);
-      const arrow   = document.getElementById(`CurrencyArrow-${suffix}`);
+      const btn = document.getElementById(`CurrencyTrigger-${suffix}`);
+      const menu = document.getElementById(`CurrencyMenu-${suffix}`);
+      const label = document.getElementById(`CurrencyLabel-${suffix}`);
+      const arrow = document.getElementById(`CurrencyArrow-${suffix}`);
 
       if (!btn || !menu || !label) return;
 
@@ -897,8 +743,7 @@
         try {
           const val = JSON.parse(saved);
           label.textContent = val;
-          // Mark active item
-          menu.querySelectorAll('[data-currency]').forEach(item => {
+          menu.querySelectorAll('[data-currency]').forEach((item) => {
             const isActive = item.dataset.currency === val;
             item.classList.toggle('bg-black/10', isActive);
             item.classList.toggle('font-semibold', isActive);
@@ -907,38 +752,35 @@
       }
 
       const open = () => {
-        menu.classList.remove('hidden');
+        menu.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
         if (arrow) arrow.classList.add('rotate-[270deg]');
       };
 
       const close = () => {
-        menu.classList.add('hidden');
+        menu.classList.remove('is-open');
         btn.setAttribute('aria-expanded', 'false');
         if (arrow) arrow.classList.remove('rotate-[270deg]');
       };
 
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        menu.classList.contains('hidden') ? open() : close();
+        menu.classList.contains('is-open') ? close() : open();
       });
 
       menu.querySelectorAll('[data-currency]').forEach((item) => {
         item.addEventListener('click', () => {
           const val = item.dataset.currency;
 
-          // Save to sessionStorage
           sessionStorage.setItem('buckscc_customer_currency', JSON.stringify(val));
 
-          // Update label both desktop & mobile
-          ['desktop', 'mobile'].forEach(s => {
+          ['desktop', 'mobile'].forEach((s) => {
             const lbl = document.getElementById(`CurrencyLabel-${s}`);
             if (lbl) lbl.textContent = val;
 
-            // Update active state
             const m = document.getElementById(`CurrencyMenu-${s}`);
             if (m) {
-              m.querySelectorAll('[data-currency]').forEach(i => {
+              m.querySelectorAll('[data-currency]').forEach((i) => {
                 const isActive = i.dataset.currency === val;
                 i.classList.toggle('bg-black/10', isActive);
                 i.classList.toggle('font-semibold', isActive);

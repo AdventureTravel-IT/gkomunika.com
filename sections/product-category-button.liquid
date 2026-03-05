@@ -1,54 +1,49 @@
-{% comment %} overflow-x-visible scroll-smooth {% endcomment %}
 <section class="max-w-[1920px] mx-auto">
   <div class="pt-8 px-[24px] md:px-[10%] flex gap-[5px] md:gap-4 items-center justify-start">
-    
+
     <a href="/pages/product-category?q=esim"
-      class="bg-primary text-neutral flex items-center justify-center gap-2
+      class="category-nav-btn bg-primary text-neutral flex items-center justify-center gap-2
              rounded-[15px] h-[52px] w-[120px] md:w-auto md:px-5 px-4">
-      {% render 'icon-qr-code', class: 'text-neutral h-[24px] w-[24px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
-      <span class="font-bold text-[14px] md:text-[16px] leading-tight text-center">
-        eSIM
-      </span>
+      {% render 'icon-qr-code', class: 'text-neutral w-[26px] h-[26px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
+      <span class="font-bold text-[14px] md:text-[16px] leading-tight text-center">eSIM</span>
     </a>
 
     <a href="/pages/product-category?q=sim-card"
-      class="bg-primary text-neutral flex items-center justify-center gap-2
+      class="category-nav-btn bg-primary text-neutral flex items-center justify-center gap-2
              rounded-[15px] h-[52px] w-[120px] md:w-auto md:px-5 px-4">
-      {% render 'icon-simcard', class: 'text-neutral h-[24px] w-[24px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
-      <span class="font-bold text-[14px] md:text-[16px] leading-tight text-center">
-        SIM<br>Card
-      </span>
+      {% render 'icon-simcard', class: 'text-neutral w-[26px] h-[26px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
+      <span class="font-bold text-[14px] md:text-[16px] leading-tight text-center">SIM<br>Card</span>
     </a>
 
     <a href="/pages/product-category?q=insurance"
-      class="bg-primary text-neutral flex items-center justify-center gap-2
+      class="category-nav-btn bg-primary text-neutral flex items-center justify-center gap-2
              rounded-[15px] h-[52px] w-[120px] md:w-auto md:px-5 px-4">
-      {% render 'icon-insurance', class: 'text-neutral h-[24px] w-[24px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
-      <span class="font-bold text-[14px] md:text-[16px] leading-tight text-center">
-        Insurance
-      </span>
+      {% render 'icon-insurance', class: 'text-neutral w-[26px] h-[26px] md:h-[40px] md:w-[40px] flex-shrink-0' %}
+      <span class="font-bold text-[14px] md:text-[16px] leading-tight text-center">Insurance</span>
     </a>
 
   </div>
 </section>
 
-
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const btnEsim = document.getElementById('btn-esim');
-    const btnSimcard = document.getElementById('btn-simcard');
-    const btnInsurance = document.getElementById('btn-insurance');
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('a.category-nav-btn').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        if (e.button !== 0) return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (a.dataset.loading === '1') return;
 
-    function goToCategory(button) {
-      const categoryValue = button.getAttribute('data-category');
-      if (categoryValue) {
-        window.location.href = `/pages/product-category?sim_type=${encodeURIComponent(categoryValue)}`;
-      }
-    }
+        a.dataset.loading = '1';
+        a.style.opacity = '0.6';
+        a.style.pointerEvents = 'none';
 
-    btnEsim.addEventListener('click', () => goToCategory(btnEsim));
-    btnSimcard.addEventListener('click', () => goToCategory(btnSimcard));
-    btnInsurance.addEventListener('click', () => goToCategory(btnInsurance));
+        window.addEventListener('pageshow', () => {
+          a.dataset.loading = '0';
+          a.style.opacity = '';
+          a.style.pointerEvents = '';
+        }, { once: true });
+      });
+    });
   });
 </script>
 
@@ -59,7 +54,7 @@
   "presets": [
     {
       "name": "Product Category Button",
-      "category": "Custom"
+      "category": "Custom Sections"
     }
   ]
 }

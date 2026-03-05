@@ -1847,8 +1847,8 @@
 
     toast.classList.remove('hidden');
 
-    toast.classList.remove('bg-primary', 'bg-red-500');
-    toast.classList.add(type === 'error' ? 'bg-red-500' : 'bg-primary');
+    toast.classList.remove('bg-red-500');
+    toast.classList.add('bg-primary', 'text-neutral');
 
     requestAnimationFrame(() => {
       toast.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
@@ -2167,7 +2167,11 @@
   async function addToCart() {
     if (isAddingToCart) return;
 
-    if (!selectedVariant) return showToast('Please select all options', 'error');
+    if (!selectedVariant) {
+      showToast('Please select all options', 'error');
+      scrollToSelectors();
+      return;
+    }
     if (!selectedVariant.available) return showToast('This variant is not available', 'error');
 
     const qty = parseInt(dom().qtyInput?.value, 10) || 1;
@@ -2239,7 +2243,11 @@
   async function buyNow() {
     if (isBuyingNow) return;
 
-    if (!selectedVariant) return showToast('Please select all options', 'error');
+    if (!selectedVariant) {
+      showToast('Please select all options', 'error');
+      scrollToSelectors();
+      return;
+    }
     if (!selectedVariant.available) return showToast('This variant is not available', 'error');
 
     const qty = isTopUpProductCategory(filtered.category)
@@ -2520,14 +2528,52 @@
    * ========================================================= */
   document.addEventListener('DOMContentLoaded', async () => {
     initDescription();
-
     await getExchangeRate();
 
+    // ✅ FETCH SEMUA VARIANTS (ganti liquid loop yang limit 100)
+    try {
+      let allVariants = [];
+      let page = 1;
+
+      while (true) {
+        const res = await fetch(`/products/${filtered.handle}.json?limit=250&page=${page}`);
+        const json = await res.json();
+        const variants = json.product?.variants || [];
+
+        const mapped = variants.map(v => ({
+          id: v.id,
+          title: v.title,
+          price: v.price,
+          priceRaw: parseInt(v.price),
+          sku: v.sku,
+          available: v.inventory_management === null
+            ? true
+            : (v.inventory_quantity > 0 || v.inventory_policy === 'continue'),
+          variantType: null,
+          airportPurpose: '',
+          airportAutoVariantId: '',
+          airportAutoVariantTitle: 0,
+          options: [v.option1, v.option2, v.option3].filter(Boolean)
+        }));
+
+        allVariants = allVariants.concat(mapped);
+
+        if (variants.length < 250) break;
+        page++;
+      }
+
+      if (allVariants.length > 0) {
+        filtered.variants = allVariants;
+        console.log('✅ Total variants loaded:', filtered.variants.length);
+      }
+    } catch (err) {
+      console.warn('⚠️ Gagal fetch variants, pakai data Liquid (mungkin tidak lengkap):', err);
+    }
+
+    // lanjut init seperti biasa
     generateSelectors();
     bindQuantityInput();
     bindAddonPopup();
-
-    // ✅ bind top up iccid UI
     bindTopUpIccidUI();
 
     lastCurrency = sessionStorage.getItem('buckscc_customer_currency');
@@ -2536,7 +2582,6 @@
 
     restoreAddonsFromSession();
     updateTotalPriceDisplayIfInsurance();
-
     updateMobileSelectedVariantLabel();
     bindAddonCardToggle();
     updateMinusButtonState();

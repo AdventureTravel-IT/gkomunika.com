@@ -3,7 +3,52 @@
     id="collections"
     data-search-type="{{ section.settings.search_type | default: 'main' }}"
     class="container-search"
-  ></div>
+  >
+    <div id="collections-skeleton">
+      <div class="w-full mb-5">
+        <div class="mt-[20px] mb-[50px] space-y-4 md:max-w-[50%]">
+          <ui-skeleton class="w-64 h-10 rounded-xl"></ui-skeleton>
+          <ui-skeleton class="w-full h-5 rounded"></ui-skeleton>
+          <ui-skeleton class="w-3/4 h-5 rounded"></ui-skeleton>
+          <ui-skeleton class="w-full h-[54px] rounded-[15px]"></ui-skeleton>
+        </div>
+        <div class="flex gap-2 mb-4">
+          <ui-skeleton class="w-16 h-9 rounded-full"></ui-skeleton>
+          <ui-skeleton class="w-16 h-9 rounded-full"></ui-skeleton>
+          <ui-skeleton class="w-24 h-9 rounded-full"></ui-skeleton>
+          <ui-skeleton class="w-20 h-9 rounded-full"></ui-skeleton>
+        </div>
+      </div>
+      <div class="mb-10">
+        <ui-skeleton class="w-48 h-8 rounded-lg mb-6"></ui-skeleton>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
+          {%- for i in (1..6) -%}
+            <div class="bg-neutral rounded-[20px] p-[15px] shadow-md flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <ui-skeleton class="w-[50px] h-[50px] rounded-[15px] shrink-0"></ui-skeleton>
+                <ui-skeleton class="h-6 rounded-lg flex-1"></ui-skeleton>
+              </div>
+              <div class="flex items-center justify-between border-t border-slate-200 pt-4">
+                <div class="flex items-center gap-2">
+                  <ui-skeleton class="w-[33px] h-[33px] rounded-full shrink-0"></ui-skeleton>
+                  <ui-skeleton class="w-20 h-4 rounded"></ui-skeleton>
+                </div>
+                <ui-skeleton class="w-24 h-4 rounded"></ui-skeleton>
+              </div>
+              <div class="flex items-center justify-between border-t border-slate-200 pt-3">
+                <div class="flex items-center gap-2">
+                  <ui-skeleton class="w-[33px] h-[33px] rounded-full shrink-0"></ui-skeleton>
+                  <ui-skeleton class="w-12 h-4 rounded"></ui-skeleton>
+                </div>
+                <ui-skeleton class="w-32 h-4 rounded"></ui-skeleton>
+              </div>
+              <ui-skeleton class="w-full h-[52px] rounded-[15px] mt-2"></ui-skeleton>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -424,6 +469,47 @@
     const title = (cardEl.getAttribute('data-title') || '').toLowerCase();
     const catRaw = normalizeKey(cardEl.getAttribute('data-category-raw') || '');
     return title.includes('gsim') || catRaw === 'gsim';
+  }
+
+  // =========================
+  // ✅ GSIM REGION SORT
+  // =========================
+  const GSIM_REGION_ORDER = ['asia', 'europe', 'australia', 'america', 'middle'];
+
+  function getGsimRegionScore(title = '') {
+    const t = String(title).toLowerCase();
+    for (let i = 0; i < GSIM_REGION_ORDER.length; i++) {
+      if (t.includes(GSIM_REGION_ORDER[i])) return i;
+    }
+    return GSIM_REGION_ORDER.length; // gSIM tanpa region dikenal → paling belakang
+  }
+
+  function isGsimItem(item) {
+    const title = String(item?.title || '').toLowerCase();
+    const catRaw = normalizeKey(item?.category_raw || '');
+    return title.includes('gsim') || catRaw === 'gsim';
+  }
+
+  function sortGsimByRegion(items = []) {
+    // Kumpulkan index posisi semua item gSIM
+    const gsimIndices = [];
+    items.forEach((item, idx) => {
+      if (isGsimItem(item)) gsimIndices.push(idx);
+    });
+
+    if (gsimIndices.length === 0) return items; // tidak ada gSIM, skip
+
+    // Ambil item gSIM lalu sort berdasarkan region
+    const gsimItems = gsimIndices.map((i) => items[i]);
+    gsimItems.sort((a, b) => getGsimRegionScore(a.title) - getGsimRegionScore(b.title));
+
+    // Kembalikan ke posisi asalnya (hanya slot gSIM yang diganti, non-gSIM tidak bergerak)
+    const result = [...items];
+    gsimIndices.forEach((origIdx, i) => {
+      result[origIdx] = gsimItems[i];
+    });
+
+    return result;
   }
 
   async function fetchAllCollections(mode = 'main') {
@@ -866,21 +952,28 @@
   function getCardSearchText(item) {
     const sk = Array.isArray(item?.search_key) ? item.search_key : [];
 
+    // Helper: sertakan versi asli + versi underscore-diganti-spasi
+    function withNormalized(val) {
+      const s = String(val || '').trim();
+      if (!s) return [];
+      const normalized = s.replace(/_/g, ' ');
+      return normalized !== s ? [s, normalized] : [s];
+    }
+
     const countryTokens = sk
       .flatMap((x) => {
         const c = x?.country || {};
         const aliases = Array.isArray(c.country_alias) ? c.country_alias : [];
-        return [c.country_en, c.country_id, ...aliases];
+        return [c.country_en, c.country_id, ...aliases].flatMap(withNormalized);
       })
       .filter(Boolean);
 
     const regionTokens = sk
       .flatMap((x) => {
         const regions = Array.isArray(x?.regions) ? x.regions : x?.region ? [x.region] : [];
-
         return regions.flatMap((r) => {
           const aliases = Array.isArray(r?.region_alias) ? r.region_alias : [];
-          return [r?.region_en, r?.region_id, ...aliases];
+          return [r?.region_en, r?.region_id, ...aliases].flatMap(withNormalized);
         });
       })
       .filter(Boolean);
@@ -981,7 +1074,6 @@
     return 0;
   }
 
-  // ✅ bonus: demote jika keyword hanya ketemu dari "include/transit" (search-text), tapi title tidak match
   function sortSingleCountryByTitle(rootEl, q) {
     const keyword = String(q || '').trim();
     if (keyword.length < 2) return;
@@ -993,26 +1085,23 @@
       if (!grid) return;
 
       const cards = Array.from(grid.querySelectorAll('.product-card-container'));
-      const singleCards = cards.filter((c) => (c.getAttribute('data-collection') || '') === 'single-country');
 
-      if (!singleCards.length) return;
+      // ✅ DIHAPUS: filter single-country saja — sekarang semua collection ikut di-sort
+      if (!cards.length) return;
 
-      singleCards.forEach((c, idx) => (c.__origIdx = idx));
+      cards.forEach((c, idx) => (c.__origIdx = idx));
 
-      singleCards.sort((a, b) => {
+      cards.sort((a, b) => {
         const ta = a.getAttribute('data-title') || '';
         const tb = b.getAttribute('data-title') || '';
         const sa = scoreTitleMatch(ta, keyword);
         const sb = scoreTitleMatch(tb, keyword);
 
-        // ✅ title match duluan
         if (sb !== sa) return sb - sa;
-
-        // ✅ kalau sama-sama 0 (tidak match title), tetap stabil by original
         return (a.__origIdx ?? 0) - (b.__origIdx ?? 0);
       });
 
-      singleCards.forEach((c) => grid.appendChild(c));
+      cards.forEach((c) => grid.appendChild(c));
     });
   }
 
@@ -1063,21 +1152,26 @@
 
     const tabButtons =
       mode === 'category'
-        ? finalTabs
-            .map(
-              (t, idx) => `
-                  <button
-                    class="filter-tab ${
-                      idx === 0 ? 'is-active' : ''
-                    } whitespace-nowrap shrink-0 pb-[5px] rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
-                    data-filter="${escapeHtml(t)}"
-                    type="button"
-                  >
-                    ${escapeHtml(LABELS[t] || t.replace(/-/g, ' '))}
-                  </button>
-                `
-            )
-            .join('')
+        ? [
+            `<button
+          class="filter-tab whitespace-nowrap shrink-0 pb-[5px] rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
+          data-filter="all"
+          type="button"
+        >
+          All
+        </button>`,
+            ...finalTabs.map(
+              (t) => `
+              <button
+                class="filter-tab whitespace-nowrap shrink-0 pb-[5px] rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
+                data-filter="${escapeHtml(t)}"
+                type="button"
+              >
+                ${escapeHtml(LABELS[t] || t.replace(/-/g, ' '))}
+              </button>
+            `
+            ),
+          ].join('')
         : [
             `<button
               class="filter-tab is-active whitespace-nowrap shrink-0 rounded-full text-[14px] font-semibold px-[30px] py-2 transition-all duration-200"
@@ -1220,6 +1314,7 @@
             apply();
             updateIncludedBadges(rootEl, val);
             setUrlQueryKeyword(val);
+            sortSingleCountryByTitle(rootEl, val);
             setSearchButtonLoading(rootEl, false); // ← tambah ini
           }, 80);
         });
@@ -1230,11 +1325,13 @@
           state.q = qFromUrl;
           apply();
           updateIncludedBadges(rootEl, qFromUrl);
+          sortSingleCountryByTitle(rootEl, qFromUrl);
         });
       }
 
       apply();
       updateIncludedBadges(rootEl, searchInput ? searchInput.value : '');
+      sortSingleCountryByTitle(rootEl, searchInput ? searchInput.value : '');
       return; // ✅ stop di sini biar logic tabs tidak jalan
     }
 
@@ -1286,7 +1383,7 @@
       tabs.forEach((btn) => {
         const f = (btn.getAttribute('data-filter') || '').trim();
 
-        if (mode !== 'category' && f === 'all') {
+        if (f === 'all') {
           btn.style.display = totalMatches > 0 ? '' : 'none';
           return;
         }
@@ -1474,8 +1571,9 @@
     }
 
     if (mode === 'category') {
-      const cat = getCategoryFromUrl();
-      state.filters = new Set([cat]);
+      const urlCat = getCategoryFromUrl();
+      const initCat = CATEGORY_TABS.includes(urlCat) ? urlCat : 'all';
+      state.filters = new Set([initCat]);
       setActiveTab(state.filters);
     } else {
       state.filters = new Set(['all']);
@@ -1611,12 +1709,6 @@
 
         // ganti isi tombol jadi loader
         a.innerHTML = `${LOADING_ICON_HTML}<span class="ml-2">Loading...</span>`;
-
-        // ✅ pastiin UI sempet paint, baru navigate
-        e.preventDefault();
-        requestAnimationFrame(() => {
-          window.location.href = url;
-        });
       });
     });
   }
@@ -1683,6 +1775,9 @@
     const root = document.getElementById('collections');
     if (!root) return;
 
+    const skeleton = root.querySelector('#collections-skeleton');
+    if (skeleton) skeleton.remove();
+
     const visible = (results ?? []).filter((col) => (col.items ?? []).length > 0);
     if (visible.length === 0) {
       root.innerHTML = `
@@ -1709,7 +1804,7 @@
         const groupTitle = col.title ?? col.handle ?? 'Untitled';
         const isSingleCountryCollection = col.handle === 'single-country';
 
-        const cardsHtml = (col.items ?? [])
+        const cardsHtml = sortGsimByRegion(col.items ?? [])
           .map((item) => {
             const simTypeRaw = mode === 'topup' ? 'Top Up Plan' : item.category ?? 'Undefined';
             const simType = normalizeType(simTypeRaw);
@@ -1733,7 +1828,7 @@
                   data-collection="${escapeHtml(col.handle)}"
                   data-category-raw="${escapeHtml(item.category_raw || '')}"
                 >
-                  <a href="${escapeHtml(href)}" class="w-full flex items-center gap-3 h-auto my-1">
+                  <a href="${escapeHtml(href)}" class="w-full flex items-center gap-3 h-auto pb-3">
                     ${renderCountryVisual(item, { primaryOnly: isSingleCountryCollection })}
 
                     <div class="min-w-0 w-full flex items-center">
@@ -1746,7 +1841,7 @@
                     </div>
                   </a>
 
-                  <div class="product-card-content mt-3">
+                  <div class="product-card-content">
                     <div class="product-card-content-flip-front">
                       ${renderBenefits(item, {
                         excludePrimary: isSingleCountryCollection,

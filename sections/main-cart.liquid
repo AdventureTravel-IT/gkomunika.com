@@ -227,9 +227,7 @@
     <!-- Header (HANYA tampil jika cart ada item) -->
     <div class="px-6 pt-10 md:pt-[100px] md:px-[10%] flex items-center justify-between">
       <h2 class="text-2xl md:text-[40px] text-primary">Your cart</h2>
-      <a href="{{ pages['all-destination'].url }}" class="text-sm md:text-lg text-primary underline">
-        Continue shopping
-      </a>
+      <a href="{{ routes.search_url }}" class="text-sm md:text-lg text-primary underline"> Continue shopping </a>
     </div>
 
     <!-- Desktop table header only (HANYA tampil jika cart ada item) -->
@@ -987,6 +985,91 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
     window.location.href = `/account/login?return_url=${encodeURIComponent(returnUrl)}`;
   {% endif %}
 });
+</script>
+
+<script>
+  // ============================================================
+  // CART LINK & CHECKOUT LOADING FEEDBACK
+  // Mencegah quick backs karena user tidak tahu klik berhasil
+  // ============================================================
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Continue Shopping & Product title links
+    document.querySelectorAll('a[href]').forEach((a) => {
+      // Skip link yang bukan navigasi halaman (anchor, javascript:, external)
+      const href = a.getAttribute('href') || '';
+      if (!href || href.startsWith('#') || href.startsWith('javascript')) return;
+      if (a.hostname && a.hostname !== window.location.hostname) return;
+
+      a.addEventListener('click', (e) => {
+        if (e.button !== 0) return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (a.dataset.loading === '1') return;
+
+        a.dataset.loading = '1';
+        a.style.opacity = '0.6';
+        a.style.pointerEvents = 'none';
+
+        // Reset saat user balik (bfcache)
+        window.addEventListener(
+          'pageshow',
+          () => {
+            a.dataset.loading = '0';
+            a.style.opacity = '';
+            a.style.pointerEvents = '';
+          },
+          { once: true }
+        );
+      });
+    });
+
+    // 2. Checkout button (type="submit")
+    const checkoutSubmit = document.querySelector('button[type="submit"][name="checkout"]');
+    if (checkoutSubmit) {
+      checkoutSubmit.addEventListener('click', () => {
+        if (checkoutSubmit.dataset.loading === '1') return;
+
+        checkoutSubmit.dataset.loading = '1';
+        checkoutSubmit.disabled = true;
+        checkoutSubmit.style.opacity = '0.7';
+        checkoutSubmit.textContent = 'Processing...';
+
+        window.addEventListener(
+          'pageshow',
+          () => {
+            checkoutSubmit.dataset.loading = '0';
+            checkoutSubmit.disabled = false;
+            checkoutSubmit.style.opacity = '';
+            checkoutSubmit.textContent = 'Checkout';
+          },
+          { once: true }
+        );
+      });
+    }
+
+    // 3. Smart unified checkout button
+    const smartCheckout = document.getElementById('checkout-smart-unified');
+    if (smartCheckout) {
+      smartCheckout.addEventListener('click', () => {
+        if (smartCheckout.dataset.loading === '1') return;
+
+        smartCheckout.dataset.loading = '1';
+        smartCheckout.disabled = true;
+        smartCheckout.style.opacity = '0.7';
+        smartCheckout.textContent = 'Processing...';
+
+        window.addEventListener(
+          'pageshow',
+          () => {
+            smartCheckout.dataset.loading = '0';
+            smartCheckout.disabled = false;
+            smartCheckout.style.opacity = '';
+            smartCheckout.textContent = 'Checkout';
+          },
+          { once: true }
+        );
+      });
+    }
+  });
 </script>
 
 {% schema %}

@@ -93,7 +93,6 @@
         }
         const data = JSON.parse(raw);
         countries = Array.isArray(data.search_keys) ? data.search_keys : [];
-        console.log(countries.filter((c) => (c.country_en || '').trim().toLowerCase() === 'japan'));
       } catch (e) {
         console.error('[autocomplete] fetch gagal:', e);
         return;

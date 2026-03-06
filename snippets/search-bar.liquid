@@ -73,13 +73,20 @@
       };
 
       // ✅ ENTER / tombol submit -> search normal
+      // root.addEventListener('submit', (e) => {
+      //   const q = input.value.trim();
+      //   if (!q) {
+      //     e.preventDefault();
+      //     hideBox();
+      //   }
+      //   // kalau q ada, biarkan form submit ke /search?q=...
+      // });
+
       root.addEventListener('submit', (e) => {
+        e.preventDefault();
         const q = input.value.trim();
-        if (!q) {
-          e.preventDefault();
-          hideBox();
-        }
-        // kalau q ada, biarkan form submit ke /search?q=...
+        hideBox();
+        window.location.href = q ? `/search?q=${encodeURIComponent(q)}` : '/search';
       });
 
       // --- Fetch JSON ---

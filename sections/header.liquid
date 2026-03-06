@@ -1,3 +1,510 @@
+{% style %}
+  /* ============================================================
+   HEADER SECTION — Vanilla CSS
+   (Converted from Tailwind utility classes)
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   1. SIDEBAR PANEL STATE (ID-based, kept as-is)
+   ---------------------------------------------------------- */
+#sidebar-panel {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0;
+  pointer-events: none;
+}
+#sidebar-panel.is-open {
+  max-height: calc(100vh - 70px) !important;
+  overflow-y: auto !important;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#CurrencyMenu-desktop,
+#CurrencyMenu-mobile,
+#LangMenu-desktop,
+#LangMenu-mobile {
+  display: none !important;
+}
+#CurrencyMenu-desktop.is-open,
+#CurrencyMenu-mobile.is-open,
+#LangMenu-desktop.is-open,
+#LangMenu-mobile.is-open {
+  display: block !important;
+}
+
+/* ----------------------------------------------------------
+   2. SITE HEADER
+   ---------------------------------------------------------- */
+.site-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 200;
+  background-color: var(--color-neutral);
+  max-width: 1920px;
+  margin-left: auto;
+  margin-right: auto;
+  height: fit-content;
+  padding: 5px 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .site-header {
+    padding: 15px 0;
+  }
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+/* ----------------------------------------------------------
+   3. HEADER LEFT
+   ---------------------------------------------------------- */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ----------------------------------------------------------
+   4. MOBILE MENU TOGGLE BUTTON
+   ---------------------------------------------------------- */
+.menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0 0 0 -20px;
+  border: 0;
+  background: transparent;
+  line-height: 1;
+  font-size: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (min-width: 768px) {
+  .menu-toggle {
+    display: none;
+  }
+}
+
+.menu-icon {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.menu-icon span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-primary);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.menu-icon span:nth-child(1) { top: 0; }
+.menu-icon span:nth-child(2) { top: 8px; }
+.menu-icon span:nth-child(3) { top: 16px; }
+
+/* ----------------------------------------------------------
+   5. LOGO
+   ---------------------------------------------------------- */
+.header-logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* ----------------------------------------------------------
+   6. MOBILE RIGHT ACTIONS
+   ---------------------------------------------------------- */
+.header-mobile-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .header-mobile-right {
+    display: none;
+  }
+}
+
+/* Shared icon button / icon link */
+.header-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px;
+  margin: -8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Cart icon wrapper (for badge positioning) */
+.header-cart-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.header-cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background-color: var(--color-primary);
+  color: var(--color-neutral);
+  font-size: 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+}
+
+/* ----------------------------------------------------------
+   7. DESKTOP RIGHT ACTIONS
+   ---------------------------------------------------------- */
+.header-desktop-right {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .header-desktop-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.header-search-btn {
+  margin-right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+/* ----------------------------------------------------------
+   8. CURRENCY + LANGUAGE CONTROLS WRAPPER
+   ---------------------------------------------------------- */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ----------------------------------------------------------
+   9. DROPDOWN (Currency & Language — shared styles)
+   ---------------------------------------------------------- */
+.dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+/* Desktop currency trigger (gap-3) */
+.dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  transition: all 0.2s;
+  user-select: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* Language trigger (gap-2) */
+.dropdown-trigger-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  transition: all 0.2s;
+  user-select: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-label {
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+}
+
+.dropdown-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg);
+  transition: transform 0.2s;
+  transform-origin: center;
+}
+
+.dropdown-arrow.is-open {
+  transform: rotate(270deg);
+}
+
+/* Dropdown menu — opens downward (desktop) */
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 120px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+}
+
+/* Dropdown menu — opens upward (mobile) */
+.dropdown-menu-up {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  min-width: 120px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+}
+
+.dropdown-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--color-primary);
+  padding: 8px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-sizing: border-box;
+}
+
+.dropdown-option:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-option.is-active {
+  background-color: rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+}
+
+.dropdown-option .check {
+  opacity: 0.8;
+}
+
+.lang-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+}
+
+/* ----------------------------------------------------------
+   10. DESKTOP NAVIGATION
+   ---------------------------------------------------------- */
+.header-nav {
+  display: flex;
+  align-items: center;
+}
+
+.header-nav-list {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 100%;
+}
+
+.nav-item-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.nav-item-label {
+  font-size: 14px;
+  color: var(--color-primary);
+}
+
+/* Nav cart badge (same pattern as mobile) */
+.nav-cart-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ----------------------------------------------------------
+   11. MOBILE SIDEBAR
+   ---------------------------------------------------------- */
+.sidebar-wrapper {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .sidebar-wrapper {
+    display: none;
+  }
+}
+
+.sidebar-panel {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  background-color: var(--color-neutral);
+  z-index: 1000;
+  transition: max-height 0.2s ease, opacity 0.2s ease;
+}
+
+.sidebar-list {
+  margin: 0;
+  padding: 0 12px;
+  list-style: none;
+}
+
+.sidebar-item {
+  border-bottom: 1px solid #d9d9d9;
+  padding: 12px 0;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.sidebar-link span {
+  font-size: 14px;
+}
+
+.sidebar-footer {
+  padding: 0 8px 16px;
+}
+
+.sidebar-footer-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-footer-controls {
+  display: flex;
+  align-items: center;
+}
+
+/* ----------------------------------------------------------
+   12. SEARCH OVERLAY
+   ---------------------------------------------------------- */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9998;
+}
+
+/* ----------------------------------------------------------
+   13. SEARCH MODAL
+   ---------------------------------------------------------- */
+.search-modal {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(720px, calc(100vw - 32px));
+  max-height: 400px;
+  overflow: auto;
+  background: transparent;
+  z-index: 9999;
+}
+
+.search-modal-inner {
+  position: relative;
+  padding: 16px;
+}
+
+.search-modal-spacer {
+  margin-bottom: 100px;
+}
+
+.search-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border-radius: 50%;
+  padding: 10px;
+  background: #fff;
+  cursor: pointer;
+  line-height: 1;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-body {
+  overflow: auto;
+}
+
+.search-bar-wrap {
+  border: 1px solid #cbd5e1; /* slate-300 */
+  border-radius: 15px;
+}
+{% endstyle %}
+
 {% unless template == 'customers/login' or template == 'customers/register' %}
   {%- comment -%}
     Deteksi bahasa aktif untuk menambahkan prefix /id pada bahasa Indonesia
@@ -41,12 +548,12 @@
     }
   </style>
 
-  <header
-    class="fixed top-0 w-full z-[200] bg-neutral max-w-[1920px] mx-auto h-fit py-[5px] md:py-[15px] shadow-md"
-  >
-    <div class="flex items-center justify-between px-6">
+  <header class="site-header">
+    <div class="header-inner">
+
       <!-- LEFT -->
-      <div class="flex items-center gap-2.5">
+      <div class="header-left">
+
         <!-- Mobile menu toggle -->
         <button
           id="menu-toggle"
@@ -54,18 +561,18 @@
           aria-label="Open Menu"
           aria-expanded="false"
           aria-controls="sidebar-panel"
-          class="inline-flex md:hidden items-center justify-center w-[44px] h-[44px] p-0 m-0 border-0 bg-transparent leading-none text-[0px] box-border -ml-5 [-webkit-tap-highlight-color:transparent]"
+          class="menu-toggle"
         >
-          <div id="menu-icon" class="relative w-5 h-5 cursor-pointer">
-            <span class="absolute left-0 top-0 w-full h-[3px] bg-primary rounded-[2px] pointer-events-none"></span>
-            <span class="absolute left-0 top-2 w-full h-[3px] bg-primary rounded-[2px] pointer-events-none"></span>
-            <span class="absolute left-0 top-4 w-full h-[3px] bg-primary rounded-[2px] pointer-events-none"></span>
+          <div id="menu-icon" class="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
         </button>
 
         {% assign alt_global = 'Global Komunika' %}
         {% if section.settings.logo != blank %}
-          <a href="{{ routes.root_url }}" class="inline-flex items-center no-underline">
+          <a href="{{ routes.root_url }}" class="header-logo-link">
             <img
               src="{{ section.settings.logo | image_url: width: 120 }}"
               srcset="
@@ -86,7 +593,7 @@
       </div>
 
       <!-- MOBILE RIGHT -->
-      <div class="flex md:hidden items-center gap-5" aria-label="Quick actions">
+      <div class="header-mobile-right" aria-label="Quick actions">
         {% if template.name == 'product' %}
           <button
             id="header-search-trigger-mobile"
@@ -94,32 +601,28 @@
             aria-label="Search"
             aria-haspopup="dialog"
             aria-controls="header-search-modal"
-            class="p-2 -m-2"
+            class="header-icon-btn"
           >
             {% render 'icon-search', class: 'w-6 h-6 text-primary pointer-events-none' %}
           </button>
         {% endif %}
 
-        <a href="{{ routes.cart_url }}" aria-label="Cart" class="inline-flex items-center no-underline p-2 -m-2">
-          <span class="relative inline-flex items-center pointer-events-none">
+        <a href="{{ routes.cart_url }}" aria-label="Cart" class="header-icon-btn">
+          <span class="header-cart-wrap">
             {% render 'icon-cart', class: 'w-[28px] h-[28px] text-primary' %}
             {% if cart.items.size > 0 %}
-              <span
-                class="absolute -top-1 -right-[6px] bg-primary text-[var(--color-neutral)] text-[10px] w-4 h-4 rounded-full inline-flex items-center justify-center text-center leading-none"
-              >
-                {{ cart.items.size }}
-              </span>
+              <span class="header-cart-badge">{{ cart.items.size }}</span>
             {% endif %}
           </span>
         </a>
 
-        <a href="{{ profile_url }}" aria-label="Profile" class="inline-flex items-center no-underline p-2 -m-2">
+        <a href="{{ profile_url }}" aria-label="Profile" class="header-icon-btn">
           {% render 'icon-profile-outline', class: 'w-[28px] h-[28px] text-primary pointer-events-none' %}
         </a>
       </div>
 
       <!-- DESKTOP RIGHT -->
-      <div class="hidden md:flex items-center gap-3">
+      <div class="header-desktop-right">
         {% if template.name == 'product' %}
           <button
             id="header-search-trigger-desktop"
@@ -127,57 +630,46 @@
             aria-label="Search"
             aria-haspopup="dialog"
             aria-controls="header-search-modal"
-            class="mr-[10px]"
+            class="header-search-btn"
           >
             {% render 'icon-search', class: 'w-[26px] h-[26px] text-primary' %}
           </button>
         {% endif %}
 
-        <div class="flex items-center gap-2.5">
+        <div class="header-controls">
+
           <!-- Currency (DESKTOP) -->
-          <div class="relative inline-block" id="CurrencyForm-desktop">
+          <div class="dropdown-wrap" id="CurrencyForm-desktop">
             <button
               id="CurrencyTrigger-desktop"
               type="button"
-              class="inline-flex items-center gap-3 px-2.5 py-2 transition select-none"
+              class="dropdown-trigger"
               aria-haspopup="listbox"
               aria-expanded="false"
               aria-controls="CurrencyMenu-desktop"
             >
-              <span class="inline-flex items-center">
+              <span class="lang-icon">
                 {{- 'header-currency.svg' | inline_asset_content -}}
               </span>
-              <span id="CurrencyLabel-desktop" class="text-sm tracking-wider text-primary">USD</span>
-              <span
-                id="CurrencyArrow-desktop"
-                class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
-                aria-hidden="true"
-              >
+              <span id="CurrencyLabel-desktop" class="dropdown-label">USD</span>
+              <span id="CurrencyArrow-desktop" class="dropdown-arrow" aria-hidden="true">
                 {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
               </span>
             </button>
 
             <ul
               id="CurrencyMenu-desktop"
-              class="absolute right-0 top-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+              class="dropdown-menu"
               role="listbox"
               aria-label="Select currency"
             >
               <li role="option">
-                <button
-                  type="button"
-                  data-currency="USD"
-                  class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
-                >
+                <button type="button" data-currency="USD" class="dropdown-option">
                   <span>USD</span>
                 </button>
               </li>
               <li role="option">
-                <button
-                  type="button"
-                  data-currency="IDR"
-                  class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
-                >
+                <button type="button" data-currency="IDR" class="dropdown-option">
                   <span>IDR</span>
                 </button>
               </li>
@@ -185,7 +677,7 @@
           </div>
 
           <!-- Language (DESKTOP) -->
-          {% form 'localization', id: 'LanguageFormUX-desktop', class: 'relative inline-block' %}
+          {% form 'localization', id: 'LanguageFormUX-desktop', class: 'dropdown-wrap' %}
             <input
               type="hidden"
               name="locale_code"
@@ -198,29 +690,23 @@
             <button
               id="LangTrigger-desktop"
               type="button"
-              class="inline-flex items-center gap-2 px-2.5 py-2 transition select-none"
+              class="dropdown-trigger-lang"
               aria-haspopup="listbox"
               aria-expanded="false"
               aria-controls="LangMenu-desktop"
             >
-              <span class="flex items-center w-[30px] h-[30px]" aria-hidden="true">
+              <span class="lang-icon" aria-hidden="true">
                 {{- 'header-language.svg' | inline_asset_content -}}
               </span>
-
-              <span class="text-sm tracking-wider text-primary">{{ current_code }}</span>
-
-              <span
-                id="LangArrow-desktop"
-                class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
-                aria-hidden="true"
-              >
+              <span class="dropdown-label">{{ current_code }}</span>
+              <span id="LangArrow-desktop" class="dropdown-arrow" aria-hidden="true">
                 {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
               </span>
             </button>
 
             <ul
               id="LangMenu-desktop"
-              class="absolute right-0 top-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+              class="dropdown-menu"
               role="listbox"
               aria-label="Select language"
             >
@@ -232,12 +718,12 @@
                 >
                   <button
                     type="button"
-                    class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition {% if locale.iso_code == localization.language.iso_code %}bg-black/10 font-semibold{% endif %}"
+                    class="dropdown-option{% if locale.iso_code == localization.language.iso_code %} is-active{% endif %}"
                     data-locale="{{ locale.iso_code }}"
                   >
                     <span>{{ code }}</span>
                     {% if locale.iso_code == localization.language.iso_code %}
-                      <span class="opacity-80" aria-hidden="true">✓</span>
+                      <span class="check" aria-hidden="true">✓</span>
                     {% endif %}
                   </button>
                 </li>
@@ -246,129 +732,123 @@
           {% endform %}
         </div>
 
-        <!-- Menu desktop -->
-        <nav role="navigation" aria-label="Main navigation" class="flex items-center">
-          <ul class="flex items-center gap-3.5 flex-wrap m-0 p-0 max-w-full list-none">
-            {%- assign menu_item_class = 'inline-flex flex-col items-center justify-center gap-1 whitespace-nowrap font-bold leading-[1.1] text-primary no-underline' -%}
-            {%- assign menu_label_class = 'text-sm text-primary' -%}
-            {%- assign icon_class = 'w-[26px] h-[26px] block' -%}
+        <!-- Desktop navigation -->
+        <nav role="navigation" aria-label="Main navigation" class="header-nav">
+          <ul class="header-nav-list">
 
             <li>
-              <a href="{{ routes.root_url }}" class="{{ menu_item_class }}">
+              <a href="{{ routes.root_url }}" class="nav-item-link">
                 {% render 'icon-home', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="{{ menu_label_class }}">Home</span>
+                <span class="nav-item-label">Home</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ locale_prefix }}/pages/product-category?q=esim" class="{{ menu_item_class }}">
+              <a href="{{ locale_prefix }}/pages/product-category?q=esim" class="nav-item-link">
                 <img
                   src="{{ 'header-esim.svg' | asset_url }}"
                   alt="eSIM icon"
-                  class="{{ icon_class }}"
+                  class="w-[26px] h-[26px] block"
                   width="24"
                   height="24"
                   loading="eager"
                   decoding="async"
                 >
-                <span class="{{ menu_label_class }}">eSIM</span>
+                <span class="nav-item-label">eSIM</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="{{ menu_item_class }}">
+              <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="nav-item-link">
                 {% render 'icon-simcard', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="{{ menu_label_class }}">SIM Card</span>
+                <span class="nav-item-label">SIM Card</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="{{ menu_item_class }}">
+              <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="nav-item-link">
                 {% render 'icon-insurance', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="{{ menu_label_class }}">Insurance</span>
+                <span class="nav-item-label">Insurance</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ locale_prefix }}/pages/check-data-usage" class="{{ menu_item_class }}">
+              <a href="{{ locale_prefix }}/pages/check-data-usage" class="nav-item-link">
                 {% render 'icon-chart-donut', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="{{ menu_label_class }}">Data Usage</span>
+                <span class="nav-item-label">Data Usage</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="{{ menu_item_class }}">
+              <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="nav-item-link">
                 {% render 'icon-plus', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="{{ menu_label_class }}">Top Up</span>
+                <span class="nav-item-label">Top Up</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ locale_prefix }}/pages/about-us" class="{{ menu_item_class }}">
+              <a href="{{ locale_prefix }}/pages/about-us" class="nav-item-link">
                 {% render 'icon-people-outline', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="{{ menu_label_class }}">About Us</span>
+                <span class="nav-item-label">About Us</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ locale_prefix }}/pages/faq" class="{{ menu_item_class }}">
+              <a href="{{ locale_prefix }}/pages/faq" class="nav-item-link">
                 {% render 'icon-comment-question', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="{{ menu_label_class }}">FAQ</span>
+                <span class="nav-item-label">FAQ</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ locale_prefix }}/pages/news" class="{{ menu_item_class }}">
+              <a href="{{ locale_prefix }}/pages/news" class="nav-item-link">
                 {% render 'icon-news', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="{{ menu_label_class }}">News</span>
+                <span class="nav-item-label">News</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ routes.cart_url }}" class="{{ menu_item_class }}" aria-label="Cart">
-                <span class="relative inline-flex items-center">
+              <a href="{{ routes.cart_url }}" class="nav-item-link" aria-label="Cart">
+                <span class="nav-cart-wrap">
                   {% render 'icon-cart', class: 'text-primary w-[26px] h-[26px]' %}
                   {% if cart.items.size > 0 %}
-                    <span class="absolute -top-1 -right-[6px] bg-primary text-[var(--color-neutral)] text-[10px] w-4 h-4 rounded-full inline-flex items-center justify-center text-center leading-none">
-                      {{ cart.items.size }}
-                    </span>
+                    <span class="header-cart-badge">{{ cart.items.size }}</span>
                   {% endif %}
                 </span>
-                <span class="{{ menu_label_class }}">Cart</span>
+                <span class="nav-item-label">Cart</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ profile_url }}" class="{{ menu_item_class }}">
+              <a href="{{ profile_url }}" class="nav-item-link">
                 {% render 'icon-profile-outline', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="{{ menu_label_class }}">Profile</span>
+                <span class="nav-item-label">Profile</span>
               </a>
             </li>
+
           </ul>
         </nav>
       </div>
     </div>
 
-    <!-- SIDEBAR MOBILE (absolute di bawah header) -->
-    <div id="sidebar" class="block md:hidden w-full">
+    <!-- SIDEBAR MOBILE -->
+    <div id="sidebar" class="sidebar-wrapper">
       <div
         id="sidebar-panel"
         aria-hidden="true"
-        class="absolute top-[50px] left-0 w-full bg-neutral z-[1000] transition-[max-height,opacity] duration-200"
+        class="sidebar-panel"
       >
-        <ul class="m-0 px-3 list-none">
-          {%- assign sidebar_li = 'border-b border-[#d9d9d9] py-3' -%}
-          {%- assign sidebar_a = 'flex items-center gap-2.5 text-primary font-bold no-underline' -%}
+        <ul class="sidebar-list">
 
-          <li class="{{ sidebar_li }}">
-            <a href="{{ routes.root_url }}" class="{{ sidebar_a }}">
+          <li class="sidebar-item">
+            <a href="{{ routes.root_url }}" class="sidebar-link">
               {% render 'icon-home', class: 'text-primary w-[26px] h-[26px]' %}
-              <span class="text-sm">Home</span>
+              <span>Home</span>
             </a>
           </li>
 
-          <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/product-category?q=esim" class="{{ sidebar_a }}">
+          <li class="sidebar-item">
+            <a href="{{ locale_prefix }}/pages/product-category?q=esim" class="sidebar-link">
               <img
                 src="{{ 'header-esim.svg' | asset_url }}"
                 alt="eSIM icon"
@@ -378,107 +858,96 @@
                 loading="lazy"
                 decoding="async"
               >
-              <span class="text-sm">eSIM</span>
+              <span>eSIM</span>
             </a>
           </li>
 
-          <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="{{ sidebar_a }}">
+          <li class="sidebar-item">
+            <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="sidebar-link">
               {% render 'icon-simcard', class: 'text-primary w-[26px] h-[26px]' %}
-              <span class="text-sm">SIM Card</span>
+              <span>SIM Card</span>
             </a>
           </li>
 
-          <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="{{ sidebar_a }}">
+          <li class="sidebar-item">
+            <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="sidebar-link">
               {% render 'icon-insurance', class: 'text-primary w-[26px] h-[26px]' %}
-              <span class="text-sm">Insurance</span>
+              <span>Insurance</span>
             </a>
           </li>
 
-          <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/check-data-usage" class="{{ sidebar_a }}">
+          <li class="sidebar-item">
+            <a href="{{ locale_prefix }}/pages/check-data-usage" class="sidebar-link">
               {% render 'icon-chart-donut', class: 'text-primary w-[26px] h-[26px]' %}
-              <span class="text-sm">Data Usage</span>
+              <span>Data Usage</span>
             </a>
           </li>
 
-          <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="{{ sidebar_a }}">
+          <li class="sidebar-item">
+            <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="sidebar-link">
               {% render 'icon-plus', class: 'text-primary w-[26px] h-[26px]' %}
-              <span class="text-sm">Top Up</span>
+              <span>Top Up</span>
             </a>
           </li>
 
-          <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/about-us" class="{{ sidebar_a }}">
+          <li class="sidebar-item">
+            <a href="{{ locale_prefix }}/pages/about-us" class="sidebar-link">
               {% render 'icon-people-outline', class: 'text-primary w-[26px] h-[26px]' %}
-              <span class="text-sm">About Us</span>
+              <span>About Us</span>
             </a>
           </li>
 
-          <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/faq" class="{{ sidebar_a }}">
+          <li class="sidebar-item">
+            <a href="{{ locale_prefix }}/pages/faq" class="sidebar-link">
               {% render 'icon-comment-question', class: 'text-primary w-[26px] h-[26px]' %}
-              <span class="text-sm">FAQ</span>
+              <span>FAQ</span>
             </a>
           </li>
 
-          <li class="{{ sidebar_li }}">
-            <a href="{{ locale_prefix }}/pages/news" class="{{ sidebar_a }}">
+          <li class="sidebar-item">
+            <a href="{{ locale_prefix }}/pages/news" class="sidebar-link">
               {% render 'icon-news', class: 'text-primary w-[26px] h-[26px]' %}
-              <span class="text-sm">News</span>
+              <span>News</span>
             </a>
           </li>
         </ul>
 
-        <div class="px-2 pb-4">
-          <div class="flex items-center gap-2.5">
-            <div class="flex items-center">
+        <div class="sidebar-footer">
+          <div class="sidebar-footer-inner">
+            <div class="sidebar-footer-controls">
+
               <!-- Currency (MOBILE) -->
-              <div class="relative inline-block" id="CurrencyForm-mobile">
+              <div class="dropdown-wrap" id="CurrencyForm-mobile">
                 <button
                   id="CurrencyTrigger-mobile"
                   type="button"
-                  class="inline-flex items-center gap-2 px-2.5 py-2 transition select-none"
+                  class="dropdown-trigger-lang"
                   aria-haspopup="listbox"
                   aria-expanded="false"
                   aria-controls="CurrencyMenu-mobile"
                 >
-                  <span class="inline-flex items-center">
+                  <span class="lang-icon">
                     {{- 'header-currency.svg' | inline_asset_content -}}
                   </span>
-                  <span id="CurrencyLabel-mobile" class="text-sm tracking-wider text-primary">USD</span>
-                  <span
-                    id="CurrencyArrow-mobile"
-                    class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
-                    aria-hidden="true"
-                  >
+                  <span id="CurrencyLabel-mobile" class="dropdown-label">USD</span>
+                  <span id="CurrencyArrow-mobile" class="dropdown-arrow" aria-hidden="true">
                     {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
                   </span>
                 </button>
 
                 <ul
                   id="CurrencyMenu-mobile"
-                  class="absolute right-0 bottom-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+                  class="dropdown-menu-up"
                   role="listbox"
                   aria-label="Select currency"
                 >
                   <li role="option">
-                    <button
-                      type="button"
-                      data-currency="USD"
-                      class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
-                    >
+                    <button type="button" data-currency="USD" class="dropdown-option">
                       <span>USD</span>
                     </button>
                   </li>
                   <li role="option">
-                    <button
-                      type="button"
-                      data-currency="IDR"
-                      class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition"
-                    >
+                    <button type="button" data-currency="IDR" class="dropdown-option">
                       <span>IDR</span>
                     </button>
                   </li>
@@ -487,7 +956,7 @@
             </div>
 
             <!-- Language (MOBILE) -->
-            {% form 'localization', id: 'LanguageFormUX-mobile', class: 'relative inline-block' %}
+            {% form 'localization', id: 'LanguageFormUX-mobile', class: 'dropdown-wrap' %}
               <input
                 type="hidden"
                 name="locale_code"
@@ -500,29 +969,23 @@
               <button
                 id="LangTrigger-mobile"
                 type="button"
-                class="inline-flex items-center gap-2 px-2.5 py-2 transition select-none"
+                class="dropdown-trigger-lang"
                 aria-haspopup="listbox"
                 aria-expanded="false"
                 aria-controls="LangMenu-mobile"
               >
-                <span class="flex items-center w-[30px] h-[30px]" aria-hidden="true">
+                <span class="lang-icon" aria-hidden="true">
                   {{- 'header-language.svg' | inline_asset_content -}}
                 </span>
-
-                <span class="text-sm tracking-wider text-primary">{{ current_code_m }}</span>
-
-                <span
-                  id="LangArrow-mobile"
-                  class="inline-flex items-center justify-center rotate-90 transition-transform duration-200 origin-center"
-                  aria-hidden="true"
-                >
+                <span class="dropdown-label">{{ current_code_m }}</span>
+                <span id="LangArrow-mobile" class="dropdown-arrow" aria-hidden="true">
                   {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
                 </span>
               </button>
 
               <ul
                 id="LangMenu-mobile"
-                class="absolute right-0 bottom-[calc(100%+8px)] min-w-[120px] m-0 p-1.5 list-none bg-white border border-black/15 rounded-xl shadow-lg z-50"
+                class="dropdown-menu-up"
                 role="listbox"
                 aria-label="Select language"
               >
@@ -534,18 +997,19 @@
                   >
                     <button
                       type="button"
-                      class="w-full flex items-center justify-between gap-2 text-primary px-2.5 py-2 rounded-xl text-sm hover:bg-black/5 transition {% if locale.iso_code == localization.language.iso_code %}bg-black/10 font-semibold{% endif %}"
+                      class="dropdown-option{% if locale.iso_code == localization.language.iso_code %} is-active{% endif %}"
                       data-locale="{{ locale.iso_code }}"
                     >
                       <span>{{ code }}</span>
                       {% if locale.iso_code == localization.language.iso_code %}
-                        <span class="opacity-80" aria-hidden="true">✓</span>
+                        <span class="check" aria-hidden="true">✓</span>
                       {% endif %}
                     </button>
                   </li>
                 {% endfor %}
               </ul>
             {% endform %}
+
           </div>
         </div>
       </div>
@@ -554,7 +1018,7 @@
 {% endunless %}
 
 <!-- SEARCH OVERLAY -->
-<div id="header-search-overlay" class="fixed inset-0 bg-black/70 z-[9998]" hidden></div>
+<div id="header-search-overlay" class="search-overlay" hidden></div>
 
 <!-- MENU MOBILE TOGGLE (ID-based) -->
 <script>
@@ -616,13 +1080,13 @@
       const open = () => {
         menu.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
-        if (arrowWrap) arrowWrap.classList.add('rotate-[270deg]');
+        if (arrowWrap) arrowWrap.classList.add('is-open');
       };
 
       const close = () => {
         menu.classList.remove('is-open');
         btn.setAttribute('aria-expanded', 'false');
-        if (arrowWrap) arrowWrap.classList.remove('rotate-[270deg]');
+        if (arrowWrap) arrowWrap.classList.remove('is-open');
       };
 
       btn.addEventListener('click', (e) => {
@@ -652,7 +1116,7 @@
   });
 </script>
 
-<!-- SEARCH MODAL (Tailwind + ID-based triggers) -->
+<!-- SEARCH MODAL -->
 <script type="module" defer>
   (() => {
     const triggers = [
@@ -696,29 +1160,29 @@
   })();
 </script>
 
-<!-- SEARCH MODAL MARKUP (Tailwind) -->
+<!-- SEARCH MODAL MARKUP -->
 <div
   id="header-search-modal"
-  class="fixed top-[30px] left-1/2 -translate-x-1/2 w-[min(720px,calc(100vw-32px))] max-h-[400px] overflow-auto bg-transparent z-[9999]"
+  class="search-modal"
   role="dialog"
   aria-modal="true"
   aria-labelledby="header-search-title"
   hidden
 >
-  <div class="relative p-4">
-    <div class="mb-[100px]">
+  <div class="search-modal-inner">
+    <div class="search-modal-spacer">
       <button
         id="header-search-close"
         type="button"
         aria-label="Close search"
-        class="absolute top-2.5 right-2.5 rounded-full p-2.5 bg-white cursor-pointer leading-none"
+        class="search-close-btn"
       >
         {% render 'icon-close', class: 'w-6 h-6 text-primary' %}
       </button>
     </div>
 
-    <div class="overflow-auto">
-      {% render 'search-bar', class: 'border border-slate-300 rounded-[15px]' %}
+    <div class="search-body">
+      {% render 'search-bar', class: 'search-bar-wrap' %}
     </div>
   </div>
 </div>
@@ -737,7 +1201,6 @@
 
       if (!btn || !menu || !label) return;
 
-      // Restore saved currency
       const saved = sessionStorage.getItem('buckscc_customer_currency');
       if (saved) {
         try {
@@ -745,8 +1208,7 @@
           label.textContent = val;
           menu.querySelectorAll('[data-currency]').forEach((item) => {
             const isActive = item.dataset.currency === val;
-            item.classList.toggle('bg-black/10', isActive);
-            item.classList.toggle('font-semibold', isActive);
+            item.classList.toggle('is-active', isActive);
           });
         } catch (e) {}
       }
@@ -754,13 +1216,13 @@
       const open = () => {
         menu.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
-        if (arrow) arrow.classList.add('rotate-[270deg]');
+        if (arrow) arrow.classList.add('is-open');
       };
 
       const close = () => {
         menu.classList.remove('is-open');
         btn.setAttribute('aria-expanded', 'false');
-        if (arrow) arrow.classList.remove('rotate-[270deg]');
+        if (arrow) arrow.classList.remove('is-open');
       };
 
       btn.addEventListener('click', (e) => {
@@ -781,9 +1243,7 @@
             const m = document.getElementById(`CurrencyMenu-${s}`);
             if (m) {
               m.querySelectorAll('[data-currency]').forEach((i) => {
-                const isActive = i.dataset.currency === val;
-                i.classList.toggle('bg-black/10', isActive);
-                i.classList.toggle('font-semibold', isActive);
+                i.classList.toggle('is-active', i.dataset.currency === val);
               });
             }
           });

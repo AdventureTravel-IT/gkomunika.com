@@ -1023,22 +1023,24 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
     });
 
     // 2. Checkout button (type="submit")
+    // 2. Checkout button (type="submit")
     const checkoutSubmit = document.querySelector('button[type="submit"][name="checkout"]');
     if (checkoutSubmit) {
       checkoutSubmit.addEventListener('click', () => {
         if (checkoutSubmit.dataset.loading === '1') return;
 
         checkoutSubmit.dataset.loading = '1';
-        checkoutSubmit.disabled = true;
+        // ✅ Jangan disabled=true, cukup visual feedback saja
         checkoutSubmit.style.opacity = '0.7';
+        checkoutSubmit.style.pointerEvents = 'none'; // block double-click tanpa disable form
         checkoutSubmit.textContent = 'Processing...';
 
         window.addEventListener(
           'pageshow',
           () => {
             checkoutSubmit.dataset.loading = '0';
-            checkoutSubmit.disabled = false;
             checkoutSubmit.style.opacity = '';
+            checkoutSubmit.style.pointerEvents = '';
             checkoutSubmit.textContent = 'Checkout';
           },
           { once: true }

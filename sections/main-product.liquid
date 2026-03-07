@@ -2541,20 +2541,24 @@
         const json = await res.json();
         const variants = json.product?.variants || [];
 
-        const mapped = variants.map(v => ({
+        const mapped = variants.map(v => {
+        // Preserve metafield data dari Liquid untuk variant yang sudah ada
+        const original = filtered.variants.find(orig => orig.id === v.id);
+        return {
           id: v.id,
           title: v.title,
-          priceRaw: Math.round(parseFloat(v.price) * 100), // ✅ string "289000.00" → cents
+          priceRaw: Math.round(parseFloat(v.price) * 100),
           sku: v.sku || '',
           available: v.inventory_management === null
             ? true
             : (v.inventory_quantity > 0 || v.inventory_policy === 'continue'),
-          variantType: null,
-          airportPurpose: '',
-          airportAutoVariantId: '',
-          airportAutoVariantTitle: 0,
+          variantType: original?.variantType ?? null,
+          airportPurpose: original?.airportPurpose ?? '',
+          airportAutoVariantId: original?.airportAutoVariantId ?? '',
+          airportAutoVariantTitle: original?.airportAutoVariantTitle ?? 0,
           options: [v.option1, v.option2, v.option3].filter(o => o != null && o !== '')
-        }));
+        };
+      });
 
         allVariants = allVariants.concat(mapped);
 

@@ -242,7 +242,7 @@
           {% for i in (1..total_qty) %}
             {% assign idx = i | minus: 1 %}
             {% assign data = order.metafields.sim_card.details.value.activation_code[idx] %}
-
+            
             {% assign matched_item = null %}
             {% if data %}
               {% for item in order.line_items %}

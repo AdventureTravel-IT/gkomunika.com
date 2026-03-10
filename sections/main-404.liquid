@@ -1,36 +1,285 @@
-<style type="text/css">
-  .template-404 .title + * {
-    margin-top: 1rem;
+{% comment %}
+  404.liquid – gkomunika.com
+  Design: V2 Split Layout
+  Brand: Primary #005496 · Secondary #00adee
+{% endcomment %}
+
+<style>
+  /* ── Reset scope ── */
+  .gk-404 * { box-sizing: border-box; }
+
+  /* ── Wrapper: full-height split ── */
+  .gk-404 {
+    display: flex;
+    flex-direction: row;
+    min-height: calc(100vh - var(--header-height, 0px));
+    font-family: 'Plus Jakarta Sans', 'Gotham', Arial, sans-serif;
   }
-  .template-404,
-  .template-404 h1 {
-    color: var(--color-primary);
+
+  /* ══════════════════════════
+     LEFT PANE – text content
+  ══════════════════════════ */
+  .gk-404__left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 50px 20%;
   }
-  .button-404 {
-    background-color: var(--color-primary);
-    color: var(--color-neutral);
-    padding: 15px;
-    width: 180px;
-    border-radius: 15px;
-    margin-top: 30px;
-    text-decoration: none;
-    font-family: 'Gotham', Arial, sans-serif;
+
+  .gk-404__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #00adee;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: gk-up 0.5s 0.05s ease both;
   }
-  @media screen and (min-width: 750px) {
-    .template-404 .title + * {
-      margin-top: 2rem;
+
+  .gk-404__label-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00adee;
+    flex-shrink: 0;
+  }
+
+  .gk-404__heading {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    color: #005496 !important;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin: 0 0 16px;
+    opacity: 0;
+    animation: gk-up 0.5s 0.15s ease both;
+  }
+
+  .gk-404__sub {
+    font-size: 15px;
+    color: #64748B;
+    line-height: 1.8;
+    max-width: 400px;
+    margin: 0 0 36px;
+    opacity: 0;
+    animation: gk-up 0.5s 0.25s ease both;
+  }
+
+  /* ── CTA buttons ── */
+  .gk-404__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: gk-up 0.5s 0.3s ease both;
+  }
+
+  .gk-404__btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #005496;
+    color: #ffffff !important;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 13px 28px;
+    border-radius: 12px;
+    text-decoration: none !important;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(0, 84, 150, 0.22);
+  }
+  .gk-404__btn-primary:hover {
+    background: #003f70;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 84, 150, 0.3);
+  }
+
+  .gk-404__btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #005496 !important;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 13px 24px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(0, 84, 150, 0.22);
+    text-decoration: none !important;
+    background: transparent;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .gk-404__btn-ghost:hover {
+    border-color: #005496;
+    background: #EFF6FF;
+  }
+
+  /* ── Quick links ── */
+  .gk-404__quick {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 1px solid #F1F5F9;
+    opacity: 0;
+    animation: gk-up 0.5s 0.4s ease both;
+  }
+
+  .gk-404__quick-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: #94A3B8 !important;
+    text-decoration: none !important;
+    transition: color 0.2s;
+  }
+  .gk-404__quick-link:hover { color: #005496 !important; }
+
+  /* ══════════════════════════
+     RIGHT PANE – visual
+  ══════════════════════════ */
+  .gk-404__right {
+    width: 420px;
+    flex-shrink: 0;
+    background: linear-gradient(160deg, #005496 0%, #003568 55%, #00adee 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Concentric rings */
+  .gk-404__rings {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .gk-404__ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .gk-404__ring--lg  { width: 340px; height: 340px; }
+  .gk-404__ring--md  { width: 230px; height: 230px; border-color: rgba(255,255,255,.18); }
+  .gk-404__ring--sm  { width: 120px; height: 120px; border-color: rgba(255,255,255,.28); }
+
+  .gk-404__num {
+    font-size: clamp(100px, 14vw, 160px);
+    font-weight: 800;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.88);
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: gk-up 0.55s 0.08s ease both;
+  }
+
+  .gk-404__right-label {
+    position: relative;
+    z-index: 1;
+    margin-top: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    animation: gk-up 0.5s 0.2s ease both;
+  }
+
+  /* ── Keyframes ── */
+  @keyframes gk-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ══════════════════════════
+     RESPONSIVE – mobile stack
+  ══════════════════════════ */
+  @media screen and (max-width: 767px) {
+    .gk-404 {
+      flex-direction: column-reverse;
     }
+    .gk-404__left {
+      padding: 40px 24px 56px;
+    }
+    .gk-404__right {
+      width: 100%;
+      min-height: 220px;
+      padding: 40px 24px;
+    }
+    .gk-404__num {
+      font-size: 100px;
+    }
+    .gk-404__heading { font-size: 26px; }
   }
+
+  /* ── Hide legacy Shopify template styles ── */
+  .template-404 { display: none !important; }
 </style>
 
-<div class="template-404 page-width page-margin center">
-  <p>
-    {{ 'templates.404.subtext' | t }}
-  </p>
-  <h1 class="title">
-    {{ 'templates.404.title' | t }}
-  </h1>
-  <a href="{{ routes.all_products_collection_url }}" class="button-404">
-    {{ 'general.continue_shopping' | t }}
-  </a>
+{%- comment -%} Google Fonts – load only if not already in theme.liquid {%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<div class="gk-404">
+
+  {%- comment -%} ── LEFT ── {%- endcomment -%}
+  <div class="gk-404__left">
+
+    <div class="gk-404__label">
+      <span class="gk-404__label-dot"></span>
+      {{ 'templates.404.subtext' | t }}
+    </div>
+
+    <h1 class="gk-404__heading">
+      {{ 'templates.404.title' | t }}
+    </h1>
+
+    <p class="gk-404__sub">
+      {{ 'general.error_description' | t }}
+    </p>
+
+    <div class="gk-404__actions">
+      <a href="{{ routes.all_products_collection_url }}" class="gk-404__btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        {{ 'general.continue_shopping' | t }}
+      </a>
+      <a href="{{ routes.root_url }}" class="gk-404__btn-ghost">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        </svg>
+        {{ 'general.home' | t | default: 'Beranda' }}
+      </a>
+    </div>
+
+  </div>
+
+  {%- comment -%} ── RIGHT ── {%- endcomment -%}
+  <div class="gk-404__right">
+    <div class="gk-404__rings">
+      <div class="gk-404__ring gk-404__ring--lg"></div>
+      <div class="gk-404__ring gk-404__ring--md"></div>
+      <div class="gk-404__ring gk-404__ring--sm"></div>
+    </div>
+    <span class="gk-404__num">404</span>
+    <span class="gk-404__right-label">gkomunika.com</span>
+  </div>
+
 </div>

@@ -1,3 +1,104 @@
+<style>
+  /* ── Microtip tooltip base ── */
+  [aria-label][role~='tooltip'] {
+    position: relative;
+  }
+  [aria-label][role~='tooltip']::before,
+  [aria-label][role~='tooltip']::after {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    will-change: transform;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.18s ease-in-out 0s;
+    position: absolute;
+    box-sizing: border-box;
+    z-index: 10;
+    transform-origin: top;
+  }
+  [aria-label][role~='tooltip']::before {
+    background-size: 100% auto !important;
+    content: '';
+  }
+  [aria-label][role~='tooltip']::after {
+    background: rgba(17, 17, 17, 0.9);
+    border-radius: 4px;
+    color: #fff;
+    content: attr(aria-label);
+    font-size: 13px;
+    padding: 0.5em 1em;
+    white-space: nowrap;
+    box-sizing: content-box;
+  }
+  [aria-label][role~='tooltip']:hover::before,
+  [aria-label][role~='tooltip']:hover::after {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── Bottom position ── */
+  [role~='tooltip'][data-microtip-position|='bottom']::before {
+    background: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2236px%22%20height%3D%2212px%22%3E%3Cpath%20fill%3D%22rgba%2817,%2017,%2017,%200.9%29%22%20transform%3D%22rotate%28180%2018%206%29%22%20d%3D%22M2.658,0.000%20C-13.615,0.000%2050.938,0.000%2034.662,0.000%20C28.662,0.000%2023.035,12.002%2018.660,12.002%20C14.285,12.002%208.594,0.000%202.658,0.000%20Z%22/%3E%3C/svg%3E')
+      no-repeat;
+    height: 6px;
+    width: 18px;
+    margin-top: 5px;
+    margin-bottom: 0;
+  }
+  [role~='tooltip'][data-microtip-position|='bottom']::after {
+    margin-top: 11px;
+  }
+  [role~='tooltip'][data-microtip-position|='bottom']::before {
+    transform: translate3d(-50%, -10px, 0);
+    bottom: auto;
+    left: 50%;
+    top: 100%;
+  }
+  [role~='tooltip'][data-microtip-position|='bottom']:hover::before {
+    transform: translate3d(-50%, 0, 0);
+  }
+  [role~='tooltip'][data-microtip-position='bottom']::after {
+    transform: translate3d(-50%, -10px, 0);
+    top: 100%;
+    left: 50%;
+  }
+  [role~='tooltip'][data-microtip-position='bottom']:hover::after {
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  /* ── Size ── */
+  [role~='tooltip'][data-microtip-size='large']::after {
+    white-space: initial;
+    width: 260px;
+  }
+
+  /* ── Bullet / multiline support ── */
+  [role~='tooltip'][data-microtip-bullets]::after {
+    white-space: pre-line;
+    text-align: left;
+    line-height: 1.35;
+  }
+  [role~='tooltip'][data-microtip-bullets][data-microtip-size='large']::after {
+    width: 24rem;
+  }
+
+  /* ── Info button ── */
+  .info-tooltip {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon-info {
+    color: var(--color-primary);
+  }
+</style>
+
 <section>
   <div class="bg-neutral md:wrapper-base flex flex-col md:gap-5 md:flex-row">
     <div class="w-full md:w-1/2 h-auto">
@@ -48,7 +149,7 @@
           {%- endcase -%}
         {%- endfor -%}
 
-        <span>- {{ product.metafields.product.sold.value | default: '-' }} sold</span>
+        <span>- {{ product.metafields.product.sold.value | default: '0' }} sold</span>
       </div>
 
       <div id="priceContainer" class="hidden md:block">
@@ -287,7 +388,7 @@
         <div id="qtySection">
           <span class="text-primary font-semibold tracking-normal">Quantity</span>
 
-          <div class="flex items-center gap-3 mt-2 flex-wrap">
+          <div class="flex items-center gap-3 mt-2 w-fit">
             <div class="flex items-center border border-primary w-fit rounded-full bg-neutral">
               <button id="qtyMinusBtn" type="button" onclick="decreaseQuantity()" class="p-2">
                 {% render 'icon-minus', class: 'w-[24px] h-[24px] text-primary' %}
@@ -580,7 +681,7 @@
                   </div>
                 {% endif %}
 
-                <div class="flex-1 overflow-y-auto mt-3">
+                <div class="flex-1 overflow-y-auto {% if product.metafields.search.key.value.size > 10 %}mt-3{% endif %}">
                   {% render 'coverage' %}
                 </div>
               </div>
@@ -765,7 +866,22 @@
   id="iccid-modal"
   class="hidden fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral p-4 rounded-[15px] z-[1000] w-[90%] max-w-md shadow-lg"
 >
-  <h3 class="text-primary font-bold text-lg">{{ 'products.top_up.label_input_iccid' | t }}</h3>
+  <div class="flex gap-3">
+    <h3 class="text-primary font-bold text-lg">{{ 'products.top_up.label_input_iccid' | t }}</h3>
+
+    <button
+      class="info-tooltip"
+      aria-label="{{ 'products.check_data.tooltip_iccid' | t }}"
+      data-microtip-position="bottom"
+      data-microtip-size="large"
+      data-microtip-bullets
+      role="tooltip"
+    >
+      <div class="icon-info">
+        {% render 'icon-info' %}
+      </div>
+    </button>
+  </div>
 
   <form id="iccid-form" action="" class="flex flex-col mt-2">
     <input
@@ -2526,12 +2642,8 @@
   /* =========================================================
    * INIT
    * ========================================================= */
-  document.addEventListener('DOMContentLoaded', async () => {
-    initDescription();
 
-    await getExchangeRate();
-
-    // ✅ FIX: Fetch semua variants (bypass limit 100 dari Liquid)
+   async function fetchAllVariants() {
     try {
       let allVariants = [];
       let page = 1;
@@ -2542,55 +2654,86 @@
         const variants = json.product?.variants || [];
 
         const mapped = variants.map(v => {
-        // Preserve metafield data dari Liquid untuk variant yang sudah ada
-        const original = filtered.variants.find(orig => orig.id === v.id);
-        return {
-          id: v.id,
-          title: v.title,
-          priceRaw: Math.round(parseFloat(v.price) * 100),
-          sku: v.sku || '',
-          available: v.inventory_management === null
-            ? true
-            : (v.inventory_quantity > 0 || v.inventory_policy === 'continue'),
-          variantType: original?.variantType ?? null,
-          airportPurpose: original?.airportPurpose ?? '',
-          airportAutoVariantId: original?.airportAutoVariantId ?? '',
-          airportAutoVariantTitle: original?.airportAutoVariantTitle ?? 0,
-          options: [v.option1, v.option2, v.option3].filter(o => o != null && o !== '')
-        };
-      });
+          const original = filtered.variants.find(orig => orig.id === v.id);
+          return {
+            id: v.id,
+            title: v.title,
+            priceRaw: Math.round(parseFloat(v.price) * 100),
+            sku: v.sku || '',
+            available: v.inventory_management === null
+              ? true
+              : (v.inventory_quantity > 0 || v.inventory_policy === 'continue'),
+            variantType: original?.variantType ?? null,
+            airportPurpose: original?.airportPurpose ?? '',
+            airportAutoVariantId: original?.airportAutoVariantId ?? '',
+            airportAutoVariantTitle: original?.airportAutoVariantTitle ?? 0,
+            options: [v.option1, v.option2, v.option3].filter(o => o != null && o !== '')
+          };
+        });
 
         allVariants = allVariants.concat(mapped);
-
         if (variants.length < 250) break;
         page++;
       }
 
-      if (allVariants.length > 0) {
-        filtered.variants = allVariants;
-        console.log('✅ Total variants loaded:', filtered.variants.length);
-      }
+      return allVariants;
     } catch (err) {
       console.warn('⚠️ Gagal fetch variants, pakai data Liquid:', err);
+      return [];
     }
+  }
 
+  document.addEventListener('DOMContentLoaded', async () => {
+    initDescription();
+
+    // ✅ 1. Render selector SEGERA, jangan tunggu apapun
     generateSelectors();
     bindQuantityInput();
     bindAddonPopup();
-
-    // ✅ bind top up iccid UI
     bindTopUpIccidUI();
+    updateMinusButtonState();
+    updateMobileSelectedVariantLabel();
+    bindAddonCardToggle();
 
     lastCurrency = sessionStorage.getItem('buckscc_customer_currency');
     toggleCurrencyDisplay();
     startCurrencyMonitor();
-
     restoreAddonsFromSession();
     updateTotalPriceDisplayIfInsurance();
 
-    updateMobileSelectedVariantLabel();
-    bindAddonCardToggle();
-    updateMinusButtonState();
+    // ✅ 2. Exchange rate & variants fetch jalan di background
+    getExchangeRate().then(() => {
+      // refresh harga setelah rate tersedia
+      if (selectedVariant) {
+        updatePriceDisplay(selectedVariant.priceRaw);
+      } else {
+        updatePriceDisplay();
+      }
+    });
+
+    // ✅ 3. Fetch semua variants di background, lalu re-render selector
+    fetchAllVariants().then((allVariants) => {
+      if (allVariants.length > 0) {
+        filtered.variants = allVariants;
+
+        // Simpan state yang sudah dipilih user
+        const prevSelected = [...selectedOptions];
+        generateSelectors();
+
+        // Restore pilihan user jika ada
+        prevSelected.forEach((val, idx) => {
+          if (!val) return;
+          const el = document.getElementById(`option${idx}`);
+          if (el) {
+            el.value = val;
+            selectedOptions[idx] = val;
+          }
+        });
+
+        updateAvailableOptions();
+        updateResetButtonState();
+      }
+    });
   });
 
   function resetTransientStates() {

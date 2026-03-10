@@ -21,6 +21,9 @@
     }
   },
   "products": {
+    "check_data": {
+      "tooltip_iccid": "• SIM Card: ICCID dapat ditemukan di belakang potongan SIM Card.&#10;&#10;• eSIM: ICCID dapat ditemukan di email pada bagian \"eSIM Information\".&#10;&#10;• iPhone: Buka Settings \u203a General \u203a About, lalu scroll ke bagian ICCID."
+    },
     "top_up": {
       "iccid_invalid": "ICCID Tidak Valid",
       "invalid_topup": "ICCID Anda tidak terdeteksi. Cek kembali dan coba lagi, atau pilih produk SIM baru.",
@@ -32,6 +35,8 @@
     }
   },
   "general": {
+    "home": "Kembali ke Beranda",
+    "error_description": "URL yang kamu tuju sudah dipindah atau tidak tersedia.&#10;&#10; Yuk kembali dan jelajahi produk kami.",
     "password_page": {
       "login_form_heading": "Masuki toko dengan sandi:",
       "login_password_button": "Masuk dengan sandi",

@@ -311,15 +311,21 @@
   .image-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    padding: 24px;
+
+    /* Overlay: blur + dim */
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    /* Hidden state */
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
-    z-index: 9999;
-    padding: 20px;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
 
   .image-modal.is-active {
@@ -327,43 +333,142 @@
     visibility: visible;
   }
 
+  /* Image wrapper — hanya image, tanpa padding tebal */
   .image-modal__inner {
-    max-width: 90vw;
-    max-height: 90vh;
-    background: #fff;
-    border-radius: 15px;
-    padding: 10px;
     position: relative;
-    box-shadow: var(--box-shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    max-width: 92vw;
+    max-height: 92vh;
+    line-height: 0; /* hilangkan gap bawah img */
+
+    /* Animasi scale-in saat buka */
+    transform: scale(0.88);
+    opacity: 0;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+    border-radius: 12px;
+    overflow: visible;
+  }
+
+  .image-modal.is-active .image-modal__inner {
+    transform: scale(1);
+    opacity: 1;
   }
 
   .image-modal__img {
-    max-width: 100%;
-    max-height: 80vh;
-    border-radius: 10px;
     display: block;
+    max-width: 92vw;
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    object-fit: contain;
+  }
+
+  /* Caption — hanya tampil kalau ada teks */
+  .image-modal__caption:empty {
+    display: none;
   }
 
   .image-modal__caption {
-    margin-top: 8px;
-    font-size: var(--font-small, 14px);
-    color: var(--color-primary);
+    position: absolute;
+    bottom: -36px;
+    left: 0;
+    right: 0;
     text-align: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
   }
 
+  /* Close button — floating, lingkaran putih di pojok kanan atas */
   .image-modal__close {
     position: absolute;
-    top: 8px;
-    right: 10px;
+    top: -14px;
+    right: -14px;
+    z-index: 10;
+
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
     border: none;
-    background: transparent;
-    font-size: 28px;
-    line-height: 1;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
     cursor: pointer;
-    color: #333;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, box-shadow 0.2s ease;
+
+    /* Reset default button style */
+    padding: 0;
+    line-height: 1;
+    font-size: 0; /* hide teks × asli, pakai pseudo */
+  }
+
+  /* Ikon × dari CSS — lebih clean dari karakter &times; */
+  .image-modal__close::before,
+  .image-modal__close::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 1.8px;
+    background: #222;
+    border-radius: 2px;
+    transition: background 0.2s ease;
+  }
+  .image-modal__close::before {
+    transform: rotate(45deg);
+  }
+  .image-modal__close::after {
+    transform: rotate(-45deg);
+  }
+
+  .image-modal__close:hover {
+    transform: rotate(90deg) scale(1.12);
+    background: #f4f4f4;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Cursor zoom-in pada gambar artikel sebagai hint */
+  .page-content__wrapper img {
+    cursor: zoom-in;
+    transition: opacity 0.2s ease, transform 0.3s ease;
+  }
+
+  .page-content__wrapper img:hover {
+    opacity: 0.92;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .image-modal {
+      padding: 16px;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .image-modal__img {
+      max-width: 96vw;
+      max-height: 80vh;
+      border-radius: 10px;
+    }
+
+    .image-modal__close {
+      top: -12px;
+      right: -12px;
+      width: 34px;
+      height: 34px;
+    }
+
+    .image-modal__close::before,
+    .image-modal__close::after {
+      width: 12px;
+    }
   }
 
   /* =========================
@@ -643,9 +748,9 @@
   </div>
 </div>
 
-<div id="imageModal" class="image-modal" aria-hidden="true">
+<div id="imageModal" class="image-modal" role="dialog" aria-modal="true" aria-label="Image preview" aria-hidden="true">
   <div class="image-modal__inner">
-    <button type="button" class="image-modal__close" aria-label="Close image preview">&times;</button>
+    <button type="button" class="image-modal__close" aria-label="Tutup preview gambar"></button>
     <img src="" alt="" class="image-modal__img">
     <p class="image-modal__caption"></p>
   </div>
@@ -844,8 +949,8 @@
     // Fungsi bersihkan &nbsp; dari semua text node
     function cleanNbsp(node) {
       if (node.nodeType === Node.TEXT_NODE) {
-        node.textContent = node.textContent.replace(/\u00A0/g, ' ').trim() 
-          ? node.textContent.replace(/\u00A0/g, ' ') 
+        node.textContent = node.textContent.replace(/\u00A0/g, ' ').trim()
+          ? node.textContent.replace(/\u00A0/g, ' ')
           : node.textContent;
       } else {
         node.childNodes.forEach(cleanNbsp);

@@ -209,15 +209,12 @@
 <div class="od__container">
   <section class="od__wrapper">
     {% for order in customer.orders %}
-      {% assign has_insurance_category = false %}
+      {% assign show_esim_details = false %}
       {% for item in order.line_items %}
-        {% if item.product.metafields.product.category == 'Insurance'
+        {% if item.product.metafields.product.category == 'eSIM'
           or item.product.metafields.product.category == 'SIM_Card'
-          or item.product.metafields.product.category == 'Top_Up_A'
-          or item.product.metafields.product.category == 'Top_Up_B'
-          or item.product.metafields.product.category == 'Top_Up_C'
         %}
-          {% assign has_insurance_category = true %}
+          {% assign show_esim_details = true %}
           {% break %}
         {% endif %}
       {% endfor %}
@@ -226,7 +223,7 @@
         {% render 'order-history__details', order: order %}
       </div>
 
-      {% unless has_insurance_category %}
+      {% if show_esim_details %}
         <div class="od__order-block" data-order-id="{{ order.id }}">
           <h2 class="od__order-title">eSIM Details</h2>
           <h3 class="od__order-description">
@@ -242,7 +239,7 @@
           {% for i in (1..total_qty) %}
             {% assign idx = i | minus: 1 %}
             {% assign data = order.metafields.sim_card.details.value.activation_code[idx] %}
-            
+
             {% assign matched_item = null %}
             {% if data %}
               {% for item in order.line_items %}
@@ -326,7 +323,7 @@
             </section>
           {% endfor %}
         </div>
-      {% endunless %}
+        {% endif %}
 
       <div class="od__order-block" data-order-id="{{ order.id }}">
         {% render 'order-summary', order: order %}

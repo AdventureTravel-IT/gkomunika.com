@@ -21,6 +21,9 @@
     }
   },
   "products": {
+    "check_data": {
+      "tooltip_iccid": "• SIM Card: The ICCID is located on the back of the physical SIM card.&#10;&#10;• eSIM: The eSIM ICCID is shown in your email under \"eSIM Information\".&#10;&#10;• iPhone: Go to Settings \u203a General \u203a About, then scroll down to ICCID."
+    },
     "top_up": {
       "iccid_invalid": "ICCID Invalid",
       "invalid_topup": "We couldn’t detect your ICCID. Please check and try again, or select a new SIM product.",
@@ -32,6 +35,8 @@
     }
   },
   "general": {
+    "home": "Back to Home",
+    "error_description": "The page you're looking for has been moved or is no longer available.&#10;&#10; Go back and explore our products.",
     "password_page": {
       "login_form_heading": "Enter store using password:",
       "login_password_button": "Enter using password",

@@ -111,19 +111,20 @@
         const searchable = `${displayName} ${aliases}`.trim().toLowerCase().replace(/_/g, ' ');
 
         const el = document.createElement('div');
-        el.className = 'coverage-item';
+        el.className = 'coverage-item pointer-events-none select-none cursor-default';
         el.setAttribute('data-country', searchable);
         el.setAttribute('data-country-raw', String(displayName || '').toLowerCase());
 
         el.innerHTML = `
-          <li class="flex items-center gap-[10px]">
+          <li class="flex items-center gap-[10px] pointer-events-none select-none cursor-default">
             <img
-              class="image-countries rounded-[15px] border border-border"
+              class="image-countries rounded-[15px] border border-border pointer-events-none"
               src="${imgUrl}"
               alt="${displayName}"
               width="50"
               height="50"
               loading="lazy"
+              draggable="false"
             />
             <h3 class="text-left leading-tight text-lg text-primary m-0">${displayName}</h3>
           </li>

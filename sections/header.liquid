@@ -1,508 +1,526 @@
 {% style %}
-  /* ============================================================
-   HEADER SECTION — Vanilla CSS
-   (Converted from Tailwind utility classes)
-   ============================================================ */
+  /* Navigation progress indicator */
+  .nav-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--color-secondary);
+    z-index: 9999;
+    transition: width 0.3s ease;
+    pointer-events: none;
+  }
+  .nav-progress.is-loading {
+    width: 70%;
+    transition: width 1s cubic-bezier(0.1, 0.05, 0, 1);
+  }
+  .nav-progress.is-done {
+    width: 100%;
+    transition: width 0.2s ease;
+    opacity: 0;
+    transition: width 0.2s ease, opacity 0.3s ease 0.2s;
+  }
 
-/* ----------------------------------------------------------
-   1. SIDEBAR PANEL STATE (ID-based, kept as-is)
-   ---------------------------------------------------------- */
-#sidebar-panel {
-  max-height: 0 !important;
-  overflow: hidden !important;
-  opacity: 0;
-  pointer-events: none;
-}
-#sidebar-panel.is-open {
-  max-height: calc(100vh - 70px) !important;
-  overflow-y: auto !important;
-  opacity: 1;
-  pointer-events: auto;
-}
+  #sidebar-panel {
+    max-height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0;
+    pointer-events: none;
+  }
+  #sidebar-panel.is-open {
+    max-height: calc(100vh - 70px) !important;
+    overflow-y: auto !important;
+    opacity: 1;
+    pointer-events: auto;
+  }
 
-#CurrencyMenu-desktop,
-#CurrencyMenu-mobile,
-#LangMenu-desktop,
-#LangMenu-mobile {
-  display: none !important;
-}
-#CurrencyMenu-desktop.is-open,
-#CurrencyMenu-mobile.is-open,
-#LangMenu-desktop.is-open,
-#LangMenu-mobile.is-open {
-  display: block !important;
-}
+  #CurrencyMenu-desktop,
+  #CurrencyMenu-mobile,
+  #LangMenu-desktop,
+  #LangMenu-mobile {
+    display: none !important;
+  }
+  #CurrencyMenu-desktop.is-open,
+  #CurrencyMenu-mobile.is-open,
+  #LangMenu-desktop.is-open,
+  #LangMenu-mobile.is-open {
+    display: block !important;
+  }
 
-/* ----------------------------------------------------------
+  /* ----------------------------------------------------------
    2. SITE HEADER
    ---------------------------------------------------------- */
-.site-header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 200;
-  background-color: var(--color-neutral);
-  max-width: 1920px;
-  margin-left: auto;
-  margin-right: auto;
-  height: fit-content;
-  padding: 5px 0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-              0 2px 4px -2px rgba(0, 0, 0, 0.1);
-}
-
-@media (min-width: 768px) {
   .site-header {
-    padding: 15px 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 200;
+    background-color: var(--color-neutral);
+    max-width: 1920px;
+    margin-left: auto;
+    margin-right: auto;
+    height: fit-content;
+    padding: 5px 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   }
-}
 
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-}
-
-/* ----------------------------------------------------------
-   3. HEADER LEFT
-   ---------------------------------------------------------- */
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* ----------------------------------------------------------
-   4. MOBILE MENU TOGGLE BUTTON
-   ---------------------------------------------------------- */
-.menu-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  margin: 0 0 0 -20px;
-  border: 0;
-  background: transparent;
-  line-height: 1;
-  font-size: 0;
-  box-sizing: border-box;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-@media (min-width: 768px) {
-  .menu-toggle {
-    display: none;
+  @media (min-width: 768px) {
+    .site-header {
+      padding: 15px 0;
+    }
   }
-}
 
-.menu-icon {
-  position: relative;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-
-.menu-icon span {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: var(--color-primary);
-  border-radius: 2px;
-  pointer-events: none;
-}
-
-.menu-icon span:nth-child(1) { top: 0; }
-.menu-icon span:nth-child(2) { top: 8px; }
-.menu-icon span:nth-child(3) { top: 16px; }
-
-/* ----------------------------------------------------------
-   5. LOGO
-   ---------------------------------------------------------- */
-.header-logo-link {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-/* ----------------------------------------------------------
-   6. MOBILE RIGHT ACTIONS
-   ---------------------------------------------------------- */
-.header-mobile-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-@media (min-width: 768px) {
-  .header-mobile-right {
-    display: none;
-  }
-}
-
-/* Shared icon button / icon link */
-.header-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px;
-  margin: -8px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-/* Cart icon wrapper (for badge positioning) */
-.header-cart-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  pointer-events: none;
-}
-
-.header-cart-badge {
-  position: absolute;
-  top: -4px;
-  right: -6px;
-  background-color: var(--color-primary);
-  color: var(--color-neutral);
-  font-size: 10px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  line-height: 1;
-}
-
-/* ----------------------------------------------------------
-   7. DESKTOP RIGHT ACTIONS
-   ---------------------------------------------------------- */
-.header-desktop-right {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .header-desktop-right {
+  .header-inner {
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    padding: 0 24px;
   }
-}
 
-.header-search-btn {
-  margin-right: 10px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 0;
-}
-
-/* ----------------------------------------------------------
-   8. CURRENCY + LANGUAGE CONTROLS WRAPPER
+  /* ----------------------------------------------------------
+   3. HEADER LEFT
    ---------------------------------------------------------- */
-.header-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-/* ----------------------------------------------------------
-   9. DROPDOWN (Currency & Language — shared styles)
+  /* ----------------------------------------------------------
+   4. MOBILE MENU TOGGLE BUTTON
    ---------------------------------------------------------- */
-.dropdown-wrap {
-  position: relative;
-  display: inline-block;
-}
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: 0 0 0 -20px;
+    border: 0;
+    background: transparent;
+    line-height: 1;
+    font-size: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-/* Desktop currency trigger (gap-3) */
-.dropdown-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 10px;
-  transition: all 0.2s;
-  user-select: none;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
+  @media (min-width: 768px) {
+    .menu-toggle {
+      display: none;
+    }
+  }
 
-/* Language trigger (gap-2) */
-.dropdown-trigger-lang {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  transition: all 0.2s;
-  user-select: none;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
+  .menu-icon {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
 
-.dropdown-label {
-  font-size: 14px;
-  letter-spacing: 0.05em;
-  color: var(--color-primary);
-}
+  .menu-icon span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--color-primary);
+    border-radius: 2px;
+    pointer-events: none;
+  }
 
-.dropdown-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transform: rotate(90deg);
-  transition: transform 0.2s;
-  transform-origin: center;
-}
+  .menu-icon span:nth-child(1) {
+    top: 0;
+  }
+  .menu-icon span:nth-child(2) {
+    top: 8px;
+  }
+  .menu-icon span:nth-child(3) {
+    top: 16px;
+  }
 
-.dropdown-arrow.is-open {
-  transform: rotate(270deg);
-}
-
-/* Dropdown menu — opens downward (desktop) */
-.dropdown-menu {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 8px);
-  min-width: 120px;
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 12px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-              0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  z-index: 50;
-}
-
-/* Dropdown menu — opens upward (mobile) */
-.dropdown-menu-up {
-  position: absolute;
-  right: 0;
-  bottom: calc(100% + 8px);
-  min-width: 120px;
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 12px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-              0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  z-index: 50;
-}
-
-.dropdown-option {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  color: var(--color-primary);
-  padding: 8px 10px;
-  border-radius: 12px;
-  font-size: 14px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s;
-  box-sizing: border-box;
-}
-
-.dropdown-option:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.dropdown-option.is-active {
-  background-color: rgba(0, 0, 0, 0.1);
-  font-weight: 600;
-}
-
-.dropdown-option .check {
-  opacity: 0.8;
-}
-
-.lang-icon {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  width: 30px;
-  height: 30px;
-}
-
-/* ----------------------------------------------------------
-   10. DESKTOP NAVIGATION
+  /* ----------------------------------------------------------
+   5. LOGO
    ---------------------------------------------------------- */
-.header-nav {
-  display: flex;
-  align-items: center;
-}
+  .header-logo-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
 
-.header-nav-list {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-width: 100%;
-}
-
-.nav-item-link {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  white-space: nowrap;
-  font-weight: 700;
-  line-height: 1.1;
-  color: var(--color-primary);
-  text-decoration: none;
-}
-
-.nav-item-label {
-  font-size: 14px;
-  color: var(--color-primary);
-}
-
-/* Nav cart badge (same pattern as mobile) */
-.nav-cart-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-
-/* ----------------------------------------------------------
-   11. MOBILE SIDEBAR
+  /* ----------------------------------------------------------
+   6. MOBILE RIGHT ACTIONS
    ---------------------------------------------------------- */
-.sidebar-wrapper {
-  display: block;
-}
+  .header-mobile-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
 
-@media (min-width: 768px) {
-  .sidebar-wrapper {
+  @media (min-width: 768px) {
+    .header-mobile-right {
+      display: none;
+    }
+  }
+
+  /* Shared icon button / icon link */
+  .header-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px;
+    margin: -8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  /* Cart icon wrapper (for badge positioning) */
+  .header-cart-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .header-cart-badge {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+    font-size: 10px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+  }
+
+  /* ----------------------------------------------------------
+   7. DESKTOP RIGHT ACTIONS
+   ---------------------------------------------------------- */
+  .header-desktop-right {
     display: none;
   }
-}
 
-.sidebar-panel {
-  position: absolute;
-  top: 50px;
-  left: 0;
-  width: 100%;
-  background-color: var(--color-neutral);
-  z-index: 1000;
-  transition: max-height 0.2s ease, opacity 0.2s ease;
-}
+  @media (min-width: 768px) {
+    .header-desktop-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  }
 
-.sidebar-list {
-  margin: 0;
-  padding: 0 12px;
-  list-style: none;
-}
+  .header-search-btn {
+    margin-right: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+  }
 
-.sidebar-item {
-  border-bottom: 1px solid #d9d9d9;
-  padding: 12px 0;
-}
+  /* ----------------------------------------------------------
+   8. CURRENCY + LANGUAGE CONTROLS WRAPPER
+   ---------------------------------------------------------- */
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--color-primary);
-  font-weight: 700;
-  text-decoration: none;
-}
+  /* ----------------------------------------------------------
+   9. DROPDOWN (Currency & Language — shared styles)
+   ---------------------------------------------------------- */
+  .dropdown-wrap {
+    position: relative;
+    display: inline-block;
+  }
 
-.sidebar-link span {
-  font-size: 14px;
-}
+  /* Desktop currency trigger (gap-3) */
+  .dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    transition: all 0.2s;
+    user-select: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
 
-.sidebar-footer {
-  padding: 0 8px 16px;
-}
+  /* Language trigger (gap-2) */
+  .dropdown-trigger-lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    transition: all 0.2s;
+    user-select: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
 
-.sidebar-footer-inner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+  .dropdown-label {
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
 
-.sidebar-footer-controls {
-  display: flex;
-  align-items: center;
-}
+  .dropdown-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(90deg);
+    transition: transform 0.2s;
+    transform-origin: center;
+  }
 
-/* ----------------------------------------------------------
+  .dropdown-arrow.is-open {
+    transform: rotate(270deg);
+  }
+
+  /* Dropdown menu — opens downward (desktop) */
+  .dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    min-width: 120px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+  }
+
+  /* Dropdown menu — opens upward (mobile) */
+  .dropdown-menu-up {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 8px);
+    min-width: 120px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+  }
+
+  .dropdown-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--color-primary);
+    padding: 8px 10px;
+    border-radius: 12px;
+    font-size: 14px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-sizing: border-box;
+  }
+
+  .dropdown-option:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .dropdown-option.is-active {
+    background-color: rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+  }
+
+  .dropdown-option .check {
+    opacity: 0.8;
+  }
+
+  .lang-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+  }
+
+  /* ----------------------------------------------------------
+   10. DESKTOP NAVIGATION
+   ---------------------------------------------------------- */
+  .header-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-nav-list {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-width: 100%;
+  }
+
+  .nav-item-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    white-space: nowrap;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .nav-item-label {
+    font-size: 14px;
+    color: var(--color-primary);
+  }
+
+  /* Nav cart badge (same pattern as mobile) */
+  .nav-cart-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* ----------------------------------------------------------
+   11. MOBILE SIDEBAR
+   ---------------------------------------------------------- */
+  .sidebar-wrapper {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    .sidebar-wrapper {
+      display: none;
+    }
+  }
+
+  .sidebar-panel {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-neutral);
+    z-index: 1000;
+    transition: max-height 0.2s ease, opacity 0.2s ease;
+  }
+
+  .sidebar-list {
+    margin: 0;
+    padding: 0 12px;
+    list-style: none;
+  }
+
+  .sidebar-item {
+    border-bottom: 1px solid #d9d9d9;
+    padding: 12px 0;
+  }
+
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-primary);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .sidebar-link span {
+    font-size: 14px;
+  }
+
+  .sidebar-footer {
+    padding: 0 8px 16px;
+  }
+
+  .sidebar-footer-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sidebar-footer-controls {
+    display: flex;
+    align-items: center;
+  }
+
+  /* ----------------------------------------------------------
    12. SEARCH OVERLAY
    ---------------------------------------------------------- */
-.search-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 9998;
-}
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9998;
+  }
 
-/* ----------------------------------------------------------
+  /* ----------------------------------------------------------
    13. SEARCH MODAL
    ---------------------------------------------------------- */
-.search-modal {
-  position: fixed;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(720px, calc(100vw - 32px));
-  max-height: 400px;
-  overflow: auto;
-  background: transparent;
-  z-index: 9999;
-}
+  .search-modal {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(720px, calc(100vw - 32px));
+    max-height: 400px;
+    overflow: auto;
+    background: transparent;
+    z-index: 9999;
+  }
 
-.search-modal-inner {
-  position: relative;
-  padding: 16px;
-}
+  .search-modal-inner {
+    position: relative;
+    padding: 16px;
+  }
 
-.search-modal-spacer {
-  margin-bottom: 100px;
-}
+  .search-modal-spacer {
+    margin-bottom: 100px;
+  }
 
-.search-close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border-radius: 50%;
-  padding: 10px;
-  background: #fff;
-  cursor: pointer;
-  line-height: 1;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  .search-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+    padding: 10px;
+    background: #fff;
+    cursor: pointer;
+    line-height: 1;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-.search-body {
-  overflow: auto;
-}
+  .search-body {
+    overflow: auto;
+  }
 
-.search-bar-wrap {
-  border: 1px solid #cbd5e1; /* slate-300 */
-  border-radius: 15px;
-}
+  .search-bar-wrap {
+    border: 1px solid #cbd5e1; /* slate-300 */
+    border-radius: 15px;
+  }
 {% endstyle %}
 
 {% unless template == 'customers/login' or template == 'customers/register' %}
@@ -550,10 +568,8 @@
 
   <header class="site-header">
     <div class="header-inner">
-
       <!-- LEFT -->
       <div class="header-left">
-
         <!-- Mobile menu toggle -->
         <button
           id="menu-toggle"
@@ -637,7 +653,6 @@
         {% endif %}
 
         <div class="header-controls">
-
           <!-- Currency (DESKTOP) -->
           <div class="dropdown-wrap" id="CurrencyForm-desktop">
             <button
@@ -735,7 +750,6 @@
         <!-- Desktop navigation -->
         <nav role="navigation" aria-label="Main navigation" class="header-nav">
           <ul class="header-nav-list">
-
             <li>
               <a href="{{ routes.root_url }}" class="nav-item-link">
                 {% render 'icon-home', class: 'text-primary w-[26px] h-[26px]' %}
@@ -825,7 +839,6 @@
                 <span class="nav-item-label">Profile</span>
               </a>
             </li>
-
           </ul>
         </nav>
       </div>
@@ -839,7 +852,6 @@
         class="sidebar-panel"
       >
         <ul class="sidebar-list">
-
           <li class="sidebar-item">
             <a href="{{ routes.root_url }}" class="sidebar-link">
               {% render 'icon-home', class: 'text-primary w-[26px] h-[26px]' %}
@@ -915,7 +927,6 @@
         <div class="sidebar-footer">
           <div class="sidebar-footer-inner">
             <div class="sidebar-footer-controls">
-
               <!-- Currency (MOBILE) -->
               <div class="dropdown-wrap" id="CurrencyForm-mobile">
                 <button
@@ -1009,7 +1020,6 @@
                 {% endfor %}
               </ul>
             {% endform %}
-
           </div>
         </div>
       </div>
@@ -1061,6 +1071,28 @@
       if (e.key === 'Escape' && isOpen()) close();
     });
   });
+
+  // ✅ Progress bar untuk semua navigasi
+  (function initNavProgress() {
+    const bar = document.createElement('div');
+    bar.className = 'nav-progress';
+    document.body.prepend(bar);
+
+    // Intercept semua klik pada nav links
+    document.querySelectorAll('.nav-item-link, .sidebar-link').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        bar.classList.remove('is-done');
+        bar.classList.add('is-loading');
+      });
+    });
+
+    // Reset saat page show (termasuk bfcache)
+    window.addEventListener('pageshow', () => {
+      bar.classList.add('is-done');
+      setTimeout(() => bar.classList.remove('is-loading', 'is-done'), 600);
+    });
+  })();
 </script>
 
 <!-- LANGUAGE DROPDOWN JS (Desktop + Mobile) -->

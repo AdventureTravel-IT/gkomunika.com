@@ -2383,6 +2383,13 @@
 
       // Insurance flow
       if (filtered.category === 'Insurance') {
+        sessionStorage.removeItem('CheckoutFlow');
+        localStorage.removeItem('CheckoutFlow');
+        sessionStorage.removeItem('TransferAttributes');
+        localStorage.removeItem('TransferAttributes');
+        sessionStorage.removeItem('TransferHeaderData');
+        localStorage.removeItem('TransferHeaderData');
+
         const variantType = getVariantType(selectedVariant);
 
         const variantCoverage = Array.from(new Set(

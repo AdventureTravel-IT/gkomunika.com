@@ -1655,6 +1655,12 @@
 
   function resetCtaLoadingState() {
     document.querySelectorAll('a.js-cta-loading[data-loading="1"]').forEach((a) => {
+      // ✅ Cancel safety timer kalau ada
+      if (a.dataset.safetyTimer) {
+        clearTimeout(Number(a.dataset.safetyTimer));
+        delete a.dataset.safetyTimer;
+      }
+
       a.dataset.loading = '0';
       a.removeAttribute('aria-busy');
       a.style.pointerEvents = '';
@@ -1679,16 +1685,12 @@
 
   function wireCtaLoading(rootEl) {
     if (!rootEl) return;
-
     const links = Array.from(rootEl.querySelectorAll('a.js-cta-loading'));
 
     links.forEach((a) => {
       a.addEventListener('click', (e) => {
-        // ✅ biarin open new tab / middle click / ctrl/cmd click jalan normal
         if (e.button !== 0) return;
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-
-        // ✅ cegah double click
         if (a.dataset.loading === '1') {
           e.preventDefault();
           return;
@@ -1697,7 +1699,6 @@
         const url = a.href;
         if (!url || url === '#') return;
 
-        // ✅ set loading state
         a.dataset.loading = '1';
         a.setAttribute('aria-busy', 'true');
         a.style.pointerEvents = 'none';
@@ -1707,8 +1708,21 @@
           a.dataset.originalHtml = a.innerHTML;
         }
 
-        // ganti isi tombol jadi loader
         a.innerHTML = `${LOADING_ICON_HTML}<span class="ml-2">Loading...</span>`;
+
+        // ✅ Safety: auto-reset jika 8 detik belum navigasi (misal koneksi lambat)
+        const safetyTimer = setTimeout(() => {
+          if (a.dataset.loading === '1') {
+            a.dataset.loading = '0';
+            a.removeAttribute('aria-busy');
+            a.style.pointerEvents = '';
+            a.style.opacity = '';
+            a.innerHTML = a.dataset.originalHtml || a.innerHTML;
+          }
+        }, 1000);
+
+        // Simpan timer ID di element biar bisa di-cancel kalau perlu
+        a.dataset.safetyTimer = safetyTimer;
       });
     });
   }

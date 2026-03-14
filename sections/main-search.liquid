@@ -864,7 +864,7 @@
     benefits.push({
       icon: "{{ 'icon-dollar.svg' | asset_url }}",
       label: t('price'),
-      value: `${t('price_from_prefix')} ${item.price_min_money_with_currency}`,
+      valueHtml: `${escapeHtml(t('price_from_prefix'))} <span class="money">${escapeHtml(item.price_min_money_with_currency)}</span>`,
     });
 
     // ✅ render coverage dulu, supaya kita tahu ada coverage atau tidak
@@ -906,7 +906,7 @@
                 <h3 class="text-primary font-bold">${escapeHtml(b.label)}</h3>
               </div>
               <h3 class="text-secondary font-bold benefit-value clamp-2">
-                ${escapeHtml(b.value)}
+                ${b.valueHtml ? b.valueHtml : escapeHtml(b.value)}
               </h3>
             </div>
           `;
@@ -1129,7 +1129,7 @@
                   class="w-full rounded-[15px] pl-[20px] pr-[65px] py-[15px] text-primary placeholder:text-primary focus:placeholder:text-primary/80 text-primary focus:outline-none"
                 />
 
-                <div class="absolute right-[10px] top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center bg-primary rounded-[15px] w-[45px] h-[45px] shrink-0 text-neutral">
+                <div class="absolute right-[5px] top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center bg-primary rounded-[15px] w-[45px] h-[45px] shrink-0 text-neutral">
                   {% render 'icon-search' %}
                 </div>
               </div>
@@ -1709,20 +1709,6 @@
         }
 
         a.innerHTML = `${LOADING_ICON_HTML}<span class="ml-2">Loading...</span>`;
-
-        // ✅ Safety: auto-reset jika 8 detik belum navigasi (misal koneksi lambat)
-        const safetyTimer = setTimeout(() => {
-          if (a.dataset.loading === '1') {
-            a.dataset.loading = '0';
-            a.removeAttribute('aria-busy');
-            a.style.pointerEvents = '';
-            a.style.opacity = '';
-            a.innerHTML = a.dataset.originalHtml || a.innerHTML;
-          }
-        }, 1000);
-
-        // Simpan timer ID di element biar bisa di-cancel kalau perlu
-        a.dataset.safetyTimer = safetyTimer;
       });
     });
   }

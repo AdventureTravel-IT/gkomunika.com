@@ -6,7 +6,7 @@
   {% assign total_qty = 0 %}
 
   {% for item in order.line_items %}
-    {% assign subtotal = subtotal | plus: item.final_line_price %}
+    {% assign subtotal = subtotal | plus: item.original_line_price %}
     {% assign total_qty = total_qty | plus: item.quantity %}
   {% endfor %}
 
@@ -22,19 +22,21 @@
   <div class="ma-order-summary-info normal">
     <h2>Payment Fee</h2>
     <h2>{{ payment_fee | money }}</h2>
-  </div>  
+  </div>
 
   <div class="ma-order-summary-info normal">
-    <h2>Discount 
+    <h2>
+      Discount
       {% if order.discount_applications.size > 0 %}
         (
         {% for discount in order.discount_applications %}
-          {{ discount.title }}{% unless forloop.last %}, {% endunless %}
+          {{ discount.title -}}
+          {%- unless forloop.last %}, {% endunless %}
         {% endfor %}
         )
       {% else %}
         (-)
-      {% endif %}  
+      {% endif %}
     </h2>
     <h2>{{ discount | money }}</h2>
   </div>

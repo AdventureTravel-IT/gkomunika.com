@@ -1,3 +1,22 @@
+{% comment %}
+  Deteksi locale prefix dari URL path
+  - /en-au → Australia English
+  - /id    → Bahasa Indonesia
+  - (kosong) → Default English
+{% endcomment %}
+{% assign is_au = false %}
+{% if request.path contains '/en-au' %}
+  {% assign is_au = true %}
+{% endif %}
+
+{% if request.locale.iso_code == 'id' %}
+  {% assign locale_prefix = '/id' %}
+{% elsif is_au %}
+  {% assign locale_prefix = '/en-au' %}
+{% else %}
+  {% assign locale_prefix = '' %}
+{% endif %}
+
 <div style="margin: 0 auto; max-width: 1920px;">
   <div
     id="collections"
@@ -348,7 +367,17 @@
   }
 </style>
 
-<script type="module" defer>
+<script
+  type="module"
+  defer
+>
+  // =========================
+  // ✅ LOCALE PREFIX dari Shopify Liquid
+  // Ini yang fix redirect ke /en-au, /id, dll
+  // =========================
+  const LOCALE_PREFIX = {{ locale_prefix | json }};
+  const IS_AU = {{ is_au | json }};
+
   // =========================
   // I18N (from Shopify locale)
   // =========================
@@ -864,7 +893,7 @@
     benefits.push({
       icon: "{{ 'icon-dollar.svg' | asset_url }}",
       label: t('price'),
-      valueHtml: `${escapeHtml(t('price_from_prefix'))} <span class="money">${escapeHtml(item.price_min_money_with_currency)}</span>`,
+      valueHtml: `${escapeHtml(t('price_from_prefix'))} <span class="money">${escapeHtml(item.price_min_money_with_currency)}</span>${IS_AU ? ' AUD' : ''}`,
     });
 
     // ✅ render coverage dulu, supaya kita tahu ada coverage atau tidak
@@ -1771,6 +1800,26 @@
     return 'background:var(--color-primary); color:var(--color-neutral);';
   }
 
+  // =========================
+  // ✅ HELPER: Tambahkan locale prefix ke URL produk
+  // Menangani URL absolut, relatif, dan yang sudah ada prefix
+  // =========================
+  function applyLocalePrefix(url = '') {
+    if (!LOCALE_PREFIX) return url; // tidak ada prefix → return apa adanya
+
+    if (!url || url === '#') return url;
+
+    // Jika sudah dimulai dengan prefix ini, jangan dobel
+    if (url.startsWith(LOCALE_PREFIX + '/') || url === LOCALE_PREFIX) return url;
+
+    // Jika URL absolut (https://...), jangan diubah
+    if (/^https?:\/\//i.test(url)) return url;
+
+    // Pastikan dimulai dengan /
+    const path = url.startsWith('/') ? url : '/' + url;
+    return LOCALE_PREFIX + path;
+  }
+
   function renderCollections(results) {
     const root = document.getElementById('collections');
     if (!root) return;
@@ -1787,7 +1836,7 @@
               No available products for this Top Up category. Please check stock / availability.
             </p>
             <div class="flex gap-5 mt-5">
-              <a href="/search" class="bg-primary text-neutral font-bold px-5 py-2 rounded-[10px]">Buy SIM</a>
+              <a href="${applyLocalePrefix('/search')}" class="bg-primary text-neutral font-bold px-5 py-2 rounded-[10px]">Buy SIM</a>
               <a href="https://wa.me/628986454071" class="bg-[#25d366] text-neutral font-bold px-5 py-2 rounded-[10px]">WhatsApp CS</a>
             </div>
           </div>
@@ -1811,7 +1860,10 @@
 
             const itemTitleRaw = item.title ?? item.name ?? item.handle ?? 'Untitled Item';
             const itemTitle = mode === 'topup' ? stripTopUpPrefix(itemTitleRaw) : itemTitleRaw;
-            const href = item.url ?? item.href ?? (item.handle ? `/products/${item.handle}` : '#');
+
+            // ✅ FIXED: Tambahkan locale prefix ke URL produk
+            const rawHref = item.url ?? item.href ?? (item.handle ? `/products/${item.handle}` : '#');
+            const href = applyLocalePrefix(rawHref);
 
             const searchText = getCardSearchText(item);
 

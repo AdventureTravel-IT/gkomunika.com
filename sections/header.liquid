@@ -1,3 +1,12 @@
+{% comment %}
+  Deteksi en-AU dari URL path karena request.locale.iso_code hanya return 'en'
+  untuk semua varian bahasa Inggris (en, en-AU, dst)
+{% endcomment %}
+{% assign is_au = false %}
+{% if request.path contains '/en-au' %}
+  {% assign is_au = true %}
+{% endif %}
+
 {% style %}
   /* Navigation progress indicator */
   .nav-progress {
@@ -61,13 +70,13 @@
     margin-left: auto;
     margin-right: auto;
     height: fit-content;
-    padding: 5px 0;
+    padding: 5px 0 0 0;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   }
 
   @media (min-width: 768px) {
     .site-header {
-      padding: 15px 0;
+      padding: 15px 0 0 0;
     }
   }
 
@@ -525,10 +534,15 @@
 
 {% unless template == 'customers/login' or template == 'customers/register' %}
   {%- comment -%}
-    Deteksi bahasa aktif untuk menambahkan prefix /id pada bahasa Indonesia
+    Deteksi bahasa aktif untuk menambahkan prefix pada URL navigasi.
+    - /id  → bahasa Indonesia
+    - /en-au → Australia English
+    - (kosong) → default English
   {%- endcomment -%}
   {% if request.locale.iso_code == 'id' %}
     {% assign locale_prefix = '/id' %}
+  {% elsif is_au %}
+    {% assign locale_prefix = '/en-au' %}
   {% else %}
     {% assign locale_prefix = '' %}
   {% endif %}
@@ -652,107 +666,110 @@
           </button>
         {% endif %}
 
-        <div class="header-controls">
-          <!-- Currency (DESKTOP) -->
-          <div class="dropdown-wrap" id="CurrencyForm-desktop">
-            <button
-              id="CurrencyTrigger-desktop"
-              type="button"
-              class="dropdown-trigger"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              aria-controls="CurrencyMenu-desktop"
-            >
-              <span class="lang-icon">
-                {{- 'header-currency.svg' | inline_asset_content -}}
-              </span>
-              <span id="CurrencyLabel-desktop" class="dropdown-label">USD</span>
-              <span id="CurrencyArrow-desktop" class="dropdown-arrow" aria-hidden="true">
-                {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
-              </span>
-            </button>
+        {% comment %} Sembunyikan currency & language selector untuk en-AU {% endcomment %}
+        {% unless is_au %}
+          <div class="header-controls">
+            <!-- Currency (DESKTOP) -->
+            <div class="dropdown-wrap" id="CurrencyForm-desktop">
+              <button
+                id="CurrencyTrigger-desktop"
+                type="button"
+                class="dropdown-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="CurrencyMenu-desktop"
+              >
+                <span class="lang-icon">
+                  {{- 'header-currency.svg' | inline_asset_content -}}
+                </span>
+                <span id="CurrencyLabel-desktop" class="dropdown-label">USD</span>
+                <span id="CurrencyArrow-desktop" class="dropdown-arrow" aria-hidden="true">
+                  {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
+                </span>
+              </button>
 
-            <ul
-              id="CurrencyMenu-desktop"
-              class="dropdown-menu"
-              role="listbox"
-              aria-label="Select currency"
-            >
-              <li role="option">
-                <button type="button" data-currency="USD" class="dropdown-option">
-                  <span>USD</span>
-                </button>
-              </li>
-              <li role="option">
-                <button type="button" data-currency="IDR" class="dropdown-option">
-                  <span>IDR</span>
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Language (DESKTOP) -->
-          {% form 'localization', id: 'LanguageFormUX-desktop', class: 'dropdown-wrap' %}
-            <input
-              type="hidden"
-              name="locale_code"
-              id="LangLocaleInput-desktop"
-              value="{{ localization.language.iso_code }}"
-            >
-
-            {% assign current_code = localization.language.iso_code | upcase | slice: 0, 2 %}
-
-            <button
-              id="LangTrigger-desktop"
-              type="button"
-              class="dropdown-trigger-lang"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              aria-controls="LangMenu-desktop"
-            >
-              <span class="lang-icon" aria-hidden="true">
-                {{- 'header-language.svg' | inline_asset_content -}}
-              </span>
-              <span class="dropdown-label">{{ current_code }}</span>
-              <span id="LangArrow-desktop" class="dropdown-arrow" aria-hidden="true">
-                {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
-              </span>
-            </button>
-
-            <ul
-              id="LangMenu-desktop"
-              class="dropdown-menu"
-              role="listbox"
-              aria-label="Select language"
-            >
-              {% for locale in localization.available_languages %}
-                {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
-                <li
-                  role="option"
-                  aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
-                >
-                  <button
-                    type="button"
-                    class="dropdown-option{% if locale.iso_code == localization.language.iso_code %} is-active{% endif %}"
-                    data-locale="{{ locale.iso_code }}"
-                  >
-                    <span>{{ code }}</span>
-                    {% if locale.iso_code == localization.language.iso_code %}
-                      <span class="check" aria-hidden="true">✓</span>
-                    {% endif %}
+              <ul
+                id="CurrencyMenu-desktop"
+                class="dropdown-menu"
+                role="listbox"
+                aria-label="Select currency"
+              >
+                <li role="option">
+                  <button type="button" data-currency="USD" class="dropdown-option">
+                    <span>USD</span>
                   </button>
                 </li>
-              {% endfor %}
-            </ul>
-          {% endform %}
-        </div>
+                <li role="option">
+                  <button type="button" data-currency="IDR" class="dropdown-option">
+                    <span>IDR</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Language (DESKTOP) -->
+            {% form 'localization', id: 'LanguageFormUX-desktop', class: 'dropdown-wrap' %}
+              <input
+                type="hidden"
+                name="locale_code"
+                id="LangLocaleInput-desktop"
+                value="{{ localization.language.iso_code }}"
+              >
+
+              {% assign current_code = localization.language.iso_code | upcase | slice: 0, 2 %}
+
+              <button
+                id="LangTrigger-desktop"
+                type="button"
+                class="dropdown-trigger-lang"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="LangMenu-desktop"
+              >
+                <span class="lang-icon" aria-hidden="true">
+                  {{- 'header-language.svg' | inline_asset_content -}}
+                </span>
+                <span class="dropdown-label">{{ current_code }}</span>
+                <span id="LangArrow-desktop" class="dropdown-arrow" aria-hidden="true">
+                  {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
+                </span>
+              </button>
+
+              <ul
+                id="LangMenu-desktop"
+                class="dropdown-menu"
+                role="listbox"
+                aria-label="Select language"
+              >
+                {% for locale in localization.available_languages %}
+                  {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
+                  <li
+                    role="option"
+                    aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
+                  >
+                    <button
+                      type="button"
+                      class="dropdown-option{% if locale.iso_code == localization.language.iso_code %} is-active{% endif %}"
+                      data-locale="{{ locale.iso_code }}"
+                    >
+                      <span>{{ code }}</span>
+                      {% if locale.iso_code == localization.language.iso_code %}
+                        <span class="check" aria-hidden="true">✓</span>
+                      {% endif %}
+                    </button>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endform %}
+          </div>
+        {% endunless %}
 
         <!-- Desktop navigation -->
         <nav role="navigation" aria-label="Main navigation" class="header-nav">
           <ul class="header-nav-list">
             <li>
               <a href="{{ routes.root_url }}" class="nav-item-link">
-                {% render 'icon-home', class: 'text-primary w-[26px] h-[26px]' %}
+                {% render 'icon-home-outline', class: 'text-primary w-[28px] h-[28px]' %}
                 <span class="nav-item-label">Home</span>
               </a>
             </li>
@@ -788,7 +805,7 @@
 
             <li>
               <a href="{{ locale_prefix }}/pages/check-data-usage" class="nav-item-link">
-                {% render 'icon-chart-donut', class: 'text-primary w-[26px] h-[26px]' %}
+                {% render 'icon-chart-line', class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="nav-item-label">Data Usage</span>
               </a>
             </li>
@@ -854,7 +871,7 @@
         <ul class="sidebar-list">
           <li class="sidebar-item">
             <a href="{{ routes.root_url }}" class="sidebar-link">
-              {% render 'icon-home', class: 'text-primary w-[26px] h-[26px]' %}
+              {% render 'icon-home-outline', class: 'text-primary w-[26px] h-[26px]' %}
               <span>Home</span>
             </a>
           </li>
@@ -925,106 +942,111 @@
         </ul>
 
         <div class="sidebar-footer">
-          <div class="sidebar-footer-inner">
-            <div class="sidebar-footer-controls">
-              <!-- Currency (MOBILE) -->
-              <div class="dropdown-wrap" id="CurrencyForm-mobile">
+          {% comment %} Sembunyikan currency & language selector untuk en-AU {% endcomment %}
+          {% unless is_au %}
+            <div class="sidebar-footer-inner">
+              <div class="sidebar-footer-controls">
+                <!-- Currency (MOBILE) -->
+                <div class="dropdown-wrap" id="CurrencyForm-mobile">
+                  <button
+                    id="CurrencyTrigger-mobile"
+                    type="button"
+                    class="dropdown-trigger-lang"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="CurrencyMenu-mobile"
+                  >
+                    <span class="lang-icon">
+                      {{- 'header-currency.svg' | inline_asset_content -}}
+                    </span>
+                    <span id="CurrencyLabel-mobile" class="dropdown-label">USD</span>
+                    <span id="CurrencyArrow-mobile" class="dropdown-arrow" aria-hidden="true">
+                      {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
+                    </span>
+                  </button>
+
+                  <ul
+                    id="CurrencyMenu-mobile"
+                    class="dropdown-menu-up"
+                    role="listbox"
+                    aria-label="Select currency"
+                  >
+                    <li role="option">
+                      <button type="button" data-currency="USD" class="dropdown-option">
+                        <span>USD</span>
+                      </button>
+                    </li>
+                    <li role="option">
+                      <button type="button" data-currency="IDR" class="dropdown-option">
+                        <span>IDR</span>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Language (MOBILE) -->
+              {% form 'localization', id: 'LanguageFormUX-mobile', class: 'dropdown-wrap' %}
+                <input
+                  type="hidden"
+                  name="locale_code"
+                  id="LangLocaleInput-mobile"
+                  value="{{ localization.language.iso_code }}"
+                >
+
+                {% assign current_code_m = localization.language.iso_code | upcase | slice: 0, 2 %}
+
                 <button
-                  id="CurrencyTrigger-mobile"
+                  id="LangTrigger-mobile"
                   type="button"
                   class="dropdown-trigger-lang"
                   aria-haspopup="listbox"
                   aria-expanded="false"
-                  aria-controls="CurrencyMenu-mobile"
+                  aria-controls="LangMenu-mobile"
                 >
-                  <span class="lang-icon">
-                    {{- 'header-currency.svg' | inline_asset_content -}}
+                  <span class="lang-icon" aria-hidden="true">
+                    {{- 'header-language.svg' | inline_asset_content -}}
                   </span>
-                  <span id="CurrencyLabel-mobile" class="dropdown-label">USD</span>
-                  <span id="CurrencyArrow-mobile" class="dropdown-arrow" aria-hidden="true">
+                  <span class="dropdown-label">{{ current_code_m }}</span>
+                  <span id="LangArrow-mobile" class="dropdown-arrow" aria-hidden="true">
                     {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
                   </span>
                 </button>
 
                 <ul
-                  id="CurrencyMenu-mobile"
+                  id="LangMenu-mobile"
                   class="dropdown-menu-up"
                   role="listbox"
-                  aria-label="Select currency"
+                  aria-label="Select language"
                 >
-                  <li role="option">
-                    <button type="button" data-currency="USD" class="dropdown-option">
-                      <span>USD</span>
-                    </button>
-                  </li>
-                  <li role="option">
-                    <button type="button" data-currency="IDR" class="dropdown-option">
-                      <span>IDR</span>
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Language (MOBILE) -->
-            {% form 'localization', id: 'LanguageFormUX-mobile', class: 'dropdown-wrap' %}
-              <input
-                type="hidden"
-                name="locale_code"
-                id="LangLocaleInput-mobile"
-                value="{{ localization.language.iso_code }}"
-              >
-
-              {% assign current_code_m = localization.language.iso_code | upcase | slice: 0, 2 %}
-
-              <button
-                id="LangTrigger-mobile"
-                type="button"
-                class="dropdown-trigger-lang"
-                aria-haspopup="listbox"
-                aria-expanded="false"
-                aria-controls="LangMenu-mobile"
-              >
-                <span class="lang-icon" aria-hidden="true">
-                  {{- 'header-language.svg' | inline_asset_content -}}
-                </span>
-                <span class="dropdown-label">{{ current_code_m }}</span>
-                <span id="LangArrow-mobile" class="dropdown-arrow" aria-hidden="true">
-                  {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
-                </span>
-              </button>
-
-              <ul
-                id="LangMenu-mobile"
-                class="dropdown-menu-up"
-                role="listbox"
-                aria-label="Select language"
-              >
-                {% for locale in localization.available_languages %}
-                  {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
-                  <li
-                    role="option"
-                    aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
-                  >
-                    <button
-                      type="button"
-                      class="dropdown-option{% if locale.iso_code == localization.language.iso_code %} is-active{% endif %}"
-                      data-locale="{{ locale.iso_code }}"
+                  {% for locale in localization.available_languages %}
+                    {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
+                    <li
+                      role="option"
+                      aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
                     >
-                      <span>{{ code }}</span>
-                      {% if locale.iso_code == localization.language.iso_code %}
-                        <span class="check" aria-hidden="true">✓</span>
-                      {% endif %}
-                    </button>
-                  </li>
-                {% endfor %}
-              </ul>
-            {% endform %}
-          </div>
+                      <button
+                        type="button"
+                        class="dropdown-option{% if locale.iso_code == localization.language.iso_code %} is-active{% endif %}"
+                        data-locale="{{ locale.iso_code }}"
+                      >
+                        <span>{{ code }}</span>
+                        {% if locale.iso_code == localization.language.iso_code %}
+                          <span class="check" aria-hidden="true">✓</span>
+                        {% endif %}
+                      </button>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endform %}
+            </div>
+          {% endunless %}
         </div>
       </div>
     </div>
+    {% render 'nav-running-text' %}
   </header>
+
 {% endunless %}
 
 <!-- SEARCH OVERLAY -->
@@ -1078,7 +1100,6 @@
     bar.className = 'nav-progress';
     document.body.prepend(bar);
 
-    // Intercept semua klik pada nav links
     document.querySelectorAll('.nav-item-link, .sidebar-link').forEach((link) => {
       link.addEventListener('click', (e) => {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -1087,7 +1108,6 @@
       });
     });
 
-    // Reset saat page show (termasuk bfcache)
     window.addEventListener('pageshow', () => {
       bar.classList.add('is-done');
       setTimeout(() => bar.classList.remove('is-loading', 'is-done'), 600);
@@ -1222,6 +1242,14 @@
 <!-- CURRENCY DROPDOWN JS (Desktop + Mobile) -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // Deteksi en-AU dari URL path (bukan iso_code karena Shopify return 'en' untuk semua varian EN)
+    const isAU = window.location.pathname.startsWith('/en-au');
+
+    if (isAU) {
+      // Force AUD di sessionStorage untuk en-AU
+      sessionStorage.setItem('buckscc_customer_currency', JSON.stringify('AUD'));
+    }
+
     const initCurrency = (suffix) => {
       const wrap = document.getElementById(`CurrencyForm-${suffix}`);
       if (!wrap) return;
@@ -1239,8 +1267,7 @@
           const val = JSON.parse(saved);
           label.textContent = val;
           menu.querySelectorAll('[data-currency]').forEach((item) => {
-            const isActive = item.dataset.currency === val;
-            item.classList.toggle('is-active', isActive);
+            item.classList.toggle('is-active', item.dataset.currency === val);
           });
         } catch (e) {}
       }
@@ -1265,7 +1292,6 @@
       menu.querySelectorAll('[data-currency]').forEach((item) => {
         item.addEventListener('click', () => {
           const val = item.dataset.currency;
-
           sessionStorage.setItem('buckscc_customer_currency', JSON.stringify(val));
 
           ['desktop', 'mobile'].forEach((s) => {

@@ -70,21 +70,19 @@
     gap: 2.5rem;
   }
 
+  /* SESUDAH */
   .htu__customer-content {
     display: flex;
     flex-direction: column;
     gap: 20px;
-  }
-
-  .htu__customer-content.bottom {
-    justify-content: flex-end;
+    justify-content: flex-start; /* semua mulai dari atas */
   }
 
   .htu__cutomer-content.wrapper {
     background-color: var(--color-neutral);
     border: 2px solid var(--color-primary);
     border-radius: 15px;
-    padding: 15px;
+    padding: 30px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
 
@@ -101,11 +99,17 @@
   .htu__customer-comment {
     font-size: var(--font-large);
     color: var(--color-primary);
-    text-align: center;
+    text-align: left;
   }
 
   .htu__benefits {
     margin-bottom: 100px;
+  }
+
+  @media (max-width: 1024px) {
+    .htu__customer-wrapper {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (max-width: 768px) {
@@ -203,7 +207,7 @@
           {% endfor %}
 
           {% for block in review_bottom_blocks %}
-            <div class="htu__customer-content bottom">
+            <div class="htu__customer-content">
               <section class="htu__cutomer-content wrapper bg-neutral text-primary">
                 <div class="htu__customer-profile">
                   {{ block.settings['profile-bottom'] }}

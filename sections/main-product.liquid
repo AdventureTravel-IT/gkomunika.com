@@ -168,6 +168,14 @@
             class="text-secondary font-bold text-xl whitespace-nowrap text-left inline-block"
           ></span>
         </div>
+
+        <!-- AUD Price -->
+        <div id="aud-price-wrapper" class="hidden">
+          <span
+            id="variantPriceAUD"
+            class="text-secondary font-bold text-xl whitespace-nowrap text-left inline-block"
+          ></span>
+        </div>
       </div>
 
       <!-- Dynamic Option Selectors (✅ added id target scroll) -->
@@ -743,6 +751,10 @@
           <div id="mobile-usd-price-wrapper" class="hidden">
             <span id="variantPriceUSDMobile" class="text-secondary font-bold text-lg whitespace-nowrap"></span>
           </div>
+
+          <div id="mobile-aud-price-wrapper" class="hidden">
+            <span id="variantPriceAUDMobile" class="text-secondary font-bold text-lg whitespace-nowrap"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -985,6 +997,7 @@
   let isIccidSubmitting = false;
 
   let cachedUSDRate = null;
+  let cachedAUDRate = null;
 
   // State
   let selectedOptions = [];
@@ -1210,227 +1223,319 @@
    * CURRENCY + PRICE HELPERS
    * ========================================================= */
   async function getExchangeRate() {
-    if (cachedUSDRate) return cachedUSDRate;
-
-    try {
+  const userCurrency = getUserCurrency();
+ 
+  // Sudah ada cache → langsung pakai
+  if (userCurrency === 'AUD' && cachedAUDRate) return cachedAUDRate;
+  if (userCurrency === 'USD' && cachedUSDRate) return cachedUSDRate;
+ 
+  try {
+    if (userCurrency === 'AUD') {
+      const res = await fetch('https://api.exchangerate-api.com/v4/latest/AUD');
+      const json = await res.json();
+      const idrPerAud = json?.rates?.IDR;
+      if (!idrPerAud) return null; // gagal → tampilkan IDR
+      cachedAUDRate = 1 / idrPerAud; // = berapa AUD per 1 IDR
+      return cachedAUDRate;
+    }
+ 
+    if (userCurrency === 'USD') {
       const res = await fetch('https://api.exchangerate-api.com/v4/latest/IDR');
       const json = await res.json();
-      cachedUSDRate = json?.rates?.USD || 0.000066;
-      return cachedUSDRate;
-    } catch (err) {
-      console.error('Failed to fetch exchange rate:', err);
-      cachedUSDRate = 0.000066; // fallback
+      const usdPerIdr = json?.rates?.USD;
+      if (!usdPerIdr) return null; // gagal → tampilkan IDR
+      cachedUSDRate = usdPerIdr;
       return cachedUSDRate;
     }
+  } catch (err) {
+    console.error('Failed to fetch exchange rate:', err);
+    return null; // tidak ada fallback rate, tampilkan IDR saja
   }
-
-  function convertIDRtoUSDInstant(idrAmount) {
-    const rate = cachedUSDRate || 0.000066;
-    return (idrAmount * rate).toFixed(2);
+ 
+  return null;
+}
+ 
+function convertIDRtoTargetInstant(idrAmount, currency) {
+  if (currency === 'AUD') {
+    if (!cachedAUDRate) return null;
+    return (idrAmount * cachedAUDRate).toFixed(2);
   }
-
-  function formatIDR(amount) {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
-    })
-      .format(amount)
-      .replace(/\u00A0/g, ' ');
+  if (currency === 'USD') {
+    if (!cachedUSDRate) return null;
+    return (idrAmount * cachedUSDRate).toFixed(2);
   }
-
-  function formatUSD(amount) {
-    return `$${parseFloat(amount).toFixed(2)}`;
+  return null;
+}
+ 
+// Alias agar kode lain yang pakai convertIDRtoUSDInstant tidak error
+function convertIDRtoUSDInstant(idrAmount) {
+  return convertIDRtoTargetInstant(idrAmount, 'USD');
+}
+ 
+function formatIDR(amount) {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  })
+    .format(amount)
+    .replace(/\u00A0/g, ' ');
+}
+ 
+function formatUSD(amount) {
+  return `$${parseFloat(amount).toFixed(2)}`;
+}
+ 
+function formatAUD(amount) {
+  return `$${parseFloat(amount).toFixed(2)} AUD`;
+}
+ 
+function getUserCurrency() {
+  let c = sessionStorage.getItem('buckscc_customer_currency');
+  if (c) c = c.replace(/"/g, '');
+  return c || 'IDR';
+}
+ 
+function formatAddonPrice(priceRaw, quantity = 1) {
+  const totalIDR = (priceRaw / 100) * quantity;
+  const cur = getUserCurrency();
+ 
+  if (cur === 'USD') {
+    const converted = convertIDRtoTargetInstant(totalIDR, 'USD');
+    return converted !== null ? formatUSD(converted) : formatIDR(totalIDR);
   }
-
-  function getUserCurrency() {
-    let c = sessionStorage.getItem('buckscc_customer_currency');
-    if (c) c = c.replace(/"/g, '');
-    return c || 'IDR';
+  if (cur === 'AUD') {
+    const converted = convertIDRtoTargetInstant(totalIDR, 'AUD');
+    return converted !== null ? formatAUD(converted) : formatIDR(totalIDR);
   }
-
-  function formatAddonPrice(priceRaw, quantity = 1) {
-    const totalIDR = (priceRaw / 100) * quantity;
-    const cur = getUserCurrency();
-
-    if (cur === 'USD') {
-      return formatUSD(convertIDRtoUSDInstant(totalIDR));
-    }
-    return formatIDR(totalIDR);
+  return formatIDR(totalIDR);
+}
+ 
+function toggleCurrencyDisplay() {
+  const userCurrency = getUserCurrency();
+ 
+  const idrWrapper = document.getElementById('idr-price-wrapper');
+  const usdWrapper = document.getElementById('usd-price-wrapper');
+  const audWrapper = document.getElementById('aud-price-wrapper');
+  const mobileIDR  = document.getElementById('mobile-idr-price-wrapper');
+  const mobileUSD  = document.getElementById('mobile-usd-price-wrapper');
+  const mobileAUD  = document.getElementById('mobile-aud-price-wrapper');
+ 
+  // Sembunyikan semua dulu
+  [idrWrapper, usdWrapper, audWrapper].forEach(el => {
+    if (!el) return;
+    el.classList.add('hidden');
+    el.classList.remove('block');
+  });
+  [mobileIDR, mobileUSD, mobileAUD].forEach(el => {
+    if (!el) return;
+    el.classList.add('hidden');
+    el.classList.remove('block');
+  });
+ 
+  // Tampilkan sesuai currency — jika rate tidak tersedia, fallback ke IDR
+  if (userCurrency === 'USD' && cachedUSDRate) {
+    usdWrapper?.classList.remove('hidden');
+    usdWrapper?.classList.add('block');
+    mobileUSD?.classList.remove('hidden');
+    mobileUSD?.classList.add('block');
+  } else if (userCurrency === 'AUD' && cachedAUDRate) {
+    audWrapper?.classList.remove('hidden');
+    audWrapper?.classList.add('block');
+    mobileAUD?.classList.remove('hidden');
+    mobileAUD?.classList.add('block');
+  } else {
+    // IDR (default + fallback ketika rate belum/gagal di-fetch)
+    idrWrapper?.classList.remove('hidden');
+    idrWrapper?.classList.add('block');
+    mobileIDR?.classList.remove('hidden');
+    mobileIDR?.classList.add('block');
   }
-
-  function toggleCurrencyDisplay() {
-    let userCurrency = sessionStorage.getItem('buckscc_customer_currency');
-    if (userCurrency) userCurrency = userCurrency.replace(/"/g, '');
-
-    const { idrWrapper, usdWrapper } = dom();
-    if (!idrWrapper || !usdWrapper) return;
-
-    // ✅ mobile wrappers
-    const mobileIDR = document.getElementById('mobile-idr-price-wrapper');
-    const mobileUSD = document.getElementById('mobile-usd-price-wrapper');
-
-    if (userCurrency === 'USD') {
-      idrWrapper.classList.add('hidden');
-      idrWrapper.classList.remove('block');
-
-      usdWrapper.classList.remove('hidden');
-      usdWrapper.classList.add('block');
-
-      mobileIDR?.classList.add('hidden');
-      mobileIDR?.classList.remove('block');
-
-      mobileUSD?.classList.remove('hidden');
-      mobileUSD?.classList.add('block');
-    } else {
-      idrWrapper.classList.remove('hidden');
-      idrWrapper.classList.add('block');
-
-      usdWrapper.classList.add('hidden');
-      usdWrapper.classList.remove('block');
-
-      mobileIDR?.classList.remove('hidden');
-      mobileIDR?.classList.add('block');
-
-      mobileUSD?.classList.add('hidden');
-      mobileUSD?.classList.remove('block');
-    }
+}
+ 
+function updateIDRPrice(priceRaw, quantity = 1) {
+  const totalIDR = (priceRaw / 100) * quantity;
+  const priceIDR = document.getElementById('variantPriceIDR');
+  const mobile   = document.getElementById('variantPriceIDRMobile');
+  const text     = formatIDR(totalIDR);
+  if (priceIDR) priceIDR.textContent = text;
+  if (mobile)   mobile.textContent   = text;
+}
+ 
+async function updateUSDPrice(priceRaw, quantity = 1) {
+  const totalIDR = (priceRaw / 100) * quantity;
+  const priceUSD = document.getElementById('variantPriceUSD');
+  const mobile   = document.getElementById('variantPriceUSDMobile');
+  if (!priceUSD && !mobile) return;
+ 
+  const instant = convertIDRtoTargetInstant(totalIDR, 'USD');
+  if (instant !== null) {
+    if (priceUSD) priceUSD.textContent = formatUSD(instant);
+    if (mobile)   mobile.textContent   = formatUSD(instant);
   }
-
-  function updateIDRPrice(priceRaw, quantity = 1) {
-    const totalIDR = (priceRaw / 100) * quantity;
-    const { priceIDR } = dom();
-    const mobile = document.getElementById('variantPriceIDRMobile');
-
-    const text = formatIDR(totalIDR);
-    if (priceIDR) priceIDR.textContent = text;
-    if (mobile) mobile.textContent = text;
-  }
-
-  async function updateUSDPrice(priceRaw, quantity = 1) {
-    const totalIDR = (priceRaw / 100) * quantity;
-
-    const { priceUSD } = dom();
-    const mobile = document.getElementById('variantPriceUSDMobile');
-
-    if (!priceUSD && !mobile) return;
-
-    // instant (cached/fallback)
-    const instant = formatUSD(convertIDRtoUSDInstant(totalIDR));
-    if (priceUSD) priceUSD.textContent = instant;
-    if (mobile) mobile.textContent = instant;
-
-    // fetch rate if belum ada
-    if (!cachedUSDRate) {
-      const rate = await getExchangeRate();
-      const finalText = formatUSD((totalIDR * rate).toFixed(2));
-      if (priceUSD) priceUSD.textContent = finalText;
-      if (mobile) mobile.textContent = finalText;
-    }
-  }
-
-  async function updatePriceDisplay(priceRaw = null) {
-    const qty = parseInt(dom().qtyInput?.value) || 1;
-    const { priceIDR, priceUSD } = dom();
-
-    if (priceRaw !== null) {
-      updateIDRPrice(priceRaw, qty);
-      await updateUSDPrice(priceRaw, qty);
-      toggleCurrencyDisplay();
-      return;
-    }
-
-    // Range price
-    if (priceIDR) {
-      const minIDR = formatIDR(filtered.price_min_raw / 100);
-      const maxIDR = formatIDR(filtered.price_max_raw / 100);
-      const range = `${minIDR} - ${maxIDR}`;
-      priceIDR.textContent = range;
-
-      const mobileIDRText = document.getElementById('variantPriceIDRMobile');
-      if (mobileIDRText) mobileIDRText.textContent = range;
-    }
-
-    if (priceUSD) {
-      const minUSD = convertIDRtoUSDInstant(filtered.price_min_raw / 100);
-      const maxUSD = convertIDRtoUSDInstant(filtered.price_max_raw / 100);
-      const range = `${formatUSD(minUSD)} - ${formatUSD(maxUSD)}`;
-      priceUSD.textContent = range;
-
-      const mobileUSDText = document.getElementById('variantPriceUSDMobile');
-      if (mobileUSDText) mobileUSDText.textContent = range;
-
-      if (!cachedUSDRate) {
-        await getExchangeRate();
-        const minFinal = convertIDRtoUSDInstant(filtered.price_min_raw / 100);
-        const maxFinal = convertIDRtoUSDInstant(filtered.price_max_raw / 100);
-        const range2 = `${formatUSD(minFinal)} - ${formatUSD(maxFinal)}`;
-        priceUSD.textContent = range2;
-        if (mobileUSDText) mobileUSDText.textContent = range2;
+ 
+  if (!cachedUSDRate) {
+    const rate = await getExchangeRate();
+    if (rate) {
+      const final = convertIDRtoTargetInstant(totalIDR, 'USD');
+      if (final !== null) {
+        if (priceUSD) priceUSD.textContent = formatUSD(final);
+        if (mobile)   mobile.textContent   = formatUSD(final);
       }
     }
-
+  }
+}
+ 
+async function updateAUDPrice(priceRaw, quantity = 1) {
+  const totalIDR = (priceRaw / 100) * quantity;
+  const priceAUD = document.getElementById('variantPriceAUD');
+  const mobile   = document.getElementById('variantPriceAUDMobile');
+  if (!priceAUD && !mobile) return;
+ 
+  const instant = convertIDRtoTargetInstant(totalIDR, 'AUD');
+  if (instant !== null) {
+    if (priceAUD) priceAUD.textContent = formatAUD(instant);
+    if (mobile)   mobile.textContent   = formatAUD(instant);
+  }
+ 
+  if (!cachedAUDRate) {
+    const rate = await getExchangeRate();
+    if (rate) {
+      const final = convertIDRtoTargetInstant(totalIDR, 'AUD');
+      if (final !== null) {
+        if (priceAUD) priceAUD.textContent = formatAUD(final);
+        if (mobile)   mobile.textContent   = formatAUD(final);
+      }
+    }
+  }
+}
+ 
+async function updatePriceDisplay(priceRaw = null) {
+  const qty      = parseInt(document.getElementById('variant-quantity')?.value) || 1;
+  const priceIDR = document.getElementById('variantPriceIDR');
+  const priceUSD = document.getElementById('variantPriceUSD');
+  const priceAUD = document.getElementById('variantPriceAUD');
+ 
+  if (priceRaw !== null) {
+    updateIDRPrice(priceRaw, qty);
+    await updateUSDPrice(priceRaw, qty);
+    await updateAUDPrice(priceRaw, qty);
     toggleCurrencyDisplay();
+    return;
   }
-
-  function calculateInsuranceTotalRawCents() {
-    if (!selectedVariant) return null;
-
-    const mainQty = parseInt(dom().qtyInput?.value, 10) || 1;
-
-    // main variant total (cents)
-    let total = (selectedVariant.priceRaw || 0) * mainQty;
-
-    // addons total (cents) => price addon * mainQty
-    if (Array.isArray(selectedAddons) && selectedAddons.length) {
-      total += selectedAddons.reduce((sum, a) => {
-        const pr = parseInt(a.priceRaw || 0, 10);
-        return sum + (pr * mainQty);
-      }, 0);
-    }
-
-    return total;
+ 
+  // Range price (belum pilih variant)
+  const minIDR = filtered.price_min_raw / 100;
+  const maxIDR = filtered.price_max_raw / 100;
+ 
+  // IDR range
+  if (priceIDR) {
+    const text = `${formatIDR(minIDR)} - ${formatIDR(maxIDR)}`;
+    priceIDR.textContent = text;
+    const mobileIDRText = document.getElementById('variantPriceIDRMobile');
+    if (mobileIDRText) mobileIDRText.textContent = text;
   }
-
-  async function updateTotalPriceDisplayIfInsurance() {
-    if (filtered.category !== 'Insurance') return false;
-
-    if (!selectedVariant) {
-      await updatePriceDisplay(null);
-      return true;
-    }
-
-    const totalRaw = calculateInsuranceTotalRawCents();
-    if (totalRaw === null) {
-      await updatePriceDisplay(null);
-      return true;
-    }
-
-    const totalIDR = totalRaw / 100;
-
-    const priceIDR = document.getElementById('variantPriceIDR');
-    const priceUSD = document.getElementById('variantPriceUSD');
-    const mobileIDR = document.getElementById('variantPriceIDRMobile');
-    const mobileUSD = document.getElementById('variantPriceUSDMobile');
-
-    const idrText = formatIDR(totalIDR);
-    if (priceIDR) priceIDR.textContent = idrText;
-    if (mobileIDR) mobileIDR.textContent = idrText;
-
-    const usdInstant = formatUSD(convertIDRtoUSDInstant(totalIDR));
-    if (priceUSD) priceUSD.textContent = usdInstant;
-    if (mobileUSD) mobileUSD.textContent = usdInstant;
-
+ 
+  // USD range
+  if (priceUSD) {
+    let minUSD = convertIDRtoTargetInstant(minIDR, 'USD');
+    let maxUSD = convertIDRtoTargetInstant(maxIDR, 'USD');
     if (!cachedUSDRate) {
-      const rate = await getExchangeRate();
-      const usdFinal = formatUSD((totalIDR * rate).toFixed(2));
-      if (priceUSD) priceUSD.textContent = usdFinal;
-      if (mobileUSD) mobileUSD.textContent = usdFinal;
+      await getExchangeRate();
+      minUSD = convertIDRtoTargetInstant(minIDR, 'USD');
+      maxUSD = convertIDRtoTargetInstant(maxIDR, 'USD');
     }
-
-    toggleCurrencyDisplay();
+    if (minUSD !== null && maxUSD !== null) {
+      const text = `${formatUSD(minUSD)} - ${formatUSD(maxUSD)}`;
+      priceUSD.textContent = text;
+      const mobileUSDText = document.getElementById('variantPriceUSDMobile');
+      if (mobileUSDText) mobileUSDText.textContent = text;
+    }
+  }
+ 
+  // AUD range
+  if (priceAUD) {
+    let minAUD = convertIDRtoTargetInstant(minIDR, 'AUD');
+    let maxAUD = convertIDRtoTargetInstant(maxIDR, 'AUD');
+    if (!cachedAUDRate) {
+      await getExchangeRate();
+      minAUD = convertIDRtoTargetInstant(minIDR, 'AUD');
+      maxAUD = convertIDRtoTargetInstant(maxIDR, 'AUD');
+    }
+    if (minAUD !== null && maxAUD !== null) {
+      const text = `${formatAUD(minAUD)} - ${formatAUD(maxAUD)}`;
+      priceAUD.textContent = text;
+      const mobileAUDText = document.getElementById('variantPriceAUDMobile');
+      if (mobileAUDText) mobileAUDText.textContent = text;
+    }
+  }
+ 
+  toggleCurrencyDisplay();
+}
+ 
+function calculateInsuranceTotalRawCents() {
+  if (!selectedVariant) return null;
+ 
+  const mainQty = parseInt(document.getElementById('variant-quantity')?.value, 10) || 1;
+  let total = (selectedVariant.priceRaw || 0) * mainQty;
+ 
+  if (Array.isArray(selectedAddons) && selectedAddons.length) {
+    total += selectedAddons.reduce((sum, a) => {
+      const pr = parseInt(a.priceRaw || 0, 10);
+      return sum + (pr * mainQty);
+    }, 0);
+  }
+ 
+  return total;
+}
+ 
+async function updateTotalPriceDisplayIfInsurance() {
+  if (filtered.category !== 'Insurance') return false;
+ 
+  if (!selectedVariant) {
+    await updatePriceDisplay(null);
     return true;
   }
+ 
+  const totalRaw = calculateInsuranceTotalRawCents();
+  if (totalRaw === null) {
+    await updatePriceDisplay(null);
+    return true;
+  }
+ 
+  const totalIDR = totalRaw / 100;
+ 
+  const priceIDR = document.getElementById('variantPriceIDR');
+  const priceUSD = document.getElementById('variantPriceUSD');
+  const priceAUD = document.getElementById('variantPriceAUD');
+  const mobileIDR = document.getElementById('variantPriceIDRMobile');
+  const mobileUSD = document.getElementById('variantPriceUSDMobile');
+  const mobileAUD = document.getElementById('variantPriceAUDMobile');
+ 
+  // IDR selalu ada
+  const idrText = formatIDR(totalIDR);
+  if (priceIDR) priceIDR.textContent = idrText;
+  if (mobileIDR) mobileIDR.textContent = idrText;
+ 
+  // USD
+  if (!cachedUSDRate) await getExchangeRate();
+  const usdConverted = convertIDRtoTargetInstant(totalIDR, 'USD');
+  if (usdConverted !== null) {
+    if (priceUSD) priceUSD.textContent = formatUSD(usdConverted);
+    if (mobileUSD) mobileUSD.textContent = formatUSD(usdConverted);
+  }
+ 
+  // AUD
+  if (!cachedAUDRate) await getExchangeRate();
+  const audConverted = convertIDRtoTargetInstant(totalIDR, 'AUD');
+  if (audConverted !== null) {
+    if (priceAUD) priceAUD.textContent = formatAUD(audConverted);
+    if (mobileAUD) mobileAUD.textContent = formatAUD(audConverted);
+  }
+ 
+  toggleCurrencyDisplay();
+  return true;
+}
 
   /* =========================================================
    * VARIANT SELECTORS
@@ -2619,13 +2724,26 @@
    * ========================================================= */
   function startCurrencyMonitor() {
     if (currencyPollTimer) clearInterval(currencyPollTimer);
-
-    currencyPollTimer = setInterval(() => {
+ 
+    currencyPollTimer = setInterval(async () => {
       const current = sessionStorage.getItem('buckscc_customer_currency');
       if (current !== lastCurrency) {
         lastCurrency = current;
-        toggleCurrencyDisplay();
-
+ 
+        // Reset cache currency lama supaya fetch ulang sesuai pilihan baru
+        const newCurrency = (current || '').replace(/"/g, '');
+        if (newCurrency === 'AUD') cachedAUDRate = null;
+        if (newCurrency === 'USD') cachedUSDRate = null;
+ 
+        // Fetch rate baru lalu update tampilan
+        await getExchangeRate();
+ 
+        if (selectedVariant) {
+          await updatePriceDisplay(selectedVariant.priceRaw);
+        } else {
+          await updatePriceDisplay(null);
+        }
+ 
         if (filtered.category === 'Insurance' && selectedVariant) {
           updateInsuranceAddonDisplay(selectedVariant);
         }
@@ -2710,13 +2828,15 @@
 
     // ✅ 2. Exchange rate & variants fetch jalan di background
     getExchangeRate().then(() => {
-      // refresh harga setelah rate tersedia
-      if (selectedVariant) {
-        updatePriceDisplay(selectedVariant.priceRaw);
-      } else {
-        updatePriceDisplay();
-      }
-    });
+    if (selectedVariant) {
+      updatePriceDisplay(selectedVariant.priceRaw);
+    } else {
+      updatePriceDisplay();
+    }
+  }).catch(() => {
+    // Fetch gagal → tetap tampilkan IDR
+    updatePriceDisplay(selectedVariant ? selectedVariant.priceRaw : null);
+  });
 
     // ✅ 3. Fetch semua variants di background, lalu re-render selector
     fetchAllVariants().then((allVariants) => {

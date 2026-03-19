@@ -261,7 +261,7 @@
     padding: 30px;
 
     max-width: 500px;
-    width: calc(100% - 40px); /* sisa margin kiri-kanan 20px */
+    width: calc(100% - 40px);
 
     border-radius: 10px;
     text-align: center;
@@ -273,7 +273,7 @@
     top: 50%;
     transform: translate(-50%, -50%);
 
-    margin: 0; /* supaya tidak pakai margin auto yang lama */
+    margin: 0;
   }
 
   .invalid-popup__content h2 {
@@ -429,10 +429,6 @@
     text-align: center;
   }
 
-  .check-data-usage__total-usage {
-    margin-bottom: 15px;
-  }
-
   .total-data-usage__wrapper {
     padding: 15px;
     border-radius: 15px;
@@ -461,15 +457,6 @@
   .data-usage__wrapper p:nth-child(3) {
     display: flex;
     justify-content: flex-end;
-  }
-  input[type='number']::-webkit-outer-spin-button,
-  input[type='number']::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  /* Firefox */
-  input[type='number'] {
-    -moz-appearance: textfield;
   }
 
   .top-up-plan-btn {
@@ -553,7 +540,7 @@
       </div>
     </div>
     <form id="check-iccid-form" class="check-data-usage__input">
-      <input type="number" id="iccid" placeholder="Input ICCID Number" required>
+      <input type="text" id="iccid" placeholder="Input ICCID Number" inputmode="numeric" pattern="[0-9]*" required>
       <button id="check-iccid" type="submit">Next</button>
     </form>
     <div class="check-data-usage__result">
@@ -567,7 +554,6 @@
     <h2>ICCID Invalid</h2>
     <p>
       Sorry currently your SIM does not support data usage check through website. You can cek your data directly in your
-
       phone settings.
     </p>
     <p>Please contact our WhatsApp Customer Service for more information</p>
@@ -641,6 +627,8 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    const API_URL = 'https://b804-2a09-bac6-d698-137d-00-1f1-1e9.ngrok-free.app/api/v1/check-usage';
+
     const iccidInput = document.getElementById('iccid');
     const checkBtn = document.getElementById('check-iccid');
     const resultEl = document.getElementById('result');
@@ -650,49 +638,78 @@
     const btnContactCs = document.getElementById('invalid-popup__contact-button');
     let lastSubmit = 0;
 
-    const prefixVendorMap = [
-      { prefix: '89859', vendor: 'AF' },
-      { prefix: '89862', vendor: 'AF' },
-      { prefix: '89810', vendor: 'TE' },
-      { prefix: '2210', vendor: 'BS' },
-    ];
-
-    const vendorCategoryMap = {
-      BS: 'Top_Up_A',
-      SEM: 'Top_Up_D',
-    };
-
-    function formatDateLong(str) {
-      if (!str || str === '-' || str.length < 8) return '-';
-
-      const year = str.slice(0, 4);
-      const month = str.slice(4, 6);
-      const day = str.slice(6, 8);
-
-      const monthNames = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-      ];
-
-      const monthName = monthNames[Number(month) - 1];
-
-      return `${day} ${monthName} ${year}`;
+    /* ==============================
+       HELPER: Format KB ke unit yang readable
+       Base selalu KB dari backend
+    ============================== */
+    function formatKB(kb) {
+      if (kb == null) return '-';
+      kb = Number(kb) || 0;
+      if (kb >= 1048576) return (kb / 1048576).toFixed(2) + ' GB';
+      if (kb >= 1024) return (kb / 1024).toFixed(2) + ' MB';
+      return kb.toFixed(2) + ' KB';
     }
 
-    function detectVendor(iccid) {
-      return prefixVendorMap.find((i) => iccid.startsWith(i.prefix))?.vendor || null;
+    /* ==============================
+       HELPER: Format tanggal dari "YYYY-MM-DD HH:mm:ss" ke "DD Month YYYY HH:mm"
+       Backend sudah kirim format readable, tapi kita rapikan tampilan
+    ============================== */
+    function formatDateTime(str) {
+      if (!str || str === '-') return '-';
+      try {
+        const d = new Date(str.replace(' ', 'T'));
+        if (isNaN(d.getTime())) return str;
+        return d
+          .toLocaleString('en-GB', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })
+          .replace(',', '');
+      } catch {
+        return str;
+      }
     }
 
+    /* ==============================
+       HELPER: Map plan_status ke teks yang user-friendly
+    ============================== */
+    function formatStatus(planStatus, vendor) {
+      // Support format baru: { status_code, status } maupun string lama
+      const code = typeof planStatus === 'object' && planStatus !== null ? planStatus.status_code : planStatus;
+
+      const maps = {
+        MM: {
+          0: 'Subscription In Progress',
+          1: 'Not Activated Yet',
+          2: 'Active',
+          3: 'Expired',
+          4: 'Being Unsubscribed',
+        },
+        BC: {
+          0: 'Not Activated Yet',
+          1: 'Active',
+          2: 'Data Depleted',
+          3: 'Terminated',
+        },
+        FM: {
+          0: 'Not Activated Yet',
+          1: 'Active',
+          2: 'Data Depleted',
+          5: 'Terminated',
+          6: 'Expired',
+        },
+      };
+
+      const vendorMap = maps[vendor] || {};
+      return vendorMap[code] ?? (typeof planStatus === 'object' ? planStatus.status : planStatus) ?? '-';
+    }
+
+    /* ==============================
+       POPUP helpers
+    ============================== */
     function showInvalidPopup() {
       invalidPopup.style.display = 'block';
     }
@@ -700,133 +717,96 @@
       invalidPopup.style.display = 'none';
     }
 
-    function formatDate(dateStr) {
-      if (!dateStr || dateStr.length !== 8) return dateStr;
-      return `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6)}`;
-    }
-
-    function formatDataUsage(value, vendor) {
-      value = Number(value) || 0;
-      const KB = 1024;
-      const MB = 1024 * KB;
-      const GB = 1024 * MB;
-      if (vendor === 'BE' || vendor === 'BS') {
-        if (value >= MB) return (value / MB).toFixed(2) + ' GB';
-        if (value >= KB) return (value / KB).toFixed(2) + ' MB';
-        return value.toFixed(2) + ' KB';
-      }
-      if (value >= GB) return (value / GB).toFixed(2) + ' GB';
-      if (value >= MB) return (value / MB).toFixed(2) + ' MB';
-      return (value / KB).toFixed(2) + ' KB';
-    }
-
-    function getTzOffsetHours(tzStr) {
-      // contoh input: "UTC+8", "UTC+08", "UTC-5"
-      if (!tzStr) return null;
-      const m = String(tzStr).match(/UTC\s*([+-])\s*(\d{1,2})/i);
-      if (!m) return null;
-      const sign = m[1] === '-' ? -1 : 1;
-      const hours = Number(m[2]);
-      return sign * hours;
-    }
-
-    function parseFlexibleDate(raw, sourceTzOffsetHours = null) {
-      if (raw == null || raw === '' || raw === '-') return null;
-
-      // number langsung
-      if (typeof raw === 'number') {
-        const ms = raw < 1e12 ? raw * 1000 : raw; // deteksi sec vs ms
-        return new Date(ms);
-      }
-
-      const s = String(raw).trim();
-
-      // all digits -> timestamp (sec/ms) atau yyyymmdd
-      if (/^\d+$/.test(s)) {
-        if (s.length === 8) {
-          // yyyymmdd
-          const y = s.slice(0, 4);
-          const m = s.slice(4, 6);
-          const d = s.slice(6, 8);
-          return new Date(`${y}-${m}-${d}T00:00:00`);
-        }
-        const n = Number(s);
-        const ms = s.length <= 10 ? n * 1000 : n; // sec vs ms
-        return new Date(ms);
-      }
-
-      // format "YYYY-MM-DD HH:mm:ss" atau "YYYY-MM-DD"
-      if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
-        const [datePart, timePart = '00:00:00'] = s.split(' ');
-        const [y, mo, d] = datePart.split('-').map(Number);
-        const [hh, mm, ss] = timePart.split(':').map(Number);
-
-        // kalau punya offset timezone sumber (mis. UTC+8),
-        // kita ubah jadi UTC terlebih dahulu biar bisa dikonversi ke Asia/Jakarta dengan benar
-        if (sourceTzOffsetHours != null) {
-          const utcMs = Date.UTC(y, mo - 1, d, hh - sourceTzOffsetHours, mm, ss || 0);
-          return new Date(utcMs);
-        }
-
-        // fallback parse lokal
-        return new Date(`${datePart}T${timePart}`);
-      }
-
-      // fallback terakhir
-      const d = new Date(s);
-      return isNaN(d.getTime()) ? null : d;
-    }
-
-    function formatDateTimeFlexible(raw, sourceTzStr) {
-      const offset = getTzOffsetHours(sourceTzStr); // contoh "UTC+8"
-      const d = parseFlexibleDate(raw, offset);
-      if (!d) return '-';
-
-      // tampilkan sesuai timezone user (Asia/Jakarta)
-      return d
-        .toLocaleString('en-GB', {
-          timeZone: 'Asia/Jakarta',
-          day: '2-digit',
-          month: 'long',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-        .replace(',', '');
-    }
-
-    function renderEsimInfo(item, vendor) {
-      const bundle = item.skuName || item.product_name || '-';
-
-      const startRaw = vendor === 'AF' ? item.useSDate : item.planStartTime;
-      const endRaw = vendor === 'AF' ? item.useEDate : item.planEndTime;
-
-      // timezone sumber biasanya ada di item.timeZone (contoh: "UTC+8")
-      const sourceTz = item.timeZone || null;
-
-      const formattedStart = formatDateTimeFlexible(startRaw, sourceTz);
-      const formattedEnd = formatDateTimeFlexible(endRaw, sourceTz);
-
+    /* ==============================
+       RENDER: SIM Card Information
+    ============================== */
+    function renderEsimInfo(plan, vendor) {
       return `
-    <div class="check-data-usage__esim-information">
-      <h3>SIM Card Information</h3>
-      <div class="esim-information__wrapper"><p>Your Bundle</p><span>${bundle}</span></div>
-      <div class="esim-information__wrapper"><p>Active Date</p><span>${formattedStart}</span></div>
-      <div class="esim-information__wrapper"><p>End Date</p><span>${formattedEnd}</span></div>
-    </div>`;
+      <div class="check-data-usage__esim-information">
+        <h3>SIM Card Information</h3>
+        <div class="esim-information__wrapper"><p>Status</p><span>${formatStatus(plan.plan_status, vendor)}</span></div>
+        <div class="esim-information__wrapper"><p>Your Bundle</p><span>${plan.product_name || '-'}</span></div>
+        <div class="esim-information__wrapper"><p>Active Date</p><span>${formatDateTime(
+          plan.plan_start_time
+        )}</span></div>
+        <div class="esim-information__wrapper"><p>End Date</p><span>${formatDateTime(plan.plan_end_time)}</span></div>
+      </div>`;
     }
 
+    /* ==============================
+       RENDER: Quota (Total / Used / Remaining)
+       Jika total_kb null => tampilkan Used saja
+    ============================== */
+    function renderQuota(quota, vendor) {
+      if (!quota) return '';
+
+      const label = vendor === 'BC' ? 'Total Usage:' : 'Used:';
+
+      return `<div style="display:flex;justify-content:space-between;">
+        <h3>${label}</h3>
+        <span style="font-weight:bold;">${formatKB(quota.used_kb)}</span>
+      </div>`;
+    }
+
+    /* ==============================
+       RENDER: Per-country aggregated totals (dari daily_usage)
+    ============================== */
+    function renderCountryTotals(dailyUsage) {
+      if (!dailyUsage || dailyUsage.length === 0) return '';
+
+      const perCountry = {};
+      dailyUsage.forEach((u) => {
+        const name = u.country_name || u.country_code || 'Unknown';
+        perCountry[name] = (perCountry[name] || 0) + (Number(u.used_kb) || 0);
+      });
+
+      return Object.entries(perCountry)
+        .map(
+          ([country, kb]) => `
+          <div class="total-data-usage__wrapper">
+            <p>${country}</p>
+            <p>${formatKB(kb)}</p>
+          </div>`
+        )
+        .join('');
+    }
+
+    /* ==============================
+       RENDER: Daily usage breakdown table
+    ============================== */
+    function renderDailyUsage(dailyUsage) {
+      if (!dailyUsage || dailyUsage.length === 0) return '';
+
+      return dailyUsage
+        .map(
+          (u) => `
+          <div class="data-usage__wrapper">
+            <p>${u.country_name || u.country_code || '-'}</p>
+            <p>${u.date || '-'}</p>
+            <p>${formatKB(u.used_kb)}</p>
+          </div>`
+        )
+        .join('');
+    }
+
+    /* ==============================
+       RENDER: Top Up button
+    ============================== */
     function renderTopUpButton() {
       return `<button id="top-up-plan" class="top-up-plan-btn">Top Up</button>`;
     }
+
+    /* ==============================
+       RENDER: Buy eSIM buttons (fallback)
+    ============================== */
     function renderBuyEsimButtons() {
       return `<div class="button-topup__usage-wrapper">
-      <span>Need more data? Buy eSIM from our website.</span>
-      <div class="btn-topup-information">
-        <button id="btn-topup__contact-button"><span>Contact CS</span></button>
-        <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
-      </div>
-    </div>`;
+        <span>Need more data? Buy eSIM from our website.</span>
+        <div class="btn-topup-information">
+          <button id="btn-topup__contact-button"><span>Contact CS</span></button>
+          <button id="btn-topup__buy-button"><span>Buy eSIM</span></button>
+        </div>
+      </div>`;
     }
 
     function attachTopUpButtonListeners() {
@@ -837,6 +817,9 @@
       if (btnTopUpCs) btnTopUpCs.onclick = () => (window.location.href = 'https://wa.me/628986454071');
     }
 
+    /* ==============================
+       MAIN: Check ICCID
+    ============================== */
     async function checkICCID() {
       const now = Date.now();
       if (now - lastSubmit < 3000) return;
@@ -848,12 +831,11 @@
         return;
       }
 
-      let vendor = detectVendor(iccid);
       checkBtn.disabled = true;
       checkBtn.textContent = 'Loading...';
 
       try {
-        const res = await fetch('https://gkomunika.id/api/v1/check/data_info', {
+        const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({ iccid }),
@@ -862,283 +844,66 @@
 
         console.log(data);
 
-        if (!vendor) {
-          // hanya ubah vendor kalau belum terdeteksi dari prefix
-          if (data.tradeCode && data.tradeData?.subOrderList) {
-            if (iccid.startsWith('2210')) {
-              vendor = 'BS';
-            } else {
-              vendor = 'BE';
-            }
-          } else if (data.vendor === 'MM' || data.success != null || data.data_usage?.quotaList) {
-            // SEM vendor baru: ada success true/false, vendor bisa "MM"
-            vendor = 'SEM';
-          } else if (data.data_usage?.retCode) {
-            // fallback SEM versi lama
-            vendor = 'SEM';
-          } else {
-            vendor = null;
-          }
+        // Jika response gagal
+        if (!data.success) {
+          showInvalidPopup();
+          return;
         }
 
+        const plans = data.data?.plans || [];
+        if (plans.length === 0) {
+          showInvalidPopup();
+          return;
+        }
+
+        // Simpan vendor untuk keperluan Top Up routing
+        const vendor = data.vendor || null;
         window.lastDetectedVendor = vendor;
 
-        // === BE ===
-        if (vendor === 'BE') {
-          if (data.tradeCode !== '1000') {
-            showInvalidPopup();
-            return;
-          }
-          const item = data.tradeData?.subOrderList?.[0];
-          if (!item) {
-            showInvalidPopup();
-            return;
-          }
-          const usageList = item.usageInfoList || [];
-          let total = 0;
-          const perCountry = {};
-          usageList.forEach((u) => {
-            total += Number(u.usedAmount || 0);
-            perCountry[u.country] = (perCountry[u.country] || 0) + Number(u.usedAmount || 0);
-          });
+        // Render semua plans
+        let html = '';
 
-          const esimHtml = renderEsimInfo(item, vendor);
-          const totalUsageHtml = Object.entries(perCountry)
-            .map(
-              ([c, v]) => `
-          <div class="total-data-usage__wrapper"><p>${c}</p><p>${formatDataUsage(v, vendor)}</p></div>`
-            )
-            .join('');
-          const detailUsageHtml = usageList
-            .map(
-              (u) => `
-          <div class="data-usage__wrapper"><p>${u.country}</p><p>${formatDate(u.usedDate)}</p><p>${formatDataUsage(
-                u.usedAmount,
-                vendor
-              )}</p></div>`
-            )
-            .join('');
+        // Ambil hanya plan terbaru (index 0)
+        const plansToShow = [plans[0]];
+        plansToShow.forEach((plan) => {
+          // SIM Card Information
+          html += renderEsimInfo(plan, vendor);
 
-          // BE tanpa Top Up
-          resultEl.innerHTML = `
-          ${esimHtml}
+          // Data Usage section
+          const dailyUsage = plan.daily_usage || [];
+          let quota = plan.quota || {};
+
+          // Untuk vendor BC, hitung quota dari akumulasi daily_usage
+          // Untuk vendor BC, hitung quota dari akumulasi daily_usage
+          if (vendor === 'BC') {
+            const totalUsedKb = dailyUsage.reduce((sum, u) => sum + (Number(u.used_kb) || 0), 0);
+            quota = {
+              total_kb: null, // tidak ada total, supaya renderQuota hanya tampilkan Used
+              used_kb: totalUsedKb,
+              remaining_kb: null,
+            };
+          }
+
+          html += `
           <div class="check-data-usage__usage-content">
             <div style="text-align:center;"><h2>Data Usage</h2></div>
             <div class="check-data-usage__total-usage">
-              <div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
-                total,
-                vendor
-              )}</span></div>
-              ${totalUsageHtml}
-            </div>
-            <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
-          </div>`;
-          return;
-        }
+              ${renderQuota(quota, vendor)}
+              ${renderCountryTotals(dailyUsage)}
+            </div>`;
 
-        // === SEM ===
-        if (vendor === 'SEM') {
-          // RULE BARU: kalau success false => popup
-          if (data.success !== true) {
-            showInvalidPopup();
-            return;
+          // Daily breakdown (jika ada)
+          if (dailyUsage.length > 0) {
+            html += `<div class="check-data-usage__data-usage">${renderDailyUsage(dailyUsage)}</div>`;
           }
 
-          const usage = data.data_usage || {};
-          const quotaList = usage.quotaList || [];
-
-          if (!Array.isArray(quotaList) || quotaList.length === 0) {
-            showInvalidPopup();
-            return;
-          }
-
-          const q = quotaList[0] || {};
-
-          const productName = q.productName || data?.product_name || '-';
-
-          // Mapping status
-          const statusMap = {
-            0: 'No Package.',
-            1: 'Your eSIM hasn’t been activated yet.',
-            2: 'Active.',
-            3: 'Your eSIM has no active plan, please top up to continue.',
-            4: 'No Package.',
-          };
-
-          const statusCode = String(q.status ?? '0');
-          const statusText = statusMap[statusCode] || '-';
-
-          let bundle = '-';
-          let startDate = '-';
-          let endDate = '-';
-
-          // Kalau status 2 (Active) tampilkan detail bundle & tanggal
-          if (statusCode === '2') {
-            bundle = productName;
-
-            // di response baru ada startTime / expTime / endTime / effTime
-            // pilih yang paling masuk akal untuk "Active Date" & "End Date"
-            const startRaw = q.startTime || q.effTime || '';
-            const endRaw = q.expTime || q.endTime || '';
-
-            startDate = startRaw ? String(startRaw).slice(0, 8) : '-';
-            endDate = endRaw ? String(endRaw).slice(0, 8) : '-';
-          }
-
-          // Usage
-          const used = formatDataUsage(q.usedQuota || 0, vendor);
-
-          resultEl.innerHTML = `
-    <div>
-      <div class="check-data-usage__esim-information">
-        <h3>SIM Card Information</h3>
-        <div class="esim-information__wrapper"><p>Status</p><span>${statusText}</span></div>
-        <div class="esim-information__wrapper"><p>Your Bundle</p><span>${bundle}</span></div>
-        <div class="esim-information__wrapper"><p>Active Date</p><span>${formatDateLong(startDate)}</span></div>
-        <div class="esim-information__wrapper"><p>End Date</p><span>${formatDateLong(endDate)}</span></div>
-      </div>
-    </div>
-    <div class="check-data-usage__usage-content">
-      <div style="text-align:center;"><h2>Data Usage</h2></div>
-      <div class="check-data-usage__total-usage">
-        <div style="display:flex;justify-content:space-between;">
-          <h3>Used:</h3><span style="font-weight:bold;">${used}</span>
-        </div>
-      </div>
-      ${renderTopUpButton()}
-    </div>
-  `;
-
-          attachTopUpButtonListeners();
-          return;
-        }
-
-        // === AF ===
-        if (vendor === 'AF') {
-          const item = data.data;
-          const usageList = item?.itemList || [];
-          const perCountry = {};
-          let total = 0;
-          usageList.forEach((u) => {
-            total += Number(u.usage || 0);
-            perCountry[u.enus] = (perCountry[u.enus] || 0) + Number(u.usage || 0);
-          });
-          const esimHtml = renderEsimInfo(item, vendor);
-          const totalUsageHtml = Object.entries(perCountry)
-            .map(
-              ([c, v]) => `
-          <div class="total-data-usage__wrapper"><p>${c}</p><p>${formatDataUsage(v, vendor)}</p></div>`
-            )
-            .join('');
-          const detailUsageHtml = usageList
-            .map(
-              (u) => `
-          <div class="data-usage__wrapper"><p>${u.enus}</p><p>${formatDate(u.usageDate)}</p><p>${formatDataUsage(
-                u.usage,
-                vendor
-              )}</p></div>`
-            )
-            .join('');
-          resultEl.innerHTML = `
-          ${esimHtml}
-          <div class="check-data-usage__usage-content">
-            <div style="text-align:center;"><h2>Data Usage</h2></div>
-            <div class="check-data-usage__total-usage"><div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
-              total,
-              vendor
-            )}</span></div>${totalUsageHtml}</div>
-            <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
-            ${renderTopUpButton()}
+          html += `
+            ${iccid.startsWith('8981200') ? '' : renderTopUpButton()}
           </div>`;
-          attachTopUpButtonListeners();
-          return;
-        }
+        });
 
-        // === TE ===
-        if (vendor === 'TE') {
-          if (data.code !== '0000') {
-            showInvalidPopup();
-            return;
-          }
-          const detail = data.data.detail || {};
-          const usage = data.data.usage || {};
-          const total = usage.dataTotal || 0;
-          const used = usage.dataUsage || 0;
-          const remain = usage.dataResidual || 0;
-
-          const esimHtml = `
-          <div class="check-data-usage__esim-information">
-            <h3>SIM Card Information</h3>
-            <div class="esim-information__wrapper"><p>Your Bundle</p><span>${data.data.product_name || '-'}</span></div>
-            <div class="esim-information__wrapper"><p>Device</p><span>${detail.installDevice || '-'}</span></div>
-            <div class="esim-information__wrapper"><p>Status</p><span>${detail.state || '-'}</span></div>
-          </div>`;
-          resultEl.innerHTML = `
-          ${esimHtml}
-          <div class="check-data-usage__usage-content">
-            <div style="text-align:center;"><h2>Data Usage</h2></div>
-            <div class="check-data-usage__total-usage">
-              <div style="display:flex;justify-content:space-between;"><h3>Total:</h3><span>${formatDataUsage(
-                total,
-                vendor
-              )}</span></div>
-              <div style="display:flex;justify-content:space-between;"><h3>Used:</h3><span>${formatDataUsage(
-                used,
-                vendor
-              )}</span></div>
-              <div style="display:flex;justify-content:space-between;"><h3>Remaining:</h3><span>${formatDataUsage(
-                remain,
-                vendor
-              )}</span></div>
-            </div>
-          </div>
-          ${renderTopUpButton()}`;
-          attachTopUpButtonListeners();
-          return;
-        }
-
-        // === BS ===
-        if (vendor === 'BS') {
-          const item = data.tradeData?.subOrderList?.[0];
-          const usageList = item?.usageInfoList || [];
-          const perCountry = {};
-          let total = 0;
-          usageList.forEach((u) => {
-            total += Number(u.usedAmount || 0);
-            perCountry[u.country] = (perCountry[u.country] || 0) + Number(u.usedAmount || 0);
-          });
-          const esimHtml = renderEsimInfo(item, vendor);
-          const totalUsageHtml = Object.entries(perCountry)
-            .map(
-              ([c, v]) => `
-          <div class="total-data-usage__wrapper"><p>${c}</p><p>${formatDataUsage(v, vendor)}</p></div>`
-            )
-            .join('');
-          const detailUsageHtml = usageList
-            .map(
-              (u) => `
-          <div class="data-usage__wrapper"><p>${u.country}</p><p>${formatDate(u.usedDate)}</p><p>${formatDataUsage(
-                u.usedAmount,
-                vendor
-              )}</p></div>`
-            )
-            .join('');
-          resultEl.innerHTML = `
-          ${esimHtml}
-          <div class="check-data-usage__usage-content">
-            <div style="text-align:center;"><h2>Data Usage</h2></div>
-            <div class="check-data-usage__total-usage"><div style="display:flex;justify-content:space-between;"><h3>Total Usage:</h3><span style="font-weight:bold;">${formatDataUsage(
-              total,
-              vendor
-            )}</span></div>${totalUsageHtml}</div>
-            <div class="check-data-usage__data-usage">${detailUsageHtml}</div>
-            ${renderTopUpButton()}
-          </div>`;
-          attachTopUpButtonListeners();
-          return;
-        }
-
-        showInvalidPopup();
+        resultEl.innerHTML = html;
+        attachTopUpButtonListeners();
       } catch (err) {
         console.error(err);
         showInvalidPopup();
@@ -1148,6 +913,9 @@
       }
     }
 
+    /* ==============================
+       EVENT LISTENERS
+    ============================== */
     checkBtn.addEventListener('click', checkICCID);
     document.getElementById('check-iccid-form').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -1156,7 +924,10 @@
     btnHidePopup.addEventListener('click', hideInvalidPopup);
     btnBuyEsim.addEventListener('click', () => (window.location.href = 'https://gkomunika.com/pages/all-destination'));
     btnContactCs.addEventListener('click', () => (window.location.href = 'https://wa.me/628986454071'));
-    // --- modal elements (taruh setelah deklarasi element lain di DOMContentLoaded) ---
+
+    /* ==============================
+       TOP UP CONFIRM MODAL
+    ============================== */
     const topupConfirmPopup = document.getElementById('topup-confirm-popup');
     const topupConfirmCancel = document.getElementById('topup-confirm-cancel');
     const topupConfirmContinue = document.getElementById('topup-confirm-continue');
@@ -1168,22 +939,25 @@
       if (topupConfirmPopup) topupConfirmPopup.style.display = 'none';
     }
 
-    // Simpan aksi lanjutan top up (biar flow lama tetap persis sama)
     function proceedTopUp() {
       const iccidValue = iccidInput.value.trim();
       if (iccidValue) sessionStorage.setItem('iccid', iccidValue);
 
+      // Mapping vendor ke kategori Top Up
+      const vendorCategoryMap = {
+        MM: 'Top_Up_D',
+        BC: 'Top_Up_A',
+        FM: 'Top_Up_A',
+      };
+
       const lastVendor = window.lastDetectedVendor;
-      if (lastVendor === 'SEM') {
-        sessionStorage.setItem('category', 'Top_Up_D');
-      } else if (lastVendor === 'BS') {
-        sessionStorage.setItem('category', 'Top_Up_A');
+      if (lastVendor && vendorCategoryMap[lastVendor]) {
+        sessionStorage.setItem('category', vendorCategoryMap[lastVendor]);
       }
 
       window.location.href = '/pages/top-up';
     }
 
-    // tombol cancel & continue
     if (topupConfirmCancel) topupConfirmCancel.addEventListener('click', hideTopupConfirm);
     if (topupConfirmContinue)
       topupConfirmContinue.addEventListener('click', () => {
@@ -1197,10 +971,9 @@
       });
     }
 
-    // klik tombol top-up sekarang memunculkan modal dulu
+    // Klik tombol top-up memunculkan modal konfirmasi dulu
     document.addEventListener('click', (e) => {
       const clickedTopUp = e.target?.id === 'top-up-plan' || e.target?.closest?.('#top-up-plan');
-
       if (clickedTopUp) {
         showTopupConfirm();
       }

@@ -1,0 +1,119 @@
+{% comment %}
+  Snippet : nav-progress-running-text
+  Usage   : {% render 'nav-progress-running-text' %}
+  Desc    : Renders two features in one snippet:
+            1. Nav progress bar — thin animated bar at the top of the
+               page that triggers on .nav-item-link / .sidebar-link clicks.
+            2. Running text — full-width marquee announcement bar,
+               placed inside <header> just before </header>.
+{% endcomment %}
+
+{% style %}
+  /* ----------------------------------------------------------
+     1. NAV PROGRESS BAR
+  ---------------------------------------------------------- */
+  .nav-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--color-secondary);
+    z-index: 9999;
+    transition: width 0.3s ease;
+    pointer-events: none;
+  }
+  .nav-progress.is-loading {
+    width: 70%;
+    transition: width 1s cubic-bezier(0.1, 0.05, 0, 1);
+  }
+  .nav-progress.is-done {
+    width: 100%;
+    opacity: 0;
+    transition: width 0.2s ease, opacity 0.3s ease 0.2s;
+  }
+
+  /* ----------------------------------------------------------
+     2. RUNNING TEXT / ANNOUNCEMENT BAR
+  ---------------------------------------------------------- */
+  .running-text-wrapper {
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+    overflow: hidden;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .running-text-marquee {
+    display: flex;
+    width: fit-content;
+    animation: marquee 25s linear infinite;
+  }
+
+  .running-text-content {
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-right: 50px;
+  }
+
+  @media (min-width: 768px) {
+    .running-text-content {
+      font-size: 14px;
+    }
+    .running-text-marquee {
+      animation-duration: 35s;
+    }
+  }
+
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+{% endstyle %}
+
+<!-- RUNNING TEXT -->
+<div class="running-text-wrapper">
+  <div class="running-text-marquee">
+    <span class="running-text-content">
+      INFO PELANGGAN: Sehubungan dengan libur Hari Raya Idul Fitri,
+      <strong>* Pembelian eSIM tetap diproses normal 24/7. Pengiriman produk SIM Card akan dikirim mulai 25 Maret. *</strong>
+      Terima kasih atas pengertiannya.
+    </span>
+    <span class="running-text-content" aria-hidden="true">
+      INFO PELANGGAN: Sehubungan dengan libur Hari Raya Idul Fitri,
+      <strong>* Pembelian eSIM tetap diproses normal 24/7. Pengiriman produk SIM Card akan dikirim mulai 25 Maret. *</strong>
+      Terima kasih atas pengertiannya.
+    </span>
+  </div>
+</div>
+
+<!-- NAV PROGRESS BAR -->
+<script>
+  (function initNavProgress() {
+    if (document.querySelector('.nav-progress')) return;
+
+    const bar = document.createElement('div');
+    bar.className = 'nav-progress';
+    document.body.prepend(bar);
+
+    document.querySelectorAll('.nav-item-link, .sidebar-link').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        bar.classList.remove('is-done');
+        bar.classList.add('is-loading');
+      });
+    });
+
+    window.addEventListener('pageshow', function () {
+      bar.classList.add('is-done');
+      setTimeout(function () {
+        bar.classList.remove('is-loading', 'is-done');
+      }, 600);
+    });
+  })();
+</script>

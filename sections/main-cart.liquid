@@ -1,211 +1,7 @@
-{% comment %}
-  <form action="{{ routes.cart_url }}" method="post" id="CartForm" class="wrapper md:wrapper-base">
-    <div class="divide-y divide-slate-200">
-      {% for item in cart.items %}
-        {% assign p = item.product %}
-
-        {%- assign mf_category = p.metafields.product.category -%}
-        {%- assign category_value = '' -%}
-        {%- if mf_category != blank -%}
-          {%- if mf_category.value != blank -%}
-            {%- assign category_value = mf_category.value -%}
-          {%- else -%}
-            {%- assign category_value = mf_category -%}
-          {%- endif -%}
-        {%- endif -%}
-
-        {% assign days_value = item.properties.Days | default: '' %}
-        {% assign data_plan_value = item.properties['Data Plan'] | default: '' %}
-
-        <div class="flex items-start justify-between gap-6 py-8">
-          <!-- LEFT: image + info -->
-          <div class="flex items-start gap-5">
-            <div class="shrink-0">
-              {% if item.image %}
-                <img
-                  src="{{ item.image | image_url: width: 180 }}"
-                  alt="{{ item.product.title | escape }}"
-                  loading="lazy"
-                  class="h-20 w-20 rounded-2xl object-cover"
-                >
-              {% else %}
-                <div class="h-20 w-20 rounded-2xl bg-slate-100"></div>
-              {% endif %}
-            </div>
-
-            <div class="min-w-0">
-              <a href="{{ item.url }}" class="block text-lg font-semibold text-slate-900 hover:underline">
-                {{ item.product.title }}
-              </a>
-
-              <div class="text-lg text-slate-900">
-                {{ item.final_price | money }}
-              </div>
-
-              {% if item.product.has_only_default_variant == false %}
-                {% if item.variant.option1 != blank %}
-                  <div class="mt-2 text-base text-slate-900">
-                    <span class="text-slate-600">{{ item.product.options[0] }}:</span> {{ item.variant.option1 }}
-                  </div>
-                {% endif %}
-
-                {% if item.variant.option2 != blank %}
-                  <div class="mt-2 text-base text-slate-900">
-                    <span class="text-slate-600">{{ item.product.options[1] }}:</span> {{ item.variant.option2 }}
-                  </div>
-                {% endif %}
-
-                {% if item.variant.option3 != blank %}
-                  <div class="mt-2 text-base text-slate-900">
-                    <span class="text-slate-600">{{ item.product.options[2] }}:</span> {{ item.variant.option3 }}
-                  </div>
-                {% endif %}
-              {% endif %}
-
-              {% if category_value != blank %}
-                <div class="mt-2 text-base text-slate-900">
-                  <span class="text-slate-600">Category:</span> {{ category_value }}
-                </div>
-              {% endif %}
-            </div>
-          </div>
-
-          <!-- RIGHT: qty + remove + line total -->
-          <div class="flex items-center gap-4">
-            <!-- Qty Stepper -->
-            <div class="flex items-center overflow-hidden rounded-full border border-sky-300 h-11">
-              <button
-                type="button"
-                class="h-11 w-12 text-xl text-sky-700 hover:bg-sky-50"
-                data-qty="minus"
-                data-line="{{ forloop.index }}"
-                aria-label="Decrease quantity"
-              >
-                −
-              </button>
-
-              <input
-                class="h-11 w-12 border-0 text-center text-base text-slate-900 focus:outline-none"
-                type="number"
-                name="updates[]"
-                value="{{ item.quantity }}"
-                min="0"
-                inputmode="numeric"
-                data-qty-input
-                data-line="{{ forloop.index }}"
-              >
-
-              <button
-                type="button"
-                class="h-11 w-12 text-xl text-sky-700 hover:bg-sky-50"
-                data-qty="plus"
-                data-line="{{ forloop.index }}"
-                aria-label="Increase quantity"
-              >
-                +
-              </button>
-            </div>
-
-            <!-- Remove (trash) -->
-            <button
-              type="button"
-              class="inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-slate-100"
-              data-remove
-              data-line="{{ forloop.index }}"
-              aria-label="Remove item"
-              title="Remove"
-            >
-              <!-- simple trash icon -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-slate-700"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M3 6h18"/>
-                <path d="M8 6V4h8v2"/>
-                <path d="M6 6l1 16h10l1-16"/>
-                <path d="M10 11v6"/>
-                <path d="M14 11v6"/>
-              </svg>
-            </button>
-
-            <!-- Line total -->
-            <div class="min-w-[140px] text-right text-lg font-medium text-slate-900">
-              {{ item.final_line_price | money }}
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-
-    <!-- Cart footer (optional) -->
-    <div class="flex items-center justify-end gap-4 pt-6">
-      <div class="text-base text-slate-700">Estimated total</div>
-      <div class="text-xl font-semibold text-slate-900">{{ cart.total_price | money }}</div>
-    </div>
-
-    <div class="mt-3 text-right text-sm text-slate-500">Taxes, discounts and shipping calculated at checkout.</div>
-  </form>
-
-  <script>
-    // Qty & remove via Shopify AJAX Cart (tanpa reload besar)
-    async function cartChange(line, quantity) {
-      const res = await fetch('/cart/change.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ line, quantity }),
-      });
-
-      if (!res.ok) {
-        console.error('Cart change failed');
-        return;
-      }
-
-      // Quick refresh: reload halaman cart
-      // (Kalau mau partial update tanpa reload, perlu render ulang HTML bagian cart)
-      window.location.reload();
-    }
-
-    document.addEventListener('click', (e) => {
-      const btnQty = e.target.closest('button[data-qty]');
-      const btnRemove = e.target.closest('button[data-remove]');
-
-      if (btnQty) {
-        const line = parseInt(btnQty.getAttribute('data-line'), 10);
-        const type = btnQty.getAttribute('data-qty');
-        const input = document.querySelector('input[data-qty-input][data-line="' + line + '"]');
-        let val = parseInt(input.value || '0', 10);
-
-        if (type === 'plus') val += 1;
-        if (type === 'minus') val = Math.max(0, val - 1);
-
-        cartChange(line, val);
-      }
-
-      if (btnRemove) {
-        const line = parseInt(btnRemove.getAttribute('data-line'), 10);
-        cartChange(line, 0);
-      }
-    });
-  </script>
-{% endcomment %}
-
-{% comment %}
-  CART (Tailwind)
-  - Category dari metafield: product.category (namespace: product, key: category)
-  - Days & Data Plan contoh ambil dari line item properties:
-      item.properties['Days'], item.properties['Data Plan']
-{% endcomment %}
-
-{% comment %}
-  CART (Tailwind)
-  - Category dari metafield: product.category (namespace: product, key: category)
-  - Days & Data Plan contoh ambil dari line item properties:
-      item.properties['Days'], item.properties['Data Plan']
-{% endcomment %}
+{% assign is_au = false %}
+{% if request.path contains '/en-au' %}
+  {% assign is_au = true %}
+{% endif %}
 
 {% style %}
   /* Chrome, Safari, Edge, Opera */
@@ -310,7 +106,7 @@
                   {% endif %}
 
                   <div class="text-sm text-primary">
-                    {{ item.final_price | money_with_currency }}
+                    {{ item.final_price | money_with_currency }}{% if is_au %} AUD{% endif %}
                   </div>
 
                   <!-- VARIANT OPTIONS -->
@@ -431,7 +227,7 @@
                     aria-live="polite"
                   >
                     <span data-price-text class="text-primary">
-                      {{ item.final_line_price | money_with_currency }}
+                      {{ item.final_line_price | money_with_currency }}{% if is_au %} AUD{% endif %}
                     </span>
 
                     <span
@@ -457,7 +253,7 @@
           <div class="text-sm text-primary">Estimated total</div>
 
           <div class="text-base font-semibold text-primary relative text-right" data-cart-total aria-live="polite">
-            <span data-price-text>{{ cart.total_price | money_with_currency }}</span>
+            <span data-price-text>{{ cart.total_price | money_with_currency }}{% if is_au %} AUD{% endif %}</span>
 
             <span
               class="absolute inset-0 hidden items-center justify-center pointer-events-none"

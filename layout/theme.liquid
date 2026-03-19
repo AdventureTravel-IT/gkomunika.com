@@ -116,14 +116,35 @@
 
     {% render 'language-popup' %}
 
+    {% comment %}
+      {% if template.name != 'login' and template.name != 'register' %}
+        {% style %}
+          body {
+            margin-top: 80px;
+          }
+          @media screen and (max-width: 768px) {
+            body {
+              margin-top: 55px;
+            }
+          }
+        {% endstyle %}
+      {% else %}
+        {% style %}
+          body {
+            padding-top: 0;
+          }
+        {% endstyle %}
+      {% endif %}
+    {% endcomment %}
+
     {% if template.name != 'login' and template.name != 'register' %}
       {% style %}
         body {
-          margin-top: 80px;
+          margin-top: 114px; /* sebelumnya 80px + tinggi running text ~34px */
         }
         @media screen and (max-width: 768px) {
           body {
-            margin-top: 55px;
+            margin-top: 89px; /* sebelumnya 55px + ~34px */
           }
         }
       {% endstyle %}

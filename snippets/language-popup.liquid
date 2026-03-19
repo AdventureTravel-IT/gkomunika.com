@@ -59,24 +59,27 @@
       </div>
 
       <!-- Language -->
-      <div class="space-y-1">
-        <label for="language-select" class="text-primary font-semibold text-sm">Language</label>
-        <select
-          id="language-select"
-          class="w-full rounded-xl text-base text-primary border border-primary outline-none px-4 py-3"
-        >
-          {% for language in localization.available_languages %}
-            <option
-              value="{{ language.iso_code }}"
-              {% if language.iso_code == localization.language.iso_code %}
-                selected
-              {% endif %}
-            >
+      <select
+        id="language-select"
+        class="w-full rounded-xl text-base text-primary border border-primary outline-none px-4 py-3"
+      >
+        {% comment %} Tampilkan English (en) duluan {% endcomment %}
+        {% assign default_lang = localization.available_languages | where: 'iso_code', 'en' | first %}
+        {% if default_lang %}
+          <option value="{{ default_lang.iso_code }}" selected>
+            {{ default_lang.endonym_name }}
+          </option>
+        {% endif %}
+
+        {% comment %} Tampilkan bahasa lainnya {% endcomment %}
+        {% for language in localization.available_languages %}
+          {% if language.iso_code != 'en' %}
+            <option value="{{ language.iso_code }}">
               {{ language.endonym_name }}
             </option>
-          {% endfor %}
-        </select>
-      </div>
+          {% endif %}
+        {% endfor %}
+      </select>
 
       <!-- Currency -->
       <div class="space-y-1">

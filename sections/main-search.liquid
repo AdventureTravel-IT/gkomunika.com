@@ -541,6 +541,200 @@
     return result;
   }
 
+  // ==========================================================
+  // ✅ NEW: EUROPE KEYWORD PRIORITY LOGIC
+  // Ketika user search "europe"/"eropa"/alias, maka:
+  //   1. Collection "multi-country" naik ke atas "single-country"
+  //   2. Produk Europe di multi-country di-sort sesuai urutan tertentu
+  // ==========================================================
+
+  // Daftar keyword alias yang trigger logic Europe
+  const EUROPE_ALIASES = [
+    'europe', 'eropa', 'european', 'eu',
+    'europa', 'eropah',   // alias tambahan
+  ];
+
+  // Urutan produk Europe yang diinginkan (by partial title match, case-insensitive)
+  // Index lebih kecil = prioritas lebih tinggi
+  const EUROPE_PRODUCT_ORDER = [
+    'gsim! europe',          // 1. gSim! Europe
+    'europe caucasus',       // 2. Europe Caucasus
+    'europe three',          // 3. Europe Three
+    'eastern europe balkan', // 4. Eastern Europe Balkan
+  ];
+
+  /**
+   * Cek apakah keyword search mengandung alias Europe
+   */
+  function isEuropeKeyword(q = '') {
+    const lower = String(q).toLowerCase().trim();
+    if (!lower) return false;
+    return EUROPE_ALIASES.some(alias => {
+      // Match whole word atau sebagai bagian dari kata
+      // "eropa" harus match, "european" juga match
+      const re = new RegExp(`(^|\\s|\\b)${alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i');
+      return re.test(lower);
+    });
+  }
+
+  /**
+   * Cek apakah sebuah product title termasuk produk Europe
+   */
+  function isEuropeProduct(title = '') {
+    const t = String(title).toLowerCase().trim();
+    return EUROPE_PRODUCT_ORDER.some(pattern => t.includes(pattern)) ||
+           t.includes('europe') || t.includes('eropa');
+  }
+
+  /**
+   * Hitung skor urutan produk Europe berdasarkan EUROPE_PRODUCT_ORDER
+   * Skor lebih kecil = lebih tinggi prioritas
+   * Jika tidak ada di list, return angka besar (taruh di belakang)
+   */
+  function getEuropeProductScore(title = '') {
+    const t = String(title).toLowerCase().trim();
+    for (let i = 0; i < EUROPE_PRODUCT_ORDER.length; i++) {
+      if (t.includes(EUROPE_PRODUCT_ORDER[i])) return i;
+    }
+    // Produk Europe lain yang tidak ada di list → taruh setelah yang ada di list
+    if (t.includes('europe') || t.includes('eropa')) return EUROPE_PRODUCT_ORDER.length;
+    // Bukan produk Europe sama sekali → taruh paling belakang
+    return EUROPE_PRODUCT_ORDER.length + 1000;
+  }
+
+  /**
+   * Reorder collection wrappers di DOM:
+   * - Jika keyword Europe aktif DAN multi-country punya produk Europe visible,
+   *   pindahkan multi-country ke atas single-country
+   * - Jika keyword bukan Europe, kembalikan ke urutan default
+   */
+  function reorderCollectionsForEurope(rootEl, q = '') {
+    const isEurope = isEuropeKeyword(q);
+    const wrappers = Array.from(rootEl.querySelectorAll('.collection-wrapper'));
+    if (wrappers.length < 2) return;
+
+    // Deteksi wrapper berdasarkan data-collection dari card pertama di dalamnya
+    const multiWrapper = wrappers.find(w => {
+      const firstCard = w.querySelector('.product-card-container');
+      return firstCard && firstCard.getAttribute('data-collection') === 'multi-country';
+    });
+    const singleWrapper = wrappers.find(w => {
+      const firstCard = w.querySelector('.product-card-container');
+      return firstCard && firstCard.getAttribute('data-collection') === 'single-country';
+    });
+
+    if (!multiWrapper || !singleWrapper) return;
+
+    const parent = multiWrapper.parentElement;
+    if (!parent) return;
+
+    if (isEurope) {
+      // Cek apakah multi-country punya produk Europe yang visible
+      const multiCards = Array.from(multiWrapper.querySelectorAll('.product-card-container'));
+      const hasVisibleEurope = multiCards.some(card => {
+        const title = (card.getAttribute('data-title') || '').toLowerCase();
+        return card.style.display !== 'none' && isEuropeProduct(title);
+      });
+
+      if (hasVisibleEurope) {
+        // Cek apakah multi-country SUDAH di atas single-country
+        // Pakai DOM order: jika singleWrapper muncul SEBELUM multiWrapper,
+        // berarti multi belum di atas → perlu pindah
+        const allChildren = Array.from(parent.children);
+        const multiIdx = allChildren.indexOf(multiWrapper);
+        const singleIdx = allChildren.indexOf(singleWrapper);
+
+        if (multiIdx > singleIdx) {
+          // multi-country ada di bawah single-country → pindahkan ke atas
+          parent.insertBefore(multiWrapper, singleWrapper);
+        }
+        // Jika multiIdx < singleIdx → sudah benar, tidak perlu apa-apa
+      }
+    } else {
+      // Kembalikan ke urutan default berdasarkan data-base-idx
+      const sorted = [...wrappers].sort((a, b) => {
+        const idxA = parseInt(a.getAttribute('data-base-idx') || '0', 10);
+        const idxB = parseInt(b.getAttribute('data-base-idx') || '0', 10);
+        return idxA - idxB;
+      });
+
+      // Re-append semua wrapper dalam urutan default
+      // Cari anchor: elemen pertama sebelum wrapper pertama (misal #noResults)
+      // Supaya wrapper tetap di bawah filter bar & noResults
+      const firstWrapper = wrappers.reduce((earliest, w) => {
+        if (!earliest) return w;
+        const allChildren = Array.from(parent.children);
+        return allChildren.indexOf(w) < allChildren.indexOf(earliest) ? w : earliest;
+      }, null);
+
+      if (firstWrapper) {
+        // Insert semua wrapper berurutan mulai dari posisi wrapper pertama
+        let anchor = firstWrapper;
+        sorted.forEach((w, i) => {
+          if (i === 0) {
+            parent.insertBefore(w, anchor);
+            anchor = w;
+          } else {
+            // Insert setelah anchor (wrapper sebelumnya)
+            if (anchor.nextSibling) {
+              parent.insertBefore(w, anchor.nextSibling);
+            } else {
+              parent.appendChild(w);
+            }
+            anchor = w;
+          }
+        });
+      }
+    }
+  }
+
+  /**
+   * Sort produk Europe di dalam collection multi-country berdasarkan urutan EUROPE_PRODUCT_ORDER
+   * Produk Europe di-sort ke atas, produk non-Europe tetap di posisi relatif mereka di bawah
+   */
+  function sortEuropeProductsInCollection(rootEl, q = '') {
+    if (!isEuropeKeyword(q)) return;
+
+    const wrappers = Array.from(rootEl.querySelectorAll('.collection-wrapper'));
+
+    wrappers.forEach(wrapper => {
+      // Hanya sort di multi-country
+      const firstCard = wrapper.querySelector('.product-card-container');
+      if (!firstCard) return;
+      const collection = firstCard.getAttribute('data-collection') || '';
+      if (collection !== 'multi-country') return;
+
+      const grid = wrapper.querySelector('.grid');
+      if (!grid) return;
+
+      const cards = Array.from(grid.querySelectorAll('.product-card-container'));
+      if (!cards.length) return;
+
+      // Simpan index asli
+      cards.forEach((c, idx) => (c.__europeOrigIdx = idx));
+
+      cards.sort((a, b) => {
+        const titleA = (a.getAttribute('data-title') || '').toLowerCase();
+        const titleB = (b.getAttribute('data-title') || '').toLowerCase();
+
+        const scoreA = getEuropeProductScore(titleA);
+        const scoreB = getEuropeProductScore(titleB);
+
+        // Europe products naik ke atas, urutan sesuai EUROPE_PRODUCT_ORDER
+        if (scoreA !== scoreB) return scoreA - scoreB;
+        // Jika skor sama, pertahankan urutan asli
+        return (a.__europeOrigIdx ?? 0) - (b.__europeOrigIdx ?? 0);
+      });
+
+      // Re-append ke DOM sesuai urutan baru
+      cards.forEach(c => grid.appendChild(c));
+    });
+  }
+
+  // ==========================================================
+  // END EUROPE KEYWORD PRIORITY LOGIC
+  // ==========================================================
+
   async function fetchAllCollections(mode = 'main') {
     const COLLECTIONS = getCollectionsForMode(mode);
 
@@ -1285,6 +1479,19 @@
     btn.innerHTML = isLoading ? getLoadingIconHtml() : getSearchIconHtml();
   }
 
+  // ✅ NEW: Helper yang menjalankan semua logic Europe setelah search/filter berubah
+  function applyEuropePriority(rootEl, q = '') {
+    const keyword = String(q || '').trim();
+    // Jalankan Europe sort + reorder hanya jika keyword >= 2 karakter
+    if (keyword.length >= 2) {
+      sortEuropeProductsInCollection(rootEl, keyword);
+      reorderCollectionsForEurope(rootEl, keyword);
+    } else {
+      // Kembalikan ke urutan default
+      reorderCollectionsForEurope(rootEl, '');
+    }
+  }
+
   function wireFilterAndSearch(rootEl, mode = 'main') {
     // ✅ TOPUP: tanpa tabs, tampil semua produk top-up-plan + optional search filter
     if (mode === 'topup') {
@@ -1337,14 +1544,14 @@
         searchInput.addEventListener('input', (e) => {
           const val = e.target.value || '';
           clearTimeout(debounce);
-          setSearchButtonLoading(rootEl, true); // ← tambah ini
+          setSearchButtonLoading(rootEl, true);
           debounce = setTimeout(() => {
             state.q = val;
             apply();
             updateIncludedBadges(rootEl, val);
             setUrlQueryKeyword(val);
             sortSingleCountryByTitle(rootEl, val);
-            setSearchButtonLoading(rootEl, false); // ← tambah ini
+            setSearchButtonLoading(rootEl, false);
           }, 80);
         });
 
@@ -1442,7 +1649,6 @@
       updateTabsVisibility();
       tabScrollUI.update();
 
-      // const filter = state.filter;
       const q = (state.q || '').trim().toLowerCase();
       const keywordActive = q.length >= 2;
 
@@ -1505,21 +1711,16 @@
           (btn.getAttribute('data-filter') || '').trim() || (mode === 'category' ? DEFAULT_CATEGORY : 'all');
 
         if (clicked === 'all') {
-          // ✅ Klik "All" → reset semua, hanya aktifkan "All"
           state.filters = new Set(['all']);
         } else {
-          // ✅ Hapus "all" dari set dulu
           state.filters.delete('all');
 
           if (state.filters.has(clicked)) {
-            // ✅ Sudah aktif → toggle off
             state.filters.delete(clicked);
           } else {
-            // ✅ Belum aktif → tambahkan
             state.filters.add(clicked);
           }
 
-          // ✅ Kalau tidak ada yang dipilih, fallback ke "All"
           if (state.filters.size === 0) {
             state.filters = new Set(['all']);
           }
@@ -1529,8 +1730,10 @@
         apply();
         sortSingleCountryByTitle(rootEl, state.q);
 
+        // ✅ NEW: Apply Europe priority after tab change
+        applyEuropePriority(rootEl, state.q);
+
         if (mode === 'category') {
-          // ambil filter pertama untuk URL (atau gabungkan)
           const firstFilter = Array.from(state.filters)[0] || DEFAULT_CATEGORY;
           setUrlCategory(firstFilter);
         }
@@ -1559,6 +1762,9 @@
             setUrlQueryKeyword(val);
             setSearchButtonLoading(rootEl, false);
             updateSearchPageTitle(rootEl, val);
+
+            // ✅ NEW: Apply Europe priority after search
+            applyEuropePriority(rootEl, val);
           }, 80);
         });
 
@@ -1568,11 +1774,12 @@
           state.q = qFromUrl;
           apply();
 
-          // ✅ NEW: sort on history navigation
           sortSingleCountryByTitle(rootEl, qFromUrl);
-
           updateIncludedBadges(rootEl, qFromUrl);
           updateSearchPageTitle(rootEl, qFromUrl);
+
+          // ✅ NEW: Apply Europe priority on popstate
+          applyEuropePriority(rootEl, qFromUrl);
         });
       } else {
         searchInput.addEventListener('input', (e) => {
@@ -1585,6 +1792,9 @@
             sortSingleCountryByTitle(rootEl, val);
             updateIncludedBadges(rootEl, val);
             setSearchButtonLoading(rootEl, false);
+
+            // ✅ NEW: Apply Europe priority after search (category mode)
+            applyEuropePriority(rootEl, val);
           }, 80);
         });
 
@@ -1595,6 +1805,9 @@
           apply();
 
           sortSingleCountryByTitle(rootEl, state.q);
+
+          // ✅ NEW: Apply Europe priority on popstate (category mode)
+          applyEuropePriority(rootEl, state.q);
         });
       }
     }
@@ -1614,9 +1827,11 @@
     const initialQ = searchInput ? searchInput.value : '';
     updateIncludedBadges(rootEl, initialQ);
 
-    // ✅ NEW: sort on initial render
     sortSingleCountryByTitle(rootEl, initialQ);
     updateSearchPageTitle(rootEl, initialQ);
+
+    // ✅ NEW: Apply Europe priority on initial render
+    applyEuropePriority(rootEl, initialQ);
   }
 
   function wireTabScrollArrows(rootEl) {
@@ -1684,7 +1899,6 @@
 
   function resetCtaLoadingState() {
     document.querySelectorAll('a.js-cta-loading[data-loading="1"]').forEach((a) => {
-      // ✅ Cancel safety timer kalau ada
       if (a.dataset.safetyTimer) {
         clearTimeout(Number(a.dataset.safetyTimer));
         delete a.dataset.safetyTimer;
@@ -1701,12 +1915,10 @@
   if (!window.__ctaResetBound) {
     window.__ctaResetBound = true;
 
-    // ✅ kepanggil saat normal load & saat balik via Back (bfcache)
     window.addEventListener('pageshow', () => {
       resetCtaLoadingState();
     });
 
-    // optional tambahan: kalau tab balik visible juga reset
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') resetCtaLoadingState();
     });
@@ -1796,26 +2008,21 @@
       return 'background:#007BB0; color:var(--color-neutral);';
     }
 
-    // fallback
     return 'background:var(--color-primary); color:var(--color-neutral);';
   }
 
   // =========================
   // ✅ HELPER: Tambahkan locale prefix ke URL produk
-  // Menangani URL absolut, relatif, dan yang sudah ada prefix
   // =========================
   function applyLocalePrefix(url = '') {
-    if (!LOCALE_PREFIX) return url; // tidak ada prefix → return apa adanya
+    if (!LOCALE_PREFIX) return url;
 
     if (!url || url === '#') return url;
 
-    // Jika sudah dimulai dengan prefix ini, jangan dobel
     if (url.startsWith(LOCALE_PREFIX + '/') || url === LOCALE_PREFIX) return url;
 
-    // Jika URL absolut (https://...), jangan diubah
     if (/^https?:\/\//i.test(url)) return url;
 
-    // Pastikan dimulai dengan /
     const path = url.startsWith('/') ? url : '/' + url;
     return LOCALE_PREFIX + path;
   }
@@ -1861,7 +2068,6 @@
             const itemTitleRaw = item.title ?? item.name ?? item.handle ?? 'Untitled Item';
             const itemTitle = mode === 'topup' ? stripTopUpPrefix(itemTitleRaw) : itemTitleRaw;
 
-            // ✅ FIXED: Tambahkan locale prefix ke URL produk
             const rawHref = item.url ?? item.href ?? (item.handle ? `/products/${item.handle}` : '#');
             const href = applyLocalePrefix(rawHref);
 
@@ -1974,7 +2180,7 @@
 
     try {
       const mode = (root.getAttribute('data-search-type') || 'main').trim().toLowerCase();
-      const results = await fetchAllCollections(mode); // ✅ mode-aware fetch
+      const results = await fetchAllCollections(mode);
       renderCollections(results);
     } catch (e) {
       console.error(e);

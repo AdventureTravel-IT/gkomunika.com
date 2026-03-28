@@ -2103,10 +2103,10 @@ async function updateTotalPriceDisplayIfInsurance() {
 
   // ✅ mapping vendor -> category Top Up (HANYA 1x, jangan double)
   const categoryVendorMap = [
-    { vendor: 'BC', category: 'Top_Up_A' },
-    { vendor: 'FM', category: 'Top_Up_B' },
-    { vendor: 'TGT', category: 'Top_Up_C' },
-    { vendor: 'MM', category: 'Top_Up_D' },
+    { vendor: 'A', category: 'Top_Up_A' },
+    { vendor: 'B', category: 'Top_Up_B' },
+    { vendor: 'C', category: 'Top_Up_C' },
+    { vendor: 'D', category: 'Top_Up_D' },
   ];
 
   const TOPUP_CATEGORIES = new Set(['Top_Up_A', 'Top_Up_B', 'Top_Up_C', 'Top_Up_D']);
@@ -2214,9 +2214,10 @@ async function updateTotalPriceDisplayIfInsurance() {
       if (!json?.success) return null;
 
       const vendor = json?.vendor || null;
+      const source = json?.source || null;
       const mappedCategory = mapVendorToTopUpCategory(vendor);
+      return { json, vendor, mappedCategory, source };
 
-      return { json, vendor, mappedCategory };
     } catch (err) {
       console.error('checkUsageByICCID failed:', err);
       return null;
@@ -2271,7 +2272,7 @@ async function updateTotalPriceDisplayIfInsurance() {
     const result = await checkUsageByICCID(storedIccid);
 
     // vendor tidak ada map -> invalid
-    if (!result?.mappedCategory) {
+    if (!result?.mappedCategory || result?.source === 'fallback') {
       openInvalidPopup();
       return;
     }
@@ -2324,10 +2325,9 @@ async function updateTotalPriceDisplayIfInsurance() {
 
         const result = await checkUsageByICCID(iccid);
 
-        if (!result?.mappedCategory) {
-          // ❌ invalid -> tidak redirect
-          closeIccidModal();        // releaseLock default true -> unlock buy now
-          openInvalidPopup();       // openInvalidPopup juga release (aman)
+        if (!result?.mappedCategory || result?.source === 'fallback') {
+          closeIccidModal();
+          openInvalidPopup();
           return;
         }
 

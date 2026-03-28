@@ -681,26 +681,16 @@
       const code = typeof planStatus === 'object' && planStatus !== null ? planStatus.status_code : planStatus;
 
       const maps = {
-        MM: {
+        D: {
           0: 'Subscription In Progress',
           1: 'Not Activated Yet',
           2: 'Active',
           3: 'Expired',
           4: 'Being Unsubscribed',
-        },
-        BC: {
-          0: 'Not Activated Yet',
-          1: 'Active',
-          2: 'Data Depleted',
-          3: 'Terminated',
-        },
-        FM: {
-          0: 'Not Activated Yet',
-          1: 'Active',
-          2: 'Data Depleted',
-          5: 'Terminated',
-          6: 'Expired',
-        },
+        }, // MM
+        A: { 0: 'Not Activated Yet', 1: 'Active', 2: 'Data Depleted', 3: 'Terminated' }, // BC
+        B: { 0: 'Not Activated Yet', 1: 'Active', 2: 'Data Depleted', 5: 'Terminated', 6: 'Expired' }, // FM
+        C: { 0: 'Not Activated Yet', 1: 'Active', 2: 'Data Depleted', 5: 'Terminated', 6: 'Expired' }, // TGT (samakan FM dulu, sesuaikan kalau ada status berbeda)
       };
 
       const vendorMap = maps[vendor] || {};
@@ -859,6 +849,7 @@
         // Simpan vendor untuk keperluan Top Up routing
         const vendor = data.vendor || null;
         window.lastDetectedVendor = vendor;
+        const source = data.source || null;
 
         // Render semua plans
         let html = '';
@@ -874,8 +865,7 @@
           let quota = plan.quota || {};
 
           // Untuk vendor BC, hitung quota dari akumulasi daily_usage
-          // Untuk vendor BC, hitung quota dari akumulasi daily_usage
-          if (vendor === 'BC') {
+          if (vendor === 'A') {
             const totalUsedKb = dailyUsage.reduce((sum, u) => sum + (Number(u.used_kb) || 0), 0);
             quota = {
               total_kb: null, // tidak ada total, supaya renderQuota hanya tampilkan Used
@@ -898,7 +888,7 @@
           }
 
           html += `
-            ${iccid.startsWith('8981200') ? '' : renderTopUpButton()}
+            ${source !== 'fallback' ? renderTopUpButton() : ''}
           </div>`;
         });
 
@@ -945,9 +935,10 @@
 
       // Mapping vendor ke kategori Top Up
       const vendorCategoryMap = {
-        MM: 'Top_Up_D',
-        BC: 'Top_Up_A',
-        FM: 'Top_Up_A',
+        A: 'Top_Up_A',
+        B: 'Top_Up_B',
+        C: 'Top_Up_C',
+        D: 'Top_Up_D',
       };
 
       const lastVendor = window.lastDetectedVendor;

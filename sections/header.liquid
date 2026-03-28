@@ -63,6 +63,8 @@
   .site-header {
     position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     width: 100%;
     z-index: 200;
     background-color: var(--color-neutral);
@@ -604,11 +606,10 @@
         {% if section.settings.logo != blank %}
           <a href="{{ routes.root_url }}" class="header-logo-link">
             <img
-              src="{{ section.settings.logo | image_url: width: 120 }}"
+              src="{{ section.settings.logo | image_url: width: 120, quality: 70 }}"
               srcset="
-                {{ section.settings.logo | image_url: width: 120 }} 1x,
-                {{ section.settings.logo | image_url: width: 240 }} 2x,
-                {{ section.settings.logo | image_url: width: 360 }} 3x
+                {{ section.settings.logo | image_url: width: 120, quality: 70 }} 1x,
+                {{ section.settings.logo | image_url: width: 240, quality: 70 }} 2x
               "
               class="header-content-logo"
               alt="{{ alt_global }}"

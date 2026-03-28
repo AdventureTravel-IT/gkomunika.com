@@ -104,20 +104,32 @@
     <div class="w-full md:w-1/2 h-auto">
       <img
         id="mainImage"
-        src="{{ product.featured_image | image_url }}"
+        src="{{ product.featured_image | image_url: width: 600 }}"
+        srcset="
+          {{ product.featured_image | image_url: width: 400 }} 400w,
+          {{ product.featured_image | image_url: width: 800 }} 800w
+        "
+        sizes="(max-width: 768px) 100vw, 50vw"
         class="bg-slate-300 md:rounded-[15px] w-full h-auto"
         width="300px"
         height="220px"
+        fetchpriority="high"
         alt="Global Komunika"
       >
 
       <div class="px-4 md:px-0 flex gap-4 overflow-x-auto overflow-y-hidden mt-4 pb-4">
         {% for media_item in product.media %}
           <img
-            src="{{ media_item.preview_image.src | image_url }}"
+            src="{{ media_item.preview_image.src | image_url: width: 150 }}"
+            srcset="
+              {{ media_item.preview_image.src | image_url: width: 150 }} 150w,
+              {{ media_item.preview_image.src | image_url: width: 300 }} 300w
+            "
+            sizes="90px"
+            loading="lazy"
+            width="150"
+            height="90"
             class="rounded-[10px] h-[90px] cursor-pointer w-auto"
-            width="auto"
-            height="auto"
             alt="{{ media_item.alt | default: 'Product Image' }}"
             title="{{ media_item.alt | default: 'Product Image' }}"
             onclick="updateMainImage('{{ media_item.preview_image.src | image_url }}')"
@@ -2748,7 +2760,7 @@ async function updateTotalPriceDisplayIfInsurance() {
           updateInsuranceAddonDisplay(selectedVariant);
         }
       }
-    }, 500);
+    }, 2000);
   }
 
   /* =========================================================
@@ -2827,40 +2839,60 @@ async function updateTotalPriceDisplayIfInsurance() {
     updateTotalPriceDisplayIfInsurance();
 
     // ✅ 2. Exchange rate & variants fetch jalan di background
-    getExchangeRate().then(() => {
-    if (selectedVariant) {
-      updatePriceDisplay(selectedVariant.priceRaw);
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        getExchangeRate().then(() => {
+          updatePriceDisplay(selectedVariant ? selectedVariant.priceRaw : null);
+        }).catch(() => {
+          updatePriceDisplay(selectedVariant ? selectedVariant.priceRaw : null);
+        });
+      }, { timeout: 3000 });
     } else {
-      updatePriceDisplay();
+      setTimeout(() => {
+        getExchangeRate().then(() => {
+          updatePriceDisplay(selectedVariant ? selectedVariant.priceRaw : null);
+        }).catch(() => {
+          updatePriceDisplay(selectedVariant ? selectedVariant.priceRaw : null);
+        });
+      }, 1500);
     }
-  }).catch(() => {
-    // Fetch gagal → tetap tampilkan IDR
-    updatePriceDisplay(selectedVariant ? selectedVariant.priceRaw : null);
-  });
 
-    // ✅ 3. Fetch semua variants di background, lalu re-render selector
-    fetchAllVariants().then((allVariants) => {
-      if (allVariants.length > 0) {
-        filtered.variants = allVariants;
-
-        // Simpan state yang sudah dipilih user
-        const prevSelected = [...selectedOptions];
-        generateSelectors();
-
-        // Restore pilihan user jika ada
-        prevSelected.forEach((val, idx) => {
-          if (!val) return;
-          const el = document.getElementById(`option${idx}`);
-          if (el) {
-            el.value = val;
-            selectedOptions[idx] = val;
+    // ✅ 3. Fetch semua variants di background (defer ke idle)
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        fetchAllVariants().then((allVariants) => {
+          if (allVariants.length > 0) {
+            filtered.variants = allVariants;
+            const prevSelected = [...selectedOptions];
+            generateSelectors();
+            prevSelected.forEach((val, idx) => {
+              if (!val) return;
+              const el = document.getElementById(`option${idx}`);
+              if (el) { el.value = val; selectedOptions[idx] = val; }
+            });
+            updateAvailableOptions();
+            updateResetButtonState();
           }
         });
-
-        updateAvailableOptions();
-        updateResetButtonState();
-      }
-    });
+      }, { timeout: 5000 });
+    } else {
+      setTimeout(() => {
+        fetchAllVariants().then((allVariants) => {
+          if (allVariants.length > 0) {
+            filtered.variants = allVariants;
+            const prevSelected = [...selectedOptions];
+            generateSelectors();
+            prevSelected.forEach((val, idx) => {
+              if (!val) return;
+              const el = document.getElementById(`option${idx}`);
+              if (el) { el.value = val; selectedOptions[idx] = val; }
+            });
+            updateAvailableOptions();
+            updateResetButtonState();
+          }
+        });
+      }, 2000);
+    }
   });
 
   function resetTransientStates() {

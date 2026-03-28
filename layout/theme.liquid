@@ -8,8 +8,7 @@
     <meta name="theme-color" content="#005496">
     <link rel="canonical" href="{{ canonical_url }}">
 
-    <link rel="preload" href="{{ 'theme.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ 'theme.css' | asset_url }}"></noscript>
+    <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}">
 
     {% if template == 'product' %}
       {% style %}
@@ -78,7 +77,7 @@
       }
     {% endstyle %}
 
-    {{ 'base.css.liquid' | asset_url | stylesheet_tag: preload: true }}
+    {{ 'base.css.liquid' | asset_url | stylesheet_tag }}
 
     {% style %}
       ui-skeleton {

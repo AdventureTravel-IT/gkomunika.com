@@ -626,6 +626,10 @@
 </script>
 
 <script>
+  const topupFallbackText = {{ 'products.check_data.button_topup_fallback' | t | json }};
+</script>
+
+<script>
   document.addEventListener('DOMContentLoaded', () => {
     const API_URL = 'https://v2.gkomunika.id/api/v1/check-usage';
 
@@ -799,6 +803,20 @@
       </div>`;
     }
 
+    function renderTopUpUnavailable() {
+      return `<div style="
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #e0e0e0;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: var(--font-large);
+    font-weight: 600;
+    cursor: not-allowed;
+  ">${topupFallbackText}</div>`;
+    }
+
     function attachTopUpButtonListeners() {
       const btnTopUpBuy = document.getElementById('btn-topup__buy-button');
       const btnTopUpCs = document.getElementById('btn-topup__contact-button');
@@ -888,7 +906,7 @@
           }
 
           html += `
-            ${source !== 'fallback' ? renderTopUpButton() : ''}
+            ${source !== 'fallback' ? renderTopUpButton() : renderTopUpUnavailable()}
           </div>`;
         });
 

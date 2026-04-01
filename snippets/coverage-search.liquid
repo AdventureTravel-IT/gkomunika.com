@@ -29,19 +29,11 @@
 const searchInput = document.getElementById('search-input');
 const emptyMsg = document.getElementById('search-empty');
 
-function isSubsequence(q, t) {
-  q = (q || '').toLowerCase();
-  t = (t || '').toLowerCase();
-  let i = 0;
-  for (const ch of t) if (ch === q[i]) i++;
-  return q.length > 0 && i === q.length;
-}
-
 function matches(haystack, needle) {
   if (!needle) return true;
   haystack = (haystack || '').toLowerCase();
   needle = (needle || '').toLowerCase();
-  return haystack.includes(needle) || isSubsequence(needle, haystack);
+  return haystack.includes(needle);
 }
 
 function filterCountries() {

@@ -1,0 +1,51 @@
+{%- layout none -%}
+{
+  "search_key": [
+    {%- assign mos = product.metafields.search.key.value -%}
+    {%- if mos != blank -%}
+      {%- for mo in mos -%}
+        {%- unless forloop.first -%},{%- endunless -%}
+        {%- assign flag = mo.flag.value -%}
+        {%- assign aliases = mo.alias.value -%}
+        {%- assign regions = mo.region.value -%}
+        {
+          "country": {
+            "country_en": {{ mo.country.value | default: '' | json }},
+            "country_id": {{ mo.country_id.value | default: '' | json }},
+            "country_alias": [
+              {%- if aliases != blank -%}
+                {%- for a in aliases -%}
+                  {%- unless forloop.first -%},{%- endunless -%}
+                  {{ a | json }}
+                {%- endfor -%}
+              {%- endif -%}
+            ],
+            "country_flag": {% if flag != blank %}{{ flag | image_url: width: 500 | json }}{% else %}null{% endif %}
+          },
+          "regions": [
+            {%- if regions != blank -%}
+              {%- for r in regions -%}
+                {%- unless forloop.first -%},{%- endunless -%}
+                {%- assign r_flag = r.region_flag.value -%}
+                {%- assign r_aliases = r.region_alias.value -%}
+                {
+                  "region_en": {{ r.region.value | default: '' | json }},
+                  "region_id": {{ r.region_id.value | default: '' | json }},
+                  "region_alias": [
+                    {%- if r_aliases != blank -%}
+                      {%- for ra in r_aliases -%}
+                        {%- unless forloop.first -%},{%- endunless -%}
+                        {{ ra | json }}
+                      {%- endfor -%}
+                    {%- endif -%}
+                  ],
+                  "region_flag": {% if r_flag != blank %}{{ r_flag | image_url: width: 200 | json }}{% else %}null{% endif %}
+                }
+              {%- endfor -%}
+            {%- endif -%}
+          ]
+        }
+      {%- endfor -%}
+    {%- endif -%}
+  ]
+}

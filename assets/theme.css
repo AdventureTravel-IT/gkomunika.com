@@ -988,10 +988,6 @@ video {
   height: 3rem;
 }
 
-.h-20 {
-  height: 5rem;
-}
-
 .h-4 {
   height: 1rem;
 }
@@ -1074,10 +1070,6 @@ video {
 
 .h-\[360px\] {
   height: 360px;
-}
-
-.h-\[400px\] {
-  height: 400px;
 }
 
 .h-\[40px\] {
@@ -1470,6 +1462,10 @@ video {
 
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+
+.cursor-default {
+  cursor: default;
 }
 
 .cursor-grab {
@@ -1898,11 +1894,6 @@ video {
   border-color: rgb(var(--color-secondary-rgb) / var(--tw-border-opacity, 1));
 }
 
-.border-sky-300 {
-  --tw-border-opacity: 1;
-  border-color: rgb(125 211 252 / var(--tw-border-opacity, 1));
-}
-
 .border-slate-200 {
   --tw-border-opacity: 1;
   border-color: rgb(226 232 240 / var(--tw-border-opacity, 1));
@@ -2260,11 +2251,6 @@ video {
 .py-7 {
   padding-top: 1.75rem;
   padding-bottom: 1.75rem;
-}
-
-.py-8 {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
 }
 
 .py-\[10px\] {
@@ -2671,31 +2657,6 @@ video {
   color: rgb(var(--color-secondary-rgb) / var(--tw-text-opacity, 1));
 }
 
-.text-sky-700 {
-  --tw-text-opacity: 1;
-  color: rgb(3 105 161 / var(--tw-text-opacity, 1));
-}
-
-.text-slate-500 {
-  --tw-text-opacity: 1;
-  color: rgb(100 116 139 / var(--tw-text-opacity, 1));
-}
-
-.text-slate-600 {
-  --tw-text-opacity: 1;
-  color: rgb(71 85 105 / var(--tw-text-opacity, 1));
-}
-
-.text-slate-700 {
-  --tw-text-opacity: 1;
-  color: rgb(51 65 85 / var(--tw-text-opacity, 1));
-}
-
-.text-slate-900 {
-  --tw-text-opacity: 1;
-  color: rgb(15 23 42 / var(--tw-text-opacity, 1));
-}
-
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
@@ -2991,10 +2952,6 @@ video {
   background-color: rgb(var(--color-primary-rgb) / var(--tw-bg-opacity, 1));
 }
 
-.hover\:bg-primary\/30:hover {
-  background-color: rgb(var(--color-primary-rgb) / 0.3);
-}
-
 .hover\:bg-primary\/70:hover {
   background-color: rgb(var(--color-primary-rgb) / 0.7);
 }
@@ -3026,13 +2983,9 @@ video {
   background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1));
 }
 
-.hover\:text-primary:hover {
+.hover\:text-neutral:hover {
   --tw-text-opacity: 1;
-  color: rgb(var(--color-primary-rgb) / var(--tw-text-opacity, 1));
-}
-
-.hover\:underline:hover {
-  text-decoration-line: underline;
+  color: rgb(var(--color-neutral-rgb) / var(--tw-text-opacity, 1));
 }
 
 .hover\:opacity-70:hover {

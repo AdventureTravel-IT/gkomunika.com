@@ -26,20 +26,22 @@
     const norm = (s) => String(s || '').trim().toLowerCase();
     const pretty = (s) => String(s || '').replace(/_/g, ' ').trim();
 
-    // MASTER LIST from metaobject
+    // ✅ MASTER LIST — paginate by 250 agar semua entry terbaca (fix limit 50)
     const masterCoverage = [
-      {% for country in product.metafields.search.key.value %}
-        {
-          country_en: {{ country.country.value | json }},
-          country_id: {{ country.country_id.value | json }},
-          country_alias: [
-            {% for alias in country.alias.value %}
-              {{ alias | json }}{% unless forloop.last %},{% endunless %}
-            {% endfor %}
-          ],
-          flag: {% if country.flag.value %}{{ country.flag.value | image_url | json }}{% else %}null{% endif %}
-        }{% unless forloop.last %},{% endunless %}
-      {% endfor %}
+      {%- paginate product.metafields.search.key.value by 250 -%}
+        {%- for country in product.metafields.search.key.value -%}
+          {
+            country_en: {{ country.country.value | json }},
+            country_id: {{ country.country_id.value | json }},
+            country_alias: [
+              {%- for alias in country.alias.value -%}
+                {{ alias | json }}{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            ],
+            flag: {% if country.flag.value %}{{ country.flag.value | image_url | json }}{% else %}null{% endif %}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      {%- endpaginate -%}
     ];
 
     // Build lookup index by EN/ID/alias

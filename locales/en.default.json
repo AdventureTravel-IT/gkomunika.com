@@ -22,7 +22,8 @@
   },
   "products": {
     "check_data": {
-      "tooltip_iccid": "• SIM Card: The ICCID is located on the back of the physical SIM card.&#10;&#10;• eSIM: The eSIM ICCID is shown in your email under \"eSIM Information\".&#10;&#10;• iPhone: Go to Settings \u203a General \u203a About, then scroll down to ICCID."
+      "tooltip_iccid": "• SIM Card: The ICCID is located on the back of the physical SIM card.&#10;&#10;• eSIM: The eSIM ICCID is shown in your email under \"eSIM Information\".&#10;&#10;• iPhone: Go to Settings \u203a General \u203a About, then scroll down to ICCID.",
+      "button_topup_fallback": "Top-up service is not available for this SIM"
     },
     "top_up": {
       "iccid_invalid": "ICCID Invalid",

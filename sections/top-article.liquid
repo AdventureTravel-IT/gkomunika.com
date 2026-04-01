@@ -1,6 +1,12 @@
 <section class="wrapper md:wrapper-base space-y-6">
-    <h1 class="text-primary text-[33px] font-bold">Blog Posts</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[15px]">
+    <div class="flex items-center justify-between">
+        <h1 class="text-primary text-[33px] font-bold">Blog Posts</h1>
+        <a href="/pages/news" aria-label="See more news articles" class="rounded-full border border-primary px-[24px] py-2 text-primary font-semibold text-[15px] hover:bg-primary hover:text-neutral transition whitespace-nowrap">
+            See More
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[15px] items-start">
         {% for block in section.blocks %}
             {% assign pages = block.settings.page %}
 
@@ -11,39 +17,39 @@
                     {% assign first_img = parts[1] | split: '"' | first %}
                 {% endif %}
 
-                <a href="{{ pages.url }}" class="h-[400px] rounded-[15px] bg-neutral overflow-hidden shadow-md hover:shadow-lg transition-all hover:-translate-y-[5px]">
-                    <img
-                        class="h-[200px] w-full bg-slate-300"
-                        {% if first_img != blank %}src="{{ first_img }}"{% endif %}
-                        alt="{{ pages.title | escape }}"
-                        loading="lazy"
-                        height="auto"
-                        width="auto"
-                    >
-                    <div class="h-[200px] p-[15px] flex flex-col justify-between">
-                        <div class="space-y-2">
-                            <h2 class="text-primary text-[18px] line-clamp-2 font-semibold leading-tight">
-                                {{ pages.title }}
-                            </h2>
-                            <p class="line-clamp-3 text-primary text-[16px] leading-tight">
-                                {{ pages.content | strip_html | truncate: 160 }}
-                            </p>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-secondary text-[14px]">
-                               {{ pages.published_at | default: pages.created_at | date: "%d %b %Y" }}
-                            </span>
-                            <button class="bg-primary text-neutral px-5 py-1 rounded-full w-fit text-[14px] hover:bg-primary/30 hover:text-primary font-semibold">Read More</button>
-                        </div>
+                <a href="{{ pages.url }}" class="rounded-[15px] bg-neutral overflow-hidden shadow-md hover:shadow-lg transition-all hover:-translate-y-[5px] flex flex-col">
+                    <!-- 2/3 aspect ratio, capped at 280px height -->
+                    <div class="w-full flex-shrink-0" style="aspect-ratio: 2/3; max-height: 150px; height: min(calc(100vw / 3 * 3 / 2), 280px); overflow: hidden;">
+                        <img
+                            class="w-full h-full object-cover bg-slate-300"
+                            {% if first_img != blank %}src="{{ first_img }}"{% endif %}
+                            alt="{{ pages.title | escape }}"
+                            loading="lazy"
+                            width="auto"
+                            height="auto"
+                        >
+                    </div>
+
+                    <!-- Card content -->
+                    <div class="p-[15px] flex flex-col gap-2 flex-1">
+                        <h2 class="text-primary text-[18px] line-clamp-2 font-semibold leading-tight">
+                            {{ pages.title }}
+                        </h2>
+                        <p class="line-clamp-3 text-primary text-[14px] leading-snug flex-1">
+                            {{ pages.content | strip_html | truncate: 160 }}
+                        </p>
+                        <span class="flex items-center gap-1 text-primary text-[14px] font-semibold mt-2">
+                            Read article
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </span>
                     </div>
                 </a>
             {% endif %}
 
         {% endfor %}
     </div>
-    <a href="/pages/news" aria-label="See more news articles" class="rounded-[10px] bg-primary px-[30px] py-2 justify-center items-center w-fit text-neutral font-bold text-[18px] tracking-wide hover:bg-primary/30 hover:text-primary transition mt-10 mx-auto block">
-        See More
-    </a>
 </section>
 
 {% schema %}
@@ -58,7 +64,7 @@
         {
           "type": "page",
           "id": "page",
-          "label": "Pilih Page"
+          "label": "Select Page"
         }
       ]
     }

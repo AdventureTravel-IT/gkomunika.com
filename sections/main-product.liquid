@@ -132,7 +132,7 @@
             class="rounded-[10px] h-[90px] cursor-pointer w-auto"
             alt="{{ media_item.alt | default: 'Product Image' }}"
             title="{{ media_item.alt | default: 'Product Image' }}"
-            onclick="updateMainImage('{{ media_item.preview_image.src | image_url }}')"
+            onclick="updateMainImage('{{ media_item.preview_image.src | image_url: width: 800 }}')"
           >
         {% endfor %}
       </div>
@@ -2674,7 +2674,12 @@ async function updateTotalPriceDisplayIfInsurance() {
    * ========================================================= */
   function updateMainImage(imageSrc) {
     const { mainImage } = dom();
-    if (mainImage) mainImage.src = imageSrc;
+    if (!mainImage) return;
+
+    mainImage.src = imageSrc;
+    // Reset srcset agar browser tidak pakai cache srcset lama
+    mainImage.srcset = '';
+    mainImage.removeAttribute('srcset');
   }
 
   /* =========================================================

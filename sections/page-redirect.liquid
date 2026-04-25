@@ -1,0 +1,26 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var path = window.location.pathname;
+
+    if (path === '/blogs/news') {
+      window.location.replace('/pages/news');
+    }
+
+    if (path === '/pages/reseller') {
+      window.location.replace('https://s.id/PEbR2');
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Redirect Page",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Redirect Page",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}

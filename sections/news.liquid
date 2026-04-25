@@ -7,7 +7,6 @@
 {% endcapture %}
 
 <style>
-  /* Tab underline indicator — cannot be done with pure Tailwind (::after pseudo) */
   .news-tab-btn::after {
     content: '';
     position: absolute;
@@ -19,11 +18,11 @@
     transform: scaleX(0);
     transition: transform 0.2s;
   }
+
   .news-tab-btn.active::after {
     transform: scaleX(1);
   }
 
-  /* Skeleton shimmer */
   @keyframes shimmer {
     0% {
       background-position: 200% 0;
@@ -32,6 +31,7 @@
       background-position: -200% 0;
     }
   }
+
   .news-skeleton {
     background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
     background-size: 200% 100%;
@@ -39,18 +39,17 @@
     border-radius: 8px;
   }
 
-  /* Hide scrollbar on tabs nav */
   #news-tabs::-webkit-scrollbar {
     display: none;
   }
 
-  /* line-clamp utilities (older browser fallback) */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -60,21 +59,18 @@
 </style>
 
 <div class="w-full">
-  <!-- HERO BANNER -->
   <section
     class="w-full h-[450px] bg-no-repeat bg-cover bg-center flex items-center px-[10%] bg-slate-300"
     style="background-image: url('https://cdn.shopify.com/s/files/1/0735/4204/1817/files/andrei-mike-N1ufEF8ukmI-unsplash.jpg?v=1748274093');"
   >
     <div class="flex flex-col gap-[10px] text-left">
-      <h2 class="text-neutral font-bold text-[30px]">Global Komunika Blog & News</h2>
-      <p class="text-neutral text-[18px]">Find your travel inspiration wherever you're going.</p>
+      <h2 id="news-hero-title" class="text-neutral font-bold text-[30px]">Global Komunika Blog & News</h2>
+      <p id="news-hero-desc" class="text-neutral text-[18px]">Find your travel inspiration wherever you're going.</p>
     </div>
   </section>
 
-  <!-- TABS + SEARCH BAR -->
   <div class="wrapper md:wrapper-base mt-8 mb-6">
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-      <!-- TABS NAV -->
       <nav
         id="news-tabs"
         role="tablist"
@@ -82,18 +78,17 @@
         style="scrollbar-width:none;"
       ></nav>
 
-      <!-- SEARCH -->
       <div class="flex items-center rounded-full overflow-hidden bg-white shrink-0 w-full sm:w-[270px] mb-px">
         <input
           type="text"
           id="news-search-input"
-          placeholder="Search Article"
+          placeholder="Cari Artikel"
           autocomplete="off"
           class="flex-1 placeholder:text-primary min-w-0 border-none outline-none px-[18px] py-[10px] text-[14px] text-gray-900 bg-transparent placeholder-gray-400"
         >
         <button
           id="news-search-btn"
-          aria-label="Search"
+          aria-label="Cari Artikel"
           class="flex items-center justify-center bg-primary h-full transition-colors px-4 py-[10px] rounded-r-full cursor-pointer border-none"
         >
           <svg class="w-[18px] h-[18px] fill-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -104,9 +99,7 @@
     </div>
   </div>
 
-  <!-- ARTICLE GRID -->
   <div class="wrapper md:wrapper-base pb-16">
-    <!-- Skeleton -->
     <div id="news-skeleton" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for i in (1..6) %}
         <div class="bg-white rounded-xl overflow-hidden shadow-sm">
@@ -125,13 +118,12 @@
       {% endfor %}
     </div>
 
-    <!-- Actual grid -->
     <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
 
-    <!-- No results -->
-    <div id="news-no-results" class="hidden text-center py-16 px-5 text-gray-500 text-base">No articles found.</div>
+    <div id="news-no-results" class="hidden text-center py-16 px-5 text-gray-500 text-base">
+      Artikel tidak ditemukan.
+    </div>
 
-    <!-- Pagination -->
     <div id="news-pagination-wrap" class="hidden">
       <div id="news-pagination" class="flex items-center justify-center gap-1.5 mt-9 flex-wrap text-primary"></div>
       <div id="news-pager-info" class="text-center text-[13px] text-primary mt-2.5"></div>
@@ -139,38 +131,133 @@
   </div>
 </div>
 
-<script
-  type="module"
-  defer
->
+<script type="module" defer>
 (async function () {
   const ICON_NEXT = {{ icon_arrow_right | strip_newlines | json }};
   const ICON_PREV = {{ icon_arrow_left  | strip_newlines | json }};
 
   const ITEMS_PER_PAGE = 9;
 
-  // Categories: built dynamically after fetch
-  let categoriesConfig = [{ label: 'All', slug: 'all' }];
+  const localeRoot = ((window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/')
+    .replace(/\/+$/, '');
 
-  // State
+  const currentPath = window.location.pathname || '';
+  const isIndonesian = localeRoot === '/id' || currentPath.startsWith('/id/');
+
+  const t = isIndonesian
+    ? {
+        all: 'Semua',
+        search: 'Cari Artikel',
+        noResults: 'Artikel tidak ditemukan.',
+        heroTitle: 'Blog & Berita Global Komunika',
+        heroDesc: 'Temukan inspirasi perjalanan ke mana pun Anda pergi.',
+        untitled: 'Tanpa Judul',
+        pager: (s, e, total) => `Menampilkan ${s}–${e} dari ${total} artikel`
+      }
+    : {
+        all: 'All',
+        search: 'Search Article',
+        noResults: 'No articles found.',
+        heroTitle: 'Global Komunika Blog & News',
+        heroDesc: "Find your travel inspiration wherever you're going.",
+        untitled: 'Untitled',
+        pager: (s, e, total) => `Showing ${s}–${e} of ${total} articles`
+      };
+
+  const CATEGORY_LIST = isIndonesian
+    ? [
+        { slug: 'all', label: 'Semua' },
+        { slug: 'news', label: 'Berita' },
+        { slug: 'travel-guide', label: 'Panduan Perjalanan' },
+        { slug: 'tech-guide', label: 'Panduan Teknologi' },
+        { slug: 'travel-tips', label: 'Tips Perjalanan' },
+        { slug: 'events', label: 'Peristiwa' }
+      ]
+    : [
+        { slug: 'all', label: 'All' },
+        { slug: 'news', label: 'News' },
+        { slug: 'travel-guide', label: 'Travel Guide' },
+        { slug: 'tech-guide', label: 'Tech Guide' },
+        { slug: 'travel-tips', label: 'Travel Tips' },
+        { slug: 'events', label: 'Events' }
+      ];
+
+  const CATEGORY_ALIASES = {
+    'news': 'news',
+    'berita': 'news',
+
+    'travel-guide': 'travel-guide',
+    'panduan-perjalanan': 'travel-guide',
+    'panduan-travel': 'travel-guide',
+
+    'tech-guide': 'tech-guide',
+    'panduan-teknologi': 'tech-guide',
+    'technology-guide': 'tech-guide',
+    'tech': 'tech-guide',
+
+    'travel-tips': 'travel-tips',
+    'tips-perjalanan': 'travel-tips',
+    'tips-travel': 'travel-tips',
+
+    'events': 'events',
+    'event': 'events',
+    'peristiwa': 'events'
+  };
+
+  let categoriesConfig = [{ label: t.all, slug: 'all' }];
+
   let allItems      = [];
   let filteredItems = [];
   let currentCat    = 'all';
   let currentPage   = 1;
   let searchQuery   = '';
 
-  // DOM
-  const tabsEl      = document.getElementById('news-tabs');
-  const gridEl      = document.getElementById('news-grid');
-  const skeletonEl  = document.getElementById('news-skeleton');
-  const noResultsEl = document.getElementById('news-no-results');
-  const paginWrap   = document.getElementById('news-pagination-wrap');
-  const paginEl     = document.getElementById('news-pagination');
-  const pagerInfoEl = document.getElementById('news-pager-info');
-  const searchInput = document.getElementById('news-search-input');
-  const searchBtn   = document.getElementById('news-search-btn');
+  const tabsEl        = document.getElementById('news-tabs');
+  const gridEl        = document.getElementById('news-grid');
+  const skeletonEl    = document.getElementById('news-skeleton');
+  const noResultsEl   = document.getElementById('news-no-results');
+  const paginWrap     = document.getElementById('news-pagination-wrap');
+  const paginEl       = document.getElementById('news-pagination');
+  const pagerInfoEl   = document.getElementById('news-pager-info');
+  const searchInput   = document.getElementById('news-search-input');
+  const searchBtn     = document.getElementById('news-search-btn');
+  const heroTitleEl   = document.getElementById('news-hero-title');
+  const heroDescEl    = document.getElementById('news-hero-desc');
 
-  // ── Helpers ──────────────────────────────────────────────────────────────────
+  if (heroTitleEl) heroTitleEl.textContent = t.heroTitle;
+  if (heroDescEl) heroDescEl.textContent = t.heroDesc;
+  if (searchInput) searchInput.placeholder = t.search;
+  if (searchBtn) searchBtn.setAttribute('aria-label', t.search);
+  if (noResultsEl) noResultsEl.textContent = t.noResults;
+
+  const buildStoreUrl = (path = '/') => {
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${localeRoot}${cleanPath}` || cleanPath;
+  };
+
+  const stripLocalePrefix = (path = '') => {
+    const stripped = path.replace(/^\/[a-z]{2}(?=\/|$)/i, '');
+    return stripped || '/';
+  };
+
+  const localizeUrl = (rawUrl) => {
+    if (!rawUrl) return '#';
+    if (/^(#|mailto:|tel:)/i.test(rawUrl)) return rawUrl;
+
+    try {
+      const parsed = new URL(rawUrl, window.location.origin);
+
+      if (parsed.origin !== window.location.origin) return rawUrl;
+
+      const cleanPath = stripLocalePrefix(parsed.pathname);
+      parsed.pathname = buildStoreUrl(cleanPath);
+
+      return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    } catch {
+      return rawUrl;
+    }
+  };
+
   const getItemDate = (item) => {
     const raw = item.published_at || item.created_at;
     const d = raw ? new Date(raw) : new Date(0);
@@ -178,44 +265,47 @@
   };
 
   const formatDate = (d) =>
-    d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-
-  const slugToLabel = (slug) =>
-    slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-
-  const formatCatLabel = (slug) => {
-    const found = categoriesConfig.find(c => c.slug === slug);
-    return found ? found.label : slugToLabel(slug);
-  };
+    d.toLocaleDateString(isIndonesian ? 'id-ID' : 'en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
 
   const normalizeCategory = (cat) => {
     if (!cat) return '';
     return cat.toLowerCase().trim().replace(/\s+/g, '-');
   };
 
-  const buildCategoriesConfig = () => {
-    const seen = new Set();
-    const dynamic = [];
-    allItems.forEach(item => {
-      const slug = item._cat;
-      if (slug && !seen.has(slug)) {
-        seen.add(slug);
-        dynamic.push({ slug, label: slugToLabel(slug) });
-      }
-    });
-    dynamic.sort((a, b) => a.label.localeCompare(b.label));
-    categoriesConfig = [{ label: 'All', slug: 'all' }, ...dynamic];
+  const normalizeCategoryKey = (cat) => {
+    const raw = normalizeCategory(cat);
+    return CATEGORY_ALIASES[raw] || '';
   };
 
-  // ── Render card (Tailwind classes in JS template literal) ────────────────────
+  const getCategoryLabel = (slug) => {
+    const found = CATEGORY_LIST.find(c => c.slug === slug);
+    return found ? found.label : slug;
+  };
+
+  const buildCategoriesConfig = () => {
+    const available = new Set(allItems.map(item => item._cat).filter(Boolean));
+
+    categoriesConfig = CATEGORY_LIST.filter(cat => {
+      return cat.slug === 'all' || available.has(cat.slug);
+    });
+
+    if (!categoriesConfig.some(cat => cat.slug === currentCat)) {
+      currentCat = 'all';
+    }
+  };
+
   const renderCard = (item) => {
-    const title    = item.title   || 'Untitled';
+    const title    = item.title || t.untitled;
     const excerpt  = item.excerpt || '';
-    const url      = item.url     || '#';
-    const img      = item.image   || 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/placeholder.jpg';
+    const url      = localizeUrl(item.url || '#');
+    const img      = item.image || 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/placeholder.jpg';
     const dateObj  = getItemDate(item);
-    const catLabel = formatCatLabel(item._cat || '');
-    const author   = item.author  || 'Nadhif Aldenaf';
+    const catLabel = getCategoryLabel(item._cat || '');
+    const author   = item.author || 'Nadhif Aldenaf';
 
     return `
       <a
@@ -238,7 +328,7 @@
           <p class="text-[14px] text-primary leading-relaxed line-clamp-3 m-0">${excerpt}</p>
           ${author ? `
           <div class="flex items-center gap-1.5 text-sm text-primary mt-auto pt-1">
-            {%  render 'icon-profile', class: 'text-primary w-[20px] h-[20px]' %}
+            {% render 'icon-profile', class: 'text-primary w-[20px] h-[20px]' %}
             ${author}
           </div>` : ''}
         </div>
@@ -246,10 +336,10 @@
     `;
   };
 
-  // ── Tabs ─────────────────────────────────────────────────────────────────────
   const buildTabs = () => {
     tabsEl.innerHTML = categoriesConfig.map(cat => {
       const isActive = cat.slug === currentCat;
+
       return `
         <button
           data-slug="${cat.slug}"
@@ -265,7 +355,9 @@
   tabsEl.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-slug]');
     if (!btn) return;
+
     currentCat = btn.dataset.slug;
+
     tabsEl.querySelectorAll('[data-slug]').forEach(b => {
       const active = b.dataset.slug === currentCat;
       b.classList.toggle('active', active);
@@ -274,22 +366,30 @@
       b.classList.toggle('text-gray-500', !active);
       b.setAttribute('aria-selected', active);
     });
+
     applyFilter();
+
     const wrapper = tabsEl.closest('.wrapper') || tabsEl;
-    window.scrollTo({ top: wrapper.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+    window.scrollTo({
+      top: wrapper.getBoundingClientRect().top + window.scrollY - 80,
+      behavior: 'smooth'
+    });
   });
 
-  // ── Pagination ────────────────────────────────────────────────────────────────
   const buildPageList = (cur, total) => {
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-    if (cur <= 4)         return [1,2,3,4,5,'...',total];
-    if (cur >= total - 3) return [1,'...',total-4,total-3,total-2,total-1,total];
-    return [1,'...',cur-1,cur,cur+1,'...',total];
+    if (cur <= 4) return [1, 2, 3, 4, 5, '...', total];
+    if (cur >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+    return [1, '...', cur - 1, cur, cur + 1, '...', total];
   };
 
   const renderPagination = () => {
     const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
-    if (totalPages <= 1) { paginWrap.classList.add('hidden'); return; }
+
+    if (totalPages <= 1) {
+      paginWrap.classList.add('hidden');
+      return;
+    }
 
     paginWrap.classList.remove('hidden');
     const pages = buildPageList(currentPage, totalPages);
@@ -310,24 +410,31 @@
 
     const s = (currentPage - 1) * ITEMS_PER_PAGE + 1;
     const e = Math.min(currentPage * ITEMS_PER_PAGE, filteredItems.length);
-    pagerInfoEl.textContent = `Showing ${s}–${e} of ${filteredItems.length} articles`;
+    pagerInfoEl.textContent = t.pager(s, e, filteredItems.length);
   };
 
   paginEl.addEventListener('click', (e) => {
     const nav  = e.target.closest('[data-nav]');
     const page = e.target.closest('[data-page]');
     const total = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+
     if (nav) {
-      if (nav.dataset.nav === 'prev' && currentPage > 1)     currentPage--;
+      if (nav.dataset.nav === 'prev' && currentPage > 1) currentPage--;
       if (nav.dataset.nav === 'next' && currentPage < total) currentPage++;
     } else if (page) {
       currentPage = Number(page.dataset.page);
-    } else return;
+    } else {
+      return;
+    }
+
     renderGrid();
-    window.scrollTo({ top: gridEl.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' });
+
+    window.scrollTo({
+      top: gridEl.getBoundingClientRect().top + window.scrollY - 100,
+      behavior: 'smooth'
+    });
   });
 
-  // ── Grid render ───────────────────────────────────────────────────────────────
   const renderGrid = () => {
     if (filteredItems.length === 0) {
       gridEl.classList.add('hidden');
@@ -335,8 +442,10 @@
       paginWrap.classList.add('hidden');
       return;
     }
+
     noResultsEl.classList.add('hidden');
     gridEl.classList.remove('hidden');
+
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     gridEl.innerHTML = filteredItems.slice(start, start + ITEMS_PER_PAGE).map(renderCard).join('');
     renderPagination();
@@ -344,37 +453,48 @@
 
   const applyFilter = () => {
     currentPage = 1;
+
     filteredItems = allItems.filter(item => {
       if (!item._cat) return false;
-      const catOk    = currentCat === 'all' || item._cat === currentCat;
+
+      const catOk = currentCat === 'all' || item._cat === currentCat;
       const searchOk = !searchQuery ||
         item.title?.toLowerCase().includes(searchQuery) ||
         item.excerpt?.toLowerCase().includes(searchQuery);
+
       return catOk && searchOk;
     });
+
     renderGrid();
   };
 
-  // ── Search ────────────────────────────────────────────────────────────────────
-  const doSearch = () => { searchQuery = searchInput.value.trim().toLowerCase(); applyFilter(); };
-  searchBtn.addEventListener('click', doSearch);
-  searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
+  const doSearch = () => {
+    searchQuery = searchInput.value.trim().toLowerCase();
+    applyFilter();
+  };
 
-  // ── Fetch helper ─────────────────────────────────────────────────────────────
+  searchBtn.addEventListener('click', doSearch);
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') doSearch();
+  });
+
   const fetchPage = async (page) => {
-    const res = await fetch(`/search?view=news-api-json&type=page&q=%2A&page=${page}`, { credentials: 'same-origin' });
+    const searchUrl = `${buildStoreUrl('/search')}?view=news-api-json&type=page&q=%2A&page=${page}`;
+    const res = await fetch(searchUrl, { credentials: 'same-origin' });
+
     if (!res.ok) throw new Error('HTTP ' + res.status);
     return res.json();
   };
 
   const processItems = (items) =>
-    (items || []).map(item => ({ ...item, _cat: normalizeCategory(item.category) }));
+    (items || []).map(item => ({
+      ...item,
+      _cat: normalizeCategoryKey(item.category)
+    }));
 
-  // ── Fetch: progressive (page 1 langsung render) + parallel (sisa halaman) ──
   buildTabs();
 
   try {
-    // STEP 1 — Fetch halaman 1, langsung render → skeleton hilang ~1 detik
     const firstData = await fetchPage(1);
     allItems.push(...processItems(firstData.items));
 
@@ -384,23 +504,25 @@
     skeletonEl.classList.add('hidden');
     applyFilter();
 
-    // STEP 2 — Fetch sisa halaman semua sekaligus (parallel)
     const totalPages = firstData.pages || 1;
+
     if (totalPages > 1) {
       const remaining = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
       const results = await Promise.allSettled(remaining.map(p => fetchPage(p)));
 
       results.forEach(r => {
-        if (r.status === 'fulfilled') allItems.push(...processItems(r.value.items));
+        if (r.status === 'fulfilled') {
+          allItems.push(...processItems(r.value.items));
+        }
       });
 
-      // Re-sort & re-render dengan data lengkap
       allItems.sort((a, b) => getItemDate(b) - getItemDate(a));
       buildCategoriesConfig();
       buildTabs();
       applyFilter();
     }
-  } catch {
+  } catch (error) {
+    console.error('News section error:', error);
     skeletonEl.classList.add('hidden');
     noResultsEl.classList.remove('hidden');
   }

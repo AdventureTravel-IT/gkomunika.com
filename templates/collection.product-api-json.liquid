@@ -45,7 +45,7 @@
       {%- assign mapped_category = 'Top Up Plan' -%}
     {%- endif -%}
 
-    { "id": {{ item.id | json }}, "title": {{ item.title | json }}, "handle": {{ item.handle | json }}, "url":
+    { "id": {{ item.id | json }}, "title": {{ item.title | json }}, "growave_raw_rating": {{ item.metafields.growave.raw_rating_string.value | json }}, "handle": {{ item.handle | json }}, "url":
     {{ item.url | json }}, "category": {{ mapped_category | json }}, "category_raw": {{ raw_category | json }},
     "available": {{ item.available | json }}, "price_min": {{ item.price_min | json }}, "price_max":
     {{ item.price_max | json }}, "price_min_money_with_currency":

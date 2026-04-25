@@ -1,7 +1,7 @@
 {% comment %}
   Deteksi locale prefix dari URL path
   - /en-au → Australia English
-  - /id    → Bahasa Indonesia
+  - /id → Bahasa Indonesia
   - (kosong) → Default English
 {% endcomment %}
 {% assign is_au = false %}
@@ -86,7 +86,6 @@
   /* ===== SWITCH TABS (segmented control) ===== */
 
   /* ===== SWITCH TABS (Tilt Shadow Retro) ===== */
-
   .filter-tab {
     position: relative;
     top: 0;
@@ -118,7 +117,7 @@
   .filter-tab:active {
     top: 3px;
     left: 3px;
-    box-shadow: 0px 0px 0 var(--color-primary);
+    box-shadow: 0 0 0 var(--color-primary);
   }
 
   /* is-active: filled + shadow lebih kecil (tanda sudah "dipencet") */
@@ -344,11 +343,15 @@
   }
   /* value di kanan (mis. 50GB - Big Data, Start From Rp...) */
   .benefit-value {
-    max-width: 220px; /* batas lebar */
-    white-space: normal; /* boleh turun baris */
-    overflow-wrap: anywhere; /* aman untuk kata panjang */
+    max-width: 220px;
+    /* batas lebar */
+    white-space: normal;
+    /* boleh turun baris */
+    overflow-wrap: anywhere;
+    /* aman untuk kata panjang */
     word-break: break-word;
-    text-align: right; /* tetap rata kanan */
+    text-align: right;
+    /* tetap rata kanan */
     line-height: 1.2;
   }
 
@@ -377,7 +380,7 @@
   // =========================
   const LOCALE_PREFIX = {{ locale_prefix | json }};
   const IS_AU = {{ is_au | json }};
-
+  
   // =========================
   // I18N (from Shopify locale)
   // =========================
@@ -391,22 +394,22 @@
     price_from_prefix: "{{ 'product.card.price_from_prefix' | t | escape }}",
     button_gsim: "{{ 'product.card.button_gsim' | t | escape }}",
   };
-
+  
   // HTML loader dari snippet Shopify
   const LOADING_ICON_HTML = `{% render 'loading', class: 'text-neutral w-[24px] h-[24px]' %}`;
-
+  
   function t(key, vars = {}) {
     let s = I18N[key] ?? key;
-
+  
     const OPEN = '{% raw %}{{{% endraw %}';
     const CLOSE = '{% raw %}}}{% endraw %}';
-
+  
     for (const [k, v] of Object.entries(vars)) {
       s = s.split(`${OPEN} ${k} ${CLOSE}`).join(String(v));
     }
     return s;
   }
-
+  
   // =========================
   // ✅ NEW: Collections by mode
   // =========================
@@ -415,14 +418,14 @@
     if (mode === 'topup') {
       return [{ handle: 'top-up-plan', title: 'Top Up Plan' }];
     }
-
+  
     return [
       { handle: 'single-country', title: 'Single Country' },
       { handle: 'multi-country', title: 'Multi Country' },
       { handle: 'airport-transfer', title: 'Airport Transfer' },
     ];
   }
-
+  
   async function fetchCollection(handle) {
     const res = await fetch(`/collections/${handle}?view=product-api-json`, {
       priority: 'high',
@@ -430,32 +433,32 @@
     if (!res.ok) return { ok: false, handle, error: 'Failed to fetch data' };
     return { ok: true, handle, json: await res.json() };
   }
-
+  
   async function fetchCollectionAllPages(handle) {
     let page = 1;
     let pages = 1;
     const all = [];
-
+  
     while (page <= pages) {
       const res = await fetch(`/collections/${handle}?view=product-api-json&page=${page}`, {
         priority: 'high',
       });
-
+  
       if (!res.ok) {
         console.error(`[${handle}] page ${page} fetch failed`, res.status);
         break;
       }
-
+  
       const json = await res.json();
       pages = Number(json.pages || 1);
-
+  
       all.push(...(json.items || []));
       page += 1;
     }
-
+  
     return all;
   }
-
+  
   function normalizeTopupCategory(v = '') {
     return String(v || '')
       .trim()
@@ -463,7 +466,7 @@
       .replace(/-/g, '_')
       .toLowerCase();
   }
-
+  
   // =========================
   // ✅ PRIORITY: gSIM first
   // =========================
@@ -474,37 +477,37 @@
       .replace(/-/g, '_')
       .toLowerCase();
   }
-
+  
   // skor: paling tinggi kalau title ada "gsim" DAN category_raw == "gsim"
   function gsimScore(item) {
     const title = String(item?.title || '').toLowerCase();
     const hasTitleGsim = title.includes('gsim');
-
+  
     const catRaw = normalizeKey(item?.category_raw);
     const hasCatGsim = catRaw === 'gsim';
-
+  
     return (hasTitleGsim ? 10 : 0) + (hasCatGsim ? 10 : 0);
   }
-
+  
   function sortItemsGsimFirst(items = []) {
     return items
       .map((it, idx) => ({ it, idx, score: gsimScore(it) }))
       .sort((a, b) => b.score - a.score || a.idx - b.idx) // stable
       .map((x) => x.it);
   }
-
+  
   // untuk DOM card (pakai data-attribute yang sudah kamu set)
   function isGsimPriorityCard(cardEl) {
     const title = (cardEl.getAttribute('data-title') || '').toLowerCase();
     const catRaw = normalizeKey(cardEl.getAttribute('data-category-raw') || '');
     return title.includes('gsim') || catRaw === 'gsim';
   }
-
+  
   // =========================
   // ✅ GSIM REGION SORT
   // =========================
   const GSIM_REGION_ORDER = ['asia', 'europe', 'australia', 'america', 'middle'];
-
+  
   function getGsimRegionScore(title = '') {
     const t = String(title).toLowerCase();
     for (let i = 0; i < GSIM_REGION_ORDER.length; i++) {
@@ -512,48 +515,48 @@
     }
     return GSIM_REGION_ORDER.length; // gSIM tanpa region dikenal → paling belakang
   }
-
+  
   function isGsimItem(item) {
     const title = String(item?.title || '').toLowerCase();
     const catRaw = normalizeKey(item?.category_raw || '');
     return title.includes('gsim') || catRaw === 'gsim';
   }
-
+  
   function sortGsimByRegion(items = []) {
     // Kumpulkan index posisi semua item gSIM
     const gsimIndices = [];
     items.forEach((item, idx) => {
       if (isGsimItem(item)) gsimIndices.push(idx);
     });
-
+  
     if (gsimIndices.length === 0) return items; // tidak ada gSIM, skip
-
+  
     // Ambil item gSIM lalu sort berdasarkan region
     const gsimItems = gsimIndices.map((i) => items[i]);
     gsimItems.sort((a, b) => getGsimRegionScore(a.title) - getGsimRegionScore(b.title));
-
+  
     // Kembalikan ke posisi asalnya (hanya slot gSIM yang diganti, non-gSIM tidak bergerak)
     const result = [...items];
     gsimIndices.forEach((origIdx, i) => {
       result[origIdx] = gsimItems[i];
     });
-
+  
     return result;
   }
-
+  
   // ==========================================================
   // ✅ NEW: EUROPE KEYWORD PRIORITY LOGIC
   // Ketika user search "europe"/"eropa"/alias, maka:
   //   1. Collection "multi-country" naik ke atas "single-country"
   //   2. Produk Europe di multi-country di-sort sesuai urutan tertentu
   // ==========================================================
-
+  
   // Daftar keyword alias yang trigger logic Europe
   const EUROPE_ALIASES = [
     'europe', 'eropa', 'european', 'eu',
     'europa', 'eropah',   // alias tambahan
   ];
-
+  
   // Urutan produk Europe yang diinginkan (by partial title match, case-insensitive)
   // Index lebih kecil = prioritas lebih tinggi
   const EUROPE_PRODUCT_ORDER = [
@@ -562,7 +565,7 @@
     'europe three',          // 3. Europe Three
     'eastern europe balkan', // 4. Eastern Europe Balkan
   ];
-
+  
   /**
    * Cek apakah keyword search mengandung alias Europe
    */
@@ -576,7 +579,7 @@
       return re.test(lower);
     });
   }
-
+  
   /**
    * Cek apakah sebuah product title termasuk produk Europe
    */
@@ -585,7 +588,7 @@
     return EUROPE_PRODUCT_ORDER.some(pattern => t.includes(pattern)) ||
            t.includes('europe') || t.includes('eropa');
   }
-
+  
   /**
    * Hitung skor urutan produk Europe berdasarkan EUROPE_PRODUCT_ORDER
    * Skor lebih kecil = lebih tinggi prioritas
@@ -601,7 +604,7 @@
     // Bukan produk Europe sama sekali → taruh paling belakang
     return EUROPE_PRODUCT_ORDER.length + 1000;
   }
-
+  
   /**
    * Reorder collection wrappers di DOM:
    * - Jika keyword Europe aktif DAN multi-country punya produk Europe visible,
@@ -612,7 +615,7 @@
     const isEurope = isEuropeKeyword(q);
     const wrappers = Array.from(rootEl.querySelectorAll('.collection-wrapper'));
     if (wrappers.length < 2) return;
-
+  
     // Deteksi wrapper berdasarkan data-collection dari card pertama di dalamnya
     const multiWrapper = wrappers.find(w => {
       const firstCard = w.querySelector('.product-card-container');
@@ -622,12 +625,12 @@
       const firstCard = w.querySelector('.product-card-container');
       return firstCard && firstCard.getAttribute('data-collection') === 'single-country';
     });
-
+  
     if (!multiWrapper || !singleWrapper) return;
-
+  
     const parent = multiWrapper.parentElement;
     if (!parent) return;
-
+  
     if (isEurope) {
       // Cek apakah multi-country punya produk Europe yang visible
       const multiCards = Array.from(multiWrapper.querySelectorAll('.product-card-container'));
@@ -635,7 +638,7 @@
         const title = (card.getAttribute('data-title') || '').toLowerCase();
         return card.style.display !== 'none' && isEuropeProduct(title);
       });
-
+  
       if (hasVisibleEurope) {
         // Cek apakah multi-country SUDAH di atas single-country
         // Pakai DOM order: jika singleWrapper muncul SEBELUM multiWrapper,
@@ -643,7 +646,7 @@
         const allChildren = Array.from(parent.children);
         const multiIdx = allChildren.indexOf(multiWrapper);
         const singleIdx = allChildren.indexOf(singleWrapper);
-
+  
         if (multiIdx > singleIdx) {
           // multi-country ada di bawah single-country → pindahkan ke atas
           parent.insertBefore(multiWrapper, singleWrapper);
@@ -657,7 +660,7 @@
         const idxB = parseInt(b.getAttribute('data-base-idx') || '0', 10);
         return idxA - idxB;
       });
-
+  
       // Re-append semua wrapper dalam urutan default
       // Cari anchor: elemen pertama sebelum wrapper pertama (misal #noResults)
       // Supaya wrapper tetap di bawah filter bar & noResults
@@ -666,7 +669,7 @@
         const allChildren = Array.from(parent.children);
         return allChildren.indexOf(w) < allChildren.indexOf(earliest) ? w : earliest;
       }, null);
-
+  
       if (firstWrapper) {
         // Insert semua wrapper berurutan mulai dari posisi wrapper pertama
         let anchor = firstWrapper;
@@ -687,78 +690,78 @@
       }
     }
   }
-
+  
   /**
    * Sort produk Europe di dalam collection multi-country berdasarkan urutan EUROPE_PRODUCT_ORDER
    * Produk Europe di-sort ke atas, produk non-Europe tetap di posisi relatif mereka di bawah
    */
   function sortEuropeProductsInCollection(rootEl, q = '') {
     if (!isEuropeKeyword(q)) return;
-
+  
     const wrappers = Array.from(rootEl.querySelectorAll('.collection-wrapper'));
-
+  
     wrappers.forEach(wrapper => {
       // Hanya sort di multi-country
       const firstCard = wrapper.querySelector('.product-card-container');
       if (!firstCard) return;
       const collection = firstCard.getAttribute('data-collection') || '';
       if (collection !== 'multi-country') return;
-
+  
       const grid = wrapper.querySelector('.grid');
       if (!grid) return;
-
+  
       const cards = Array.from(grid.querySelectorAll('.product-card-container'));
       if (!cards.length) return;
-
+  
       // Simpan index asli
       cards.forEach((c, idx) => (c.__europeOrigIdx = idx));
-
+  
       cards.sort((a, b) => {
         const titleA = (a.getAttribute('data-title') || '').toLowerCase();
         const titleB = (b.getAttribute('data-title') || '').toLowerCase();
-
+  
         const scoreA = getEuropeProductScore(titleA);
         const scoreB = getEuropeProductScore(titleB);
-
+  
         // Europe products naik ke atas, urutan sesuai EUROPE_PRODUCT_ORDER
         if (scoreA !== scoreB) return scoreA - scoreB;
         // Jika skor sama, pertahankan urutan asli
         return (a.__europeOrigIdx ?? 0) - (b.__europeOrigIdx ?? 0);
       });
-
+  
       // Re-append ke DOM sesuai urutan baru
       cards.forEach(c => grid.appendChild(c));
     });
   }
-
+  
   // ==========================================================
   // END EUROPE KEYWORD PRIORITY LOGIC
   // ==========================================================
-
+  
   async function fetchAllCollections(mode = 'main') {
     const COLLECTIONS = getCollectionsForMode(mode);
-
+  
     const wantedTopup = mode === 'topup' ? normalizeTopupCategory(sessionStorage.getItem('category')) : '';
-
+  
     const results = await Promise.all(
       COLLECTIONS.map(async ({ handle, title }) => {
         let items = await fetchCollectionAllPages(handle);
-
+  
         // FILTER TOPUP BERDASARKAN sessionStorage.category
         if (mode === 'topup' && wantedTopup) {
           items = items.filter((it) => normalizeTopupCategory(it.category_raw) === wantedTopup);
         }
-
+  
         // ✅ gSIM FIRST (untuk semua mode: topup, main, category)
         // items = sortItemsGsimFirst(items);
-
+  
         return { handle, title, items };
       })
     );
-
+  
     return results;
   }
-
+  
   function escapeHtml(str = '') {
     return String(str).replace(
       /[&<>"']/g,
@@ -772,12 +775,78 @@
         }[m])
     );
   }
-
+  
   // ✅ khusus buat text (nama negara dll) biar "_" tampil jadi spasi
   function escapeText(str = '') {
     return escapeHtml(String(str).replace(/_/g, ' '));
   }
+  
+  function renderRatingStars(ratingValue) {
+    const rating = Math.max(0, Math.min(5, parseFloat(ratingValue) || 0));
+  
+    return Array.from({ length: 5 }, (_, i) => {
+      const starIndex = i + 1;
+      let fill = 0;
+  
+      if (rating >= starIndex) {
+        fill = 100;
+      } else if (rating > i) {
+        fill = Math.round((rating - i) * 100);
+      }
+  
+      return `
+        <span
+          aria-hidden="true"
+          style="
+            display:inline-block;
+            background:linear-gradient(90deg, #eab308 ${fill}%, #cbd5e1 ${fill}%);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+          "
+        >★</span>
+      `;
+    }).join('');
+  }
 
+  function getRatingValue(item = {}) {
+  const candidates = [
+    item.growave_raw_rating,
+    item.growave_rating,
+    item.growave_average_rating,
+    item.rating,
+    item.rating_value,
+    item.review_rating,
+    item.average_rating,
+  ];
+
+  for (const value of candidates) {
+    if (value === null || value === undefined) continue;
+
+    const normalized = String(value).trim().replace(',', '.');
+    if (!normalized || ['null', 'undefined', '-'].includes(normalized.toLowerCase())) continue;
+
+    const number = parseFloat(normalized);
+    if (!Number.isNaN(number) && number > 0) {
+      return String(Math.max(0, Math.min(5, number)));
+    }
+  }
+
+  return '';
+}
+
+function formatRatingText(ratingValue) {
+  const number = parseFloat(String(ratingValue).replace(',', '.'));
+  if (Number.isNaN(number)) return '';
+
+  return number.toFixed(1);
+}
+
+function shouldShowEuropeRating(item = {}, itemTitle = '') {
+  const title = `${itemTitle || ''} ${item?.title || ''} ${item?.name || ''}`;
+  return isEuropeProduct(title);
+}
+  
   function stripTopUpPrefix(str = '') {
     return (
       String(str)
@@ -786,64 +855,64 @@
         .trim()
     );
   }
-
+  
   // =========================
   // LOCALE HELPERS (EN/ID)
   // =========================
   function getLocale() {
     return (window.Shopify && Shopify.locale) || document.documentElement.lang || 'en';
   }
-
+  
   function getCoverageLabelLines(opts = {}) {
     const locale = getLocale();
     const isID = String(locale).toLowerCase().startsWith('id');
-
+  
     const defaultLabel = "{{ 'product.card.coverage' | t | escape }}";
-
+  
     if (opts.labelMode === 'coverage_transit') {
       return isID ? { line1: 'Cakupan', line2: '+ Transit' } : { line1: 'Coverage', line2: '+ Transit' };
     }
-
+  
     return { line1: defaultLabel, line2: '' };
   }
-
+  
   function getCountryNameByLocale(entry, locale) {
     const c = entry?.country || {};
     const isID = String(locale).toLowerCase().startsWith('id');
-
+  
     const raw = isID
       ? c.country_name_id || c.country_id || c.name_id || c.title_id || c.country_name || c.name || c.title
       : c.country_name_en || c.country_en || c.name_en || c.title_en || c.country_name || c.name || c.title;
-
+  
     const fallback = (Array.isArray(c.country_alias) ? c.country_alias[0] : '') || entry?.country_name || '';
-
+  
     return String(raw || fallback || '').trim();
   }
-
+  
   function normalizeUrl(url = '') {
     if (typeof url !== 'string') return '';
     if (url.startsWith('//')) return 'https:' + url;
     return url;
   }
-
+  
   function normalizeImageSrc(src = '') {
     const s = normalizeUrl(src);
     return escapeHtml(String(s).replace(/\s+/g, '_'));
   }
-
+  
   function getSearchKey(item) {
     return Array.isArray(item?.search_key) ? item.search_key : [];
   }
-
+  
   function getCountryFlag(entry) {
     const flag = entry?.country?.country_flag;
     return typeof flag === 'string' && flag.length ? flag : null;
   }
-
+  
   function getValidFlags(item) {
     return getSearchKey(item).map(getCountryFlag).filter(Boolean);
   }
-
+  
   // =========================
   // COVERAGE HELPERS
   // =========================
@@ -858,7 +927,7 @@
       '';
     return String(raw || '').trim();
   }
-
+  
   function getPrimaryCountry(item) {
     const sk = getSearchKey(item);
     for (const entry of sk) {
@@ -868,35 +937,35 @@
     }
     return null;
   }
-
+  
   function getCoverageItems(item, opts = {}) {
     const sk = getSearchKey(item);
-
+  
     const primary = opts.excludePrimary ? getPrimaryCountry(item) : null;
     const primaryKey = primary ? `${primary.name}__${primary.flag}` : null;
-
+  
     const map = new Map();
     sk.forEach((entry) => {
       const flag = getCountryFlag(entry);
       const name = getCountryName(entry);
       if (!flag || !name) return;
-
+  
       const key = `${name}__${flag}`;
       if (primaryKey && key === primaryKey) return;
-
+  
       if (!map.has(key)) map.set(key, { name, flag });
     });
-
+  
     return Array.from(map.values());
   }
-
+  
   function renderCoverageBack(item, opts = {}) {
     let cov = getCoverageItems(item, opts);
-
+  
     if (!cov.length && opts.excludePrimary) {
       cov = getCoverageItems(item, { ...opts, excludePrimary: false });
     }
-
+  
     if (!cov.length) {
       return `
       <ul class="coverage" role="list">
@@ -906,12 +975,12 @@
       </ul>
     `;
     }
-
+  
     const rows = cov
       .map((c) => {
         const src = normalizeImageSrc(c.flag);
         const nm = escapeText(c.name);
-
+  
         return `
             <li>
               <img src="${src}" alt="${nm}" loading="lazy" />
@@ -920,28 +989,28 @@
           `;
       })
       .join('');
-
+  
     return `
         <ul class="coverage" role="list">
           ${rows}
         </ul>
       `;
   }
-
+  
   // =========================
   // Included (dynamic) by alias -> country name EN/ID
   // =========================
   function buildCountryAliasMap(item) {
     const map = {};
     const sk = getSearchKey(item);
-
+  
     sk.forEach((entry) => {
       const c = entry?.country || {};
       const aliases = Array.isArray(c.country_alias) ? c.country_alias : [];
-
+  
       const nameEn = getCountryNameByLocale(entry, 'en');
       const nameId = getCountryNameByLocale(entry, 'id');
-
+  
       aliases.forEach((a) => {
         const key = String(a || '')
           .toLowerCase()
@@ -950,65 +1019,65 @@
         if (!map[key]) map[key] = { en: nameEn, id: nameId };
       });
     });
-
+  
     return map;
   }
-
+  
   function resolveIncludedFromQuery(cardEl, q, locale) {
     const qLower = String(q || '')
       .toLowerCase()
       .trim();
     if (!qLower) return null;
-
+  
     try {
       const raw = cardEl.getAttribute('data-country-map') || '{}';
       const map = JSON.parse(raw);
       const hit = map[qLower];
       if (!hit) return null;
-
+  
       const isID = String(locale).toLowerCase().startsWith('id');
       return isID ? hit.id : hit.en;
     } catch (e) {
       return null;
     }
   }
-
+  
   function updateIncludedBadges(rootEl, q) {
     const locale = getLocale();
     const cards = Array.from(rootEl.querySelectorAll('.product-card-container'));
     const qTrim = String(q || '').trim();
-
+  
     cards.forEach((card) => {
       const badge = card.querySelector('.included-badge');
       const countSpan = card.querySelector('.countries-count');
       if (!badge) return;
-
+  
       if (qTrim.length < 2) {
         badge.textContent = '';
         badge.classList.remove('is-visible');
         if (countSpan) countSpan.classList.remove('has-included');
         return;
       }
-
+  
       const name = resolveIncludedFromQuery(card, qTrim, locale);
-
+  
       if (!name) {
         badge.textContent = '';
         badge.classList.remove('is-visible');
         if (countSpan) countSpan.classList.remove('has-included');
         return;
       }
-
+  
       badge.textContent = `Include: ${name}`;
       badge.classList.add('is-visible');
       if (countSpan) countSpan.classList.add('has-included');
     });
   }
-
+  
   function updateSearchPageTitle(rootEl, q) {
     const titleEl = rootEl.querySelector('#searchPageTitle');
     if (!titleEl) return;
-
+  
     const trimmed = String(q || '').trim();
     if (trimmed.length >= 1) {
       titleEl.textContent = `Search Result for "${trimmed}"`;
@@ -1016,18 +1085,18 @@
       titleEl.textContent = 'All Destinations';
     }
   }
-
+  
   function renderCoverageFieldFront(item, opts = {}) {
     const cov = getCoverageItems(item, opts);
-
+  
     const minShow = opts.minCount !== undefined ? opts.minCount : 1;
     if (cov.length < minShow) return '';
-
+  
     const iconWorld = "{{ 'icon-park-outline_world.svg' | asset_url }}";
     const count = cov.length;
-
+  
     const { line1, line2 } = getCoverageLabelLines(opts);
-
+  
     const labelHtml = line2
       ? `
       <div class="flex flex-col leading-tight">
@@ -1036,7 +1105,7 @@
       </div>
     `
       : `<h3 class="text-primary font-bold leading-tight">${escapeHtml(line1)}</h3>`;
-
+  
     return `
     <div class="py-4 w-full flex items-center justify-between border-t border-slate-300">
       <div class="flex items-center gap-2">
@@ -1045,7 +1114,7 @@
         </div>
         ${labelHtml}
       </div>
-
+  
       <div class="country-total-atribut">
         <button class="flipped-trigger w-full cursor-pointer" type="button">
           <span class="countries-count font-semibold text-secondary leading-relaxed">
@@ -1057,7 +1126,7 @@
     </div>
   `;
   }
-
+  
   function hasValue(v) {
     if (v === null || v === undefined) return false;
     const s = String(v).trim();
@@ -1067,15 +1136,15 @@
     if (s === '-') return false;
     return true;
   }
-
+  
   function renderBenefits(item, opts = {}) {
     const benefits = [];
-
+  
     const catRaw = String(item.category_raw || item.category || '')
       .toLowerCase()
       .replace(/\s+/g, '_');
     const isAirportTransfer = catRaw === 'airport_transfer' || catRaw === 'airport-transfer';
-
+  
     if (isAirportTransfer && hasValue(item.option1)) {
       benefits.push({
         iconSnippet: `{% render 'icon-people', class: 'text-primary w-[24px] h-[24px]' %}`,
@@ -1083,13 +1152,13 @@
         value: item.option1,
       });
     }
-
+  
     benefits.push({
       icon: "{{ 'icon-dollar.svg' | asset_url }}",
       label: t('price'),
       valueHtml: `${escapeHtml(t('price_from_prefix'))} <span class="money">${escapeHtml(item.price_min_money_with_currency)}</span>${IS_AU ? ' AUD' : ''}`,
     });
-
+  
     // ✅ render coverage dulu, supaya kita tahu ada coverage atau tidak
     let coverageHtml = renderCoverageFieldFront(item, opts);
     if (!coverageHtml.trim() && opts.excludePrimary) {
@@ -1101,19 +1170,19 @@
       });
     }
     const hasCoverage = Boolean((coverageHtml || '').trim());
-
+  
     return `
     <div class="space-y-0">
       ${coverageHtml}
-
+  
       ${benefits
         .map((b, idx) => {
           const isLast = idx === benefits.length - 1;
-
+  
           // ✅ kalau TIDAK ADA coverage dan benefit cuma 1 baris (price doang),
           // kasih border-b biar ada garis bawah sebelum tombol
           const needsBottomBorder = !hasCoverage && benefits.length === 1 && isLast;
-
+  
           return `
             <div class="py-3 w-full flex items-center justify-between border-t border-slate-300 ${
               needsBottomBorder ? 'border-b border-slate-300' : ''
@@ -1138,12 +1207,12 @@
     </div>
   `;
   }
-
+  
   function getCategoryLabel(item, mode) {
     if (mode === 'topup') return 'Top Up Plan';
     return item?.category || '';
   }
-
+  
   function normalizeType(raw = '') {
     return String(raw || 'undefined')
       .trim()
@@ -1151,11 +1220,11 @@
       .replace(/_/g, ' ')
       .replace(/\s+/g, '-');
   }
-
+  
   function collectAllTypes(results = []) {
     const set = new Set();
     const HIDE_TABS = new Set(['top-up-plan', 'top-up', 'topup-plan', 'topup']);
-
+  
     results.forEach((col) => {
       (col.items || []).forEach((item) => {
         const t = normalizeType(item.category);
@@ -1164,17 +1233,17 @@
         set.add(t);
       });
     });
-
+  
     const desired = ['esim', 'sim-card', 'insurance'];
     const types = Array.from(set);
     const ordered = desired.filter((t) => types.includes(t));
     const extras = types.filter((t) => !desired.includes(t));
     return [...ordered, ...extras];
   }
-
+  
   function getCardSearchText(item) {
     const sk = Array.isArray(item?.search_key) ? item.search_key : [];
-
+  
     // Helper: sertakan versi asli + versi underscore-diganti-spasi
     function withNormalized(val) {
       const s = String(val || '').trim();
@@ -1182,7 +1251,7 @@
       const normalized = s.replace(/_/g, ' ');
       return normalized !== s ? [s, normalized] : [s];
     }
-
+  
     const countryTokens = sk
       .flatMap((x) => {
         const c = x?.country || {};
@@ -1190,7 +1259,7 @@
         return [c.country_en, c.country_id, ...aliases].flatMap(withNormalized);
       })
       .filter(Boolean);
-
+  
     const regionTokens = sk
       .flatMap((x) => {
         const regions = Array.isArray(x?.regions) ? x.regions : x?.region ? [x.region] : [];
@@ -1200,18 +1269,18 @@
         });
       })
       .filter(Boolean);
-
+  
     const title = item?.title ? [item.title] : [];
     const handle = item?.handle ? [item.handle] : [];
     const category = item?.category ? [item.category] : [];
-
+  
     return [...title, ...handle, ...category, ...countryTokens, ...regionTokens].join(' ').toLowerCase();
   }
-
+  
   function renderCountryVisual(item, opts = {}) {
     const flags = getValidFlags(item);
     const total = flags.length;
-
+  
     if (opts.primaryOnly) {
       const primary = getPrimaryCountry(item);
       if (primary?.flag) {
@@ -1223,7 +1292,7 @@
           `;
       }
     }
-
+  
     if (total === 0) {
       return `
           <div class="w-[50px] h-[50px] shrink-0 border border-slate-300 overflow-hidden rounded-[15px]">
@@ -1231,25 +1300,25 @@
           </div>
         `;
     }
-
+  
     if (total === 1) {
       const src = normalizeImageSrc(flags[0]);
-
+  
       return `
           <div class="w-[50px] h-[50px] shrink-0 border border-slate-300 overflow-hidden rounded-[15px]">
             <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
           </div>
         `;
     }
-
+  
     const showCounter = total > 4;
     const displayFlags = showCounter ? flags.slice(0, 3) : flags.slice(0, 4);
     const remaining = total - 3;
-
+  
     const cellsHtml = [
       ...displayFlags.map((f) => {
         const src = normalizeImageSrc(f);
-
+  
         return `
             <div class="border border-slate-300 bg-neutral rounded-[5px] h-[24px] w-[24px] overflow-hidden shrink-0">
               <img src="${src}" alt="flag" class="w-full h-full object-cover" loading="lazy" />
@@ -1266,68 +1335,68 @@
           ]
         : []),
     ].join('');
-
+  
     return `
         <div class="w-[50px] h-[50px] gap-0.5 items-center" style="display:grid; grid-template-columns:repeat(2,1fr);">
           ${cellsHtml}
         </div>
       `;
   }
-
+  
   // =========================
   // ✅ NEW: SORTING SINGLE-COUNTRY (prioritize TITLE match)
   // =========================
   function normalizeQ(s = '') {
     return String(s).toLowerCase().trim().replace(/\s+/g, ' ');
   }
-
+  
   function scoreTitleMatch(title = '', q = '') {
     const t = normalizeQ(title);
     const k = normalizeQ(q);
     if (!k) return 0;
-
+  
     if (t === k) return 1000; // exact
     if (t.startsWith(k)) return 900; // starts with
-
+  
     const safe = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const re = new RegExp(`\\b${safe}\\b`, 'i');
     if (re.test(t)) return 800; // whole-word
-
+  
     if (t.includes(k)) return 700; // contains
     return 0;
   }
-
+  
   function sortSingleCountryByTitle(rootEl, q) {
     const keyword = String(q || '').trim();
     if (keyword.length < 2) return;
-
+  
     const wrappers = Array.from(rootEl.querySelectorAll('.collection-wrapper'));
-
+  
     wrappers.forEach((wrapper) => {
       const grid = wrapper.querySelector('.grid');
       if (!grid) return;
-
+  
       const cards = Array.from(grid.querySelectorAll('.product-card-container'));
-
+  
       // ✅ DIHAPUS: filter single-country saja — sekarang semua collection ikut di-sort
       if (!cards.length) return;
-
+  
       cards.forEach((c, idx) => (c.__origIdx = idx));
-
+  
       cards.sort((a, b) => {
         const ta = a.getAttribute('data-title') || '';
         const tb = b.getAttribute('data-title') || '';
         const sa = scoreTitleMatch(ta, keyword);
         const sb = scoreTitleMatch(tb, keyword);
-
+  
         if (sb !== sa) return sb - sa;
         return (a.__origIdx ?? 0) - (b.__origIdx ?? 0);
       });
-
+  
       cards.forEach((c) => grid.appendChild(c));
     });
   }
-
+  
   // =========================
   // FILTER BAR
   // =========================
@@ -1343,7 +1412,7 @@
                   Need extra data during your travels? We got you covered! Top up your SIM Card right away on Global Komunika.
                 </p>
               </div>
-
+  
               <div class="relative">
                 <input
                   type="search"
@@ -1351,7 +1420,7 @@
                   placeholder="Search Your Destination"
                   class="w-full rounded-[15px] pl-[20px] pr-[65px] py-[15px] text-primary placeholder:text-primary focus:placeholder:text-primary/80 text-primary focus:outline-none"
                 />
-
+  
                 <div class="absolute right-[5px] top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center bg-primary rounded-[15px] w-[45px] h-[45px] shrink-0 text-neutral">
                   {% render 'icon-search' %}
                 </div>
@@ -1360,19 +1429,19 @@
           </div>
         `;
     }
-
+  
     const LABELS = {
       'sim-card': "{{ 'product.sim_type.sim_card' | t }}",
       esim: "{{ 'product.sim_type.esim' | t }}",
       insurance: "{{ 'product.card.insurance_label' | t }}",
       'airport-transfer': 'Airport Transfer',
     };
-
+  
     const CATEGORY_TABS = ['esim', 'sim-card', 'insurance'];
-
+  
     const finalTabs =
       mode === 'category' ? CATEGORY_TABS.filter((t) => types.includes(t) || CATEGORY_TABS.includes(t)) : types;
-
+  
     const tabButtons =
       mode === 'category'
         ? [
@@ -1415,7 +1484,7 @@
                 `
             ),
           ].join('');
-
+  
     return `
         <div class="w-full mb-5">
           <div class="w-full md:max-w-[50%] mt-[20px] mb-[50px]">
@@ -1425,7 +1494,7 @@
                 Find the perfect Internet Data for your travel and enjoy internet connection for more than 180 Countries
               </p>
             </div>
-
+  
             <div class="relative">
               <input
                 type="search"
@@ -1433,52 +1502,52 @@
                 placeholder="Search Your Destination"
                 class="w-full rounded-[15px] pl-[20px] pr-[65px] py-[15px] text-primary placeholder:text-primary focus:placeholder:text-primary/80 text-primary focus:outline-none"
               />
-
+  
               <div class="absolute right-[10px] top-1/2 -translate-y-1/2 cursor-pointer flex items-center justify-center bg-primary rounded-[15px] w-[45px] h-[45px] shrink-0 text-neutral">
                 {% render 'icon-search' %}
               </div>
             </div>
           </div>
-
+  
           <p class="text-primary text-[14px] font-semibold">Category:</p>
           <div class="tab-scroll-wrap">
             <button class="tab-scroll-arrow tab-scroll-arrow--left" type="button" aria-label="Scroll left" data-tabs-left>
               {% render 'icon-arrow-left', class: 'text-primary' %}
             </button>
-
+  
             <div class="w-full max-w-full tab-scroll py-2 px-1 flex items-center gap-2 overflow-x-auto overflow-y-hidden whitespace-nowrap" data-tabs-scroll>
               ${tabButtons}
             </div>
-
+  
             <button class="tab-scroll-arrow tab-scroll-arrow--right" type="button" aria-label="Scroll right" data-tabs-right>
               {% render 'icon-arrow-right', class: 'text-primary' %}
             </button>
-
+  
             <div class="tab-scroll-fade tab-scroll-fade--left" aria-hidden="true"></div>
             <div class="tab-scroll-fade tab-scroll-fade--right" aria-hidden="true"></div>
           </div>
         </div>
       `;
   }
-
+  
   // =========================
   // ✅ UPDATED: wireFilterAndSearch (topup mode supported)
   // =========================
-
+  
   function getSearchIconHtml() {
     return `{% render 'icon-search' %}`;
   }
-
+  
   function getLoadingIconHtml() {
     return `{% render 'loading', class: 'text-neutral h-[24px] w-[24px]' %}`;
   }
-
+  
   function setSearchButtonLoading(rootEl, isLoading) {
     const btn = rootEl.querySelector('#realtimeSearchInput')?.parentElement?.querySelector('.absolute');
     if (!btn) return;
     btn.innerHTML = isLoading ? getLoadingIconHtml() : getSearchIconHtml();
   }
-
+  
   // ✅ NEW: Helper yang menjalankan semua logic Europe setelah search/filter berubah
   function applyEuropePriority(rootEl, q = '') {
     const keyword = String(q || '').trim();
@@ -1491,17 +1560,17 @@
       reorderCollectionsForEurope(rootEl, '');
     }
   }
-
+  
   function wireFilterAndSearch(rootEl, mode = 'main') {
     // ✅ TOPUP: tanpa tabs, tampil semua produk top-up-plan + optional search filter
     if (mode === 'topup') {
       const searchInput = rootEl.querySelector('#realtimeSearchInput');
       const wrappers = Array.from(rootEl.querySelectorAll('.collection-wrapper'));
       const cards = Array.from(rootEl.querySelectorAll('.product-card-container'));
-
+  
       const state = { q: '' };
       let debounce = null;
-
+  
       function setUrlQueryKeyword(qValue) {
         const u = new URL(window.location.href);
         const v = String(qValue || '').trim();
@@ -1509,30 +1578,30 @@
         else u.searchParams.delete('q');
         history.replaceState(null, '', u);
       }
-
+  
       function apply() {
         const q = (state.q || '').trim().toLowerCase();
         const keywordActive = q.length >= 2;
-
+  
         cards.forEach((card) => {
           const hay = (card.getAttribute('data-search-text') || '').toLowerCase();
           const matchSearch = !keywordActive || hay.includes(q);
           card.style.display = matchSearch ? 'flex' : 'none';
         });
-
+  
         wrappers.forEach((w) => {
           const inside = Array.from(w.querySelectorAll('.product-card-container'));
           const anyVisible = inside.some((c) => c.style.display !== 'none');
           w.style.display = anyVisible ? 'block' : 'none';
         });
-
+  
         const emptyEl = rootEl.querySelector('#noResults');
         if (emptyEl) {
           const anyCardVisible = cards.some((c) => c.style.display !== 'none');
           emptyEl.style.display = anyCardVisible ? 'none' : 'flex';
         }
       }
-
+  
       // preload dari URL (?q=)
       if (searchInput) {
         const urlQ = new URL(window.location.href).searchParams.get('q') || '';
@@ -1540,7 +1609,7 @@
           searchInput.value = urlQ;
           state.q = urlQ;
         }
-
+  
         searchInput.addEventListener('input', (e) => {
           const val = e.target.value || '';
           clearTimeout(debounce);
@@ -1554,7 +1623,7 @@
             setSearchButtonLoading(rootEl, false);
           }, 80);
         });
-
+  
         window.addEventListener('popstate', () => {
           const qFromUrl = new URL(window.location.href).searchParams.get('q') || '';
           searchInput.value = qFromUrl;
@@ -1564,32 +1633,32 @@
           sortSingleCountryByTitle(rootEl, qFromUrl);
         });
       }
-
+  
       apply();
       updateIncludedBadges(rootEl, searchInput ? searchInput.value : '');
       sortSingleCountryByTitle(rootEl, searchInput ? searchInput.value : '');
       return; // ✅ stop di sini biar logic tabs tidak jalan
     }
-
+  
     const tabs = Array.from(rootEl.querySelectorAll('.filter-tab'));
     const tabScrollUI = wireTabScrollArrows(rootEl);
     const searchInput = rootEl.querySelector('#realtimeSearchInput');
     const wrappers = Array.from(rootEl.querySelectorAll('.collection-wrapper'));
     const cards = Array.from(rootEl.querySelectorAll('.product-card-container'));
-
+  
     const CATEGORY_TABS = ['esim', 'sim-card', 'insurance'];
     const DEFAULT_CATEGORY = 'esim';
-
+  
     // ✅ MULTI-SELECT: filter sekarang Set, bukan string tunggal
     const state = {
       filters: mode === 'category' ? new Set([DEFAULT_CATEGORY]) : new Set(['all']),
       q: '',
     };
-
+  
     function setActiveTab(filterOrSet) {
       // support string (single) atau Set (multi)
       const activeSet = filterOrSet instanceof Set ? filterOrSet : new Set([filterOrSet]);
-
+  
       tabs.forEach((btn) => {
         const f = (btn.getAttribute('data-filter') || '').trim();
         const isActive = activeSet.has(f);
@@ -1597,37 +1666,37 @@
         if (isActive) tabScrollUI.scrollIntoView(btn);
       });
     }
-
+  
     function updateTabsVisibility() {
       const q = (state.q || '').trim().toLowerCase();
       const keywordActive = q.length >= 2;
-
+  
       const counts = {};
       let totalMatches = 0;
-
+  
       cards.forEach((card) => {
         const cardType = card.getAttribute('data-sim-type') || '';
         const hay = (card.getAttribute('data-search-text') || '').toLowerCase();
-
+  
         const matchSearch = !keywordActive || hay.includes(q);
         if (!matchSearch) return;
-
+  
         totalMatches++;
         counts[cardType] = (counts[cardType] || 0) + 1;
       });
-
+  
       tabs.forEach((btn) => {
         const f = (btn.getAttribute('data-filter') || '').trim();
-
+  
         if (f === 'all') {
           btn.style.display = totalMatches > 0 ? '' : 'none';
           return;
         }
-
+  
         const c = counts[f] || 0;
         btn.style.display = c > 0 ? '' : 'none';
       });
-
+  
       // ✅ Multi-select: hapus filter yang tersembunyi (tidak ada hasil)
       state.filters.forEach((f) => {
         if (f === 'all') return;
@@ -1636,46 +1705,46 @@
           state.filters.delete(f);
         }
       });
-
+  
       // ✅ Fallback ke "All" kalau kosong
       if (state.filters.size === 0) {
         state.filters = new Set(['all']);
       }
-
+  
       setActiveTab(state.filters);
     }
-
+  
     function apply() {
       updateTabsVisibility();
       tabScrollUI.update();
-
+  
       const q = (state.q || '').trim().toLowerCase();
       const keywordActive = q.length >= 2;
-
+  
       cards.forEach((card) => {
         const cardType = card.getAttribute('data-sim-type') || '';
         const hay = card.getAttribute('data-search-text') || '';
-
+  
         const filters = state.filters;
         const matchType = filters.has('all') || filters.size === 0 || filters.has(cardType);
         const matchSearch = !keywordActive || hay.includes(q);
-
+  
         card.style.display = matchType && matchSearch ? 'flex' : 'none';
       });
-
+  
       wrappers.forEach((w) => {
         const inside = Array.from(w.querySelectorAll('.product-card-container'));
         const anyVisible = inside.some((c) => c.style.display !== 'none');
         w.style.display = anyVisible ? 'block' : 'none';
       });
-
+  
       const emptyEl = rootEl.querySelector('#noResults');
       if (emptyEl) {
         const anyCardVisible = cards.some((c) => c.style.display !== 'none');
         emptyEl.style.display = anyCardVisible ? 'none' : 'flex';
       }
     }
-
+  
     function setUrlQueryKeyword(qValue) {
       const u = new URL(window.location.href);
       const v = String(qValue || '').trim();
@@ -1683,65 +1752,65 @@
       else u.searchParams.delete('q');
       history.replaceState(null, '', u);
     }
-
+  
     function normalizeCategoryParam(v) {
       const raw = String(v || '')
         .trim()
         .toLowerCase();
       return raw.replace(/_/g, ' ').replace(/\s+/g, '-');
     }
-
+  
     function getCategoryFromUrl() {
       const u = new URL(window.location.href);
       const qCat = normalizeCategoryParam(u.searchParams.get('q'));
       if (CATEGORY_TABS.includes(qCat)) return qCat;
       return DEFAULT_CATEGORY;
     }
-
+  
     function setUrlCategory(catValue) {
       const u = new URL(window.location.href);
       const v = normalizeCategoryParam(catValue);
       u.searchParams.set('q', v);
       history.replaceState(null, '', u);
     }
-
+  
     tabs.forEach((btn) => {
       btn.addEventListener('click', () => {
         const clicked =
           (btn.getAttribute('data-filter') || '').trim() || (mode === 'category' ? DEFAULT_CATEGORY : 'all');
-
+  
         if (clicked === 'all') {
           state.filters = new Set(['all']);
         } else {
           state.filters.delete('all');
-
+  
           if (state.filters.has(clicked)) {
             state.filters.delete(clicked);
           } else {
             state.filters.add(clicked);
           }
-
+  
           if (state.filters.size === 0) {
             state.filters = new Set(['all']);
           }
         }
-
+  
         setActiveTab(state.filters);
         apply();
         sortSingleCountryByTitle(rootEl, state.q);
-
+  
         // ✅ NEW: Apply Europe priority after tab change
         applyEuropePriority(rootEl, state.q);
-
+  
         if (mode === 'category') {
           const firstFilter = Array.from(state.filters)[0] || DEFAULT_CATEGORY;
           setUrlCategory(firstFilter);
         }
       });
     });
-
+  
     let debounce = null;
-
+  
     if (searchInput) {
       if (mode === 'main') {
         const urlQ = new URL(window.location.href).searchParams.get('q') || '';
@@ -1749,7 +1818,7 @@
           searchInput.value = urlQ;
           state.q = urlQ;
         }
-
+  
         searchInput.addEventListener('input', (e) => {
           const val = e.target.value || '';
           clearTimeout(debounce);
@@ -1762,22 +1831,22 @@
             setUrlQueryKeyword(val);
             setSearchButtonLoading(rootEl, false);
             updateSearchPageTitle(rootEl, val);
-
+  
             // ✅ NEW: Apply Europe priority after search
             applyEuropePriority(rootEl, val);
           }, 80);
         });
-
+  
         window.addEventListener('popstate', () => {
           const qFromUrl = new URL(window.location.href).searchParams.get('q') || '';
           searchInput.value = qFromUrl;
           state.q = qFromUrl;
           apply();
-
+  
           sortSingleCountryByTitle(rootEl, qFromUrl);
           updateIncludedBadges(rootEl, qFromUrl);
           updateSearchPageTitle(rootEl, qFromUrl);
-
+  
           // ✅ NEW: Apply Europe priority on popstate
           applyEuropePriority(rootEl, qFromUrl);
         });
@@ -1792,26 +1861,26 @@
             sortSingleCountryByTitle(rootEl, val);
             updateIncludedBadges(rootEl, val);
             setSearchButtonLoading(rootEl, false);
-
+  
             // ✅ NEW: Apply Europe priority after search (category mode)
             applyEuropePriority(rootEl, val);
           }, 80);
         });
-
+  
         window.addEventListener('popstate', () => {
           const cat = getCategoryFromUrl();
           state.filter = cat;
           setActiveTab(cat);
           apply();
-
+  
           sortSingleCountryByTitle(rootEl, state.q);
-
+  
           // ✅ NEW: Apply Europe priority on popstate (category mode)
           applyEuropePriority(rootEl, state.q);
         });
       }
     }
-
+  
     if (mode === 'category') {
       const urlCat = getCategoryFromUrl();
       const initCat = CATEGORY_TABS.includes(urlCat) ? urlCat : 'all';
@@ -1821,34 +1890,34 @@
       state.filters = new Set(['all']);
       setActiveTab(state.filters);
     }
-
+  
     apply();
-
+  
     const initialQ = searchInput ? searchInput.value : '';
     updateIncludedBadges(rootEl, initialQ);
-
+  
     sortSingleCountryByTitle(rootEl, initialQ);
     updateSearchPageTitle(rootEl, initialQ);
-
+  
     // ✅ NEW: Apply Europe priority on initial render
     applyEuropePriority(rootEl, initialQ);
   }
-
+  
   function wireTabScrollArrows(rootEl) {
     const scroller = rootEl.querySelector('[data-tabs-scroll]');
     const btnLeft = rootEl.querySelector('[data-tabs-left]');
     const btnRight = rootEl.querySelector('[data-tabs-right]');
     const fadeLeft = rootEl.querySelector('.tab-scroll-fade--left');
     const fadeRight = rootEl.querySelector('.tab-scroll-fade--right');
-
+  
     if (!scroller || !btnLeft || !btnRight) return { update: () => {}, scrollIntoView: () => {} };
-
+  
     const getStep = () => Math.max(220, Math.floor(scroller.clientWidth * 0.7));
-
+  
     function update() {
       const maxScroll = scroller.scrollWidth - scroller.clientWidth;
       const canScroll = maxScroll > 4;
-
+  
       if (!canScroll) {
         btnLeft.classList.remove('is-visible');
         btnRight.classList.remove('is-visible');
@@ -1856,54 +1925,54 @@
         fadeRight && fadeRight.classList.remove('is-visible');
         return;
       }
-
+  
       const atStart = scroller.scrollLeft <= 2;
       const atEnd = scroller.scrollLeft >= maxScroll - 2;
-
+  
       btnLeft.classList.toggle('is-visible', !atStart);
       btnRight.classList.toggle('is-visible', !atEnd);
-
+  
       fadeLeft && fadeLeft.classList.toggle('is-visible', !atStart);
       fadeRight && fadeRight.classList.toggle('is-visible', !atEnd);
     }
-
+  
     const rafUpdate = () => requestAnimationFrame(update);
-
+  
     scroller.addEventListener('scroll', rafUpdate, { passive: true });
     window.addEventListener('resize', rafUpdate);
-
+  
     btnLeft.addEventListener('click', () => {
       scroller.scrollBy({ left: -getStep(), behavior: 'smooth' });
     });
-
+  
     btnRight.addEventListener('click', () => {
       scroller.scrollBy({ left: getStep(), behavior: 'smooth' });
     });
-
+  
     function scrollIntoView(activeBtn) {
       if (!activeBtn) return;
       const btnRect = activeBtn.getBoundingClientRect();
       const scRect = scroller.getBoundingClientRect();
       const padding = 44;
-
+  
       if (btnRect.left < scRect.left + padding || btnRect.right > scRect.right - padding) {
         const delta = btnRect.left - scRect.left - (scRect.width / 2 - btnRect.width / 2);
         scroller.scrollBy({ left: delta, behavior: 'smooth' });
       }
     }
-
+  
     update();
-
+  
     return { update, scrollIntoView };
   }
-
+  
   function resetCtaLoadingState() {
     document.querySelectorAll('a.js-cta-loading[data-loading="1"]').forEach((a) => {
       if (a.dataset.safetyTimer) {
         clearTimeout(Number(a.dataset.safetyTimer));
         delete a.dataset.safetyTimer;
       }
-
+  
       a.dataset.loading = '0';
       a.removeAttribute('aria-busy');
       a.style.pointerEvents = '';
@@ -1911,23 +1980,23 @@
       a.innerHTML = a.dataset.originalHtml || a.innerHTML;
     });
   }
-
+  
   if (!window.__ctaResetBound) {
     window.__ctaResetBound = true;
-
+  
     window.addEventListener('pageshow', () => {
       resetCtaLoadingState();
     });
-
+  
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') resetCtaLoadingState();
     });
   }
-
+  
   function wireCtaLoading(rootEl) {
     if (!rootEl) return;
     const links = Array.from(rootEl.querySelectorAll('a.js-cta-loading'));
-
+  
     links.forEach((a) => {
       a.addEventListener('click', (e) => {
         if (e.button !== 0) return;
@@ -1936,27 +2005,27 @@
           e.preventDefault();
           return;
         }
-
+  
         const url = a.href;
         if (!url || url === '#') return;
-
+  
         a.dataset.loading = '1';
         a.setAttribute('aria-busy', 'true');
         a.style.pointerEvents = 'none';
         a.style.opacity = '0.9';
-
+  
         if (!a.dataset.originalHtml) {
           a.dataset.originalHtml = a.innerHTML;
         }
-
+  
         a.innerHTML = `${LOADING_ICON_HTML}<span class="ml-2">Loading...</span>`;
       });
     });
   }
-
+  
   function wireFlip(rootEl) {
     if (!rootEl) return;
-
+  
     rootEl.querySelectorAll('.flipped-trigger').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1965,7 +2034,7 @@
         card.classList.toggle('flipped');
       });
     });
-
+  
     rootEl.querySelectorAll('.product-card-content-flip-back').forEach((back) => {
       back.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1973,14 +2042,14 @@
         if (card) card.classList.remove('flipped');
       });
     });
-
+  
     document.addEventListener('click', (event) => {
       rootEl.querySelectorAll('.product-card-container.flipped').forEach((card) => {
         if (!card.contains(event.target)) card.classList.remove('flipped');
       });
     });
   }
-
+  
   // =========================
   // CATEGORY BADGE STYLING
   // =========================
@@ -1988,13 +2057,13 @@
     if (mode === 'topup') {
       return 'background:var(--color-primary); color:var(--color-neutral);';
     }
-
+  
     const raw = String(item?.category_raw || item?.category || '')
       .toLowerCase()
       .trim()
       .replace(/\s+/g, '_')
       .replace(/-/g, '_');
-
+  
     if (raw === 'esim') {
       return 'background:var(--color-primary); color:var(--color-neutral);';
     }
@@ -2007,33 +2076,33 @@
     if (raw === 'airport_transfer') {
       return 'background:#007BB0; color:var(--color-neutral);';
     }
-
+  
     return 'background:var(--color-primary); color:var(--color-neutral);';
   }
-
+  
   // =========================
   // ✅ HELPER: Tambahkan locale prefix ke URL produk
   // =========================
   function applyLocalePrefix(url = '') {
     if (!LOCALE_PREFIX) return url;
-
+  
     if (!url || url === '#') return url;
-
+  
     if (url.startsWith(LOCALE_PREFIX + '/') || url === LOCALE_PREFIX) return url;
-
+  
     if (/^https?:\/\//i.test(url)) return url;
-
+  
     const path = url.startsWith('/') ? url : '/' + url;
     return LOCALE_PREFIX + path;
   }
-
+  
   function renderCollections(results) {
     const root = document.getElementById('collections');
     if (!root) return;
-
+  
     const skeleton = root.querySelector('#collections-skeleton');
     if (skeleton) skeleton.remove();
-
+  
     const visible = (results ?? []).filter((col) => (col.items ?? []).length > 0);
     if (visible.length === 0) {
       root.innerHTML = `
@@ -2050,32 +2119,34 @@
         `;
       return;
     }
-
+  
     const allTypes = collectAllTypes(visible);
     const mode = (root.getAttribute('data-search-type') || 'main').trim().toLowerCase();
     const filterBarHtml = renderFilterBar(allTypes, mode);
-
+  
     const groupsHtml = visible
       .map((col, colIdx) => {
         const groupTitle = col.title ?? col.handle ?? 'Untitled';
         const isSingleCountryCollection = col.handle === 'single-country';
-
+  
         const cardsHtml = sortGsimByRegion(col.items ?? [])
           .map((item) => {
             const simTypeRaw = mode === 'topup' ? 'Top Up Plan' : item.category ?? 'Undefined';
             const simType = normalizeType(simTypeRaw);
-
+  
             const itemTitleRaw = item.title ?? item.name ?? item.handle ?? 'Untitled Item';
             const itemTitle = mode === 'topup' ? stripTopUpPrefix(itemTitleRaw) : itemTitleRaw;
-
+  
             const rawHref = item.url ?? item.href ?? (item.handle ? `/products/${item.handle}` : '#');
             const href = applyLocalePrefix(rawHref);
-
+  
             const searchText = getCardSearchText(item);
-
+  
             const countryMap = buildCountryAliasMap(item);
             const countryMapStr = escapeHtml(JSON.stringify(countryMap));
-
+            const ratingValue = getRatingValue(item);
+            const showRating = ratingValue && shouldShowEuropeRating(item, itemTitle);
+  
             return `
                 <section
                   class="product-card-container bg-neutral hover:shadow-lg hover:-translate-y-[5px] transition-all rounded-[20px] p-[15px] shadow-md flex flex-col h-full"
@@ -2088,17 +2159,28 @@
                 >
                   <a href="${escapeHtml(href)}" class="w-full flex items-center gap-3 h-auto pb-3">
                     ${renderCountryVisual(item, { primaryOnly: isSingleCountryCollection })}
-
-                    <div class="min-w-0 w-full flex items-center">
+  
+                    <div class="min-w-0 w-full flex flex-col items-start">
                       <h2 class="text-[20px] text-primary font-bold leading-tight line-clamp-2 overflow-hidden">
                         <span class="text-center px-2 rounded-[10px] leading-none font-bold" style="${getCategoryBadgeStyle(
                           item,
                           mode
                         )}">${escapeText(getCategoryLabel(item, mode))}</span> ${escapeText(itemTitle)}
                       </h2>
+  
+                      ${
+                        showRating
+                          ? `
+                            <div class="flex items-center gap-1 font-medium leading-tight">
+                              <span class="inline-flex text-xl items-center">${renderRatingStars(ratingValue)}</span>
+                              <span class="text-primary text-sm mt-[2px]">${escapeText(formatRatingText(ratingValue))}</span>
+                            </div>
+                          `
+                          : ''
+                      }
                     </div>
                   </a>
-
+  
                   <div class="product-card-content">
                     <div class="product-card-content-flip-front">
                       ${renderBenefits(item, {
@@ -2107,12 +2189,12 @@
                         minCount: 1,
                       })}
                     </div>
-
+  
                     <div class="product-card-content-flip-back">
                       ${renderCoverageBack(item, { excludePrimary: isSingleCountryCollection })}
                     </div>
                   </div>
-
+  
                   <a
                     href="${escapeHtml(href)}"
                     class="js-cta-loading mt-auto flex w-full items-center justify-center bg-primary font-bold text-neutral px-5 py-4 rounded-[15px] tracking-wide hover:bg-primary/70"
@@ -2123,7 +2205,7 @@
               `;
           })
           .join('');
-
+  
         return `
             <div data-base-idx="${colIdx}" class="collection-wrapper mb-10">
               <h2 class="text-primary font-bold text-[30px] mb-6">${escapeHtml(groupTitle)}</h2>
@@ -2134,35 +2216,35 @@
           `;
       })
       .join('');
-
+  
     root.innerHTML = `
         ${filterBarHtml}
-
+  
         <div id="noResults" class="no-results" style="display:none;">
           <h3 class="no-results__title">No results found</h3>
           <p class="no-results__desc">
             We couldn't find any products for that destination. Try another country or check the spelling.
           </p>
         </div>
-
+  
         ${groupsHtml}
       `;
-
+  
     wireFilterAndSearch(root, mode);
     wireFlip(root);
     wireCtaLoading(root);
   }
-
+  
   function showLoading(rootEl) {
     rootEl.setAttribute('aria-busy', 'true');
     rootEl.classList.add('is-loading');
   }
-
+  
   function hideLoading(rootEl) {
     rootEl.setAttribute('aria-busy', 'false');
     rootEl.classList.remove('is-loading');
   }
-
+  
   function renderError(rootEl) {
     rootEl.innerHTML = `
         <div style="padding:16px; border:1px solid var(--color-border); border-radius:12px;">
@@ -2171,13 +2253,13 @@
         </div>
       `;
   }
-
+  
   (async () => {
     const root = document.getElementById('collections');
     if (!root) return;
-
+  
     showLoading(root);
-
+  
     try {
       const mode = (root.getAttribute('data-search-type') || 'main').trim().toLowerCase();
       const results = await fetchAllCollections(mode);
@@ -2201,12 +2283,26 @@
       "label": "Search Type",
       "default": "main",
       "options": [
-        { "value": "main", "label": "Main Search" },
-        { "value": "category", "label": "Category Search" },
-        { "value": "topup", "label": "Top Up Search" }
+        {
+          "value": "main",
+          "label": "Main Search"
+        },
+        {
+          "value": "category",
+          "label": "Category Search"
+        },
+        {
+          "value": "topup",
+          "label": "Top Up Search"
+        }
       ]
     }
   ],
-  "presets": [{ "name": "Main Search", "category": "Custom Sections" }]
+  "presets": [
+    {
+      "name": "Main Search",
+      "category": "Custom Sections"
+    }
+  ]
 }
 {% endschema %}

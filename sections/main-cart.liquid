@@ -37,7 +37,12 @@
       </div>
     </div>
 
-    <form action="{{ routes.cart_url }}" method="post" id="CartForm" class="wrapper md:wrapper-base">
+    <form
+      action="{{ routes.cart_url }}"
+      method="post"
+      id="CartForm"
+      class="wrapper md:wrapper-base"
+    >
       <div class="divide-y divide-slate-200">
         {% for item in cart.items %}
           {% assign p = item.product %}
@@ -72,6 +77,122 @@
           {%- elsif raw_cat == 'gSIM' -%}
             {%- assign cat_label_display = 'eSIM' -%}
           {%- endif -%}
+
+          {% assign current_variant_id = item.variant.id | plus: 0 %}
+          {% assign current_variant_price = item.variant.price | plus: 0 %}
+          {% assign current_option1 = item.variant.option1 | default: '' %}
+          {% assign current_option2 = item.variant.option2 | default: '' %}
+          {% assign current_option3 = item.variant.option3 | default: '' %}
+
+          {% assign original_variant_id = item.properties._original_variant_id
+            | default: current_variant_id
+            | plus: 0
+          %}
+          {% assign original_variant_price = current_variant_price %}
+
+          {% assign sorted_variants = item.product.variants | sort: 'price' %}
+          {% assign next_variant = blank %}
+          {% assign previous_variant = blank %}
+
+          {%- comment -%}
+            gSIM upsell rule:
+            - Product title/category gSIM only
+            - option1 = Days
+            - option2 = Data Plan
+            - Big Data hanya upgrade/downgrade ke Big Data
+            - Unlimited hanya upgrade/downgrade ke Unlimited
+            - Tidak bisa cross Big Data <-> Unlimited
+          {%- endcomment -%}
+
+          {% assign product_title_downcase = item.product.title | downcase %}
+          {% assign is_gsim_upsell = false %}
+
+          {% if product_title_downcase contains 'gsim' %}
+            {% assign is_gsim_upsell = true %}
+          {% endif %}
+
+          {% assign current_plan_title = current_option2 %}
+          {% if current_plan_title == blank %}
+            {% assign current_plan_title = data_plan_value %}
+          {% endif %}
+          {% if current_plan_title == blank %}
+            {% assign current_plan_title = item.variant.title %}
+          {% endif %}
+
+          {% assign current_plan_downcase = current_plan_title | downcase %}
+          {% assign current_plan_family = 'other' %}
+
+          {% if current_plan_downcase contains 'big data' %}
+            {% assign current_plan_family = 'big_data' %}
+          {% elsif current_plan_downcase contains 'unlimited' %}
+            {% assign current_plan_family = 'unlimited' %}
+          {% endif %}
+
+          {% for v in sorted_variants %}
+            {% assign v_id = v.id | plus: 0 %}
+            {% if v_id == original_variant_id %}
+              {% assign original_variant_price = v.price | plus: 0 %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+
+          {% if is_gsim_upsell == true and item.product.has_only_default_variant == false %}
+            {% for v in sorted_variants %}
+              {% if v.available %}
+                {% assign v_id = v.id | plus: 0 %}
+                {% assign v_price = v.price | plus: 0 %}
+
+                {% assign same_group = false %}
+
+                {%- comment -%}
+                  Base rule: Days harus sama.
+                {%- endcomment -%}
+                {% if v.option1 == current_option1 %}
+                  {% assign same_group = true %}
+                {% endif %}
+
+                {%- comment -%}
+                  Extra rule khusus gSIM:
+                  Big Data hanya Big Data.
+                  Unlimited hanya Unlimited.
+                {%- endcomment -%}
+                {% if same_group %}
+                  {% if is_gsim_upsell %}
+                    {% assign v_plan_title = v.option2 %}
+                    {% if v_plan_title == blank %}
+                      {% assign v_plan_title = v.title %}
+                    {% endif %}
+
+                    {% assign v_plan_downcase = v_plan_title | downcase %}
+                    {% assign v_plan_family = 'other' %}
+
+                    {% if v_plan_downcase contains 'big data' %}
+                      {% assign v_plan_family = 'big_data' %}
+                    {% elsif v_plan_downcase contains 'unlimited' %}
+                      {% assign v_plan_family = 'unlimited' %}
+                    {% endif %}
+
+                    {% if v_plan_family != current_plan_family %}
+                      {% assign same_group = false %}
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+
+                {% if same_group %}
+                  {% if v_id != current_variant_id and v_price > current_variant_price and next_variant == blank %}
+                    {% assign next_variant = v %}
+                  {% endif %}
+
+                  {% if v_id != current_variant_id
+                    and v_price < current_variant_price
+                    and v_price >= original_variant_price
+                  %}
+                    {% assign previous_variant = v %}
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
 
           <!-- ITEM WRAP (mobile tetap rapih, desktop seperti design yang kamu mau) -->
           <div
@@ -115,26 +236,31 @@
 
                   <div class="text-sm text-primary">
                     {{ item.final_price | money_with_currency -}}
-                    {%- if is_au %} AUD{% endif %}
+                    {%- if is_au %}
+                      AUD
+                    {%- endif %}
                   </div>
 
                   <!-- VARIANT OPTIONS -->
                   {% if item.product.has_only_default_variant == false %}
                     {% if item.variant.option1 != blank %}
                       <div class="text-sm text-primary">
-                        <span>{{ item.product.options[0] }}:</span> {{ item.variant.option1 }}
+                        <span>{{ item.product.options[0] }}:</span>
+                        {{ item.variant.option1 }}
                       </div>
                     {% endif %}
 
                     {% if item.variant.option2 != blank %}
                       <div class="text-sm text-primary">
-                        <span>{{ item.product.options[1] }}:</span> {{ item.variant.option2 }}
+                        <span>{{ item.product.options[1] }}:</span>
+                        {{ item.variant.option2 }}
                       </div>
                     {% endif %}
 
                     {% if item.variant.option3 != blank %}
                       <div class="text-sm text-primary">
-                        <span>{{ item.product.options[2] }}:</span> {{ item.variant.option3 }}
+                        <span>{{ item.product.options[2] }}:</span>
+                        {{ item.variant.option3 }}
                       </div>
                     {% endif %}
                   {% endif %}
@@ -142,32 +268,150 @@
                   <!-- MOBILE INFO ORDER -->
                   <div class="md:hidden">
                     {% if days_value != blank %}
-                      <div class="mt-2 text-sm text-primary"><span>Days:</span> {{ days_value }}</div>
+                      <div class="mt-2 text-sm text-primary">
+                        <span>Days:</span>
+                        {{ days_value }}
+                      </div>
                     {% endif %}
 
                     {% if data_plan_value != blank %}
-                      <div class="text-sm text-primary"><span>Data Plan:</span> {{ data_plan_value }}</div>
+                      <div class="text-sm text-primary">
+                        <span>Data Plan:</span>
+                        {{ data_plan_value }}
+                      </div>
                     {% endif %}
 
                     {% if category_value != blank %}
-                      <div class="text-sm text-primary"><span>Category:</span> {{ cat_label_display }}</div>
+                      <div class="text-sm text-primary">
+                        <span>Category:</span>
+                        {{ cat_label_display }}
+                      </div>
                     {% endif %}
                   </div>
 
                   <!-- DESKTOP INFO ORDER -->
                   <div class="hidden md:block">
                     {% if category_value != blank %}
-                      <div class="text-sm text-primary"><span>Category:</span> {{ cat_label_display }}</div>
+                      <div class="text-sm text-primary">
+                        <span>Category:</span>
+                        {{ cat_label_display }}
+                      </div>
                     {% endif %}
 
                     {% if days_value != blank %}
-                      <div class="mt-2 text-sm text-primary"><span>Days:</span> {{ days_value }}</div>
+                      <div class="mt-2 text-sm text-primary">
+                        <span>Days:</span>
+                        {{ days_value }}
+                      </div>
                     {% endif %}
 
                     {% if data_plan_value != blank %}
-                      <div class="text-sm text-primary"><span>Data Plan:</span> {{ data_plan_value }}</div>
+                      <div class="text-sm text-primary">
+                        <span>Data Plan:</span>
+                        {{ data_plan_value }}
+                      </div>
                     {% endif %}
                   </div>
+
+                  {% if next_variant != blank or previous_variant != blank %}
+                    <div class="mt-3 rounded-[12px] border border-slate-200 p-3 w-[calc(100vw-48px)] -ml-[100px] md:w-auto md:ml-0">
+                      <div class="text-sm font-medium text-primary">Recommendation</div>
+
+                      {%- assign current_locale = localization.language.iso_code
+                        | default: request.locale.iso_code
+                        | downcase
+                      -%}
+
+                      {% if next_variant != blank %}
+                        {%- assign upgrade_variant_price = next_variant.price -%}
+                        {%- assign upgrade_diff = upgrade_variant_price | minus: current_variant_price -%}
+
+                        <div class="mt-1 text-sm text-primary">
+                          {% if current_locale contains 'id' %}
+                            Tambah
+                            <strong>
+                              {{ upgrade_diff | money_with_currency -}}
+                              {%- if is_au %}AUD{% endif %}
+                            </strong>
+                            untuk upgrade ke paket yang lebih tinggi
+                          {% else %}
+                            Add
+                            <strong>
+                              {{ upgrade_diff | money_with_currency -}}
+                              {%- if is_au %}AUD{% endif %}
+                            </strong>
+                            to get more quota
+                          {% endif %}
+                        </div>
+                      {% endif %}
+
+                      {% assign upsell_button_count = 0 %}
+                      {% if previous_variant != blank %}
+                        {% assign upsell_button_count = upsell_button_count | plus: 1 %}
+                      {% endif %}
+                      {% if next_variant != blank %}
+                        {% assign upsell_button_count = upsell_button_count | plus: 1 %}
+                      {% endif %}
+
+                      <div class="mt-3 grid gap-2 {% if upsell_button_count == 2 %}grid-cols-2{% else %}grid-cols-1{% endif %} md:flex md:flex-wrap">
+                        {% if previous_variant != blank %}
+                          {% assign previous_plan_label = previous_variant.option2
+                            | default: previous_variant.title
+                            | split: ' / '
+                            | last
+                            | replace: ' Unlimited', ''
+                            | replace: ' unlimited', ''
+                            | replace: ' - Big Data', ''
+                            | replace: ' - big data', ''
+                            | strip
+                          %}
+
+                          <button
+                            type="button"
+                            class="w-full md:w-auto min-h-[56px] md:min-h-0 text-center inline-flex items-center justify-center rounded-lg bg-secondary leading-snug text-neutral border border-primary px-4 py-2 text-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            data-upsell-variant-id="{{ previous_variant.id }}"
+                            data-upsell-qty="{{ item.quantity }}"
+                            data-upsell-line-key="{{ item.key }}"
+                            data-upsell-properties="{{ item.properties | json | escape }}"
+                            data-original-variant-id="{{ original_variant_id }}"
+                            data-upsell-default-text="Previous Plan: {{ previous_plan_label | escape }}"
+                            data-upsell-loading-text="Switching..."
+                          >
+                            {% render 'icon-arrow-left', class: 'w-6 h-6 text-neutral' %}
+                            Previous Plan: {{ previous_plan_label }}
+                          </button>
+                        {% endif %}
+
+                        {% if next_variant != blank %}
+                          {% assign next_plan_label = next_variant.option2
+                            | default: next_variant.title
+                            | split: ' / '
+                            | last
+                            | replace: ' Unlimited', ''
+                            | replace: ' unlimited', ''
+                            | replace: ' - Big Data', ''
+                            | replace: ' - big data', ''
+                            | strip
+                          %}
+
+                          <button
+                            type="button"
+                            class="w-full md:w-auto min-h-[56px] md:min-h-0 text-center inline-flex items-center justify-center rounded-lg bg-primary leading-snug text-neutral border border-primary px-4 py-2 text-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            data-upsell-variant-id="{{ next_variant.id }}"
+                            data-upsell-qty="{{ item.quantity }}"
+                            data-upsell-line-key="{{ item.key }}"
+                            data-upsell-properties="{{ item.properties | json | escape }}"
+                            data-original-variant-id="{{ original_variant_id }}"
+                            data-upsell-default-text="Upgrade to: {{ next_plan_label | escape }}"
+                            data-upsell-loading-text="Upgrading..."
+                          >
+                            Upgrade to: {{ next_plan_label }}
+                            {% render 'icon-arrow-right', class: 'w-6 h-6 text-neutral' %}
+                          </button>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endif %}
                 </div>
               </div>
 
@@ -233,7 +477,9 @@
                   >
                     <span data-price-text class="text-primary">
                       {{ item.final_line_price | money_with_currency -}}
-                      {%- if is_au %} AUD{% endif %}
+                      {%- if is_au %}
+                        AUD
+                      {%- endif %}
                     </span>
 
                     <span
@@ -258,10 +504,16 @@
         <div class="flex items-center justify-between md:justify-end gap-4">
           <div class="text-sm text-primary">Estimated total</div>
 
-          <div class="text-base font-semibold text-primary relative text-right" data-cart-total aria-live="polite">
+          <div
+            class="text-base font-semibold text-primary relative text-right"
+            data-cart-total
+            aria-live="polite"
+          >
             <span data-price-text>
               {{- cart.total_price | money_with_currency -}}
-              {%- if is_au %} AUD{% endif -%}
+              {%- if is_au %}
+                AUD
+              {%- endif -%}
             </span>
 
             <span
@@ -399,6 +651,11 @@
     togglePriceBox(totalBox, isLoading);
   }
 
+  function setCartTotalLoading(isLoading) {
+    const totalBox = document.querySelector('[data-cart-total]');
+    togglePriceBox(totalBox, isLoading);
+  }
+
   async function refreshCartSection() {
     const root = getCartRoot();
     if (!root) return;
@@ -461,9 +718,196 @@
     }
   }
 
+  async function addVariantToCart(variantId, quantity, properties = {}) {
+    const payload = {
+      items: [
+        {
+          id: variantId,
+          quantity: quantity,
+        },
+      ],
+    };
+
+    if (properties && Object.keys(properties).length > 0) {
+      payload.items[0].properties = properties;
+    }
+
+    const res = await fetch('{{ routes.cart_add_url }}.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      let errText = '';
+      try {
+        errText = await res.text();
+      } catch (e) {}
+      console.error('Add replacement variant failed:', errText);
+      throw new Error('Failed to add replacement variant');
+    }
+
+    return res.json();
+  }
+
+  async function removeCartItemByKey(lineKey) {
+    const res = await fetch('{{ routes.cart_change_url }}.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        id: lineKey,
+        quantity: 0,
+      }),
+    });
+
+    if (!res.ok) {
+      let errText = '';
+      try {
+        errText = await res.text();
+      } catch (e) {}
+      console.error('Remove old variant failed:', errText);
+      throw new Error('Failed to remove old variant');
+    }
+
+    return res.json();
+  }
+
+  async function getCartJson() {
+    const res = await fetch('{{ routes.cart_url }}.js', {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to get cart');
+    }
+
+    return res.json();
+  }
+
+  async function changeCartItemByKey(lineKey, quantity) {
+    const res = await fetch('{{ routes.cart_change_url }}.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        id: lineKey,
+        quantity,
+      }),
+    });
+
+    if (!res.ok) {
+      let errText = '';
+      try {
+        errText = await res.text();
+      } catch (e) {}
+      console.error('Change cart item by key failed:', errText);
+      throw new Error('Failed to change cart item by key');
+    }
+
+    return res.json();
+  }
+
+  async function replaceUpsellVariant(variantId, quantity, lineKey, properties, triggerBtn, originalVariantId) {
+    if (cartBusy) return;
+    cartBusy = true;
+
+    setCartTotalLoading(true);
+
+    if (triggerBtn) {
+      triggerBtn.disabled = true;
+      triggerBtn.style.opacity = '0.7';
+      triggerBtn.textContent = triggerBtn.getAttribute('data-upsell-loading-text') || 'Processing...';
+    }
+
+    try {
+      const finalProperties = { ...(properties || {}) };
+
+      // Simpan original variant pertama kali sebagai batas bawah previous
+      if (!finalProperties._original_variant_id) {
+        finalProperties._original_variant_id = String(originalVariantId || '');
+      }
+
+      const cart = await getCartJson();
+
+      // Cari apakah variant tujuan sudah ada di cart.
+      // Kalau ada, jangan add line baru. Cukup tambahkan quantity ke item existing.
+      const existingTargetItem = (cart.items || []).find((cartItem) => {
+        return Number(cartItem.variant_id) === Number(variantId) && cartItem.key !== lineKey;
+      });
+
+      if (existingTargetItem) {
+        const existingQty = parseInt(existingTargetItem.quantity || '0', 10) || 0;
+        const addQty = parseInt(quantity || '1', 10) || 1;
+
+        await changeCartItemByKey(existingTargetItem.key, existingQty + addQty);
+        await removeCartItemByKey(lineKey);
+      } else {
+        await addVariantToCart(variantId, quantity, finalProperties);
+        await removeCartItemByKey(lineKey);
+      }
+
+      await refreshCartSection();
+    } catch (e) {
+      console.error(e);
+      alert('Gagal mengganti variant. Coba lagi ya.');
+
+      setCartTotalLoading(false);
+
+      if (triggerBtn) {
+        triggerBtn.disabled = false;
+        triggerBtn.style.opacity = '';
+        triggerBtn.textContent = triggerBtn.getAttribute('data-upsell-default-text') || 'Upgrade';
+      }
+    } finally {
+      cartBusy = false;
+    }
+  }
+
+  async function addUpsellVariant(variantId, quantity, triggerBtn) {
+    if (cartBusy) return;
+    cartBusy = true;
+
+    setCartTotalLoading(true);
+
+    if (triggerBtn) {
+      triggerBtn.disabled = true;
+      triggerBtn.style.opacity = '0.7';
+      triggerBtn.textContent = 'Adding...';
+    }
+
+    try {
+      await addVariantToCart(variantId, quantity);
+      await refreshCartSection();
+    } catch (e) {
+      console.error(e);
+      alert('Gagal menambahkan upgrade ke cart. Coba lagi ya.');
+
+      setCartTotalLoading(false);
+
+      if (triggerBtn) {
+        triggerBtn.disabled = false;
+        triggerBtn.style.opacity = '';
+        triggerBtn.textContent = triggerBtn.getAttribute('data-upsell-default-text') || 'Upgrade';
+      }
+    } finally {
+      cartBusy = false;
+    }
+  }
+
   document.addEventListener('click', (e) => {
     const btnQty = e.target.closest('button[data-qty]');
     const btnRemove = e.target.closest('button[data-remove]');
+    const btnUpsell = e.target.closest('button[data-upsell-variant-id]');
 
     if (btnQty) {
       const line = parseInt(btnQty.getAttribute('data-line'), 10);
@@ -486,6 +930,27 @@
     if (btnRemove) {
       const line = parseInt(btnRemove.getAttribute('data-line'), 10);
       cartChange(line, 0);
+      return;
+    }
+
+    if (btnUpsell) {
+      const variantId = parseInt(btnUpsell.getAttribute('data-upsell-variant-id'), 10);
+      const quantity = parseInt(btnUpsell.getAttribute('data-upsell-qty') || '1', 10);
+      const lineKey = btnUpsell.getAttribute('data-upsell-line-key') || '';
+      const propertiesRaw = btnUpsell.getAttribute('data-upsell-properties') || '{}';
+      const originalVariantId = parseInt(btnUpsell.getAttribute('data-original-variant-id') || '0', 10);
+
+      let properties = {};
+      try {
+        properties = JSON.parse(propertiesRaw);
+      } catch (e) {
+        console.warn('Failed to parse upsell properties:', e);
+        properties = {};
+      }
+
+      if (!variantId || !quantity || !lineKey) return;
+
+      replaceUpsellVariant(variantId, quantity, lineKey, properties, btnUpsell, originalVariantId);
       return;
     }
   });
@@ -585,91 +1050,84 @@
 
 {% comment %}
   <script>
-    // ==========================================
-    // INSURANCE UNIFIED CHECKOUT (single button)
-    // - Simpan ProductItems ke sessionStorage
-    // - Nama key payload TIDAK berubah (ref)
-    // - variantCoverage VALUE diisi dari metafield search.key
-    // - Redirect login/unlogin pakai Liquid customer check
-    // ==========================================
-    document.getElementById('checkout-insurance-unified')?.addEventListener('click', function () {
-      sessionStorage.removeItem('ProductItems');
-      localStorage.removeItem('ProductItems');
-
-      const ProductItems = [];
-
-      {% for item in cart.items %}
-        {% assign p = item.product %}
-        {% assign sk = p.metafields.search.key.value %}
-
-        {% capture sk_json %}
-        [
-          {% assign first = true %}
-          {% if sk != blank %}
-            {% for k in sk %}
-              {% assign label = k.name.value
-                | default: k.name
-                | default: k.title.value
-                | default: k.title
-                | default: k.system.handle
-                | default: ''
-              %}
-              {% unless label == blank %}
-                {% unless first %},{% endunless %}
-                {{ label | json }}
-                {% assign first = false %}
-              {% endunless %}
-            {% endfor %}
-          {% endif %}
-        ]
-        {% endcapture %}
-
-        ProductItems.push({
-          productTitle: {{ item.product.title | json }},
-          category: {{ item.product.metafields.product.category.value | default: item.product.metafields.product.category | json }},
-          variantType: {{ item.variant.metafields.variant.type | json }},
-          variantTitle: {{ item.variant.title | json }},
-          variantId: {{ item.variant.id }},
-          quantity: {{ item.quantity }},
-          variantCoverage: {{ sk_json | strip }}
-        });
-      {% endfor %}
-
-      if (ProductItems.length === 0) {
-        alert('Cart is empty.');
-        return;
-      }
-
-      sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-      localStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-
-      {% if customer %}
-        window.location.href = '/pages/form-insurance';
-      {% else %}
-        window.location.href = '/account/login?return_url=/pages/form-insurance';
-      {% endif %}
-    });
+  // ==========================================
+  // INSURANCE UNIFIED CHECKOUT (single button)
+  // - Simpan ProductItems ke sessionStorage
+  // - Nama key payload TIDAK berubah (ref)
+  // - variantCoverage VALUE diisi dari metafield search.key
+  // - Redirect login/unlogin pakai Liquid customer check
+  // ==========================================
+  document.getElementById('checkout-insurance-unified')?.addEventListener('click', function () {
+  sessionStorage.removeItem('ProductItems');
+  localStorage.removeItem('ProductItems');
+  const ProductItems = [];
+  {% for item in cart.items %}
+  {% assign p = item.product %}
+  {% assign sk = p.metafields.search.key.value %}
+  {% capture sk_json %}
+  [
+  {% assign first = true %}
+  {% if sk != blank %}
+  {% for k in sk %}
+  {% assign label = k.name.value
+  | default: k.name
+  | default: k.title.value
+  | default: k.title
+  | default: k.system.handle
+  | default: ''
+  %}
+  {% unless label == blank %}
+  {% unless first %},{% endunless %}
+  {{ label | json }}
+  {% assign first = false %}
+  {% endunless %}
+  {% endfor %}
+  {% endif %}
+  ]
+  {% endcapture %}
+  ProductItems.push({
+  productTitle: {{ item.product.title | json }},
+  category: {{ item.product.metafields.product.category.value | default: item.product.metafields.product.category | json }},
+  variantType: {{ item.variant.metafields.variant.type | json }},
+  variantTitle: {{ item.variant.title | json }},
+  variantId: {{ item.variant.id }},
+  quantity: {{ item.quantity }},
+  variantCoverage: {{ sk_json | strip }}
+  });
+  {% endfor %}
+  if (ProductItems.length === 0) {
+  alert('Cart is empty.');
+  return;
+  }
+  sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+  localStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+  {% if customer %}
+  window.location.href = '/pages/form-insurance';
+  {% else %}
+  window.location.href = '/account/login?return_url=/pages/form-insurance';
+  {% endif %}
+  });
   </script>
 {% endcomment %}
 
 <script>
-// ============================================================
-// SMART UNIFIED CHECKOUT
-// Handles: Insurance only | Airport Transfer only | Both
-// ============================================================
-document.getElementById('checkout-smart-unified')?.addEventListener('click', function () {
+  // ============================================================
+  // SMART UNIFIED CHECKOUT
+  // Handles: Insurance only | Airport Transfer only | Both
+  // ============================================================
+  document.getElementById('checkout-smart-unified')?.addEventListener('click', function () {
   // Clear semua storage lama
   sessionStorage.removeItem('ProductItems');
   localStorage.removeItem('ProductItems');
   sessionStorage.removeItem('CheckoutFlow');
   localStorage.removeItem('CheckoutFlow');
-
+  
   const ProductItems = [];
-
+  
   {% for item in cart.items %}
     {% assign p = item.product %}
     {% assign sk = p.metafields.search.key.value %}
-
+  
     {% capture sk_json %}
     [
       {% assign first = true %}
@@ -691,13 +1149,13 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
       {% endif %}
     ]
     {% endcapture %}
-
+  
     {% assign item_cat = p.metafields.product.category.value
       | default: p.metafields.product.category
       | default: ''
       | strip
     %}
-
+  
     ProductItems.push({
       productTitle:    {{ item.product.title | json }},
       category:        {{ item_cat | json }},
@@ -709,16 +1167,16 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
       defaultPurpose:  {{ item.variant.metafields.airport.purpose | json }}
     });
   {% endfor %}
-
+  
   if (ProductItems.length === 0) {
     alert('Cart is empty.');
     return;
   }
-
+  
   // Simpan ke BOTH storage (form pages butuh ini)
   sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
   localStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-
+  
   // ── Build AT_Purposes untuk item Airport Transfer ──
   (function buildAndSaveAtPurposes() {
     function purposeLabelToValue(label) {
@@ -727,17 +1185,17 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
       if (s === 'airport to city' || s.includes('airport_to_city')) return 'airport_to_city';
       return '';
     }
-
+  
     const transferItems = ProductItems.filter(i => i.category === 'Airport_Transfer');
     if (!transferItems.length) return;
-
+  
     const purposes = [];
     transferItems.forEach(item => {
       const qty = parseInt(item.quantity, 10) || 1;
       const lockedPurpose = item.defaultPurpose
         ? purposeLabelToValue(item.defaultPurpose)
         : '';
-
+  
       for (let i = 0; i < qty; i++) {
         if (i === 0) {
           // Unit pertama → lock dari metafield
@@ -748,17 +1206,17 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
         }
       }
     });
-
+  
     sessionStorage.setItem('AT_Purposes', JSON.stringify(purposes));
     localStorage.setItem('AT_Purposes', JSON.stringify(purposes));
   })();
-
+  
   // ------------------------------------------------
   // Tentukan flow berdasarkan kategori yang ada
   // ------------------------------------------------
   const hasInsurance = ProductItems.some(i => i.category === 'Insurance');
   const hasTransfer  = ProductItems.some(i => i.category === 'Airport_Transfer');
-
+  
   // Simpan flow metadata → dipakai form pages untuk "Next Step"
   const flow = {
     hasInsurance,
@@ -772,7 +1230,7 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
   };
   sessionStorage.setItem('CheckoutFlow', JSON.stringify(flow));
   localStorage.setItem('CheckoutFlow', JSON.stringify(flow));
-
+  
   // Redirect ke step pertama
   {% if customer %}
     const firstStep = flow.steps[0];
@@ -789,7 +1247,7 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
       : '/pages/form-airport-transfer';
     window.location.href = `/account/login?return_url=${encodeURIComponent(returnUrl)}`;
   {% endif %}
-});
+  });
 </script>
 
 <script>
@@ -828,16 +1286,14 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
     });
 
     // 2. Checkout button (type="submit")
-    // 2. Checkout button (type="submit")
     const checkoutSubmit = document.querySelector('button[type="submit"][name="checkout"]');
     if (checkoutSubmit) {
       checkoutSubmit.addEventListener('click', () => {
         if (checkoutSubmit.dataset.loading === '1') return;
 
         checkoutSubmit.dataset.loading = '1';
-        // ✅ Jangan disabled=true, cukup visual feedback saja
         checkoutSubmit.style.opacity = '0.7';
-        checkoutSubmit.style.pointerEvents = 'none'; // block double-click tanpa disable form
+        checkoutSubmit.style.pointerEvents = 'none';
         checkoutSubmit.textContent = 'Processing...';
 
         window.addEventListener(

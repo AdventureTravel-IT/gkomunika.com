@@ -869,21 +869,73 @@
 -->
 <script>
   (function () {
-    function applyBlankForAllContentLinks() {
+    const localeRootRaw = {{ request.locale.root_url | json }};
+    const primaryHostRaw = {{ shop.primary_domain.host | json }};
+
+    function normalizeLocaleRoot(root) {
+      if (!root || root === '/') return '';
+      return root.replace(/\/+$/, '');
+    }
+
+    const localeRoot = normalizeLocaleRoot(localeRootRaw);
+
+    function normalizeHost(host) {
+      return (host || '').replace(/^www\./, '').toLowerCase();
+    }
+
+    function isInternalUrl(url) {
+      const linkHost = normalizeHost(url.hostname);
+      const currentHost = normalizeHost(window.location.hostname);
+      const primaryHost = normalizeHost(primaryHostRaw);
+
+      return !linkHost || linkHost === currentHost || linkHost === primaryHost;
+    }
+
+    function hasLocalePrefix(pathname) {
+      if (!localeRoot) return false;
+      return pathname === localeRoot || pathname.startsWith(localeRoot + '/');
+    }
+
+    function buildLocalizedPath(pathname) {
+      if (!pathname.startsWith('/')) {
+        pathname = '/' + pathname;
+      }
+
+      if (!localeRoot || hasLocalePrefix(pathname)) {
+        return pathname;
+      }
+
+      return localeRoot + pathname;
+    }
+
+    function applyContentLinkRules() {
       const container = document.querySelector('.page-content__wrapper');
       if (!container) return;
 
       container.querySelectorAll('a[href]').forEach((link) => {
-        const href = link.getAttribute('href');
+        const rawHref = (link.getAttribute('href') || '').trim();
 
         if (
-          !href ||
-          href.startsWith('#') ||
-          href.startsWith('javascript:') ||
-          href.startsWith('mailto:') ||
-          href.startsWith('tel:')
+          !rawHref ||
+          rawHref.startsWith('#') ||
+          rawHref.startsWith('javascript:') ||
+          rawHref.startsWith('mailto:') ||
+          rawHref.startsWith('tel:')
         ) {
           return;
+        }
+
+        let url;
+
+        try {
+          url = new URL(rawHref, window.location.origin);
+        } catch (e) {
+          return;
+        }
+
+        if (isInternalUrl(url)) {
+          const localizedPath = buildLocalizedPath(url.pathname);
+          link.setAttribute('href', localizedPath + url.search + url.hash);
         }
 
         link.setAttribute('target', '_blank');
@@ -891,19 +943,19 @@
       });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      applyBlankForAllContentLinks();
+    function initContentLinkRules() {
+      applyContentLinkRules();
 
       const container = document.querySelector('.page-content__wrapper');
-      if (container) {
-        const mo = new MutationObserver(() => applyBlankForAllContentLinks());
-        mo.observe(container, { childList: true, subtree: true });
-      }
-    });
+      if (!container || container.dataset.linkRulesObserverAttached === 'true') return;
 
-    document.addEventListener('shopify:section:load', () => {
-      applyBlankForAllContentLinks();
-    });
+      const mo = new MutationObserver(() => applyContentLinkRules());
+      mo.observe(container, { childList: true, subtree: true });
+      container.dataset.linkRulesObserverAttached = 'true';
+    }
+
+    document.addEventListener('DOMContentLoaded', initContentLinkRules);
+    document.addEventListener('shopify:section:load', initContentLinkRules);
   })();
 </script>
 

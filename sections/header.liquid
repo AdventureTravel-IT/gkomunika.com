@@ -1,7 +1,3 @@
-{% comment %}
-  Deteksi en-AU dari URL path karena request.locale.iso_code hanya return 'en'
-  untuk semua varian bahasa Inggris (en, en-AU, dst)
-{% endcomment %}
 {% assign is_au = false %}
 {% if request.path contains '/en-au' %}
   {% assign is_au = true %}
@@ -14,7 +10,7 @@
     top: 0;
     left: 0;
     height: 3px;
-    width: 0%;
+    width: 0;
     background: var(--color-secondary);
     z-index: 9999;
     transition: width 0.3s ease;
@@ -28,7 +24,8 @@
     width: 100%;
     transition: width 0.2s ease;
     opacity: 0;
-    transition: width 0.2s ease, opacity 0.3s ease 0.2s;
+    transition: width 0.2s ease
+    , opacity 0.3s ease 0.2s;
   }
 
   #sidebar-panel {
@@ -57,9 +54,13 @@
     display: block !important;
   }
 
-  /* ----------------------------------------------------------
-   2. SITE HEADER
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   2. SITE HEADER 
+   ---------------------------------------------------------- 
+*/
   .site-header {
     position: fixed;
     top: 0;
@@ -73,7 +74,8 @@
     margin-right: auto;
     height: fit-content;
     padding: 5px 0;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1)
+    , 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   }
 
   @media (min-width: 768px) {
@@ -89,18 +91,26 @@
     padding: 0 24px;
   }
 
-  /* ----------------------------------------------------------
-   3. HEADER LEFT
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   3. HEADER LEFT 
+   ---------------------------------------------------------- 
+*/
   .header-left {
     display: flex;
     align-items: center;
     gap: 10px;
   }
 
-  /* ----------------------------------------------------------
-   4. MOBILE MENU TOGGLE BUTTON
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   4. MOBILE MENU TOGGLE BUTTON 
+   ---------------------------------------------------------- 
+*/
   .menu-toggle {
     display: inline-flex;
     align-items: center;
@@ -151,18 +161,26 @@
     top: 16px;
   }
 
-  /* ----------------------------------------------------------
-   5. LOGO
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   5. LOGO 
+   ---------------------------------------------------------- 
+*/
   .header-logo-link {
     display: inline-flex;
     align-items: center;
     text-decoration: none;
   }
 
-  /* ----------------------------------------------------------
-   6. MOBILE RIGHT ACTIONS
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   6. MOBILE RIGHT ACTIONS 
+   ---------------------------------------------------------- 
+*/
   .header-mobile-right {
     display: flex;
     align-items: center;
@@ -212,9 +230,13 @@
     line-height: 1;
   }
 
-  /* ----------------------------------------------------------
-   7. DESKTOP RIGHT ACTIONS
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   7. DESKTOP RIGHT ACTIONS 
+   ---------------------------------------------------------- 
+*/
   .header-desktop-right {
     display: none;
   }
@@ -237,18 +259,26 @@
     padding: 0;
   }
 
-  /* ----------------------------------------------------------
-   8. CURRENCY + LANGUAGE CONTROLS WRAPPER
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   8. CURRENCY + LANGUAGE CONTROLS WRAPPER 
+   ---------------------------------------------------------- 
+*/
   .header-controls {
     display: flex;
     align-items: center;
     gap: 10px;
   }
 
-  /* ----------------------------------------------------------
-   9. DROPDOWN (Currency & Language — shared styles)
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   9. DROPDOWN (Currency & Language — shared styles) 
+   ---------------------------------------------------------- 
+*/
   .dropdown-wrap {
     position: relative;
     display: inline-block;
@@ -311,7 +341,8 @@
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: 12px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1)
+    , 0 4px 6px -4px rgba(0, 0, 0, 0.1);
     z-index: 50;
   }
 
@@ -327,7 +358,8 @@
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: 12px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1)
+    , 0 4px 6px -4px rgba(0, 0, 0, 0.1);
     z-index: 50;
   }
 
@@ -369,9 +401,13 @@
     height: 30px;
   }
 
-  /* ----------------------------------------------------------
-   10. DESKTOP NAVIGATION
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   10. DESKTOP NAVIGATION 
+   ---------------------------------------------------------- 
+*/
   .header-nav {
     display: flex;
     align-items: center;
@@ -413,9 +449,13 @@
     align-items: center;
   }
 
-  /* ----------------------------------------------------------
-   11. MOBILE SIDEBAR
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   11. MOBILE SIDEBAR 
+   ---------------------------------------------------------- 
+*/
   .sidebar-wrapper {
     display: block;
   }
@@ -433,7 +473,8 @@
     width: 100%;
     background-color: var(--color-neutral);
     z-index: 1000;
-    transition: max-height 0.2s ease, opacity 0.2s ease;
+    transition: max-height 0.2s ease
+    , opacity 0.2s ease;
   }
 
   .sidebar-list {
@@ -475,9 +516,13 @@
     align-items: center;
   }
 
-  /* ----------------------------------------------------------
-   12. SEARCH OVERLAY
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   12. SEARCH OVERLAY 
+   ---------------------------------------------------------- 
+*/
   .search-overlay {
     position: fixed;
     inset: 0;
@@ -485,9 +530,13 @@
     z-index: 9998;
   }
 
-  /* ----------------------------------------------------------
-   13. SEARCH MODAL
-   ---------------------------------------------------------- */
+
+  /*
+
+   ---------------------------------------------------------- 
+   13. SEARCH MODAL 
+   ---------------------------------------------------------- 
+*/
   .search-modal {
     position: fixed;
     top: 30px;
@@ -529,18 +578,19 @@
   }
 
   .search-bar-wrap {
-    border: 1px solid #cbd5e1; /* slate-300 */
+    border: 1px solid #cbd5e1;
+    /* slate-300 */
     border-radius: 15px;
   }
 {% endstyle %}
 
 {% unless template == 'customers/login' or template == 'customers/register' %}
-  {%- comment -%}
-    Deteksi bahasa aktif untuk menambahkan prefix pada URL navigasi.
-    - /id  → bahasa Indonesia
-    - /en-au → Australia English
-    - (kosong) → default English
-  {%- endcomment -%}
+  {%- comment -%} 
+                                Deteksi bahasa aktif untuk menambahkan prefix pada URL navigasi. 
+                                - /id → bahasa Indonesia 
+                                - /en-au → Australia English 
+                                - (kosong) → default English 
+                {%- endcomment -%}
   {% if request.locale.iso_code == 'id' %}
     {% assign locale_prefix = '/id' %}
   {% elsif is_au %}
@@ -593,8 +643,7 @@
           aria-label="Open Menu"
           aria-expanded="false"
           aria-controls="sidebar-panel"
-          class="menu-toggle"
-        >
+          class="menu-toggle">
           <div id="menu-icon" class="menu-icon">
             <span></span>
             <span></span>
@@ -617,8 +666,7 @@
               fetchpriority="high"
               decoding="async"
               width="120"
-              height="40"
-            >
+              height="40">
           </a>
         {% endif %}
       </div>
@@ -632,23 +680,31 @@
             aria-label="Search"
             aria-haspopup="dialog"
             aria-controls="header-search-modal"
-            class="header-icon-btn"
-          >
-            {% render 'icon-search', class: 'w-6 h-6 text-primary pointer-events-none' %}
+            class="header-icon-btn">
+            {% render 'icon-search'
+              , class: 'w-6 h-6 text-primary pointer-events-none' %}
           </button>
         {% endif %}
 
-        <a href="{{ routes.cart_url }}" aria-label="Cart" class="header-icon-btn">
+        <a
+          href="{{ routes.cart_url }}"
+          aria-label="Cart"
+          class="header-icon-btn">
           <span class="header-cart-wrap">
-            {% render 'icon-cart', class: 'w-[28px] h-[28px] text-primary' %}
+            {% render 'icon-cart'
+              , class: 'w-[28px] h-[28px] text-primary' %}
             {% if cart.items.size > 0 %}
               <span class="header-cart-badge">{{ cart.items.size }}</span>
             {% endif %}
           </span>
         </a>
 
-        <a href="{{ profile_url }}" aria-label="Profile" class="header-icon-btn">
-          {% render 'icon-profile-outline', class: 'w-[28px] h-[28px] text-primary pointer-events-none' %}
+        <a
+          href="{{ profile_url }}"
+          aria-label="Profile"
+          class="header-icon-btn">
+          {% render 'icon-profile-outline'
+            , class: 'w-[28px] h-[28px] text-primary pointer-events-none' %}
         </a>
       </div>
 
@@ -661,9 +717,9 @@
             aria-label="Search"
             aria-haspopup="dialog"
             aria-controls="header-search-modal"
-            class="header-search-btn"
-          >
-            {% render 'icon-search', class: 'w-[26px] h-[26px] text-primary' %}
+            class="header-search-btn">
+            {% render 'icon-search'
+              , class: 'w-[26px] h-[26px] text-primary' %}
           </button>
         {% endif %}
 
@@ -678,14 +734,17 @@
                 class="dropdown-trigger"
                 aria-haspopup="listbox"
                 aria-expanded="false"
-                aria-controls="CurrencyMenu-desktop"
-              >
+                aria-controls="CurrencyMenu-desktop">
                 <span class="lang-icon">
                   {{- 'header-currency.svg' | inline_asset_content -}}
                 </span>
                 <span id="CurrencyLabel-desktop" class="dropdown-label">USD</span>
-                <span id="CurrencyArrow-desktop" class="dropdown-arrow" aria-hidden="true">
-                  {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
+                <span
+                  id="CurrencyArrow-desktop"
+                  class="dropdown-arrow"
+                  aria-hidden="true">
+                  {% render 'icon-arrow-right'
+                    , class: 'text-primary w-[26px] h-[26px]' %}
                 </span>
               </button>
 
@@ -693,15 +752,20 @@
                 id="CurrencyMenu-desktop"
                 class="dropdown-menu"
                 role="listbox"
-                aria-label="Select currency"
-              >
+                aria-label="Select currency">
                 <li role="option">
-                  <button type="button" data-currency="USD" class="dropdown-option">
+                  <button
+                    type="button"
+                    data-currency="USD"
+                    class="dropdown-option">
                     <span>USD</span>
                   </button>
                 </li>
                 <li role="option">
-                  <button type="button" data-currency="IDR" class="dropdown-option">
+                  <button
+                    type="button"
+                    data-currency="IDR"
+                    class="dropdown-option">
                     <span>IDR</span>
                   </button>
                 </li>
@@ -709,13 +773,14 @@
             </div>
 
             <!-- Language (DESKTOP) -->
-            {% form 'localization', id: 'LanguageFormUX-desktop', class: 'dropdown-wrap' %}
+            {% form 'localization'
+              , id: 'LanguageFormUX-desktop'
+              , class: 'dropdown-wrap' %}
               <input
                 type="hidden"
                 name="locale_code"
                 id="LangLocaleInput-desktop"
-                value="{{ localization.language.iso_code }}"
-              >
+                value="{{ localization.language.iso_code }}">
 
               {% assign current_code = localization.language.iso_code | upcase | slice: 0, 2 %}
 
@@ -725,14 +790,17 @@
                 class="dropdown-trigger-lang"
                 aria-haspopup="listbox"
                 aria-expanded="false"
-                aria-controls="LangMenu-desktop"
-              >
+                aria-controls="LangMenu-desktop">
                 <span class="lang-icon" aria-hidden="true">
                   {{- 'header-language.svg' | inline_asset_content -}}
                 </span>
                 <span class="dropdown-label">{{ current_code }}</span>
-                <span id="LangArrow-desktop" class="dropdown-arrow" aria-hidden="true">
-                  {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
+                <span
+                  id="LangArrow-desktop"
+                  class="dropdown-arrow"
+                  aria-hidden="true">
+                  {% render 'icon-arrow-right'
+                    , class: 'text-primary w-[26px] h-[26px]' %}
                 </span>
               </button>
 
@@ -740,19 +808,14 @@
                 id="LangMenu-desktop"
                 class="dropdown-menu"
                 role="listbox"
-                aria-label="Select language"
-              >
+                aria-label="Select language">
                 {% for locale in localization.available_languages %}
                   {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
-                  <li
-                    role="option"
-                    aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
-                  >
+                  <li role="option" aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}">
                     <button
                       type="button"
                       class="dropdown-option{% if locale.iso_code == localization.language.iso_code %} is-active{% endif %}"
-                      data-locale="{{ locale.iso_code }}"
-                    >
+                      data-locale="{{ locale.iso_code }}">
                       <span>{{ code }}</span>
                       {% if locale.iso_code == localization.language.iso_code %}
                         <span class="check" aria-hidden="true">✓</span>
@@ -766,11 +829,15 @@
         {% endunless %}
 
         <!-- Desktop navigation -->
-        <nav role="navigation" aria-label="Main navigation" class="header-nav">
+        <nav
+          role="navigation"
+          aria-label="Main navigation"
+          class="header-nav">
           <ul class="header-nav-list">
             <li>
               <a href="{{ routes.root_url }}" class="nav-item-link">
-                {% render 'icon-home-outline', class: 'text-primary w-[28px] h-[28px]' %}
+                {% render 'icon-home-outline'
+                  , class: 'text-primary w-[28px] h-[28px]' %}
                 <span class="nav-item-label">Home</span>
               </a>
             </li>
@@ -784,65 +851,77 @@
                   width="24"
                   height="24"
                   loading="eager"
-                  decoding="async"
-                >
+                  decoding="async">
                 <span class="nav-item-label">eSIM</span>
               </a>
             </li>
 
-            <li>
-              <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="nav-item-link">
-                {% render 'icon-simcard', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="nav-item-label">SIM Card</span>
-              </a>
-            </li>
+            {% unless is_au %}
+              <li>
+                <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="nav-item-link">
+                  {% render 'icon-simcard'
+                    , class: 'text-primary w-[26px] h-[26px]' %}
+                  <span class="nav-item-label">SIM Card</span>
+                </a>
+              </li>
 
-            <li>
-              <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="nav-item-link">
-                {% render 'icon-insurance', class: 'text-primary w-[26px] h-[26px]' %}
-                <span class="nav-item-label">Insurance</span>
-              </a>
-            </li>
+              <li>
+                <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="nav-item-link">
+                  {% render 'icon-insurance'
+                    , class: 'text-primary w-[26px] h-[26px]' %}
+                  <span class="nav-item-label">Insurance</span>
+                </a>
+              </li>
+            {% endunless %}
 
             <li>
               <a href="{{ locale_prefix }}/pages/check-data-usage" class="nav-item-link">
-                {% render 'icon-chart-line', class: 'text-primary w-[26px] h-[26px]' %}
+                {% render 'icon-chart-line'
+                  , class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="nav-item-label">Data Usage</span>
               </a>
             </li>
 
             <li>
               <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="nav-item-link">
-                {% render 'icon-plus', class: 'text-primary w-[26px] h-[26px]' %}
+                {% render 'icon-plus'
+                  , class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="nav-item-label">Top Up</span>
               </a>
             </li>
 
             <li>
               <a href="{{ locale_prefix }}/pages/about-us" class="nav-item-link">
-                {% render 'icon-people-outline', class: 'text-primary w-[26px] h-[26px]' %}
+                {% render 'icon-people-outline'
+                  , class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="nav-item-label">About Us</span>
               </a>
             </li>
 
             <li>
               <a href="{{ locale_prefix }}/pages/faq" class="nav-item-link">
-                {% render 'icon-comment-question', class: 'text-primary w-[26px] h-[26px]' %}
+                {% render 'icon-comment-question'
+                  , class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="nav-item-label">FAQ</span>
               </a>
             </li>
 
             <li>
               <a href="{{ locale_prefix }}/pages/news" class="nav-item-link">
-                {% render 'icon-news', class: 'text-primary w-[26px] h-[26px]' %}
+                {% render 'icon-news'
+                  , class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="nav-item-label">News</span>
               </a>
             </li>
 
             <li>
-              <a href="{{ routes.cart_url }}" class="nav-item-link" aria-label="Cart">
+              <a
+                href="{{ routes.cart_url }}"
+                class="nav-item-link"
+                aria-label="Cart">
                 <span class="nav-cart-wrap">
-                  {% render 'icon-cart', class: 'text-primary w-[26px] h-[26px]' %}
+                  {% render 'icon-cart'
+                    , class: 'text-primary w-[26px] h-[26px]' %}
                   {% if cart.items.size > 0 %}
                     <span class="header-cart-badge">{{ cart.items.size }}</span>
                   {% endif %}
@@ -853,7 +932,8 @@
 
             <li>
               <a href="{{ profile_url }}" class="nav-item-link">
-                {% render 'icon-profile-outline', class: 'text-primary w-[26px] h-[26px]' %}
+                {% render 'icon-profile-outline'
+                  , class: 'text-primary w-[26px] h-[26px]' %}
                 <span class="nav-item-label">Profile</span>
               </a>
             </li>
@@ -867,12 +947,12 @@
       <div
         id="sidebar-panel"
         aria-hidden="true"
-        class="sidebar-panel"
-      >
+        class="sidebar-panel">
         <ul class="sidebar-list">
           <li class="sidebar-item">
             <a href="{{ routes.root_url }}" class="sidebar-link">
-              {% render 'icon-home-outline', class: 'text-primary w-[26px] h-[26px]' %}
+              {% render 'icon-home-outline'
+                , class: 'text-primary w-[26px] h-[26px]' %}
               <span>Home</span>
             </a>
           </li>
@@ -886,57 +966,65 @@
                 width="24"
                 height="24"
                 loading="lazy"
-                decoding="async"
-              >
+                decoding="async">
               <span>eSIM</span>
             </a>
           </li>
 
-          <li class="sidebar-item">
-            <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="sidebar-link">
-              {% render 'icon-simcard', class: 'text-primary w-[26px] h-[26px]' %}
-              <span>SIM Card</span>
-            </a>
-          </li>
+          {% unless is_au %}
+            <li class="sidebar-item">
+              <a href="{{ locale_prefix }}/pages/product-category?q=sim-card" class="sidebar-link">
+                {% render 'icon-simcard'
+                  , class: 'text-primary w-[26px] h-[26px]' %}
+                <span>SIM Card</span>
+              </a>
+            </li>
 
-          <li class="sidebar-item">
-            <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="sidebar-link">
-              {% render 'icon-insurance', class: 'text-primary w-[26px] h-[26px]' %}
-              <span>Insurance</span>
-            </a>
-          </li>
+            <li class="sidebar-item">
+              <a href="{{ locale_prefix }}/pages/product-category?q=insurance" class="sidebar-link">
+                {% render 'icon-insurance'
+                  , class: 'text-primary w-[26px] h-[26px]' %}
+                <span>Insurance</span>
+              </a>
+            </li>
+          {% endunless %}
 
           <li class="sidebar-item">
             <a href="{{ locale_prefix }}/pages/check-data-usage" class="sidebar-link">
-              {% render 'icon-chart-donut', class: 'text-primary w-[26px] h-[26px]' %}
+              {% render 'icon-chart-donut'
+                , class: 'text-primary w-[26px] h-[26px]' %}
               <span>Data Usage</span>
             </a>
           </li>
 
           <li class="sidebar-item">
             <a href="{{ locale_prefix }}/pages/check-data-usage-topup" class="sidebar-link">
-              {% render 'icon-plus', class: 'text-primary w-[26px] h-[26px]' %}
+              {% render 'icon-plus'
+                , class: 'text-primary w-[26px] h-[26px]' %}
               <span>Top Up</span>
             </a>
           </li>
 
           <li class="sidebar-item">
             <a href="{{ locale_prefix }}/pages/about-us" class="sidebar-link">
-              {% render 'icon-people-outline', class: 'text-primary w-[26px] h-[26px]' %}
+              {% render 'icon-people-outline'
+                , class: 'text-primary w-[26px] h-[26px]' %}
               <span>About Us</span>
             </a>
           </li>
 
           <li class="sidebar-item">
             <a href="{{ locale_prefix }}/pages/faq" class="sidebar-link">
-              {% render 'icon-comment-question', class: 'text-primary w-[26px] h-[26px]' %}
+              {% render 'icon-comment-question'
+                , class: 'text-primary w-[26px] h-[26px]' %}
               <span>FAQ</span>
             </a>
           </li>
 
           <li class="sidebar-item">
             <a href="{{ locale_prefix }}/pages/news" class="sidebar-link">
-              {% render 'icon-news', class: 'text-primary w-[26px] h-[26px]' %}
+              {% render 'icon-news'
+                , class: 'text-primary w-[26px] h-[26px]' %}
               <span>News</span>
             </a>
           </li>
@@ -955,14 +1043,17 @@
                     class="dropdown-trigger-lang"
                     aria-haspopup="listbox"
                     aria-expanded="false"
-                    aria-controls="CurrencyMenu-mobile"
-                  >
+                    aria-controls="CurrencyMenu-mobile">
                     <span class="lang-icon">
                       {{- 'header-currency.svg' | inline_asset_content -}}
                     </span>
                     <span id="CurrencyLabel-mobile" class="dropdown-label">USD</span>
-                    <span id="CurrencyArrow-mobile" class="dropdown-arrow" aria-hidden="true">
-                      {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
+                    <span
+                      id="CurrencyArrow-mobile"
+                      class="dropdown-arrow"
+                      aria-hidden="true">
+                      {% render 'icon-arrow-right'
+                        , class: 'text-primary w-[26px] h-[26px]' %}
                     </span>
                   </button>
 
@@ -970,15 +1061,20 @@
                     id="CurrencyMenu-mobile"
                     class="dropdown-menu-up"
                     role="listbox"
-                    aria-label="Select currency"
-                  >
+                    aria-label="Select currency">
                     <li role="option">
-                      <button type="button" data-currency="USD" class="dropdown-option">
+                      <button
+                        type="button"
+                        data-currency="USD"
+                        class="dropdown-option">
                         <span>USD</span>
                       </button>
                     </li>
                     <li role="option">
-                      <button type="button" data-currency="IDR" class="dropdown-option">
+                      <button
+                        type="button"
+                        data-currency="IDR"
+                        class="dropdown-option">
                         <span>IDR</span>
                       </button>
                     </li>
@@ -987,13 +1083,14 @@
               </div>
 
               <!-- Language (MOBILE) -->
-              {% form 'localization', id: 'LanguageFormUX-mobile', class: 'dropdown-wrap' %}
+              {% form 'localization'
+                , id: 'LanguageFormUX-mobile'
+                , class: 'dropdown-wrap' %}
                 <input
                   type="hidden"
                   name="locale_code"
                   id="LangLocaleInput-mobile"
-                  value="{{ localization.language.iso_code }}"
-                >
+                  value="{{ localization.language.iso_code }}">
 
                 {% assign current_code_m = localization.language.iso_code | upcase | slice: 0, 2 %}
 
@@ -1003,14 +1100,17 @@
                   class="dropdown-trigger-lang"
                   aria-haspopup="listbox"
                   aria-expanded="false"
-                  aria-controls="LangMenu-mobile"
-                >
+                  aria-controls="LangMenu-mobile">
                   <span class="lang-icon" aria-hidden="true">
                     {{- 'header-language.svg' | inline_asset_content -}}
                   </span>
                   <span class="dropdown-label">{{ current_code_m }}</span>
-                  <span id="LangArrow-mobile" class="dropdown-arrow" aria-hidden="true">
-                    {% render 'icon-arrow-right', class: 'text-primary w-[26px] h-[26px]' %}
+                  <span
+                    id="LangArrow-mobile"
+                    class="dropdown-arrow"
+                    aria-hidden="true">
+                    {% render 'icon-arrow-right'
+                      , class: 'text-primary w-[26px] h-[26px]' %}
                   </span>
                 </button>
 
@@ -1018,19 +1118,14 @@
                   id="LangMenu-mobile"
                   class="dropdown-menu-up"
                   role="listbox"
-                  aria-label="Select language"
-                >
+                  aria-label="Select language">
                   {% for locale in localization.available_languages %}
                     {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
-                    <li
-                      role="option"
-                      aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}"
-                    >
+                    <li role="option" aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}">
                       <button
                         type="button"
                         class="dropdown-option{% if locale.iso_code == localization.language.iso_code %} is-active{% endif %}"
-                        data-locale="{{ locale.iso_code }}"
-                      >
+                        data-locale="{{ locale.iso_code }}">
                         <span>{{ code }}</span>
                         {% if locale.iso_code == localization.language.iso_code %}
                           <span class="check" aria-hidden="true">✓</span>
@@ -1050,7 +1145,10 @@
 {% endunless %}
 
 <!-- SEARCH OVERLAY -->
-<div id="header-search-overlay" class="search-overlay" hidden></div>
+<div
+  id="header-search-overlay"
+  class="search-overlay"
+  hidden></div>
 
 <!-- MENU MOBILE TOGGLE (ID-based) -->
 <script>
@@ -1058,48 +1156,48 @@
     const btn = document.getElementById('menu-toggle');
     const panel = document.getElementById('sidebar-panel');
     if (!btn || !panel) return;
-
+  
     const isOpen = () => btn.getAttribute('aria-expanded') === 'true';
-
+  
     const open = () => {
       panel.classList.add('is-open');
       btn.setAttribute('aria-expanded', 'true');
       panel.setAttribute('aria-hidden', 'false');
     };
-
+  
     const close = () => {
       panel.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
       panel.setAttribute('aria-hidden', 'true');
     };
-
+  
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       isOpen() ? close() : open();
     });
-
+  
     panel.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => close());
     });
-
+  
     document.addEventListener('click', (e) => {
       if (!isOpen()) return;
       if (btn.contains(e.target)) return;
       if (panel.contains(e.target)) return;
       close();
     });
-
+  
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && isOpen()) close();
     });
   });
-
+  
   // ✅ Progress bar untuk semua navigasi
   (function initNavProgress() {
     const bar = document.createElement('div');
     bar.className = 'nav-progress';
     document.body.prepend(bar);
-
+  
     document.querySelectorAll('.nav-item-link, .sidebar-link').forEach((link) => {
       link.addEventListener('click', (e) => {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -1107,7 +1205,7 @@
         bar.classList.add('is-loading');
       });
     });
-
+  
     window.addEventListener('pageshow', () => {
       bar.classList.add('is-done');
       setTimeout(() => bar.classList.remove('is-loading', 'is-done'), 600);
@@ -1121,31 +1219,31 @@
     const initLang = (suffix) => {
       const form = document.getElementById(`LanguageFormUX-${suffix}`);
       if (!form) return;
-
+  
       const btn = document.getElementById(`LangTrigger-${suffix}`);
       const menu = document.getElementById(`LangMenu-${suffix}`);
       const input = document.getElementById(`LangLocaleInput-${suffix}`);
       const arrowWrap = document.getElementById(`LangArrow-${suffix}`);
-
+  
       if (!btn || !menu || !input) return;
-
+  
       const open = () => {
         menu.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
         if (arrowWrap) arrowWrap.classList.add('is-open');
       };
-
+  
       const close = () => {
         menu.classList.remove('is-open');
         btn.setAttribute('aria-expanded', 'false');
         if (arrowWrap) arrowWrap.classList.remove('is-open');
       };
-
+  
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         menu.classList.contains('is-open') ? close() : open();
       });
-
+  
       menu.querySelectorAll('[data-locale]').forEach((item) => {
         item.addEventListener('click', (e) => {
           e.preventDefault();
@@ -1153,16 +1251,16 @@
           form.submit();
         });
       });
-
+  
       document.addEventListener('click', (e) => {
         if (!form.contains(e.target)) close();
       });
-
+  
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') close();
       });
     };
-
+  
     initLang('desktop');
     initLang('mobile');
   });
@@ -1175,37 +1273,37 @@
       document.getElementById('header-search-trigger-mobile'),
       document.getElementById('header-search-trigger-desktop'),
     ].filter(Boolean);
-
+  
     const modal = document.getElementById('header-search-modal');
     const overlay = document.getElementById('header-search-overlay');
     const closeBtn = document.getElementById('header-search-close');
-
+  
     if (!triggers.length || !modal || !overlay || !closeBtn) return;
-
+  
     let lastTrigger = null;
-
+  
     const open = (triggerEl) => {
       lastTrigger = triggerEl;
       overlay.hidden = false;
       modal.hidden = false;
       document.documentElement.style.overflow = 'hidden';
-
+  
       const input = modal.querySelector('input, textarea, select, button');
       if (input) input.focus();
     };
-
+  
     const close = () => {
       overlay.hidden = true;
       modal.hidden = true;
       document.documentElement.style.overflow = '';
       if (lastTrigger) lastTrigger.focus();
     };
-
+  
     triggers.forEach((btn) => btn.addEventListener('click', () => open(btn)));
-
+  
     closeBtn.addEventListener('click', close);
     overlay.addEventListener('click', close);
-
+  
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !modal.hidden) close();
     });
@@ -1219,22 +1317,22 @@
   role="dialog"
   aria-modal="true"
   aria-labelledby="header-search-title"
-  hidden
->
+  hidden>
   <div class="search-modal-inner">
     <div class="search-modal-spacer">
       <button
         id="header-search-close"
         type="button"
         aria-label="Close search"
-        class="search-close-btn"
-      >
-        {% render 'icon-close', class: 'w-6 h-6 text-primary' %}
+        class="search-close-btn">
+        {% render 'icon-close'
+          , class: 'w-6 h-6 text-primary' %}
       </button>
     </div>
 
     <div class="search-body">
-      {% render 'search-bar', class: 'search-bar-wrap' %}
+      {% render 'search-bar'
+        , class: 'search-bar-wrap' %}
     </div>
   </div>
 </div>
@@ -1244,23 +1342,23 @@
   document.addEventListener('DOMContentLoaded', () => {
     // Deteksi en-AU dari URL path (bukan iso_code karena Shopify return 'en' untuk semua varian EN)
     const isAU = window.location.pathname.startsWith('/en-au');
-
+  
     if (isAU) {
       // Force AUD di sessionStorage untuk en-AU
       sessionStorage.setItem('buckscc_customer_currency', JSON.stringify('AUD'));
     }
-
+  
     const initCurrency = (suffix) => {
       const wrap = document.getElementById(`CurrencyForm-${suffix}`);
       if (!wrap) return;
-
+  
       const btn = document.getElementById(`CurrencyTrigger-${suffix}`);
       const menu = document.getElementById(`CurrencyMenu-${suffix}`);
       const label = document.getElementById(`CurrencyLabel-${suffix}`);
       const arrow = document.getElementById(`CurrencyArrow-${suffix}`);
-
+  
       if (!btn || !menu || !label) return;
-
+  
       const saved = sessionStorage.getItem('buckscc_customer_currency');
       if (saved) {
         try {
@@ -1271,33 +1369,33 @@
           });
         } catch (e) {}
       }
-
+  
       const open = () => {
         menu.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
         if (arrow) arrow.classList.add('is-open');
       };
-
+  
       const close = () => {
         menu.classList.remove('is-open');
         btn.setAttribute('aria-expanded', 'false');
         if (arrow) arrow.classList.remove('is-open');
       };
-
+  
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         menu.classList.contains('is-open') ? close() : open();
       });
-
+  
       menu.querySelectorAll('[data-currency]').forEach((item) => {
         item.addEventListener('click', () => {
           const val = item.dataset.currency;
           sessionStorage.setItem('buckscc_customer_currency', JSON.stringify(val));
-
+  
           ['desktop', 'mobile'].forEach((s) => {
             const lbl = document.getElementById(`CurrencyLabel-${s}`);
             if (lbl) lbl.textContent = val;
-
+  
             const m = document.getElementById(`CurrencyMenu-${s}`);
             if (m) {
               m.querySelectorAll('[data-currency]').forEach((i) => {
@@ -1305,40 +1403,39 @@
               });
             }
           });
-
+  
           close();
           window.location.reload();
         });
       });
-
+  
       document.addEventListener('click', (e) => {
         if (!wrap.contains(e.target)) close();
       });
-
+  
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') close();
       });
     };
-
+  
     initCurrency('desktop');
     initCurrency('mobile');
   });
 </script>
 
 {% schema %}
-{
-  "name": "Header Settings",
-  "settings": [
-    {
-      "type": "link_list",
-      "id": "selected_menu",
-      "label": "Menu"
-    },
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo"
-    }
-  ]
-}
+  {
+    "name": "Header Settings",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "selected_menu",
+        "label": "Menu"
+      }, {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      }
+    ]
+  }
 {% endschema %}

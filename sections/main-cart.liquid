@@ -18,7 +18,57 @@
   }
 {% endstyle %}
 
-<div data-cart-section data-section-id="{{ section.id }}">
+<div data-cart-section data-section-id="{{ section.id }}" data-customer-logged-in="{% if customer %}1{% else %}0{% endif %}">
+
+  <!-- Smart checkout data: di-render fresh setiap kali section di-fetch -->
+  <script type="application/json" data-smart-checkout-data>
+  [
+  {%- for item in cart.items -%}
+    {%- assign p = item.product -%}
+    {%- assign sk = p.metafields.search.key.value -%}
+
+    {%- capture sk_json -%}
+    [
+      {%- assign first = true -%}
+      {%- if sk != blank -%}
+        {%- for k in sk -%}
+          {%- assign label = k.name.value
+            | default: k.name
+            | default: k.title.value
+            | default: k.title
+            | default: k.system.handle
+            | default: ''
+          -%}
+          {%- unless label == blank -%}
+            {%- unless first -%},{%- endunless -%}
+            {{ label | json }}
+            {%- assign first = false -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endif -%}
+    ]
+    {%- endcapture -%}
+
+    {%- assign item_cat = p.metafields.product.category.value
+      | default: p.metafields.product.category
+      | default: ''
+      | strip
+    -%}
+
+    {
+      "productTitle":    {{ item.product.title | json }},
+      "category":        {{ item_cat | json }},
+      "variantType":     {{ item.variant.metafields.variant.type | json }},
+      "variantTitle":    {{ item.variant.title | json }},
+      "variantId":       {{ item.variant.id }},
+      "quantity":        {{ item.quantity }},
+      "variantCoverage": {{ sk_json | strip }},
+      "defaultPurpose":  {{ item.variant.metafields.airport.purpose | json }}
+    }{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+  ]
+  </script>
+
   {% if cart.item_count > 0 %}
     <!-- Header (HANYA tampil jika cart ada item) -->
     <div class="px-6 pt-10 md:pt-[100px] md:px-[10%] flex items-center justify-between">
@@ -72,6 +122,114 @@
           {%- elsif raw_cat == 'gSIM' -%}
             {%- assign cat_label_display = 'eSIM' -%}
           {%- endif -%}
+
+          {%- comment -%}
+            ============================================================
+            UPSELL LOGIC (gSIM only)
+            - Days harus sama
+            - Big Data hanya ke Big Data
+            - Unlimited hanya ke Unlimited
+            - Previous tidak boleh di bawah harga original (item._original_variant_id)
+            ============================================================
+          {%- endcomment -%}
+
+          {% assign current_variant_id = item.variant.id | plus: 0 %}
+          {% assign current_variant_price = item.variant.price | plus: 0 %}
+          {% assign current_option1 = item.variant.option1 | default: '' %}
+          {% assign current_option2 = item.variant.option2 | default: '' %}
+          {% assign current_option3 = item.variant.option3 | default: '' %}
+
+          {% assign original_variant_id = item.properties._original_variant_id
+            | default: current_variant_id
+            | plus: 0
+          %}
+          {% assign original_variant_price = current_variant_price %}
+
+          {% assign sorted_variants = item.product.variants | sort: 'price' %}
+          {% assign next_variant = blank %}
+          {% assign previous_variant = blank %}
+
+          {% assign product_title_downcase = item.product.title | downcase %}
+          {% assign is_gsim_upsell = false %}
+
+          {% if product_title_downcase contains 'gsim' %}
+            {% assign is_gsim_upsell = true %}
+          {% endif %}
+
+          {% assign current_plan_title = current_option2 %}
+          {% if current_plan_title == blank %}
+            {% assign current_plan_title = data_plan_value %}
+          {% endif %}
+          {% if current_plan_title == blank %}
+            {% assign current_plan_title = item.variant.title %}
+          {% endif %}
+
+          {% assign current_plan_downcase = current_plan_title | downcase %}
+          {% assign current_plan_family = 'other' %}
+
+          {% if current_plan_downcase contains 'big data' %}
+            {% assign current_plan_family = 'big_data' %}
+          {% elsif current_plan_downcase contains 'unlimited' %}
+            {% assign current_plan_family = 'unlimited' %}
+          {% endif %}
+
+          {% for v in sorted_variants %}
+            {% assign v_id = v.id | plus: 0 %}
+            {% if v_id == original_variant_id %}
+              {% assign original_variant_price = v.price | plus: 0 %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+
+          {% if is_gsim_upsell == true and item.product.has_only_default_variant == false %}
+            {% for v in sorted_variants %}
+              {% if v.available %}
+                {% assign v_id = v.id | plus: 0 %}
+                {% assign v_price = v.price | plus: 0 %}
+
+                {% assign same_group = false %}
+
+                {% if v.option1 == current_option1 %}
+                  {% assign same_group = true %}
+                {% endif %}
+
+                {% if same_group %}
+                  {% if is_gsim_upsell %}
+                    {% assign v_plan_title = v.option2 %}
+                    {% if v_plan_title == blank %}
+                      {% assign v_plan_title = v.title %}
+                    {% endif %}
+
+                    {% assign v_plan_downcase = v_plan_title | downcase %}
+                    {% assign v_plan_family = 'other' %}
+
+                    {% if v_plan_downcase contains 'big data' %}
+                      {% assign v_plan_family = 'big_data' %}
+                    {% elsif v_plan_downcase contains 'unlimited' %}
+                      {% assign v_plan_family = 'unlimited' %}
+                    {% endif %}
+
+                    {% if v_plan_family != current_plan_family %}
+                      {% assign same_group = false %}
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+
+                {% if same_group %}
+                  {% if v_id != current_variant_id and v_price > current_variant_price and next_variant == blank %}
+                    {% assign next_variant = v %}
+                  {% endif %}
+
+                  {% if v_id != current_variant_id
+                    and v_price < current_variant_price
+                    and v_price >= original_variant_price
+                  %}
+                    {% assign previous_variant = v %}
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
 
           <!-- ITEM WRAP (mobile tetap rapih, desktop seperti design yang kamu mau) -->
           <div
@@ -168,6 +326,110 @@
                       <div class="text-sm text-primary"><span>Data Plan:</span> {{ data_plan_value }}</div>
                     {% endif %}
                   </div>
+
+                  <!-- ============================================================ -->
+                  <!-- UPSELL RECOMMENDATION BLOCK (only show if next/prev exist)    -->
+                  <!-- ============================================================ -->
+                  {% if next_variant != blank or previous_variant != blank %}
+                    <div class="mt-3 rounded-[12px] border border-slate-200 p-3 w-[calc(100vw-48px)] -ml-[100px] md:w-auto md:ml-0">
+                      <div class="text-sm font-medium text-primary">Recommendation</div>
+
+                      {%- assign current_locale = localization.language.iso_code
+                        | default: request.locale.iso_code
+                        | downcase
+                      -%}
+
+                      {% if next_variant != blank %}
+                        {%- assign upgrade_variant_price = next_variant.price -%}
+                        {%- assign upgrade_diff = upgrade_variant_price | minus: current_variant_price -%}
+
+                        <div class="mt-1 text-sm text-primary">
+                          {% if current_locale contains 'id' %}
+                            Tambah
+                            <strong>
+                              {{ upgrade_diff | money_with_currency -}}
+                              {%- if is_au %} AUD{% endif %}
+                            </strong>
+                            untuk upgrade ke paket yang lebih tinggi
+                          {% else %}
+                            Add
+                            <strong>
+                              {{ upgrade_diff | money_with_currency -}}
+                              {%- if is_au %} AUD{% endif %}
+                            </strong>
+                            to get more quota
+                          {% endif %}
+                        </div>
+                      {% endif %}
+
+                      {% assign upsell_button_count = 0 %}
+                      {% if previous_variant != blank %}
+                        {% assign upsell_button_count = upsell_button_count | plus: 1 %}
+                      {% endif %}
+                      {% if next_variant != blank %}
+                        {% assign upsell_button_count = upsell_button_count | plus: 1 %}
+                      {% endif %}
+
+                      <div class="mt-3 grid gap-2 {% if upsell_button_count == 2 %}grid-cols-2{% else %}grid-cols-1{% endif %} md:flex md:flex-wrap">
+                        {% if previous_variant != blank %}
+                          {% assign previous_plan_label = previous_variant.option2
+                            | default: previous_variant.title
+                            | split: ' / '
+                            | last
+                            | replace: ' Unlimited', ''
+                            | replace: ' unlimited', ''
+                            | replace: ' - Big Data', ''
+                            | replace: ' - big data', ''
+                            | strip
+                          %}
+
+                          <button
+                            type="button"
+                            class="w-full md:w-auto min-h-[56px] md:min-h-0 text-center inline-flex items-center justify-center rounded-lg bg-secondary leading-snug text-neutral border border-primary px-4 py-2 text-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            data-upsell-variant-id="{{ previous_variant.id }}"
+                            data-upsell-qty="{{ item.quantity }}"
+                            data-upsell-line-key="{{ item.key }}"
+                            data-upsell-properties="{{ item.properties | json | escape }}"
+                            data-original-variant-id="{{ original_variant_id }}"
+                            data-upsell-default-text="Previous Plan: {{ previous_plan_label | escape }}"
+                            data-upsell-loading-text="Switching..."
+                          >
+                            {% render 'icon-arrow-left', class: 'w-6 h-6 text-neutral' %}
+                            Previous Plan: {{ previous_plan_label }}
+                          </button>
+                        {% endif %}
+
+                        {% if next_variant != blank %}
+                          {% assign next_plan_label = next_variant.option2
+                            | default: next_variant.title
+                            | split: ' / '
+                            | last
+                            | replace: ' Unlimited', ''
+                            | replace: ' unlimited', ''
+                            | replace: ' - Big Data', ''
+                            | replace: ' - big data', ''
+                            | strip
+                          %}
+
+                          <button
+                            type="button"
+                            class="w-full md:w-auto min-h-[56px] md:min-h-0 text-center inline-flex items-center justify-center rounded-lg bg-primary leading-snug text-neutral border border-primary px-4 py-2 text-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            data-upsell-variant-id="{{ next_variant.id }}"
+                            data-upsell-qty="{{ item.quantity }}"
+                            data-upsell-line-key="{{ item.key }}"
+                            data-upsell-properties="{{ item.properties | json | escape }}"
+                            data-original-variant-id="{{ original_variant_id }}"
+                            data-upsell-default-text="Upgrade to: {{ next_plan_label | escape }}"
+                            data-upsell-loading-text="Upgrading..."
+                          >
+                            Upgrade to: {{ next_plan_label }}
+                            {% render 'icon-arrow-right', class: 'w-6 h-6 text-neutral' %}
+                          </button>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endif %}
+                  <!-- END UPSELL BLOCK -->
                 </div>
               </div>
 
@@ -353,190 +615,364 @@
 </div>
 
 <script>
-  // =========================
+  // ============================================================
   // CART AJAX (NO FULL RELOAD)
-  // - Loader menggantikan price (line total & estimated total)
-  // =========================
-
-  function getCartRoot() {
-    return document.querySelector('[data-cart-section]');
-  }
-
-  function setControlsDisabled(line, disabled) {
-    const minus = document.querySelector(`button[data-qty="minus"][data-line="${line}"]`);
-    const plus = document.querySelector(`button[data-qty="plus"][data-line="${line}"]`);
-    const remove = document.querySelector(`button[data-remove][data-line="${line}"]`);
-    const input = document.querySelector(`input[data-qty-input][data-line="${line}"]`);
-
-    [minus, plus, remove, input].forEach((el) => {
-      if (!el) return;
-      el.disabled = !!disabled;
-    });
-  }
-
-  function togglePriceBox(box, isLoading) {
-    if (!box) return;
-    const text = box.querySelector('[data-price-text]');
-    const loader = box.querySelector('[data-price-loader]');
-    if (!text || !loader) return;
-
-    if (isLoading) {
-      text.classList.add('opacity-0');
-      loader.classList.remove('hidden');
-      loader.classList.add('flex');
-    } else {
-      text.classList.remove('opacity-0');
-      loader.classList.add('hidden');
-      loader.classList.remove('flex');
+  // - Pakai window.* state supaya tidak duplikat saat section
+  //   re-render via Section Rendering API
+  // - Listener idempotent (guard flag di window)
+  // - cartBusy direset defensive di setiap exit path
+  // ============================================================
+  (function () {
+    // ---- Single-instance guard ----
+    // Kalau script ini sudah pernah inisialisasi listener di document,
+    // jangan attach ulang. Cukup reset state-nya saja.
+    if (window.__cartAjaxInit) {
+      // Reset busy flag (kalau sebelumnya stuck), lalu sync UI tombol minus
+      window.__cartBusy = false;
+      try {
+        document.querySelectorAll('input[data-qty-input][data-line]').forEach((input) => {
+          const line = parseInt(input.getAttribute('data-line'), 10);
+          let val = parseInt(input.value || '1', 10);
+          if (isNaN(val) || val < 1) val = 1;
+          input.value = val;
+          const minus = document.querySelector(`button[data-qty="minus"][data-line="${line}"]`);
+          if (minus) minus.disabled = val <= 1;
+        });
+      } catch (e) {}
+      return;
     }
-  }
+    window.__cartAjaxInit = true;
+    window.__cartBusy = false;
 
-  function setInlinePriceLoading(line, isLoading) {
-    const lineBox = document.querySelector(`[data-line-total="${line}"]`);
-    togglePriceBox(lineBox, isLoading);
-
-    const totalBox = document.querySelector('[data-cart-total]');
-    togglePriceBox(totalBox, isLoading);
-  }
-
-  async function refreshCartSection() {
-    const root = getCartRoot();
-    if (!root) return;
-
-    const sectionId = root.getAttribute('data-section-id');
-    const url = `${window.location.pathname}?section_id=${encodeURIComponent(sectionId)}`;
-
-    const html = await fetch(url, { headers: { Accept: 'text/html' } }).then((r) => r.text());
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const newRoot = doc.querySelector('[data-cart-section]');
-
-    if (newRoot) {
-      root.replaceWith(newRoot);
-    } else {
-      console.warn('Failed to find [data-cart-section] in response.');
+    // ---- DOM helpers ----
+    function getCartRoot() {
+      return document.querySelector('[data-cart-section]');
     }
-  }
 
-  let cartBusy = false;
-
-  async function cartChange(line, quantity) {
-    if (cartBusy) return;
-    cartBusy = true;
-
-    setInlinePriceLoading(line, true);
-    setControlsDisabled(line, true);
-
-    try {
-      const res = await fetch('{{ routes.cart_change_url }}.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({ line, quantity }),
+    function setControlsDisabled(line, disabled) {
+      const minus = document.querySelector(`button[data-qty="minus"][data-line="${line}"]`);
+      const plus = document.querySelector(`button[data-qty="plus"][data-line="${line}"]`);
+      const remove = document.querySelector(`button[data-remove][data-line="${line}"]`);
+      const input = document.querySelector(`input[data-qty-input][data-line="${line}"]`);
+      [minus, plus, remove, input].forEach((el) => {
+        if (!el) return;
+        el.disabled = !!disabled;
       });
+    }
 
-      if (!res.ok) {
-        let errText = '';
-        try {
-          errText = await res.text();
-        } catch (e) {}
-        console.error('Cart change failed:', errText);
-        alert('Gagal update cart. Coba lagi ya.');
+    function togglePriceBox(box, isLoading) {
+      if (!box) return;
+      const text = box.querySelector('[data-price-text]');
+      const loader = box.querySelector('[data-price-loader]');
+      if (!text || !loader) return;
+      if (isLoading) {
+        text.classList.add('opacity-0');
+        loader.classList.remove('hidden');
+        loader.classList.add('flex');
+      } else {
+        text.classList.remove('opacity-0');
+        loader.classList.add('hidden');
+        loader.classList.remove('flex');
+      }
+    }
 
-        setInlinePriceLoading(line, false);
-        setControlsDisabled(line, false);
+    function setInlinePriceLoading(line, isLoading) {
+      togglePriceBox(document.querySelector(`[data-line-total="${line}"]`), isLoading);
+      togglePriceBox(document.querySelector('[data-cart-total]'), isLoading);
+    }
+
+    function setCartTotalLoading(isLoading) {
+      togglePriceBox(document.querySelector('[data-cart-total]'), isLoading);
+    }
+
+    async function refreshCartSection() {
+      const root = getCartRoot();
+      if (!root) return;
+
+      const sectionId = root.getAttribute('data-section-id');
+      const url = `${window.location.pathname}?section_id=${encodeURIComponent(sectionId)}`;
+
+      const html = await fetch(url, { headers: { Accept: 'text/html' } }).then((r) => r.text());
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const newRoot = doc.querySelector('[data-cart-section]');
+
+      if (!newRoot) {
+        console.warn('Failed to find [data-cart-section] in response.');
         return;
       }
 
-      await refreshCartSection();
-    } catch (e) {
-      console.error(e);
-      alert('Terjadi error koneksi. Coba lagi ya.');
-
-      setInlinePriceLoading(line, false);
-      setControlsDisabled(line, false);
-    } finally {
-      cartBusy = false;
+      // Replace DOM. Script type=application/json di dalam section
+      // tidak perlu di-execute (cuma data); akan dibaca via JSON.parse
+      // saat smart checkout di-klik, jadi selalu fresh.
+      root.replaceWith(newRoot);
     }
-  }
+    // Export buat skrip lain (purge blocked items, dll)
+    window.refreshCartSection = refreshCartSection;
 
-  document.addEventListener('click', (e) => {
-    const btnQty = e.target.closest('button[data-qty]');
-    const btnRemove = e.target.closest('button[data-remove]');
+    // ---- API helpers ----
+    async function cartChange(line, quantity) {
+      if (window.__cartBusy) return;
+      window.__cartBusy = true;
+      setInlinePriceLoading(line, true);
+      setControlsDisabled(line, true);
 
-    if (btnQty) {
-      const line = parseInt(btnQty.getAttribute('data-line'), 10);
-      const type = btnQty.getAttribute('data-qty');
-      const input = document.querySelector('input[data-qty-input][data-line="' + line + '"]');
+      try {
+        const res = await fetch('{{ routes.cart_change_url }}.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ line, quantity }),
+        });
 
-      let val = parseInt(input?.value || '1', 10);
-      if (isNaN(val) || val < 1) val = 1;
+        if (!res.ok) {
+          let errText = '';
+          try { errText = await res.text(); } catch (_) {}
+          console.error('Cart change failed:', errText);
+          alert('Gagal update cart. Coba lagi ya.');
+          setInlinePriceLoading(line, false);
+          setControlsDisabled(line, false);
+          return;
+        }
 
-      if (type === 'plus') val += 1;
-      if (type === 'minus') val = Math.max(1, val - 1);
-
-      if (input) input.value = val;
-      syncMinusDisabled(line, val);
-
-      cartChange(line, val);
-      return;
+        await refreshCartSection();
+      } catch (e) {
+        console.error(e);
+        alert('Terjadi error koneksi. Coba lagi ya.');
+        setInlinePriceLoading(line, false);
+        setControlsDisabled(line, false);
+      } finally {
+        window.__cartBusy = false;
+      }
     }
 
-    if (btnRemove) {
-      const line = parseInt(btnRemove.getAttribute('data-line'), 10);
-      cartChange(line, 0);
-      return;
+    async function addVariantToCart(variantId, quantity, properties = {}) {
+      const payload = { items: [{ id: variantId, quantity: quantity }] };
+      if (properties && Object.keys(properties).length > 0) {
+        payload.items[0].properties = properties;
+      }
+      const res = await fetch('{{ routes.cart_add_url }}.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        let errText = '';
+        try { errText = await res.text(); } catch (_) {}
+        console.error('Add replacement variant failed:', errText);
+        throw new Error('Failed to add replacement variant');
+      }
+      return res.json();
     }
-  });
 
-  document.addEventListener('change', (e) => {
-    const input = e.target.closest('input[data-qty-input]');
-    if (!input) return;
+    async function removeCartItemByKey(lineKey) {
+      const res = await fetch('{{ routes.cart_change_url }}.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: lineKey, quantity: 0 }),
+      });
+      if (!res.ok) {
+        let errText = '';
+        try { errText = await res.text(); } catch (_) {}
+        console.error('Remove old variant failed:', errText);
+        throw new Error('Failed to remove old variant');
+      }
+      return res.json();
+    }
 
-    const line = parseInt(input.getAttribute('data-line'), 10);
-    let val = parseInt(input.value || '1', 10);
-    if (isNaN(val) || val < 1) val = 1;
+    async function getCartJson() {
+      const res = await fetch('{{ routes.cart_url }}.js', { headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error('Failed to get cart');
+      return res.json();
+    }
 
-    input.value = val;
-    syncMinusDisabled(line, val);
+    async function changeCartItemByKey(lineKey, quantity) {
+      const res = await fetch('{{ routes.cart_change_url }}.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: lineKey, quantity }),
+      });
+      if (!res.ok) {
+        let errText = '';
+        try { errText = await res.text(); } catch (_) {}
+        console.error('Change cart item by key failed:', errText);
+        throw new Error('Failed to change cart item by key');
+      }
+      return res.json();
+    }
 
-    cartChange(line, val);
-  });
+    async function replaceUpsellVariant(variantId, quantity, lineKey, properties, triggerBtn, originalVariantId) {
+      if (window.__cartBusy) return;
+      window.__cartBusy = true;
+      setCartTotalLoading(true);
 
-  function syncMinusDisabled(line, qty) {
-    const minus = document.querySelector(`button[data-qty="minus"][data-line="${line}"]`);
-    if (!minus) return;
-    minus.disabled = qty <= 1;
-  }
+      // Defensive UI update — node bisa saja sudah didetach kalau user double-klik
+      const safeBtnUpdate = (btn, action) => {
+        try {
+          if (!btn || !btn.isConnected) return;
+          action(btn);
+        } catch (_) {}
+      };
+      safeBtnUpdate(triggerBtn, (b) => {
+        b.disabled = true;
+        b.style.opacity = '0.7';
+        b.textContent = b.getAttribute('data-upsell-loading-text') || 'Processing...';
+      });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('input[data-qty-input][data-line]').forEach((input) => {
+      try {
+        const finalProperties = { ...(properties || {}) };
+        if (!finalProperties._original_variant_id) {
+          finalProperties._original_variant_id = String(originalVariantId || '');
+        }
+
+        const cart = await getCartJson();
+        const existingTargetItem = (cart.items || []).find((cartItem) => {
+          return Number(cartItem.variant_id) === Number(variantId) && cartItem.key !== lineKey;
+        });
+
+        if (existingTargetItem) {
+          const existingQty = parseInt(existingTargetItem.quantity || '0', 10) || 0;
+          const addQty = parseInt(quantity || '1', 10) || 1;
+          await changeCartItemByKey(existingTargetItem.key, existingQty + addQty);
+          await removeCartItemByKey(lineKey);
+        } else {
+          await addVariantToCart(variantId, quantity, finalProperties);
+          await removeCartItemByKey(lineKey);
+        }
+
+        await refreshCartSection();
+      } catch (e) {
+        console.error(e);
+        alert('Gagal mengganti variant. Coba lagi ya.');
+        setCartTotalLoading(false);
+        safeBtnUpdate(triggerBtn, (b) => {
+          b.disabled = false;
+          b.style.opacity = '';
+          b.textContent = b.getAttribute('data-upsell-default-text') || 'Upgrade';
+        });
+      } finally {
+        // ⚠️ WAJIB direset apapun yang terjadi
+        window.__cartBusy = false;
+      }
+    }
+
+    function syncMinusDisabled(line, qty) {
+      const minus = document.querySelector(`button[data-qty="minus"][data-line="${line}"]`);
+      if (!minus) return;
+      minus.disabled = qty <= 1;
+    }
+
+    // ---- Delegated listeners (attached ONCE on document) ----
+    document.addEventListener('click', (e) => {
+      const btnQty = e.target.closest('button[data-qty]');
+      const btnRemove = e.target.closest('button[data-remove]');
+      const btnUpsell = e.target.closest('button[data-upsell-variant-id]');
+
+      // Pastikan tombol benar-benar berada di dalam cart section saat ini
+      // (mencegah trigger pada tombol-tombol "hantu" hasil section render lama)
+      if (btnQty || btnRemove || btnUpsell) {
+        const root = getCartRoot();
+        if (!root) return;
+        const target = btnQty || btnRemove || btnUpsell;
+        if (!root.contains(target)) return;
+      }
+
+      if (btnQty) {
+        const line = parseInt(btnQty.getAttribute('data-line'), 10);
+        const type = btnQty.getAttribute('data-qty');
+        const input = document.querySelector('input[data-qty-input][data-line="' + line + '"]');
+        let val = parseInt(input?.value || '1', 10);
+        if (isNaN(val) || val < 1) val = 1;
+        if (type === 'plus') val += 1;
+        if (type === 'minus') val = Math.max(1, val - 1);
+        if (input) input.value = val;
+        syncMinusDisabled(line, val);
+        cartChange(line, val);
+        return;
+      }
+
+      if (btnRemove) {
+        const line = parseInt(btnRemove.getAttribute('data-line'), 10);
+        cartChange(line, 0);
+        return;
+      }
+
+      if (btnUpsell) {
+        // Block double-click di tombol yang sama
+        if (btnUpsell.dataset.upsellLoading === '1') return;
+        btnUpsell.dataset.upsellLoading = '1';
+
+        const variantId = parseInt(btnUpsell.getAttribute('data-upsell-variant-id'), 10);
+        const quantity = parseInt(btnUpsell.getAttribute('data-upsell-qty') || '1', 10);
+        const lineKey = btnUpsell.getAttribute('data-upsell-line-key') || '';
+        const propertiesRaw = btnUpsell.getAttribute('data-upsell-properties') || '{}';
+        const originalVariantId = parseInt(btnUpsell.getAttribute('data-original-variant-id') || '0', 10);
+
+        let properties = {};
+        try { properties = JSON.parse(propertiesRaw); } catch (_) { properties = {}; }
+
+        if (!variantId || !quantity || !lineKey) {
+          btnUpsell.dataset.upsellLoading = '0';
+          return;
+        }
+
+        replaceUpsellVariant(variantId, quantity, lineKey, properties, btnUpsell, originalVariantId);
+        return;
+      }
+    });
+
+    document.addEventListener('change', (e) => {
+      const input = e.target.closest('input[data-qty-input]');
+      if (!input) return;
+
+      const root = getCartRoot();
+      if (!root || !root.contains(input)) return;
+
       const line = parseInt(input.getAttribute('data-line'), 10);
       let val = parseInt(input.value || '1', 10);
       if (isNaN(val) || val < 1) val = 1;
       input.value = val;
       syncMinusDisabled(line, val);
+      cartChange(line, val);
     });
-  });
+
+    // Init sync minus button on first load
+    function initSync() {
+      document.querySelectorAll('input[data-qty-input][data-line]').forEach((input) => {
+        const line = parseInt(input.getAttribute('data-line'), 10);
+        let val = parseInt(input.value || '1', 10);
+        if (isNaN(val) || val < 1) val = 1;
+        input.value = val;
+        syncMinusDisabled(line, val);
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSync);
+    } else {
+      initSync();
+    }
+
+    // Safety net: kalau tab di-show kembali (bfcache), reset busy flag
+    window.addEventListener('pageshow', () => {
+      window.__cartBusy = false;
+    });
+  })();
 </script>
 
 <script>
   // =========================
   // AUTO-REMOVE BLOCKED CATEGORY (silent, no alert)
-  // - sumber category dari data-category (metafield product.category)
+  // - jalan sekali per page load saja
   // =========================
   (function () {
+    if (window.__cartPurgeInit) return;
+    window.__cartPurgeInit = true;
+
     const BLOCKED = new Set(['Top_Up_A', 'Top_Up_B', 'Top_Up_C', 'Top_Up_D']);
     let purgeBusy = false;
 
     async function removeLineSilent(line) {
       await fetch('{{ routes.cart_change_url }}.js', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ line, quantity: 0 }),
       });
     }
@@ -560,15 +996,14 @@
           .filter(Boolean);
 
         if (!linesToRemove.length) return;
-
         linesToRemove.sort((a, b) => b - a);
 
         for (const line of linesToRemove) {
           await removeLineSilent(line);
         }
 
-        if (typeof refreshCartSection === 'function') {
-          await refreshCartSection();
+        if (typeof window.refreshCartSection === 'function') {
+          await window.refreshCartSection();
         } else {
           window.location.reload();
         }
@@ -579,7 +1014,11 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', purgeBlockedItems);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', purgeBlockedItems);
+    } else {
+      purgeBlockedItems();
+    }
   })();
 </script>
 
@@ -653,74 +1092,24 @@
 {% endcomment %}
 
 <script>
-// ============================================================
-// SMART UNIFIED CHECKOUT
-// Handles: Insurance only | Airport Transfer only | Both
-// ============================================================
-document.getElementById('checkout-smart-unified')?.addEventListener('click', function () {
-  // Clear semua storage lama
-  sessionStorage.removeItem('ProductItems');
-  localStorage.removeItem('ProductItems');
-  sessionStorage.removeItem('CheckoutFlow');
-  localStorage.removeItem('CheckoutFlow');
+  // ============================================================
+  // SMART UNIFIED CHECKOUT
+  // Handles: Insurance only | Airport Transfer only | Both
+  // - Pakai event delegation supaya tetap jalan setelah section
+  //   re-render (tombol baru dari refreshCartSection)
+  // ============================================================
+  (function () {
+    if (window.__smartCheckoutInit) return;
+    window.__smartCheckoutInit = true;
 
-  const ProductItems = [];
+    function buildProductItems() {
+      const items = [];
+      // Selalu ambil ulang dari DOM cart yang aktual via Shopify cart.js,
+      // tapi karena Liquid sudah di-render saat page load, kita rebuild
+      // setiap kali user klik dengan fetch /cart.js
+      return items;
+    }
 
-  {% for item in cart.items %}
-    {% assign p = item.product %}
-    {% assign sk = p.metafields.search.key.value %}
-
-    {% capture sk_json %}
-    [
-      {% assign first = true %}
-      {% if sk != blank %}
-        {% for k in sk %}
-          {% assign label = k.name.value
-            | default: k.name
-            | default: k.title.value
-            | default: k.title
-            | default: k.system.handle
-            | default: ''
-          %}
-          {% unless label == blank %}
-            {% unless first %},{% endunless %}
-            {{ label | json }}
-            {% assign first = false %}
-          {% endunless %}
-        {% endfor %}
-      {% endif %}
-    ]
-    {% endcapture %}
-
-    {% assign item_cat = p.metafields.product.category.value
-      | default: p.metafields.product.category
-      | default: ''
-      | strip
-    %}
-
-    ProductItems.push({
-      productTitle:    {{ item.product.title | json }},
-      category:        {{ item_cat | json }},
-      variantType:     {{ item.variant.metafields.variant.type | json }},
-      variantTitle:    {{ item.variant.title | json }},
-      variantId:       {{ item.variant.id }},
-      quantity:        {{ item.quantity }},
-      variantCoverage: {{ sk_json | strip }},
-      defaultPurpose:  {{ item.variant.metafields.airport.purpose | json }}
-    });
-  {% endfor %}
-
-  if (ProductItems.length === 0) {
-    alert('Cart is empty.');
-    return;
-  }
-
-  // Simpan ke BOTH storage (form pages butuh ini)
-  sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-  localStorage.setItem('ProductItems', JSON.stringify(ProductItems));
-
-  // ── Build AT_Purposes untuk item Airport Transfer ──
-  (function buildAndSaveAtPurposes() {
     function purposeLabelToValue(label) {
       const s = String(label || '').trim().toLowerCase();
       if (s === 'city to airport' || s.includes('city_to_airport')) return 'city_to_airport';
@@ -728,156 +1117,157 @@ document.getElementById('checkout-smart-unified')?.addEventListener('click', fun
       return '';
     }
 
-    const transferItems = ProductItems.filter(i => i.category === 'Airport_Transfer');
-    if (!transferItems.length) return;
-
-    const purposes = [];
-    transferItems.forEach(item => {
-      const qty = parseInt(item.quantity, 10) || 1;
-      const lockedPurpose = item.defaultPurpose
-        ? purposeLabelToValue(item.defaultPurpose)
-        : '';
-
-      for (let i = 0; i < qty; i++) {
-        if (i === 0) {
-          // Unit pertama → lock dari metafield
-          purposes.push(lockedPurpose);
-        } else {
-          // Unit ke-2, ke-3, dst → bebas dipilih user
-          purposes.push('');
+    function readSmartCheckoutData() {
+      const root = document.querySelector('[data-cart-section]');
+      if (!root) return { items: [], loggedIn: false };
+      const dataEl = root.querySelector('script[type="application/json"][data-smart-checkout-data]');
+      let items = [];
+      if (dataEl) {
+        try {
+          items = JSON.parse(dataEl.textContent || '[]') || [];
+        } catch (e) {
+          console.warn('Failed to parse smart checkout data:', e);
+          items = [];
         }
+      }
+      const loggedIn = root.getAttribute('data-customer-logged-in') === '1';
+      return { items, loggedIn };
+    }
+
+    async function handleSmartCheckout(btn) {
+      if (btn.dataset.loading === '1') return;
+      btn.dataset.loading = '1';
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      const originalText = btn.textContent;
+      btn.textContent = 'Processing...';
+
+      try {
+        // Clear semua storage lama
+        sessionStorage.removeItem('ProductItems');
+        localStorage.removeItem('ProductItems');
+        sessionStorage.removeItem('CheckoutFlow');
+        localStorage.removeItem('CheckoutFlow');
+        sessionStorage.removeItem('AT_Purposes');
+        localStorage.removeItem('AT_Purposes');
+
+        // ✅ Baca FRESH data dari DOM (selalu sinkron dengan cart terbaru)
+        const { items: ProductItems, loggedIn } = readSmartCheckoutData();
+
+        if (ProductItems.length === 0) {
+          alert('Cart is empty.');
+          btn.dataset.loading = '0';
+          btn.disabled = false;
+          btn.style.opacity = '';
+          btn.textContent = originalText;
+          return;
+        }
+
+        sessionStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+        localStorage.setItem('ProductItems', JSON.stringify(ProductItems));
+
+        // ── Build AT_Purposes untuk item Airport Transfer ──
+        const transferItems = ProductItems.filter((i) => i.category === 'Airport_Transfer');
+        if (transferItems.length) {
+          const purposes = [];
+          transferItems.forEach((item) => {
+            const qty = parseInt(item.quantity, 10) || 1;
+            const lockedPurpose = item.defaultPurpose ? purposeLabelToValue(item.defaultPurpose) : '';
+            for (let i = 0; i < qty; i++) {
+              if (i === 0) purposes.push(lockedPurpose);
+              else purposes.push('');
+            }
+          });
+          sessionStorage.setItem('AT_Purposes', JSON.stringify(purposes));
+          localStorage.setItem('AT_Purposes', JSON.stringify(purposes));
+        }
+
+        const hasInsurance = ProductItems.some((i) => i.category === 'Insurance');
+        const hasTransfer = ProductItems.some((i) => i.category === 'Airport_Transfer');
+
+        const flow = {
+          hasInsurance,
+          hasTransfer,
+          steps: [
+            ...(hasTransfer ? ['transfer'] : []),
+            ...(hasInsurance ? ['insurance'] : []),
+          ],
+          currentStepIndex: 0,
+        };
+        sessionStorage.setItem('CheckoutFlow', JSON.stringify(flow));
+        localStorage.setItem('CheckoutFlow', JSON.stringify(flow));
+
+        const firstStep = flow.steps[0];
+        const targetUrl = firstStep === 'insurance' ? '/pages/form-insurance' : '/pages/form-airport-transfer';
+
+        if (loggedIn) {
+          window.location.href = targetUrl;
+        } else {
+          window.location.href = `/account/login?return_url=${encodeURIComponent(targetUrl)}`;
+        }
+      } catch (e) {
+        console.error('Smart checkout error', e);
+        btn.dataset.loading = '0';
+        btn.disabled = false;
+        btn.style.opacity = '';
+        btn.textContent = originalText;
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      const smartBtn = e.target.closest('#checkout-smart-unified');
+      if (smartBtn) {
+        handleSmartCheckout(smartBtn);
+        return;
+      }
+
+      // Submit checkout button (type=submit name=checkout)
+      const submitBtn = e.target.closest('button[type="submit"][name="checkout"]');
+      if (submitBtn) {
+        if (submitBtn.dataset.loading === '1') return;
+        submitBtn.dataset.loading = '1';
+        submitBtn.style.opacity = '0.7';
+        submitBtn.style.pointerEvents = 'none';
+        submitBtn.textContent = 'Processing...';
+        // Form submit tetap jalan natural, tidak preventDefault
+      }
+
+      // Continue Shopping & link navigasi internal
+      const link = e.target.closest('a[href]');
+      if (link) {
+        const href = link.getAttribute('href') || '';
+        if (!href || href.startsWith('#') || href.startsWith('javascript')) return;
+        if (link.hostname && link.hostname !== window.location.hostname) return;
+        if (e.button !== 0) return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (link.dataset.loading === '1') return;
+        // Skip kalau ini tombol upsell / qty / remove (sudah ditangani di blok lain)
+        if (link.matches('button')) return;
+
+        link.dataset.loading = '1';
+        link.style.opacity = '0.6';
+        link.style.pointerEvents = 'none';
       }
     });
 
-    sessionStorage.setItem('AT_Purposes', JSON.stringify(purposes));
-    localStorage.setItem('AT_Purposes', JSON.stringify(purposes));
-  })();
-
-  // ------------------------------------------------
-  // Tentukan flow berdasarkan kategori yang ada
-  // ------------------------------------------------
-  const hasInsurance = ProductItems.some(i => i.category === 'Insurance');
-  const hasTransfer  = ProductItems.some(i => i.category === 'Airport_Transfer');
-
-  // Simpan flow metadata → dipakai form pages untuk "Next Step"
-  const flow = {
-    hasInsurance,
-    hasTransfer,
-    // Step mana yang perlu dikunjungi (urutan tetap: insurance dulu, lalu transfer)
-    steps: [
-      ...(hasTransfer  ? ['transfer']  : []),
-      ...(hasInsurance ? ['insurance'] : []),
-    ],
-    currentStepIndex: 0,
-  };
-  sessionStorage.setItem('CheckoutFlow', JSON.stringify(flow));
-  localStorage.setItem('CheckoutFlow', JSON.stringify(flow));
-
-  // Redirect ke step pertama
-  {% if customer %}
-    const firstStep = flow.steps[0];
-    if (firstStep === 'insurance') {
-      window.location.href = '/pages/form-insurance';
-    } else {
-      window.location.href = '/pages/form-airport-transfer';
-    }
-  {% else %}
-    // Simpan dulu step pertama, setelah login redirect sesuai
-    const firstStep = flow.steps[0];
-    const returnUrl = firstStep === 'insurance'
-      ? '/pages/form-insurance'
-      : '/pages/form-airport-transfer';
-    window.location.href = `/account/login?return_url=${encodeURIComponent(returnUrl)}`;
-  {% endif %}
-});
-</script>
-
-<script>
-  // ============================================================
-  // CART LINK & CHECKOUT LOADING FEEDBACK
-  // Mencegah quick backs karena user tidak tahu klik berhasil
-  // ============================================================
-  document.addEventListener('DOMContentLoaded', () => {
-    // 1. Continue Shopping & Product title links
-    document.querySelectorAll('a[href]').forEach((a) => {
-      // Skip link yang bukan navigasi halaman (anchor, javascript:, external)
-      const href = a.getAttribute('href') || '';
-      if (!href || href.startsWith('#') || href.startsWith('javascript')) return;
-      if (a.hostname && a.hostname !== window.location.hostname) return;
-
-      a.addEventListener('click', (e) => {
-        if (e.button !== 0) return;
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-        if (a.dataset.loading === '1') return;
-
-        a.dataset.loading = '1';
-        a.style.opacity = '0.6';
-        a.style.pointerEvents = 'none';
-
-        // Reset saat user balik (bfcache)
-        window.addEventListener(
-          'pageshow',
-          () => {
-            a.dataset.loading = '0';
-            a.style.opacity = '';
-            a.style.pointerEvents = '';
-          },
-          { once: true }
-        );
+    // Reset loading state saat user balik via bfcache
+    window.addEventListener('pageshow', () => {
+      document.querySelectorAll('[data-loading="1"]').forEach((el) => {
+        el.dataset.loading = '0';
+        el.style.opacity = '';
+        el.style.pointerEvents = '';
+        if (el.id === 'checkout-smart-unified') {
+          el.disabled = false;
+          el.textContent = 'Checkout';
+        } else if (el.matches('button[type="submit"][name="checkout"]')) {
+          el.textContent = 'Checkout';
+        }
       });
     });
-
-    // 2. Checkout button (type="submit")
-    // 2. Checkout button (type="submit")
-    const checkoutSubmit = document.querySelector('button[type="submit"][name="checkout"]');
-    if (checkoutSubmit) {
-      checkoutSubmit.addEventListener('click', () => {
-        if (checkoutSubmit.dataset.loading === '1') return;
-
-        checkoutSubmit.dataset.loading = '1';
-        // ✅ Jangan disabled=true, cukup visual feedback saja
-        checkoutSubmit.style.opacity = '0.7';
-        checkoutSubmit.style.pointerEvents = 'none'; // block double-click tanpa disable form
-        checkoutSubmit.textContent = 'Processing...';
-
-        window.addEventListener(
-          'pageshow',
-          () => {
-            checkoutSubmit.dataset.loading = '0';
-            checkoutSubmit.style.opacity = '';
-            checkoutSubmit.style.pointerEvents = '';
-            checkoutSubmit.textContent = 'Checkout';
-          },
-          { once: true }
-        );
-      });
-    }
-
-    // 3. Smart unified checkout button
-    const smartCheckout = document.getElementById('checkout-smart-unified');
-    if (smartCheckout) {
-      smartCheckout.addEventListener('click', () => {
-        if (smartCheckout.dataset.loading === '1') return;
-
-        smartCheckout.dataset.loading = '1';
-        smartCheckout.disabled = true;
-        smartCheckout.style.opacity = '0.7';
-        smartCheckout.textContent = 'Processing...';
-
-        window.addEventListener(
-          'pageshow',
-          () => {
-            smartCheckout.dataset.loading = '0';
-            smartCheckout.disabled = false;
-            smartCheckout.style.opacity = '';
-            smartCheckout.textContent = 'Checkout';
-          },
-          { once: true }
-        );
-      });
-    }
-  });
+  })();
 </script>
+
+
 
 {% schema %}
 {

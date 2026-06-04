@@ -97,6 +97,28 @@
   .icon-info {
     color: var(--color-primary);
   }
+  @keyframes optionShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+  }
+
+  .option-shake {
+    animation: optionShake 0.35s ease;
+  }
+  select.option-placeholder-red {
+    color: #ef4444;
+  }
+
+  select.option-placeholder-red option {
+    color: var(--color-primary);
+  }
+
+  select.option-placeholder-red option[value=""] {
+    color: #ef4444;
+  }
 </style>
 
 <section>
@@ -1011,9 +1033,7 @@
   >
     <h2 class="text-[24px] font-bold leading-tight">Confirm your email</h2>
 
-    <p class="mt-3 text-[15px] leading-relaxed">
-      You are currently logged in with:
-    </p>
+    <p class="mt-3 text-[15px] leading-relaxed">You are currently logged in with:</p>
 
     <p id="checkout-email-text" class="mt-2 rounded-[10px] bg-background p-3 font-bold break-all"></p>
 
@@ -1029,7 +1049,7 @@
       >
         Use a Different Email
       </button>
-      
+
       <button
         type="button"
         onclick="continueCheckoutAfterEmailConfirm()"
@@ -1251,6 +1271,17 @@
   /* =========================================================
    * MOBILE BAR HELPERS
    * ========================================================= */
+  function scrollToSelectors() {
+    const el = document.getElementById('selectorSection');
+    const bar = document.getElementById('mobileBuyBar');
+    if (!el) return;
+
+    const offset = (bar?.offsetHeight || 0) + 16;
+    const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+
   function scrollToSelectors() {
     const el = document.getElementById('selectorSection');
     const bar = document.getElementById('mobileBuyBar');
@@ -1648,6 +1679,70 @@ async function updateTotalPriceDisplayIfInsurance() {
     });
   }
 
+  /* ============================
+  * HIGHLIGHT MISSING OPTIONS
+  * ============================ */
+  function highlightMissingOptions() {
+    window.firstMissingOption = null;
+
+    filtered.options.forEach((_, index) => {
+      const selectEl = document.getElementById(`option${index}`);
+      if (!selectEl) return;
+
+      const iconEl = document.getElementById(`optionIcon${index}`);
+      const isMissing = !selectedOptions[index];
+
+      if (isMissing) {
+        if (!window.firstMissingOption) {
+          window.firstMissingOption = selectEl;
+        }
+
+        // border merah
+        selectEl.classList.remove('border-primary');
+        selectEl.classList.add('border-red-500');
+
+        // hanya tampilan placeholder Choose Option merah
+        selectEl.classList.add('option-placeholder-red');
+
+        // icon merah
+        iconEl?.classList.remove('text-primary');
+        iconEl?.classList.add('text-red-500');
+
+        // shake animation
+        selectEl.classList.remove('option-shake');
+        void selectEl.offsetWidth;
+        selectEl.classList.add('option-shake');
+      } else {
+        selectEl.classList.remove('border-red-500', 'option-placeholder-red');
+        selectEl.classList.add('border-primary');
+
+        iconEl?.classList.remove('text-red-500');
+        iconEl?.classList.add('text-primary');
+      }
+    });
+  }
+
+  function clearOptionHighlights() {
+    filtered.options.forEach((_, index) => {
+      const selectEl = document.getElementById(`option${index}`);
+      if (!selectEl) return;
+
+      const iconEl = document.getElementById(`optionIcon${index}`);
+
+      selectEl.classList.remove(
+        'border-red-500',
+        'text-red-500',
+        'option-shake',
+        'option-placeholder-red'
+      );
+
+      selectEl.classList.add('border-primary', 'text-primary');
+
+      iconEl?.classList.remove('text-red-500');
+      iconEl?.classList.add('text-primary');
+    });
+  }
+
   function generateSelectors() {
     const { variantSelectors, addonWrapper } = dom();
     if (!variantSelectors) return;
@@ -1660,12 +1755,15 @@ async function updateTotalPriceDisplayIfInsurance() {
       const wrapper = document.createElement('div');
       wrapper.style.width = "100%";
       wrapper.innerHTML = `
-        <label for="option${index}" class="text-primary font-semibold tracking-normal">${optionName}</label>
-        <div class="relative">
+        <label for="option${index}" class="text-primary font-semibold tracking-normal">
+          ${optionName}
+          <span class="text-red-500">*</span>
+        </label>
+        <div class="relative mt-1">
           <select
             name="option${index}"
             id="option${index}"
-            class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none bg-neutral"
+            class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none cursor-pointer bg-neutral"
             onchange="handleOptionChange(${index}, this.value)"
           >
             <option class="text-primary" value="" disabled selected>Choose Option</option>
@@ -1676,8 +1774,12 @@ async function updateTotalPriceDisplayIfInsurance() {
               </option>`;
             }).join('')}
           </select>
-          <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90">
-            {% render 'icon-arrow-right', class: "w-[20px] h-[20px] text-primary" %}
+
+          <div
+            id="optionIcon${index}"
+            class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90 text-primary"
+          >
+            {% render 'icon-arrow-right', class: "w-[20px] h-[20px]" %}
           </div>
         </div>
       `;
@@ -1730,10 +1832,26 @@ async function updateTotalPriceDisplayIfInsurance() {
     updateAvailableOptions();
     updatePriceDisplay();
     updateResetButtonState();
+    clearOptionHighlights();
   }
 
   async function handleOptionChange(optionIndex, value) {
     selectedOptions[optionIndex] = value;
+
+    // ✅ Balikin warna normal untuk selector yang baru dipilih
+    const selectEl = document.getElementById(`option${optionIndex}`);
+    const labelEl = selectEl
+      ?.closest('div')
+      ?.parentElement
+      ?.querySelector('label');
+
+      selectEl?.classList.remove('border-red-500', 'text-red-500', 'option-shake', 'option-placeholder-red');
+      selectEl?.classList.add('border-primary', 'text-primary');
+
+      const iconEl = document.getElementById(`optionIcon${optionIndex}`);
+      iconEl?.classList.remove('text-red-500');
+      iconEl?.classList.add('text-primary');
+
     updateAvailableOptions();
 
     const variant = filtered.variants.find(v =>
@@ -2450,12 +2568,31 @@ async function updateTotalPriceDisplayIfInsurance() {
       .catch(err => console.error('Failed to update cart count:', err));
   }
 
+  function getVariantSelectionToastMessage() {
+    const missingLabels = filtered.options.filter(
+      (_, index) => !selectedOptions[index]
+    );
+
+    if (missingLabels.length === filtered.options.length) {
+      return 'Please Complete All Options';
+    }
+
+    if (missingLabels.length === 1) {
+      return `Please Select ${missingLabels[0]} Option`;
+    }
+
+    const last = missingLabels.pop();
+
+    return `Please Select ${missingLabels.join(', ')} and ${last} Option`;
+  }
+
   async function addToCart() {
     if (isAddingToCart) return;
 
     if (!selectedVariant) {
-      showToast('Please select all options', 'error');
-      scrollToSelectors();
+      highlightMissingOptions();
+      showToast(getVariantSelectionToastMessage(), 'error');
+      scrollToFirstMissingOption();
       return;
     }
     if (!selectedVariant.available) return showToast('This variant is not available', 'error');
@@ -2567,8 +2704,9 @@ async function updateTotalPriceDisplayIfInsurance() {
     if (isBuyingNow) return;
 
     if (!selectedVariant) {
-      showToast('Please select all options', 'error');
-      scrollToSelectors();
+      highlightMissingOptions();
+      showToast(getVariantSelectionToastMessage(), 'error');
+      scrollToFirstMissingOption();
       return;
     }
     if (!selectedVariant.available) return showToast('This variant is not available', 'error');
@@ -2576,13 +2714,6 @@ async function updateTotalPriceDisplayIfInsurance() {
     const qty = isTopUpProductCategory(filtered.category)
     ? 1
     : (parseInt(dom().qtyInput?.value, 10) || 1);
-
-    if (customerLoggedIn && !pendingBuyNowConfirmed) {
-      openCheckoutEmailModal();
-      return;
-    }
-
-    pendingBuyNowConfirmed = false;
 
     isBuyingNow = true;
     setBuyNowLoading(true);

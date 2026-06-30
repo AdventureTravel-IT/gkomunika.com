@@ -98,11 +98,22 @@
     color: var(--color-primary);
   }
   @keyframes optionShake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-4px); }
-    40% { transform: translateX(4px); }
-    60% { transform: translateX(-3px); }
-    80% { transform: translateX(3px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-4px);
+    }
+    40% {
+      transform: translateX(4px);
+    }
+    60% {
+      transform: translateX(-3px);
+    }
+    80% {
+      transform: translateX(3px);
+    }
   }
 
   .option-shake {
@@ -116,7 +127,7 @@
     color: var(--color-primary);
   }
 
-  select.option-placeholder-red option[value=""] {
+  select.option-placeholder-red option[value=''] {
     color: #ef4444;
   }
 </style>
@@ -1749,6 +1760,9 @@ async function updateTotalPriceDisplayIfInsurance() {
 
     variantSelectors.innerHTML = '';
 
+    // ✅ reset dulu sebelum hitung available option
+    selectedOptions = new Array(filtered.options.length).fill(null);
+
     filtered.options.forEach((optionName, index) => {
       const optionValues = getUniqueOptionValues(index);
 
@@ -1786,8 +1800,6 @@ async function updateTotalPriceDisplayIfInsurance() {
 
       variantSelectors.appendChild(wrapper);
     });
-
-    selectedOptions = new Array(filtered.options.length).fill(null);
 
     if (filtered.category === 'Insurance' && addonWrapper) {
       addonWrapper.classList.remove('hidden');
@@ -3023,22 +3035,40 @@ async function updateTotalPriceDisplayIfInsurance() {
         const variants = json.product?.variants || [];
 
         const mapped = variants.map(v => {
-          const original = filtered.variants.find(orig => orig.id === v.id);
-          return {
-            id: v.id,
-            title: v.title,
-            priceRaw: Math.round(parseFloat(v.price) * 100),
-            sku: v.sku || '',
-            available: v.inventory_management === null
-              ? true
-              : (v.inventory_quantity > 0 || v.inventory_policy === 'continue'),
-            variantType: original?.variantType ?? null,
-            airportPurpose: original?.airportPurpose ?? '',
-            airportAutoVariantId: original?.airportAutoVariantId ?? '',
-            airportAutoVariantTitle: original?.airportAutoVariantTitle ?? 0,
-            options: [v.option1, v.option2, v.option3].filter(o => o != null && o !== '')
-          };
-        });
+        const original = filtered.variants.find(orig => String(orig.id) === String(v.id));
+
+        // ✅ FIX: jangan paksa unavailable kalau inventory field tidak ada dari public JSON
+        let available = true;
+
+        if (typeof v.available === 'boolean') {
+          available = v.available;
+        } else if (typeof original?.available === 'boolean') {
+          available = original.available;
+        } else if (
+          Object.prototype.hasOwnProperty.call(v, 'inventory_management') &&
+          v.inventory_management === null
+        ) {
+          available = true;
+        } else if (
+          typeof v.inventory_quantity === 'number' ||
+          typeof v.inventory_policy === 'string'
+        ) {
+          available = Number(v.inventory_quantity || 0) > 0 || v.inventory_policy === 'continue';
+        }
+
+        return {
+          id: v.id,
+          title: v.title,
+          priceRaw: Math.round(parseFloat(v.price) * 100),
+          sku: v.sku || '',
+          available: available,
+          variantType: original?.variantType ?? null,
+          airportPurpose: original?.airportPurpose ?? '',
+          airportAutoVariantId: original?.airportAutoVariantId ?? '',
+          airportAutoVariantTitle: original?.airportAutoVariantTitle ?? 0,
+          options: [v.option1, v.option2, v.option3].filter(o => o != null && o !== '')
+        };
+      });
 
         allVariants = allVariants.concat(mapped);
         if (variants.length < 250) break;

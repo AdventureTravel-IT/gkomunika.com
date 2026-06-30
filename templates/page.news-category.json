@@ -20,9 +20,7 @@
     "news_7MtirP": {
       "type": "news",
       "name": "News Section",
-      "settings": {
-        "view_type": "all"
-      }
+      "settings": {}
     }
   },
   "order": [

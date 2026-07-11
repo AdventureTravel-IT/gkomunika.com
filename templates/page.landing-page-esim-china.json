@@ -16,9 +16,161 @@
         "padding_top": 28,
         "padding_bottom": 28
       }
+    },
+    "landing_page_esim_china_mpNT3x": {
+      "type": "landing-page-esim-china",
+      "blocks": {
+        "feature_ReGrR8": {
+          "type": "feature",
+          "settings": {
+            "number": "",
+            "title": "Aktivasi Instan",
+            "body": "Aktivasi mudah, cukup scan QR dan langsung aktif.",
+            "highlight": false
+          }
+        },
+        "feature_wWyYiY": {
+          "type": "feature",
+          "settings": {
+            "number": "",
+            "title": "Akses Bebas",
+            "body": "Akses WhatsApp, Instagram & Google tanpa hambatan.",
+            "highlight": false
+          }
+        },
+        "feature_rm3JEA": {
+          "type": "feature",
+          "settings": {
+            "number": "",
+            "title": "Pioneer Sejak 2016",
+            "body": "Dipercaya 100.000+ traveler Indonesia.",
+            "highlight": false
+          }
+        },
+        "feature_HRJrkw": {
+          "type": "feature",
+          "settings": {
+            "number": "",
+            "title": "CS Responsif",
+            "body": "Tim CS siap bantu via WhatsApp kapan pun.",
+            "highlight": false
+          }
+        },
+        "testimonial_j49JHG": {
+          "type": "testimonial",
+          "settings": {
+            "name": "Rina W.",
+            "quote": "Beneran plug-and-play, sampai Shanghai langsung nyala. WA & Google jalan tanpa VPN tambahan.",
+            "rating": 5
+          }
+        },
+        "testimonial_BqTbPY": {
+          "type": "testimonial",
+          "settings": {
+            "name": "Arief S.",
+            "quote": "Sudah 3x ke China pakai Global Komunika. CS-nya cepat balas, sekali kena kendala dibantu sampai kelar.",
+            "rating": 5
+          }
+        },
+        "testimonial_jCf4mM": {
+          "type": "testimonial",
+          "settings": {
+            "name": "Michelle T.",
+            "quote": "Sebelumnya beli eSIM murahan di marketplace, gagal aktif. Yang ini smooth, worth every rupiah.",
+            "rating": 5
+          }
+        },
+        "testimonial_MXw7QD": {
+          "type": "testimonial",
+          "settings": {
+            "name": "Bagus P.",
+            "quote": "Nomor Indo tetap aktif buat OTP, data pakai eSIM China. Solusi paling praktis buat business trip.",
+            "rating": 5
+          }
+        },
+        "testimonial_Nbq7Ni": {
+          "type": "testimonial",
+          "settings": {
+            "name": "Dita R.",
+            "quote": "Instruksinya jelas banget dari email. Scan QR, tunggu 1 menit, langsung online.",
+            "rating": 5
+          }
+        },
+        "faq_zCxx8M": {
+          "type": "faq",
+          "settings": {
+            "question": "Apakah HP saya support eSIM China ini?",
+            "answer": "Ketik *#06#. Jika muncul EID, berarti perangkat Anda mendukung eSIM. Anda juga dapat mengeceknya melalui menu Pengaturan > SIM/Cellular."
+          }
+        },
+        "faq_7j3Djd": {
+          "type": "faq",
+          "settings": {
+            "question": "Berapa lama setelah beli saya bisa aktif?",
+            "answer": "QR code dikirim ke email setelah pembayaran berhasil. Kamu bisa langsung scan dan aktifkan kapan saja."
+          }
+        },
+        "faq_gyHqdc": {
+          "type": "faq",
+          "settings": {
+            "question": "Nomor HP asli saya tetap aktif?",
+            "answer": "Ya, kamu tetap bisa terima SMS/telepon di nomor lama untuk OTP atau hal penting lainnya, sambil pakai data dari eSIM China by Global Komunika."
+          }
+        },
+        "faq_BKRedX": {
+          "type": "faq",
+          "settings": {
+            "question": "Bagaimana kalau eSIM saya gagal aktif?",
+            "answer": "Tim CS Global Komunika siap bantu via WhatsApp, kamu bisa jelaskan keluhanmu ke no 08986454071."
+          }
+        }
+      },
+      "block_order": [
+        "feature_ReGrR8",
+        "feature_wWyYiY",
+        "feature_rm3JEA",
+        "feature_HRJrkw",
+        "testimonial_j49JHG",
+        "testimonial_BqTbPY",
+        "testimonial_jCf4mM",
+        "testimonial_MXw7QD",
+        "testimonial_Nbq7Ni",
+        "faq_zCxx8M",
+        "faq_7j3Djd",
+        "faq_gyHqdc",
+        "faq_BKRedX"
+      ],
+      "name": "Global Komunika eSIM China",
+      "settings": {
+        "background_color": "#ffffff",
+        "ink_color": "#1a1a1a",
+        "brand_blue": "#00adee",
+        "brand_blue_dark": "#005496",
+        "brand_yellow": "#fbb526",
+        "hero_bg_color_start": "#00adee",
+        "hero_bg_color_end": "#005496",
+        "hero_tagline": "100.000+ Traveler Telah Memilih Kami · Pelopor eSIM Travel Sejak 2016",
+        "hero_title": "Internet di China tanpa Drama",
+        "hero_price": "Rp 99.000",
+        "hero_button_text": "Beli Sekarang",
+        "hero_variant_id": "46624429768921",
+        "hero_button_url": "",
+        "hero_mascot_asset_filename": "mascot_china.png",
+        "hero_mascot_alt": "Mascot Global Komunika",
+        "features_title": "Great Firewall Membatasi Akses Internet di China",
+        "features_subtitle": "Pastikan internet kamu bisa diandalkan begitu kamu tiba.",
+        "testimonials_title": "Lebih dari 100.000 traveler telah memilih Global Komunika sebagai solusi konektivitas perjalanan mereka.",
+        "faq_title": "Pertanyaan yang sering ditanya",
+        "founder_bg_color": "#005496",
+        "founder_asset_filename": "founder_photo.png",
+        "founder_image_alt": "Foto founder Global Komunika",
+        "founder_quote": "Saya mendirikan Global Komunika pada tahun 2016 untuk membantu para traveler Indonesia mendapatkan pengalaman terbaik ketika menjelajahi Dunia. Berbekal pengalaman pribadi traveling mandiri sejak 2007, saya bisa berbagi banyak hal—mulai dari pilihan transportasi, rekomendasi destinasi menarik, hingga tips perjalanan lainnya. Kecintaan saya terhadap perjalanan mandiri, tanpa paket tur, memacu saya untuk terus mengembangkan Global Komunika agar setiap perjalanan Anda dapat selalu terhubung internet di mana pun Anda berada.",
+        "founder_name": "Andy · Founder & CEO"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "landing_page_esim_china_mpNT3x"
   ]
 }

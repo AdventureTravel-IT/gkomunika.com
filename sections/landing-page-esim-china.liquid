@@ -1,0 +1,1555 @@
+{% comment %}
+  Shopify Section for Global Komunika eSIM China landing page.
+  Formatted as a single self-contained section ready to use or adapt.
+  Implements Hero, Features, Testimonial Carousel, FAQ Accordion, and Founder Note.
+{% endcomment %}
+
+<style>
+  #gk-section-{{ section.id }} {
+    /* Color tokens defined in schema settings */
+    --gk-background: {{ section.settings.background_color | default: '#ffffff' }};
+    --gk-foreground: {{ section.settings.ink_color | default: '#1a1a1a' }};
+    --gk-brand-blue: {{ section.settings.brand_blue | default: '#00adee' }};
+    --gk-brand-blue-dark: {{ section.settings.brand_blue_dark | default: '#005496' }};
+    --gk-brand-yellow: {{ section.settings.brand_yellow | default: '#fbb526' }};
+    --gk-brand-green: #2e884a;
+    --gk-ink: {{ section.settings.ink_color | default: '#1a1a1a' }};
+
+    color: var(--gk-foreground);
+    background-color: var(--gk-background);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  #gk-section-{{ section.id }} * {
+    box-sizing: border-box;
+  }
+
+  /* Core Layout Components */
+  #gk-section-{{ section.id }} .gk-container {
+    max-width: 1920px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+    width: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    #gk-section-{{ section.id }} .gk-container {
+      padding-left: 100px;
+      padding-right: 100px;
+    }
+  }
+
+  /* Utility Headings and Typography */
+  #gk-section-{{ section.id }} h1,
+  #gk-section-{{ section.id }} h2,
+  #gk-section-{{ section.id }} h3,
+  #gk-section-{{ section.id }} h4,
+  #gk-section-{{ section.id }} .gk-font-display {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* Keyframe Animations */
+  @keyframes gkFadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Hero Section Styles */
+  #gk-section-{{ section.id }} .gk-hero-section {
+    position: relative;
+    background-color: #ffffff;
+    overflow: hidden;
+  }
+
+  #gk-section-{{ section.id }} .gk-hero-wave-bg {
+    position: relative;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' preserveAspectRatio='none'%3E%3Cpath d='M0,0 H1440 V600 C1170,570 970,610 760,700 C500,810 230,850 0,790 Z' fill='black'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' preserveAspectRatio='none'%3E%3Cpath d='M0,0 H1440 V600 C1170,570 970,610 760,700 C500,810 230,850 0,790 Z' fill='black'/%3E%3C/svg%3E");
+    mask-size: 100% 100%;
+    -webkit-mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+  }
+
+  #gk-section-{{ section.id }} .gk-hero-inner {
+    padding-top: 40px;
+    padding-bottom: 160px;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-hero-wave-bg {
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' preserveAspectRatio='none'%3E%3Cpath d='M0,0 H1440 V430 C1230,415 1020,490 760,620 C500,750 220,835 0,790 Z' fill='black'/%3E%3C/svg%3E");
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' preserveAspectRatio='none'%3E%3Cpath d='M0,0 H1440 V430 C1230,415 1020,490 760,620 C500,750 220,835 0,790 Z' fill='black'/%3E%3C/svg%3E");
+    }
+
+    #gk-section-{{ section.id }} .gk-hero-inner {
+      padding-top: 80px;
+      padding-bottom: 224px; /* 56 */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #gk-section-{{ section.id }} .gk-hero-inner {
+      padding-top: 80px;
+      padding-bottom: 256px; /* 64 */
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-hero-content {
+    max-width: 576px; /* max-w-xl */
+    color: #ffffff;
+    animation: gkFadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  #gk-section-{{ section.id }} .gk-tagline-badge {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-tagline-badge {
+      font-size: 14px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-hero-title {
+    font-size: clamp(27px, 9vw, 38px);
+    line-height: 1;
+    margin-top: 0;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+
+  #gk-section-{{ section.id }} .gk-hero-title-line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-hero-title {
+      font-size: 72px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #gk-section-{{ section.id }} .gk-hero-title {
+      font-size: 88px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-hero-price-wrapper {
+    margin-bottom: 24px;
+  }
+
+  #gk-section-{{ section.id }} .gk-hero-price {
+    font-size: 38px;
+    font-weight: 700;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-hero-price-wrapper {
+      margin-bottom: 32px;
+    }
+
+    #gk-section-{{ section.id }} .gk-hero-price {
+      font-size: 56px;
+    }
+  }
+
+  /* Button Premium Styling */
+  #gk-section-{{ section.id }} .gk-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--gk-brand-yellow);
+    color: var(--gk-ink);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 14px;
+    padding: 16px 32px;
+    border-radius: 9999px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-btn {
+      font-size: 16px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-btn:hover {
+    filter: brightness(0.95);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.15);
+  }
+
+  #gk-section-{{ section.id }} .gk-btn:active {
+    transform: translateY(1px);
+  }
+
+  #gk-section-{{ section.id }} .gk-btn[aria-disabled="true"] {
+    cursor: wait;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  /* Mascot Placement */
+  #gk-section-{{ section.id }} .gk-hero-mascot {
+    position: absolute;
+    right: 18px;
+    bottom: 70px;
+    width: 150px;
+    height: auto;
+    z-index: 20;
+    filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.15));
+    animation: gkFadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+    opacity: 0;
+    animation-fill-mode: forwards;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-hero-mascot {
+      right: 132px;
+      bottom: 224px;
+      width: 224px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #gk-section-{{ section.id }} .gk-hero-mascot {
+      right: 180px;
+      width: 288px;
+      bottom: 208px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-hero-spacer {
+    height: 72px;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-hero-spacer {
+      height: 112px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #gk-section-{{ section.id }} .gk-hero-spacer {
+      height: 128px;
+    }
+  }
+
+  /* Value Proposition / Features Styles */
+  #gk-section-{{ section.id }} .gk-features-section {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-features-section {
+      padding-top: 112px;
+      padding-bottom: 112px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-section-header {
+    text-align: center;
+    max-width: 672px; /* max-w-3xl */
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 56px;
+  }
+
+  #gk-section-{{ section.id }} .gk-section-title {
+    font-size: 28px;
+    line-height: 1.2;
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: var(--gk-foreground);
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-section-title {
+      font-size: 36px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-section-subtitle {
+    color: #4b5563;
+    font-size: 18px;
+    margin: 0;
+  }
+
+  #gk-section-{{ section.id }} .gk-features-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+  }
+
+  #gk-section-{{ section.id }} .gk-features-cta {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  #gk-section-{{ section.id }} .gk-features-cta-label {
+    margin-bottom: 8px;
+    color: var(--gk-ink);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  #gk-section-{{ section.id }} .gk-features-cta-price {
+    margin: 0;
+    color: var(--gk-ink);
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  #gk-section-{{ section.id }} .gk-features-cta .gk-btn {
+    margin-top: 24px;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-features-cta-label {
+      font-size: 32px;
+    }
+
+    #gk-section-{{ section.id }} .gk-features-cta-price {
+      font-size: 48px;
+    }
+  }
+
+  @media (min-width: 640px) {
+    #gk-section-{{ section.id }} .gk-features-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #gk-section-{{ section.id }} .gk-features-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-feature-card {
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid #eeeeee;
+    background-color: #ffffff;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  }
+
+  #gk-section-{{ section.id }} .gk-feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    border-color: var(--gk-brand-blue);
+  }
+
+  #gk-section-{{ section.id }} .gk-feature-card-highlight {
+    border-color: var(--gk-brand-yellow);
+    background-color: #fff7e4;
+  }
+
+  #gk-section-{{ section.id }} .gk-feature-card-highlight:hover {
+    border-color: var(--gk-brand-yellow);
+  }
+
+  #gk-section-{{ section.id }} .gk-feature-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  #gk-section-{{ section.id }} .gk-feature-number {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: rgba(0, 173, 238, 0.1);
+    color: var(--gk-brand-blue-dark);
+  }
+
+  #gk-section-{{ section.id }} .gk-feature-number-highlight {
+    background-color: var(--gk-brand-yellow);
+    color: var(--gk-ink);
+  }
+
+  #gk-section-{{ section.id }} .gk-feature-badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background-color: var(--gk-ink);
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+
+  #gk-section-{{ section.id }} .gk-feature-title {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: var(--gk-ink);
+  }
+
+  #gk-section-{{ section.id }} .gk-feature-body {
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.625;
+    margin: 0;
+  }
+
+  /* Social Proof / Testimonials Section */
+  #gk-section-{{ section.id }} .gk-testimonials-section {
+    padding-top: 80px;
+    padding-bottom: 80px;
+    background-color: #f9fafb;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-testimonials-section {
+      padding-top: 112px;
+      padding-bottom: 112px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-testimonials-header {
+    font-size: 24px;
+    line-height: 1.25;
+    text-align: center;
+    max-width: 672px; /* max-w-3xl */
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 48px;
+    color: var(--gk-ink);
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-testimonials-header {
+      font-size: 30px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-carousel-wrapper {
+    max-width: 672px; /* max-w-3xl */
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+  }
+
+  #gk-section-{{ section.id }} .gk-carousel-slides {
+    background-color: #ffffff;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid #f3f4f6;
+    position: relative;
+    min-height: 200px;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-carousel-slides {
+      padding: 48px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-carousel-slide {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    text-align: center;
+  }
+
+  #gk-section-{{ section.id }} .gk-carousel-slide.active {
+    display: block;
+    opacity: 1;
+  }
+
+  #gk-section-{{ section.id }} .gk-stars {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 20px;
+    color: var(--gk-brand-yellow);
+    font-size: 20px;
+  }
+
+  #gk-section-{{ section.id }} .gk-quote {
+    font-size: 18px;
+    line-height: 1.625;
+    color: #1f2937;
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-quote {
+      font-size: 20px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-author {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 14px;
+    color: var(--gk-brand-blue-dark);
+  }
+
+  #gk-section-{{ section.id }} .gk-carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  #gk-section-{{ section.id }} .gk-carousel-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #e5e7eb;
+    background-color: #ffffff;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    font-size: 16px;
+  }
+
+  #gk-section-{{ section.id }} .gk-carousel-btn:hover {
+    border-color: var(--gk-brand-blue);
+  }
+
+  #gk-section-{{ section.id }} .gk-carousel-dots {
+    display: flex;
+    gap: 8px;
+  }
+
+  #gk-section-{{ section.id }} .gk-carousel-dot {
+    height: 8px;
+    width: 8px;
+    border-radius: 999px;
+    background-color: #d1d5db;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  #gk-section-{{ section.id }} .gk-carousel-dot.active {
+    width: 32px;
+    background-color: var(--gk-brand-blue);
+  }
+
+  /* FAQ Accordion Styles */
+  #gk-section-{{ section.id }} .gk-faq-section {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-faq-section {
+      padding-top: 112px;
+      padding-bottom: 112px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-container {
+    max-width: 672px; /* max-w-3xl */
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-title-main {
+    font-size: 30px;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 40px;
+    color: var(--gk-ink);
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-faq-title-main {
+      font-size: 36px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-list {
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-item {
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-item:last-child {
+    border-bottom: none;
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-header {
+    width: 100%;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    cursor: pointer;
+    text-align: left;
+    color: var(--gk-ink);
+    transition: color 0.2s ease;
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-header:hover {
+    color: var(--gk-brand-blue-dark);
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-question {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-faq-question {
+      font-size: 18px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-icon {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--gk-brand-blue);
+    color: #ffffff;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-item.active .gk-faq-icon {
+    transform: rotate(45deg);
+    background-color: var(--gk-brand-blue-dark);
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-item.active .gk-faq-answer {
+    max-height: 300px; /* Adjust dynamically */
+  }
+
+  #gk-section-{{ section.id }} .gk-faq-answer-inner {
+    margin: 0;
+    padding-bottom: 20px;
+    padding-right: 40px;
+    color: #4b5563;
+    line-height: 1.625;
+    font-size: 15px;
+  }
+
+  /* Founder Note Styles */
+  #gk-section-{{ section.id }} .gk-founder-section {
+    padding-top: 80px;
+    padding-bottom: 80px;
+    color: #ffffff;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-founder-section {
+      padding-top: 112px;
+      padding-bottom: 112px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-founder-grid {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+    max-width: 896px; /* max-w-4xl */
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-founder-grid {
+      grid-template-columns: auto 1fr;
+      text-align: left;
+      justify-items: start;
+      gap: 48px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-founder-img-wrapper {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-founder-img-wrapper {
+      width: 192px;
+      height: 192px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-founder-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.2);
+  }
+
+  #gk-section-{{ section.id }} .gk-founder-img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.25));
+  }
+
+  #gk-section-{{ section.id }} .gk-founder-text-content {
+    flex-grow: 1;
+  }
+
+  #gk-section-{{ section.id }} .gk-founder-quote {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 1.625;
+    opacity: 0.95;
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  @media (min-width: 768px) {
+    #gk-section-{{ section.id }} .gk-founder-quote {
+      font-size: 18px;
+    }
+  }
+
+  #gk-section-{{ section.id }} .gk-founder-name {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 14px;
+    color: var(--gk-brand-yellow);
+  }
+
+</style>
+
+{%- assign buy_now_variant_id = section.settings.hero_variant_id | strip -%}
+{%- if buy_now_variant_id == blank and section.settings.hero_button_url != blank -%}
+  {%- assign buy_now_url = section.settings.hero_button_url -%}
+{%- else -%}
+  {%- assign buy_now_url = routes.cart_url -%}
+{%- endif -%}
+
+<div id="gk-section-{{ section.id }}">
+
+  <!-- HERO SECTION -->
+  <section class="gk-hero-section">
+    <div class="gk-hero-wave-bg" style="background: linear-gradient(to bottom, {{ section.settings.hero_bg_color_start }}, {{ section.settings.hero_bg_color_end }});">
+      <div class="gk-container gk-hero-inner">
+        <div class="gk-hero-content">
+          {%- if section.settings.hero_tagline != blank -%}
+            <span class="gk-tagline-badge">
+              {{ section.settings.hero_tagline }}
+            </span>
+          {%- endif -%}
+          
+          <h1 class="gk-hero-title">
+            <span class="gk-hero-title-line">Internet di China</span>
+            <span class="gk-hero-title-line">Tanpa Drama</span>
+          </h1>
+          
+          <div class="gk-hero-price-wrapper">
+            <div class="gk-hero-price">{{ section.settings.hero_price }}</div>
+          </div>
+          
+          {%- if section.settings.hero_button_text != blank -%}
+            <a
+              href="{{ buy_now_url }}"
+              class="gk-btn gk-add-to-cart"
+              data-variant-id="{{ buy_now_variant_id | escape }}"
+              data-cart-add-url="{{ routes.cart_add_url }}.js"
+              data-cart-url="{{ routes.cart_url }}"
+            >
+              {{ section.settings.hero_button_text }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    <!-- Mascot overlay -->
+    {%- if section.settings.hero_mascot != blank -%}
+      <img
+        src="{{ section.settings.hero_mascot | image_url: width: 600 }}"
+        alt="{{ section.settings.hero_mascot_alt | default: 'Mascot Global Komunika' | escape }}"
+        class="gk-hero-mascot"
+        width="600"
+        height="600"
+        loading="eager"
+      >
+    {%- elsif section.settings.hero_mascot_asset_filename != blank -%}
+      <!-- Fallback: upload file ke Edit code > Assets, lalu samakan nama file di setting ini -->
+      <img
+        src="{{ section.settings.hero_mascot_asset_filename | asset_url }}"
+        onerror="this.style.display='none'"
+        alt="{{ section.settings.hero_mascot_alt | default: 'Mascot Global Komunika' | escape }}"
+        class="gk-hero-mascot"
+        width="600"
+        height="600"
+        loading="eager"
+      >
+    {%- endif -%}
+    
+    <div class="gk-hero-spacer"></div>
+  </section>
+
+  <!-- VALUE PROPOSITION (FEATURES) -->
+  <section class="gk-features-section">
+    <div class="gk-container">
+      <div class="gk-section-header">
+        <h2 class="gk-section-title">{{ section.settings.features_title }}</h2>
+        {%- if section.settings.features_subtitle != blank -%}
+          <p class="gk-section-subtitle">{{ section.settings.features_subtitle }}</p>
+        {%- endif -%}
+      </div>
+      
+      <div class="gk-features-grid">
+        {%- assign feature_count = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'feature' -%}
+            {%- assign feature_count = feature_count | plus: 1 -%}
+            <div class="gk-feature-card{% if block.settings.highlight %} gk-feature-card-highlight{% endif %}" {{ block.shopify_attributes }}>
+              <div class="gk-feature-card-header">
+                <span class="gk-feature-number{% if block.settings.highlight %} gk-feature-number-highlight{% endif %}">
+                  {%- if block.settings.number != blank -%}
+                    {{ block.settings.number }}
+                  {%- else -%}
+                    {{ feature_count | prepend: '0' | slice: -2, 2 }}
+                  {%- endif -%}
+                </span>
+                {%- if block.settings.highlight -%}
+                  <span class="gk-feature-badge">Best value</span>
+                {%- endif -%}
+              </div>
+              <h3 class="gk-feature-title">{{ block.settings.title }}</h3>
+              <p class="gk-feature-body">{{ block.settings.body }}</p>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.hero_price != blank -%}
+        <div class="gk-features-cta">
+          <div class="gk-features-cta-label">eSIM China</div>
+          <div class="gk-features-cta-price">{{ section.settings.hero_price }}</div>
+          {%- if section.settings.hero_button_text != blank -%}
+            <a
+              href="{{ buy_now_url }}"
+              class="gk-btn gk-add-to-cart"
+              data-variant-id="{{ buy_now_variant_id | escape }}"
+              data-cart-add-url="{{ routes.cart_add_url }}.js"
+              data-cart-url="{{ routes.cart_url }}"
+            >
+              {{ section.settings.hero_button_text }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF (TESTIMONIALS) -->
+  {%- assign has_testimonials = false -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'testimonial' -%}{%- assign has_testimonials = true -%}{%- break -%}{%- endif -%}
+  {%- endfor -%}
+
+  {%- if has_testimonials -%}
+    <section class="gk-testimonials-section">
+      <div class="gk-container">
+        {%- if section.settings.testimonials_title != blank -%}
+          <h2 class="gk-testimonials-header">{{ section.settings.testimonials_title }}</h2>
+        {%- endif -%}
+        
+        <div class="gk-carousel-wrapper">
+          <div class="gk-carousel-slides">
+            {%- assign testimonial_count = 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'testimonial' -%}
+                <div class="gk-carousel-slide{% if testimonial_count == 0 %} active{% endif %}" data-index="{{ testimonial_count }}" {{ block.shopify_attributes }}>
+                  <div class="gk-stars" aria-hidden="true">
+                    {%- assign stars = block.settings.rating | default: 5 -%}
+                    {%- for i in (1..stars) -%}★{%- endfor -%}
+                  </div>
+                  <p class="gk-quote">"{{ block.settings.quote }}"</p>
+                  <div class="gk-author">{{ block.settings.name }}</div>
+                </div>
+                {%- assign testimonial_count = testimonial_count | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          
+          {%- if testimonial_count > 1 -%}
+            <div class="gk-carousel-controls">
+              <button type="button" class="gk-carousel-btn gk-prev" aria-label="Sebelumnya">←</button>
+                <div class="gk-carousel-dots">
+                  {%- for i in (1..testimonial_count) -%}
+                    {%- assign index_zero = i | minus: 1 -%}
+                    <button type="button" class="gk-carousel-dot{% if index_zero == 0 %} active{% endif %}" data-index="{{ index_zero }}" aria-label="Testimoni {{ i }}"></button>
+                  {%- endfor -%}
+                </div>
+              <button type="button" class="gk-carousel-btn gk-next" aria-label="Selanjutnya">→</button>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  <!-- FAQ ACCORDION -->
+  {%- assign has_faqs = false -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'faq' -%}{%- assign has_faqs = true -%}{%- break -%}{%- endif -%}
+  {%- endfor -%}
+
+  {%- if has_faqs -%}
+    <section class="gk-faq-section">
+      <div class="gk-container gk-faq-container">
+        {%- if section.settings.faq_title != blank -%}
+          <h2 class="gk-faq-title-main">{{ section.settings.faq_title }}</h2>
+        {%- endif -%}
+        
+        <div class="gk-faq-list">
+          {%- assign faq_count = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'faq' -%}
+              <div class="gk-faq-item{% if faq_count == 0 %} active{% endif %}" {{ block.shopify_attributes }}>
+                <button type="button" class="gk-faq-header" aria-expanded="{% if faq_count == 0 %}true{% else %}false{% endif %}">
+                  <span class="gk-faq-question">{{ block.settings.question }}</span>
+                  <span class="gk-faq-icon">+</span>
+                </button>
+                <div class="gk-faq-answer">
+                  <p class="gk-faq-answer-inner">{{ block.settings.answer }}</p>
+                </div>
+              </div>
+              {%- assign faq_count = faq_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  <!-- FOUNDER NOTE -->
+  <section class="gk-founder-section" style="background-color: {{ section.settings.founder_bg_color | default: '#005496' }};">
+    <div class="gk-container">
+      <div class="gk-founder-grid">
+        <div class="gk-founder-img-wrapper">
+          {%- if section.settings.founder_image != blank -%}
+            <img
+              src="{{ section.settings.founder_image | image_url: width: 400 }}"
+              alt="{{ section.settings.founder_image_alt | default: section.settings.founder_name | escape }}"
+              class="gk-founder-img"
+              width="400"
+              height="400"
+              loading="lazy"
+            >
+          {%- elsif section.settings.founder_asset_filename != blank -%}
+            <!-- Fallback: upload file ke Edit code > Assets, lalu samakan nama file di setting ini -->
+            <img
+              src="{{ section.settings.founder_asset_filename | asset_url }}"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+              alt="{{ section.settings.founder_image_alt | default: section.settings.founder_name | escape }}"
+              class="gk-founder-img"
+              width="400"
+              height="400"
+              loading="lazy"
+            >
+            <div class="gk-founder-img-placeholder" style="display: none;"></div>
+          {%- else -%}
+            <div class="gk-founder-img-placeholder"></div>
+          {%- endif -%}
+        </div>
+        <div class="gk-founder-text-content">
+          {%- if section.settings.founder_quote != blank -%}
+            <blockquote class="gk-founder-quote">
+              "{{ section.settings.founder_quote }}"
+            </blockquote>
+          {%- endif -%}
+          {%- if section.settings.founder_name != blank -%}
+            <div class="gk-founder-name">{{ section.settings.founder_name }}</div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  (function() {
+    function initGKSection(container) {
+      if (!container) return;
+
+      // Testimonials Carousel
+      const carousels = container.querySelectorAll(".gk-carousel-wrapper");
+      carousels.forEach(carousel => {
+        const slides = carousel.querySelectorAll(".gk-carousel-slide");
+        const dots = carousel.querySelectorAll(".gk-carousel-dot");
+        const prevBtn = carousel.querySelector(".gk-prev");
+        const nextBtn = carousel.querySelector(".gk-next");
+        
+        if (slides.length <= 1) return;
+        
+        let currentIndex = 0;
+        
+        function goToSlide(index) {
+          slides[currentIndex].classList.remove("active");
+          if (dots[currentIndex]) dots[currentIndex].classList.remove("active");
+          
+          currentIndex = (index + slides.length) % slides.length;
+          
+          slides[currentIndex].classList.add("active");
+          if (dots[currentIndex]) dots[currentIndex].classList.add("active");
+        }
+        
+        if (prevBtn) {
+          prevBtn.onclick = (e) => {
+            e.preventDefault();
+            goToSlide(currentIndex - 1);
+          };
+        }
+        if (nextBtn) {
+          nextBtn.onclick = (e) => {
+            e.preventDefault();
+            goToSlide(currentIndex + 1);
+          };
+        }
+        
+        dots.forEach((dot, idx) => {
+          dot.onclick = (e) => {
+            e.preventDefault();
+            goToSlide(idx);
+          };
+        });
+      });
+
+      // FAQ Accordion
+      const faqItems = container.querySelectorAll(".gk-faq-item");
+      faqItems.forEach(item => {
+        const header = item.querySelector(".gk-faq-header");
+        
+        if (header) {
+          header.onclick = (e) => {
+            e.preventDefault();
+            const isOpen = item.classList.contains("active");
+            
+            // Close other items in this section for a clean accordion effect
+            const parentList = item.closest(".gk-faq-list");
+            if (parentList) {
+              parentList.querySelectorAll(".gk-faq-item").forEach(otherItem => {
+                if (otherItem !== item) {
+                  otherItem.classList.remove("active");
+                  const otherHeader = otherItem.querySelector(".gk-faq-header");
+                  if (otherHeader) otherHeader.setAttribute("aria-expanded", "false");
+                }
+              });
+            }
+            
+            if (isOpen) {
+              item.classList.remove("active");
+              header.setAttribute("aria-expanded", "false");
+            } else {
+              item.classList.add("active");
+              header.setAttribute("aria-expanded", "true");
+            }
+          };
+        }
+      });
+
+      // Add the selected variant through Shopify Ajax Cart API, then open cart.
+      const addToCartButtons = container.querySelectorAll(".gk-add-to-cart[data-variant-id]");
+      addToCartButtons.forEach(button => {
+        const variantId = button.dataset.variantId;
+        if (!variantId) return;
+
+        // Restore the button when this page is reopened from the browser cache.
+        if (!button.dataset.originalText) {
+          button.dataset.originalText = button.textContent.trim();
+        }
+        button.removeAttribute("aria-disabled");
+        button.textContent = button.dataset.originalText;
+
+        if (button.dataset.cartHandlerInitialized === "true") return;
+
+        button.dataset.cartHandlerInitialized = "true";
+        button.addEventListener("click", async (event) => {
+          event.preventDefault();
+          if (button.getAttribute("aria-disabled") === "true") return;
+
+          const originalText = button.dataset.originalText;
+          button.setAttribute("aria-disabled", "true");
+          button.textContent = "Menambahkan...";
+
+          try {
+            const response = await fetch(button.dataset.cartAddUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+              },
+              body: JSON.stringify({
+                items: [{
+                  id: Number(variantId),
+                  quantity: 1
+                }]
+              })
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+              throw new Error(result.description || "Produk tidak dapat ditambahkan ke cart.");
+            }
+
+            window.location.assign(button.dataset.cartUrl);
+          } catch (error) {
+            console.error("Add to cart failed:", error);
+            window.alert(error.message || "Produk tidak dapat ditambahkan ke cart. Silakan coba lagi.");
+            button.removeAttribute("aria-disabled");
+            button.textContent = originalText;
+          }
+        });
+      });
+    }
+
+    // Run on initial load
+    document.addEventListener("DOMContentLoaded", () => {
+      initGKSection(document.getElementById("gk-section-{{ section.id }}"));
+    });
+
+    // The pageshow event also runs when returning from cart with the Back button.
+    window.addEventListener("pageshow", () => {
+      initGKSection(document.getElementById("gk-section-{{ section.id }}"));
+    });
+
+    // Run when section loads/reloads in Shopify Theme Editor
+    document.addEventListener("shopify:section:load", (event) => {
+      if (event.target && event.target.querySelector("#gk-section-{{ section.id }}")) {
+        initGKSection(event.target);
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Global Komunika",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Warna & Tema"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "ink_color",
+      "label": "Text Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "brand_blue",
+      "label": "Brand Blue",
+      "default": "#00adee"
+    },
+    {
+      "type": "color",
+      "id": "brand_blue_dark",
+      "label": "Brand Blue Dark",
+      "default": "#005496"
+    },
+    {
+      "type": "color",
+      "id": "brand_yellow",
+      "label": "Brand Yellow",
+      "default": "#fbb526"
+    },
+    {
+      "type": "header",
+      "content": "Hero Settings"
+    },
+    {
+      "type": "color",
+      "id": "hero_bg_color_start",
+      "label": "Gradient Awal",
+      "default": "#00adee"
+    },
+    {
+      "type": "color",
+      "id": "hero_bg_color_end",
+      "label": "Gradient Akhir",
+      "default": "#005496"
+    },
+    {
+      "type": "text",
+      "id": "hero_tagline",
+      "label": "Hero Badge Tagline",
+      "default": "100.000+ Traveler Telah Memilih Kami · Pelopor eSIM Travel Sejak 2016"
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Hero Title (HTML support)",
+      "default": "Internet di China tanpa Drama"
+    },
+    {
+      "type": "text",
+      "id": "hero_price",
+      "label": "Hero Price",
+      "default": "Rp 99.000"
+    },
+    {
+      "type": "text",
+      "id": "hero_button_text",
+      "label": "Hero Button Text",
+      "default": "Beli Sekarang"
+    },
+    {
+      "type": "text",
+      "id": "hero_variant_id",
+      "label": "Variant ID",
+      "info": "Variant ditambahkan sebanyak 1 item melalui Ajax Cart API, lalu pembeli diarahkan ke halaman cart.",
+      "default": "46624429768921"
+    },
+    {
+      "type": "url",
+      "id": "hero_button_url",
+      "label": "Hero Button URL (Fallback)",
+      "info": "Dipakai hanya jika Variant ID dikosongkan."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_mascot",
+      "label": "Mascot Image"
+    },
+    {
+      "type": "text",
+      "id": "hero_mascot_asset_filename",
+      "label": "Fallback Mascot Asset Filename",
+      "default": "mascot_china.png"
+    },
+    {
+      "type": "text",
+      "id": "hero_mascot_alt",
+      "label": "Mascot Alt Text",
+      "default": "Mascot Global Komunika"
+    },
+    {
+      "type": "header",
+      "content": "Value Proposition (Features)"
+    },
+    {
+      "type": "text",
+      "id": "features_title",
+      "label": "Features Section Title",
+      "default": "Great Firewall Membatasi Akses Internet di China"
+    },
+    {
+      "type": "text",
+      "id": "features_subtitle",
+      "label": "Features Section Subtitle",
+      "default": "Pastikan internet kamu bisa diandalkan begitu kamu tiba."
+    },
+    {
+      "type": "header",
+      "content": "Testimonials Settings"
+    },
+    {
+      "type": "textarea",
+      "id": "testimonials_title",
+      "label": "Testimonials Header Title",
+      "default": "Lebih dari 100.000 traveler telah memilih Global Komunika sebagai solusi konektivitas perjalanan mereka."
+    },
+    {
+      "type": "header",
+      "content": "FAQ Settings"
+    },
+    {
+      "type": "text",
+      "id": "faq_title",
+      "label": "FAQ Title",
+      "default": "Pertanyaan yang sering ditanya"
+    },
+    {
+      "type": "header",
+      "content": "Founder Section"
+    },
+    {
+      "type": "color",
+      "id": "founder_bg_color",
+      "label": "Founder Section Background Color",
+      "default": "#005496"
+    },
+    {
+      "type": "image_picker",
+      "id": "founder_image",
+      "label": "Founder Image"
+    },
+    {
+      "type": "text",
+      "id": "founder_asset_filename",
+      "label": "Fallback Founder Asset Filename",
+      "default": "founder_photo.png"
+    },
+    {
+      "type": "text",
+      "id": "founder_image_alt",
+      "label": "Founder Image Alt Text",
+      "default": "Foto founder Global Komunika"
+    },
+    {
+      "type": "textarea",
+      "id": "founder_quote",
+      "label": "Founder Quote Text",
+      "default": "Saya mendirikan Global Komunika pada tahun 2016 untuk membantu para traveler Indonesia mendapatkan pengalaman terbaik ketika menjelajahi Dunia. Berbekal pengalaman pribadi traveling mandiri sejak 2007, saya bisa berbagi banyak hal—mulai dari pilihan transportasi, rekomendasi destinasi menarik, hingga tips perjalanan lainnya. Kecintaan saya terhadap perjalanan mandiri, tanpa paket tur, memacu saya untuk terus mengembangkan Global Komunika agar setiap perjalanan Anda dapat selalu terhubung internet di mana pun Anda berada."
+    },
+    {
+      "type": "text",
+      "id": "founder_name",
+      "label": "Founder Name & Title",
+      "default": "Andy · Founder & CEO"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Card",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Card Number (Optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "Aktivasi Instan"
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Card Description",
+          "default": "Aktivasi mudah, cukup scan QR dan langsung aktif."
+        },
+        {
+          "type": "checkbox",
+          "id": "highlight",
+          "label": "Highlight Card",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Customer Name",
+          "default": "Customer Name"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "Beneran plug-and-play, sampai Shanghai langsung nyala."
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating (Stars)",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Question text?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "Answer content goes here."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Global Komunika eSIM China",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Aktivasi Instan",
+            "body": "Aktivasi mudah, cukup scan QR dan langsung aktif."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Akses Bebas",
+            "body": "Akses WhatsApp, Instagram & Google tanpa hambatan."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Pioneer Sejak 2016",
+            "body": "Dipercaya 100.000+ traveler Indonesia."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "CS Responsif",
+            "body": "Tim CS siap bantu via WhatsApp kapan pun."
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "name": "Rina W.",
+            "quote": "Beneran plug-and-play, sampai Shanghai langsung nyala. WA & Google jalan tanpa VPN tambahan."
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "name": "Arief S.",
+            "quote": "Sudah 3x ke China pakai Global Komunika. CS-nya cepat balas, sekali kena kendala dibantu sampai kelar."
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "name": "Michelle T.",
+            "quote": "Sebelumnya beli eSIM murahan di marketplace, gagal aktif. Yang ini smooth, worth every rupiah."
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "name": "Bagus P.",
+            "quote": "Nomor Indo tetap aktif buat OTP, data pakai eSIM China. Solusi paling praktis buat business trip."
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "name": "Dita R.",
+            "quote": "Instruksinya jelas banget dari email. Scan QR, tunggu 1 menit, langsung online."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Apakah HP saya support eSIM China ini?",
+            "answer": "Ketik *#06#. Jika muncul EID, berarti perangkat Anda mendukung eSIM. Anda juga dapat mengeceknya melalui menu Pengaturan > SIM/Cellular."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Berapa lama setelah beli saya bisa aktif?",
+            "answer": "QR code dikirim ke email setelah pembayaran berhasil. Kamu bisa langsung scan dan aktifkan kapan saja."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Nomor HP asli saya tetap aktif?",
+            "answer": "Ya, kamu tetap bisa terima SMS/telepon di nomor lama untuk OTP atau hal penting lainnya, sambil pakai data dari eSIM China by Global Komunika."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Bagaimana kalau eSIM saya gagal aktif?",
+            "answer": "Tim CS Global Komunika siap bantu via WhatsApp, kamu bisa jelaskan keluhanmu ke no 08986454071."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -125,10 +125,10 @@
 
           {%- comment -%}
             ============================================================
-            UPSELL LOGIC (gSIM only)
+            UPSELL LOGIC (all products)
             - Days harus sama
-            - Big Data hanya ke Big Data
-            - Unlimited hanya ke Unlimited
+            - Untuk gSIM: Big Data hanya ke Big Data
+            - Untuk gSIM: Unlimited hanya ke Unlimited
             - Previous tidak boleh di bawah harga original (item._original_variant_id)
             ============================================================
           {%- endcomment -%}
@@ -181,7 +181,7 @@
             {% endif %}
           {% endfor %}
 
-          {% if is_gsim_upsell == true and item.product.has_only_default_variant == false %}
+          {% if item.product.has_only_default_variant == false %}
             {% for v in sorted_variants %}
               {% if v.available %}
                 {% assign v_id = v.id | plus: 0 %}

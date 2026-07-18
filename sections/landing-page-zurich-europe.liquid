@@ -1,0 +1,610 @@
+<style>
+/* ===== FONT ===== */
+@font-face { font-family:'Gotham'; src:url('/fonts/GothamBook.woff2') format('woff2'); font-weight:400; font-style:normal; }
+@font-face { font-family:'Gotham'; src:url('/fonts/GothamBold.woff2') format('woff2'); font-weight:700; font-style:normal; }
+@font-face { font-family:'Gotham'; src:url('/fonts/GothamRoundedBold.woff2') format('woff2'); font-weight:800; font-style:normal; }
+
+/* ===== VARIABLES ===== */
+.zurich-europe-landing{
+  font-family:'Gotham','Nunito',sans-serif;
+  font-size:15px;
+  color:#1a2c44;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  --blue:#00ADEE;
+  --dark:#005496;
+  --grad:linear-gradient(135deg,#00ADEE,#005496);
+  --grad-rev:linear-gradient(135deg,#005496,#00ADEE);
+  --light:#F0F8FF;
+  --gray:#4a6080;
+  --border:#e0eef8;
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:16px;
+  --shadow:0 4px 20px rgba(0,84,150,.10);
+  --shadow-md:0 8px 32px rgba(0,84,150,.15);
+}
+
+/* ===== LAYOUT ===== */
+.zurich-europe-landing .container{width:100%;max-width:1140px;margin:0 auto;padding:0 24px;}
+.zurich-europe-landing .section{padding:80px 0;}
+
+/* ===== HERO ===== */
+.zurich-europe-landing .hero{background:var(--light);padding:80px 0;}
+.zurich-europe-landing .hero-inner{display:flex;align-items:center;gap:48px;}
+.zurich-europe-landing .hero-left{flex:1;min-width:0;}
+.zurich-europe-landing .hero-right{flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.zurich-europe-landing .hero-image{display:block;width:100%;max-width:420px;height:auto;}
+.zurich-europe-landing .badge-pill{
+  display:inline-block;
+  border:2px solid var(--blue);color:var(--dark);
+  border-radius:999px;padding:5px 18px;font-size:13px;font-weight:700;
+  margin-bottom:20px;
+}
+.zurich-europe-landing .hero h1{
+  font-size:38px;font-weight:800;color:var(--dark);
+  line-height:1.2;margin-bottom:16px;
+}
+.zurich-europe-landing .hero-sub{font-size:15px;color:var(--gray);margin-bottom:28px;max-width:480px;}
+.zurich-europe-landing .hero-sub strong{color:var(--dark);}
+.zurich-europe-landing .btn-hero{
+  display:inline-block;
+  background:var(--grad);color:#fff;
+  border-radius:10px;padding:15px 32px;
+  font-weight:800;font-size:16px;
+  transition:opacity .2s,transform .2s;
+  margin-bottom:20px;
+}
+.zurich-europe-landing .btn-hero:hover{opacity:.9;transform:translateY(-2px);}
+.zurich-europe-landing .trust-badges{font-size:12px;color:var(--dark);font-weight:700;display:flex;flex-wrap:wrap;gap:16px;}
+
+/* ===== PAIN SECTION ===== */
+.zurich-europe-landing .pain{background:#fff;}
+.zurich-europe-landing .section-title{font-size:28px;font-weight:700;color:var(--dark);text-align:center;margin-bottom:12px;}
+.zurich-europe-landing .section-sub{text-align:center;color:var(--gray);margin-bottom:40px;max-width:560px;margin-left:auto;margin-right:auto;}
+.zurich-europe-landing .pain-sub-highlight{text-align:center;font-size:16px;font-weight:700;color:var(--dark);margin:0 auto 36px;max-width:500px;}
+.zurich-europe-landing .pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:36px;}
+.zurich-europe-landing .pain-card{border:1.5px solid #D0E8F7;border-radius:var(--radius-md);padding:22px 20px;background:#fff;}
+.zurich-europe-landing .pain-card-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.zurich-europe-landing .pain-card-icon{width:44px;height:44px;border-radius:12px;background:#E6F4FC;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.zurich-europe-landing .pain-card h3{font-size:15px;font-weight:800;color:var(--dark);margin:0;}
+.zurich-europe-landing .pain-card p{font-size:13.5px;color:var(--gray);line-height:1.55;}
+.zurich-europe-landing .pain-closing{text-align:center;margin-top:36px;}
+.zurich-europe-landing .pain-closing-inner{display:inline-block;font-size:20px;font-weight:900;padding:16px 32px;border:2.5px solid var(--dark);border-radius:12px;background:#fff;line-height:1.4;}
+.zurich-europe-landing .pain-closing-normal{color:var(--dark);}
+.zurich-europe-landing .pain-closing-accent{color:var(--blue);}
+
+/* ===== COMBINED OFFER+PROMO SECTION ===== */
+.zurich-europe-landing .offer-combined{background:linear-gradient(160deg,#003d72,#0092d0);color:#fff;text-align:center;padding:80px 0;}
+.zurich-europe-landing .offer-eyebrow{display:inline-block;font-size:13px;font-weight:600;color:rgba(255,255,255,.85);position:relative;padding-bottom:4px;margin-bottom:14px;}
+.zurich-europe-landing .offer-eyebrow::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:2px;background:linear-gradient(90deg,#FBB526,transparent);}
+.zurich-europe-landing .offer-combined h2{font-size:28px;font-weight:900;color:#fff;margin-bottom:6px;}
+.zurich-europe-landing .offer-price-wrap{margin-bottom:28px;}
+.zurich-europe-landing .offer-price-label{font-size:12px;font-weight:600;opacity:.5;display:block;margin-bottom:2px;}
+.zurich-europe-landing .offer-price{font-size:28px;font-weight:900;color:#fff;}
+.zurich-europe-landing .offer-benefits{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;max-width:540px;margin:0 auto 32px;}
+.zurich-europe-landing .benefit-item{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);border-radius:9px;padding:10px 12px;font-size:13.5px;display:flex;align-items:center;gap:10px;text-align:left;}
+.zurich-europe-landing .benefit-item .chk{width:20px;height:20px;border-radius:6px;background:#005496;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;font-weight:900;}
+.zurich-europe-landing .offer-kalimat{font-size:14px;color:rgba(255,255,255,.75);max-width:440px;margin:0 auto 24px;line-height:1.65;}
+.zurich-europe-landing .promo-card{background:#fff;border:2px solid var(--blue);border-radius:var(--radius-lg);padding:28px 32px;max-width:360px;margin:0 auto 28px;text-align:center;}
+.zurich-europe-landing .promo-label{font-size:12px;font-weight:800;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.zurich-europe-landing .promo-strike{font-size:18px;font-weight:800;color:#e05555;text-decoration:line-through;text-decoration-color:#e05555;text-decoration-thickness:2px;margin-bottom:6px;}
+.zurich-europe-landing .promo-price{font-size:52px;font-weight:900;color:var(--dark);line-height:1;margin-bottom:8px;}
+.zurich-europe-landing .promo-desc{font-size:13px;color:var(--gray);}
+.zurich-europe-landing .btn-offer{display:inline-block;background:#FBB526;color:#005496;border-radius:10px;padding:14px 48px;font-weight:900;font-size:15px;transition:opacity .2s;}
+.zurich-europe-landing .btn-offer:hover{opacity:.9;}
+
+/* ===== TABLE SECTION ===== */
+.zurich-europe-landing .table-section{background:#fff;}
+.zurich-europe-landing .table-wrap{overflow-x:auto;margin-top:40px;border-radius:var(--radius-md);box-shadow:var(--shadow);}
+.zurich-europe-landing .benefits-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+.zurich-europe-landing .benefits-table th{padding:14px 16px;font-weight:700;font-size:14px;}
+.zurich-europe-landing .benefits-table td{padding:12px 16px;border:0.5px solid var(--border);}
+.zurich-europe-landing .col-benefit{text-align:left;min-width:220px;}
+.zurich-europe-landing .col-prime th{background:var(--dark);color:#fff;text-align:center;min-width:200px;}
+.zurich-europe-landing .col-edge th{background:var(--blue);color:#fff;text-align:center;min-width:200px;}
+.zurich-europe-landing .col-prime td,.zurich-europe-landing .col-edge td{text-align:center;color:#2a4a6b;}
+.zurich-europe-landing .col-benefit td{color:#2a4a6b;}
+.zurich-europe-landing .row-alt td{background:#F8FBFF;color:#2a4a6b;}
+.zurich-europe-landing .row-cat td{background:#E6F4FC;font-weight:900;color:var(--dark);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;border-top:3px solid var(--blue);}
+.zurich-europe-landing .table-mobile-cards{display:none;}
+
+/* ===== SOCIAL PROOF ===== */
+.zurich-europe-landing .social-proof{background:#F8F8F8;}
+.zurich-europe-landing .testimonials{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:40px;}
+.zurich-europe-landing .testi-card{
+  background:#fff;border-radius:var(--radius-md);
+  box-shadow:var(--shadow);padding:24px;
+}
+.zurich-europe-landing .testi-stars{color:#f5a623;font-size:16px;margin-bottom:4px;}
+.zurich-europe-landing .testi-meta{font-size:12px;color:#aaa;margin-bottom:8px;}
+.zurich-europe-landing .testi-name{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+.zurich-europe-landing .testi-variant{font-size:11px;color:var(--blue);margin-bottom:12px;}
+.zurich-europe-landing .testi-text{font-size:13.5px;color:var(--gray);font-style:italic;}
+
+/* ===== FAQ ===== */
+.zurich-europe-landing .faq-section{background:#fff;}
+.zurich-europe-landing .faq-list{max-width:700px;margin:40px auto 0;}
+.zurich-europe-landing .faq-item{border-bottom:1px solid #eee;}
+.zurich-europe-landing .faq-q{
+  width:100%;background:none;border:none;cursor:pointer;
+  text-align:left;padding:20px 0;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'Gotham','Nunito',sans-serif;
+  font-weight:700;font-size:15px;color:var(--dark);
+}
+.zurich-europe-landing .faq-icon{font-size:22px;color:var(--blue);font-weight:700;flex-shrink:0;transition:transform .3s;}
+.zurich-europe-landing .faq-icon.open{transform:rotate(45deg);}
+.zurich-europe-landing .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+.zurich-europe-landing .faq-a-inner{font-size:14px;color:var(--gray);padding:0 0 18px;}
+
+/* ===== CTA2 ===== */
+.zurich-europe-landing .cta2{background:var(--grad);text-align:center;color:#fff;padding:80px 0;}
+.zurich-europe-landing .cta2-sub{font-size:20px;font-weight:700;opacity:.95;max-width:580px;margin:0 auto 32px;}
+.zurich-europe-landing .btn-cta2{
+  display:inline-block;background:#fff;color:var(--dark);
+  border-radius:10px;padding:15px 36px;font-weight:700;font-size:16px;
+  transition:opacity .2s,transform .2s;
+}
+.zurich-europe-landing .btn-cta2:hover{opacity:.9;transform:translateY(-2px);}
+
+/* ===== FLOATING WA ===== */
+.zurich-europe-landing .wa-btn{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  width:58px;height:58px;border-radius:50%;
+  background:#25D366;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(37,211,102,.5);
+  animation:zurich-europe-pulse 2s infinite;
+}
+.zurich-europe-landing .wa-btn:hover{transform:scale(1.08);}
+@keyframes zurich-europe-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.6);}
+  70%{box-shadow:0 0 0 14px rgba(37,211,102,0);}
+}
+.zurich-europe-landing .wa-btn svg{width:28px;height:28px;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .zurich-europe-landing .hero{padding:24px 0 40px;overflow:hidden;}
+  .zurich-europe-landing .hero .container{padding:0 16px;}
+  .zurich-europe-landing .hero-inner{display:block;position:relative;}
+  .zurich-europe-landing .hero-left{width:100%;min-width:0;}
+  .zurich-europe-landing .hero-right{
+    position:absolute;z-index:1;
+    top:80px;right:-15px;
+    width:clamp(132px,38vw,180px);
+  }
+  .zurich-europe-landing .hero-image{width:100%;max-width:none;}
+  .zurich-europe-landing .hero h1{
+    position:relative;z-index:2;
+    font-size:clamp(28px,8vw,38px);line-height:1.15;
+    margin-bottom:18px;
+  }
+  .zurich-europe-landing .badge-pill{
+    position:relative;z-index:2;
+    font-size:11px;padding:5px 13px;margin-bottom:24px;
+    background:#fff;white-space:nowrap;
+  }
+  .zurich-europe-landing .hero-sub{
+    position:relative;z-index:2;
+    width:64%;max-width:320px;
+    font-size:14px;line-height:1.8;margin-bottom:20px;
+  }
+  .zurich-europe-landing .hero-sub strong{display:block;margin-top:2px;}
+  .zurich-europe-landing .btn-hero{
+    position:relative;z-index:2;
+    display:block;box-sizing:border-box;
+    width:64%;max-width:340px;
+    font-size:12px;line-height:1.35;text-align:center;
+    padding:14px 10px;margin:0;
+  }
+  .zurich-europe-landing .trust-badges{
+    display:flex;flex-direction:row;flex-wrap:nowrap;
+    align-items:center;gap:10px;margin-top:14px;font-size:11px;
+  }
+  .zurich-europe-landing .section{padding:56px 0;}
+  .zurich-europe-landing .section-title{font-size:22px;}
+  .zurich-europe-landing .pain-grid{grid-template-columns:1fr;}
+  .zurich-europe-landing .offer-benefits{grid-template-columns:1fr;}
+  .zurich-europe-landing .promo-card{padding:24px 20px;}
+  .zurich-europe-landing .testimonials{grid-template-columns:1fr;}
+  .zurich-europe-landing .table-wrap{display:none;}
+  .zurich-europe-landing .table-mobile-cards{display:block;margin-top:32px;}
+  .zurich-europe-landing .mobile-benefit-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:16px;}
+  .zurich-europe-landing .mobile-benefit-header{background:#EEF5FB;color:var(--dark);font-weight:700;font-size:13px;padding:10px 16px;letter-spacing:.04em;}
+  .zurich-europe-landing .mobile-benefit-row{display:grid;grid-template-columns:1fr 1fr;border-top:0.5px solid var(--border);}
+  .zurich-europe-landing .mobile-benefit-name{padding:10px 14px;font-size:13px;color:var(--gray);border-right:0.5px solid var(--border);}
+  .zurich-europe-landing .mobile-benefit-vals{display:grid;grid-template-columns:1fr 1fr;}
+  .zurich-europe-landing .mval{padding:10px 12px;font-size:12px;text-align:center;}
+  .zurich-europe-landing .mval-header{font-weight:700;font-size:12px;padding:8px 12px;text-align:center;}
+  .zurich-europe-landing .prime-h{background:var(--dark);color:#fff;}
+  .zurich-europe-landing .edge-h{background:var(--blue);color:#fff;}
+  .zurich-europe-landing .row-item{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:0.5px solid var(--border);}
+  .zurich-europe-landing .ri-name{padding:10px 14px;font-size:13px;color:#2a4a6b;border-right:0.5px solid var(--border);grid-column:1;}
+  .zurich-europe-landing .ri-prime,.zurich-europe-landing .ri-edge{padding:10px 10px;font-size:12px;text-align:center;color:#2a4a6b;}
+  .zurich-europe-landing .ri-prime{border-right:0.5px solid var(--border);}
+  .zurich-europe-landing .prime-h.ri-prime{color:#fff !important;}
+  .zurich-europe-landing .edge-h.ri-edge{color:#fff !important;}
+  .zurich-europe-landing .cta2{padding:56px 0;}
+  .zurich-europe-landing .promo-card{padding:28px 24px;}
+  .zurich-europe-landing .trust-badges{gap:10px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .zurich-europe-landing *{transition:none!important;animation:none!important;}
+}
+</style>
+
+<div class="zurich-europe-landing">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <span class="badge-pill">Zurich Europe Travel Insurance</span>
+        <h1>Pengajuan Visa Tidak Dijamin<br>Lolos 100%</h1>
+        <p class="hero-sub">
+          Lindungi penolakan visa dengan Zurich Travel Insurance,
+          <strong>Tanpa Biaya Tambahan</strong>
+        </p>
+        <a href="https://wa.me/628986454071" class="btn-hero" target="_blank" rel="noopener">
+          Dapatkan Visa Protection GRATIS
+        </a>
+        <div class="trust-badges">
+          <span>✔ Produk resmi Zurich</span>
+          <span>✔ Proses mudah</span>
+        </div>
+      </div>
+      <div class="hero-right">
+        <img
+          class="hero-image"
+          src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/maskot_shield.webp?v=1784260655"
+          alt="Maskot Zurich dengan perisai perlindungan"
+          width="420"
+          height="420"
+          loading="eager"
+          fetchpriority="high"
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN SECTION -->
+<section class="pain section">
+  <div class="container">
+    <h2 class="section-title">Visa Belum Keluar. Tapi Biaya Perjalanan Terus Jalan</h2>
+    <p class="pain-sub-highlight">Dari kemungkinan terburuk visa ditolak, ada…</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-card-top"><div class="pain-card-icon">✈️</div><h3>Biaya Pengajuan Visa Yang Sudah Dikeluarkan</h3></div>
+        <p>Uang yang sudah disetorkan untuk biaya visa tidak bisa kembali saat pengajuan ditolak.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-card-top"><div class="pain-card-icon">🏨</div><h3>Biaya Pemesanan Tiket & Akomodasi</h3></div>
+        <p>Risiko pembatalan sepihak oleh maskapai bisa membuat biaya tiketmu terbuang.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-card-top"><div class="pain-card-icon">🗺️</div><h3>Rencana Perjalanan yang Harus Diubah</h3></div>
+        <p>Semua itinerary yang sudah direncanakan matang harus dirombak total.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-card-top"><div class="pain-card-icon">⏰</div><h3>Waktu & Tenaga yang Sudah Dicurahkan</h3></div>
+        <p>Berbulan-bulan persiapan dokumen dan antrian terbuang sia-sia.</p>
+      </div>
+    </div>
+    <div class="pain-closing">
+      <div class="pain-closing-inner">
+        <span class="pain-closing-normal">Jadi Udah Siap </span><span class="pain-closing-accent">Visa Kamu Ditolak?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFER + PROMO COMBINED -->
+<section class="offer-combined">
+  <div class="container">
+    <span class="offer-eyebrow">Saatnya Melengkapi Perlindungan Perjalananmu</span>
+    <h2>Zurich Europe Travel Insurance</h2>
+    <div class="offer-price-wrap">
+      <span class="offer-price-label">Mulai dari</span>
+      <span class="offer-price">Rp418.000</span>
+    </div>
+    <div class="offer-benefits">
+      <div class="benefit-item"><span class="chk">✔</span> Emergency Medical &amp; Assistance</div>
+      <div class="benefit-item"><span class="chk">✔</span> Personal Accident</div>
+      <div class="benefit-item"><span class="chk">✔</span> Travel Assistance</div>
+      <div class="benefit-item"><span class="chk">✔</span> Travel Inconvenience</div>
+      <div class="benefit-item"><span class="chk">✔</span> Personal Property</div>
+      <div class="benefit-item"><span class="chk">✔</span> House Protection</div>
+    </div>
+    <p class="offer-kalimat">Hasil pengajuan visa berada di luar kendali kamu, tapi bukan berarti kamu nggak bisa mempersiapkan diri.</p>
+    <div class="promo-card">
+      <p class="promo-label">Visa Protection</p>
+      <p class="promo-strike">Rp150.000</p>
+      <p class="promo-price">GRATIS</p>
+      <p class="promo-desc">Dapatkan proteksi penolakan visa tanpa biaya tambahan</p>
+    </div>
+    <a href="https://wa.me/628986454071" class="btn-offer" target="_blank" rel="noopener">Ambil Promonya Sekarang</a>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="social-proof section">
+  <div class="container">
+    <h2 class="section-title">Kata Mereka yang Sudah Terlindungi</h2>
+    <div class="testimonials">
+      <div class="testi-card">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-meta">11 bulan lalu</div>
+        <div class="testi-name">Setya</div>
+        <div class="testi-variant">Varian: Duo Plus BSC - 16-20 Days</div>
+        <p class="testi-text">"Pembelian kedua kalinya (2024 n 2025) disini utk apply visa France and approved visanya pake insurance dr global komunika"</p>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-meta">Lebih dari 1 tahun lalu</div>
+        <div class="testi-name">Julya</div>
+        <div class="testi-variant">Varian: Duo Plus BSC - 16-20 Days</div>
+        <p class="testi-text">"komunikasi lancar d jelas, pengerjaan cepat d tepat sesuai yg kita mau"</p>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-meta">Lebih dari 1 tahun lalu</div>
+        <div class="testi-name">S***a</div>
+        <div class="testi-variant">Varian: IDV BSC - Additional/Week</div>
+        <p class="testi-text">"Admin super duper ramah dan membantu sekali atas semua pertanyaan. Alhamdulillah visa lolos thank you!!"</p>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-meta">Lebih dari 1 tahun lalu</div>
+        <div class="testi-name">A***s</div>
+        <div class="testi-variant">Varian: Duo Plus EXC - 11-15 Days</div>
+        <p class="testi-text">"Nice... visa Schengen ke nordic approved."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TABLE SECTION -->
+<section class="table-section section">
+  <div class="container">
+    <h2 class="section-title">Detail Manfaat Pertanggungan</h2>
+    <p class="section-sub">Bandingkan plan Prime dan Edge sesuai kebutuhan perjalananmu</p>
+
+    <!-- DESKTOP TABLE -->
+    <div class="table-wrap">
+      <table class="benefits-table">
+        <thead>
+          <tr>
+            <th class="col-benefit" style="background:#EEF5FB;color:var(--dark);">Benefit</th>
+            <th class="col-prime">PRIME</th>
+            <th class="col-edge">EDGE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-cat"><td colspan="3">EMERGENCY MEDICAL AND ASSISTANCE</td></tr>
+          <tr><td class="col-benefit">Emergency Medical Evacuation &amp; Repatriation</td><td>Actual Cost</td><td>Actual Cost</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Medical Expenses</td><td>≤65th: IDR 2.500.000.000<br>66-75th: IDR 700.000.000<br>76+: IDR 250.000.000</td><td>≤65th: IDR 1.000.000.000<br>66-75th: IDR 500.000.000<br>76+: IDR 250.000.000</td></tr>
+          <tr><td class="col-benefit">Hospital Daily Benefit</td><td>IDR 1.000.000/day, max IDR 20.000.000</td><td>IDR 1.000.000/day, max IDR 15.000.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Emergency Telephone Charges</td><td>IDR 5.000.000</td><td>IDR 5.000.000</td></tr>
+          <tr><td class="col-benefit">Post Treatment Care</td><td>IDR 25.000.000</td><td>IDR 25.000.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Companion Travel Cost</td><td>IDR 45.000.000</td><td>IDR 45.000.000</td></tr>
+          <tr><td class="col-benefit">Return of Children</td><td>IDR 45.000.000</td><td>IDR 45.000.000</td></tr>
+
+          <tr class="row-cat"><td colspan="3">PERSONAL ACCIDENT</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Accidental Death &amp; Permanent Disablement</td><td>≤18th: IDR 150,000,000<br>19-65th: IDR 1,500,000,000<br>66-75th: IDR 750,000,000<br>76+: IDR 375,000,000</td><td>≤18th: IDR 125,000,000<br>19-65th: IDR 1,250,000,000<br>66-75th: IDR 625,000,000<br>76+: IDR 312,500,000</td></tr>
+          <tr><td class="col-benefit">Child Education Fund</td><td>IDR 50.000.000/child, max IDR 100.000.000</td><td>IDR 37.500.000/child, max IDR 75.000.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Credit Card Indemnity</td><td>IDR 10.000.000</td><td>IDR 7.500.000</td></tr>
+          <tr><td class="col-benefit">Leisure Activities Cover</td><td>✔</td><td>✔</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Terrorism Cover</td><td>✔</td><td>✔</td></tr>
+
+          <tr class="row-cat"><td colspan="3">TRAVEL ASSISTANCE</td></tr>
+          <tr><td class="col-benefit">Repatriation of Mortal Remains</td><td>Actual Cost</td><td>Actual Cost</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Compassionate Death Visit</td><td>IDR 35.000.000</td><td>IDR 35.000.000</td></tr>
+          <tr><td class="col-benefit">Funeral Expenses</td><td>IDR 10.000.000</td><td>IDR 10.000.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Personal Liability</td><td>IDR 2.500.000.000</td><td>IDR 2.500.000.000</td></tr>
+          <tr><td class="col-benefit">Legal Expenses</td><td>IDR 250.000.000</td><td>IDR 250.000.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">FlyEasy</td><td>✔</td><td>✔</td></tr>
+
+          <tr class="row-cat"><td colspan="3">TRAVEL INCONVENIENCE</td></tr>
+          <tr><td class="col-benefit">Trip Cancellation &amp; Alteration</td><td>IDR 65.000.000</td><td>IDR 50.000.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Trip Curtailment</td><td>IDR 45.000.000</td><td>IDR 35.000.000</td></tr>
+          <tr><td class="col-benefit">Trip Interruption</td><td>IDR 5.000.000</td><td>IDR 5.000.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Travel Delay</td><td>IDR 1.000.000/4h, max IDR 4.000.000</td><td>IDR 750.000/4h, max IDR 3.750.000</td></tr>
+          <tr><td class="col-benefit">Missed Flight Connection</td><td>IDR 10.000.000</td><td>IDR 7.500.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Flight Diversion</td><td>IDR 10.000.000</td><td>IDR 7.500.000</td></tr>
+          <tr><td class="col-benefit">Hijack</td><td>IDR 10.000.000</td><td>IDR 10.000.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Loss of Hotel Reservation</td><td>IDR 5.000.000</td><td>IDR 3.000.000</td></tr>
+          <tr><td class="col-benefit">Special Events</td><td>IDR 5.000.000</td><td>IDR 5.000.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Rental Vehicle Own Risk</td><td>IDR 10.000.000</td><td>IDR 10.000.000</td></tr>
+          <tr><td class="col-benefit">Credit Fraud Coverage</td><td>IDR 10.000.000</td><td>IDR 10.000.000</td></tr>
+
+          <tr class="row-cat"><td colspan="3">PERSONAL PROPERTY</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Baggage Delay</td><td>IDR 1.000.000/4h, max IDR 3.000.000</td><td>IDR 750.000/4h, max IDR 2.250.000</td></tr>
+          <tr><td class="col-benefit">Baggage &amp; Personal Belongings</td><td>IDR 30.000.000</td><td>IDR 25.000.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">Loss of Personal Money</td><td>IDR 5.000.000</td><td>IDR 3.500.000</td></tr>
+          <tr><td class="col-benefit">Loss of Travel Document &amp; Payment Card</td><td>IDR 10.000.000</td><td>IDR 7.500.000</td></tr>
+          <tr class="row-alt"><td class="col-benefit">House Protection</td><td>IDR 20.000.000</td><td>IDR 15.000.000</td></tr>
+        </tbody>
+      </table>
+    </div><!-- /table-wrap -->
+
+    <!-- MOBILE CARDS -->
+    <div class="table-mobile-cards">
+      <script>
+      (function(){
+        var cats=[
+          {cat:"EMERGENCY MEDICAL AND ASSISTANCE",rows:[
+            ["Emergency Medical Evacuation & Repatriation","Actual Cost","Actual Cost"],
+            ["Medical Expenses","≤65th: IDR 2.500.000.000 / 66-75th: IDR 700.000.000 / 76+: IDR 250.000.000","≤65th: IDR 1.000.000.000 / 66-75th: IDR 500.000.000 / 76+: IDR 250.000.000"],
+            ["Hospital Daily Benefit","IDR 1.000.000/day, max IDR 20.000.000","IDR 1.000.000/day, max IDR 15.000.000"],
+            ["Emergency Telephone Charges","IDR 5.000.000","IDR 5.000.000"],
+            ["Post Treatment Care","IDR 25.000.000","IDR 25.000.000"],
+            ["Companion Travel Cost","IDR 45.000.000","IDR 45.000.000"],
+            ["Return of Children","IDR 45.000.000","IDR 45.000.000"]
+          ]},
+          {cat:"PERSONAL ACCIDENT",rows:[
+            ["Accidental Death & Permanent Disablement","≤18th: IDR 150,000,000 / 19-65th: IDR 1,500,000,000 / 66-75th: IDR 750,000,000 / 76+: IDR 375,000,000","≤18th: IDR 125,000,000 / 19-65th: IDR 1,250,000,000 / 66-75th: IDR 625,000,000 / 76+: IDR 312,500,000"],
+            ["Child Education Fund","IDR 50.000.000/child, max IDR 100.000.000","IDR 37.500.000/child, max IDR 75.000.000"],
+            ["Credit Card Indemnity","IDR 10.000.000","IDR 7.500.000"],
+            ["Leisure Activities Cover","✔","✔"],
+            ["Terrorism Cover","✔","✔"]
+          ]},
+          {cat:"TRAVEL ASSISTANCE",rows:[
+            ["Repatriation of Mortal Remains","Actual Cost","Actual Cost"],
+            ["Compassionate Death Visit","IDR 35.000.000","IDR 35.000.000"],
+            ["Funeral Expenses","IDR 10.000.000","IDR 10.000.000"],
+            ["Personal Liability","IDR 2.500.000.000","IDR 2.500.000.000"],
+            ["Legal Expenses","IDR 250.000.000","IDR 250.000.000"],
+            ["FlyEasy","✔","✔"]
+          ]},
+          {cat:"TRAVEL INCONVENIENCE",rows:[
+            ["Trip Cancellation & Alteration","IDR 65.000.000","IDR 50.000.000"],
+            ["Trip Curtailment","IDR 45.000.000","IDR 35.000.000"],
+            ["Trip Interruption","IDR 5.000.000","IDR 5.000.000"],
+            ["Travel Delay","IDR 1.000.000/4h, max IDR 4.000.000","IDR 750.000/4h, max IDR 3.750.000"],
+            ["Missed Flight Connection","IDR 10.000.000","IDR 7.500.000"],
+            ["Flight Diversion","IDR 10.000.000","IDR 7.500.000"],
+            ["Hijack","IDR 10.000.000","IDR 10.000.000"],
+            ["Loss of Hotel Reservation","IDR 5.000.000","IDR 3.000.000"],
+            ["Special Events","IDR 5.000.000","IDR 5.000.000"],
+            ["Rental Vehicle Own Risk","IDR 10.000.000","IDR 10.000.000"],
+            ["Credit Fraud Coverage","IDR 10.000.000","IDR 10.000.000"]
+          ]},
+          {cat:"PERSONAL PROPERTY",rows:[
+            ["Baggage Delay","IDR 1.000.000/4h, max IDR 3.000.000","IDR 750.000/4h, max IDR 2.250.000"],
+            ["Baggage & Personal Belongings","IDR 30.000.000","IDR 25.000.000"],
+            ["Loss of Personal Money","IDR 5.000.000","IDR 3.500.000"],
+            ["Loss of Travel Document & Payment Card","IDR 10.000.000","IDR 7.500.000"],
+            ["House Protection","IDR 20.000.000","IDR 15.000.000"]
+          ]}
+        ];
+        var target=document.currentScript.parentNode;
+        cats.forEach(function(c){
+          var card=document.createElement('div');card.className='mobile-benefit-card';
+          var header=document.createElement('div');header.className='mobile-benefit-header';header.textContent=c.cat;
+          card.appendChild(header);
+          // sub-header row
+          var sh=document.createElement('div');sh.className='row-item';
+          sh.innerHTML='<div class="ri-name" style="font-weight:700;color:#005496;font-size:12px;">Manfaat</div><div class="ri-prime prime-h mval-header">PRIME</div><div class="ri-edge edge-h mval-header" style="background:#00ADEE;color:#fff;padding:8px 10px;font-size:12px;font-weight:700;text-align:center;">EDGE</div>';
+          card.appendChild(sh);
+          c.rows.forEach(function(r,i){
+            var row=document.createElement('div');row.className='row-item';
+            if(i%2===1)row.style.background='#F8FBFF';
+            row.innerHTML='<div class="ri-name">'+r[0]+'</div><div class="ri-prime">'+r[1]+'</div><div class="ri-edge">'+r[2]+'</div>';
+            card.appendChild(row);
+          });
+          target.appendChild(card);
+        });
+      })();
+      </script>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section section">
+  <div class="container">
+    <h2 class="section-title">Pertanyaan yang Sering Ditanyakan</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          Apakah Zurich Europe Travel Insurance bisa digunakan untuk pengajuan Visa Schengen?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p class="faq-a-inner">Ya. Zurich Europe Travel Insurance dapat digunakan sebagai salah satu dokumen pendukung untuk pengajuan Visa Schengen.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          Apakah asuransi ini menjamin visa saya akan disetujui?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p class="faq-a-inner">Persetujuan atau penolakan visa sepenuhnya merupakan kewenangan otoritas visa. Namun, Zurich Europe Travel Insurance menyediakan Visa Protection yang memberikan perlindungan terhadap risiko tertentu terkait penolakan visa, sesuai syarat dan ketentuan polis.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          Apa perbedaan Plan Prime dan Plan Edge?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p class="faq-a-inner">Kedua plan sama-sama memberikan perlindungan perjalanan ke Eropa, tetapi memiliki perbedaan pada cakupan manfaat dan limit pertanggungannya. Untuk detail, lihat tabel manfaat atau hubungi kami via WhatsApp.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          Apakah saya terlindungi jika perjalanan dibatalkan?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p class="faq-a-inner">Tersedia manfaat pembatalan atau gangguan perjalanan pada plan tertentu, sesuai penyebab, syarat, ketentuan, dan limit manfaat polis. Konsultasikan dengan tim kami.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA 2 -->
+<section class="cta2">
+  <div class="container">
+    <p class="cta2-sub">
+      Perlindungan Perjalanan ke Eropa<br>
+      + GRATIS Visa Protection<br>
+      <span style="font-size:16px;font-weight:600;opacity:.8;">mulai Rp418.000</span>
+    </p>
+    <a href="https://wa.me/628986454071" class="btn-cta2" style="background:#FBB526;color:#005496;" target="_blank" rel="noopener">Beli Sekarang</a>
+  </div>
+</section>
+
+<!-- FLOATING WA -->
+<a href="https://wa.me/628986454071" class="wa-btn" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
+  <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.551 4.107 1.516 5.836L.057 23.854a.5.5 0 0 0 .609.606l6.102-1.597A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.804 9.804 0 0 1-5.004-1.374l-.359-.213-3.72.975.993-3.62-.234-.372A9.814 9.814 0 0 1 2.182 12C2.182 6.567 6.567 2.182 12 2.182S21.818 6.567 21.818 12 17.433 21.818 12 21.818z"/>
+  </svg>
+</a>
+
+<script>
+// ===== FAQ Accordion =====
+var landingPage=document.currentScript.closest('.zurich-europe-landing');
+landingPage.querySelectorAll('.faq-q').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var isOpen=this.getAttribute('aria-expanded')==='true';
+    // close all
+    landingPage.querySelectorAll('.faq-q').forEach(function(b){
+      b.setAttribute('aria-expanded','false');
+      b.querySelector('.faq-icon').textContent='+';
+      b.querySelector('.faq-icon').classList.remove('open');
+      b.nextElementSibling.style.maxHeight='0';
+    });
+    if(!isOpen){
+      this.setAttribute('aria-expanded','true');
+      var icon=this.querySelector('.faq-icon');
+      icon.textContent='−';icon.classList.add('open');
+      var ans=this.nextElementSibling;
+      ans.style.maxHeight=ans.scrollHeight+'px';
+    }
+  });
+});
+
+</script>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Zurich Europe",
+    "settings": [],
+    "presets": [
+      {
+        "name": "Landing Page Zurich Europe",
+        "category": "Landing Pages"
+      }
+    ]
+  }
+{% endschema %}

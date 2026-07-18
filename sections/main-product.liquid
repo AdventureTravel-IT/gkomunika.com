@@ -1681,11 +1681,7 @@ async function updateTotalPriceDisplayIfInsurance() {
 
         opt.disabled = !available;
 
-        if (!available && !opt.textContent.includes('(Unavailable)')) {
-          opt.textContent = `${value} (Unavailable)`;
-        } else if (available && opt.textContent.includes('(Unavailable)')) {
-          opt.textContent = value;
-        }
+        opt.textContent = value;
       });
     });
   }
@@ -1784,7 +1780,7 @@ async function updateTotalPriceDisplayIfInsurance() {
             ${optionValues.map(value => {
               const available = isOptionAvailable(index, value);
               return `<option value="${value}" ${!available ? 'disabled' : ''}>
-                ${value}${!available ? ' (Unavailable)' : ''}
+                ${value}
               </option>`;
             }).join('')}
           </select>

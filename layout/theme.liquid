@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="#005496">
     <link rel="canonical" href="{{ canonical_url }}">
-    <meta name="description" content="{{ page_description | default: shop.meta_description }}">
-
     <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}">
 
     <!-- Google Tag Manager -->
@@ -92,8 +90,6 @@
     }
   {% endstyle %}
 
-  {{ 'base.css.liquid' | asset_url | stylesheet_tag }}
-
   {% style %}
     ui-skeleton {
       display: block;
@@ -117,6 +113,14 @@
         transform: translateX(100%);
       }
     }
+
+    /* Skip layout and paint work for homepage sections until they approach the viewport. */
+    @supports (content-visibility: auto) {
+      .template-index #MainContent > .shopify-section:not(:first-child) {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 900px;
+      }
+    }
   {% endstyle %}
 
   {% if request.page_type == 'page' %}
@@ -124,7 +128,7 @@
   {% endif %}
 </head>
 
-<body>
+<body class="template-{{ template.name | handle }}">
   {% sections 'header-group' %}
   {% render 'whatsapp' %}
 

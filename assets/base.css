@@ -1,0 +1,11 @@
+html {
+  font-family: "Gotham", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}

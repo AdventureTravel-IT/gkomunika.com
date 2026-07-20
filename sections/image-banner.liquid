@@ -221,12 +221,20 @@
 
 <div class="banner-container">
   <div class="banner__wrapper">
-    <img 
-      class="banner__image"
-      src="{{ section.settings.image | img_url: 'master' }}" 
-      alt="Banner Image"
-      fetchpriority="high"
-    />
+    {%- if section.settings.image != blank -%}
+      {{-
+        section.settings.image
+        | image_url: width: 1920
+        | image_tag:
+          class: 'banner__image',
+          widths: '480, 750, 960, 1280, 1600, 1920',
+          sizes: '100vw',
+          loading: 'eager',
+          preload: true,
+          fetchpriority: 'high',
+          alt: section.settings.image.alt
+      -}}
+    {%- endif -%}
     <div class="banner__content--wrapper">
       {%- for block in section.blocks -%}
         {%- case block.type -%}

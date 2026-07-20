@@ -30,6 +30,9 @@
 
 <script>
   (() => {
+    if (window.__countryAutocompleteBootstrapped) return;
+    window.__countryAutocompleteBootstrapped = true;
+
     const ENDPOINT = '/collections/all?view=country-api-json';
 
     const normalize = (str = '') => String(str).toLowerCase().trim().replace(/_/g, ' ').replace(/\s+/g, ' ');
@@ -43,7 +46,10 @@
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#039;');
 
-    async function init(root) {
+    function init(root) {
+      if (root.dataset.autocompleteInitialized === 'true') return;
+      root.dataset.autocompleteInitialized = 'true';
+
       const input = root.querySelector('[data-country-input]');
       const box = root.querySelector('[data-country-suggestions]');
       const list = root.querySelector('[data-country-list]');
@@ -89,23 +95,12 @@
         window.location.href = q ? `/search?q=${encodeURIComponent(q)}` : '/search';
       });
 
-      // --- Fetch JSON ---
-      let countries = [];
-      try {
-        const res = await fetch(ENDPOINT);
-        const raw = await res.text();
-        if (!raw.trim().startsWith('{')) {
-          console.error('[autocomplete] endpoint bukan JSON:', raw.slice(0, 150));
-          return;
-        }
-        const data = JSON.parse(raw);
-        countries = Array.isArray(data.search_keys) ? data.search_keys : [];
-      } catch (e) {
-        console.error('[autocomplete] fetch gagal:', e);
-        return;
-      }
+      // Build the search index only after the visitor starts typing. This keeps
+      // the endpoint and JSON processing out of the initial rendering path.
+      let index = null;
+      let indexPromise = null;
 
-      const index = countries.map((c) => {
+      const buildIndex = (countries) => countries.map((c) => {
         const countryEn = (c.country_en || '').trim();
         const countryAliases = Array.isArray(c.country_alias) ? c.country_alias : [];
 
@@ -135,6 +130,29 @@
         };
       });
 
+      const loadIndex = () => {
+        if (index) return Promise.resolve(index);
+        if (indexPromise) return indexPromise;
+
+        indexPromise = fetch(ENDPOINT, { credentials: 'same-origin' })
+          .then((res) => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+          })
+          .then((data) => {
+            const countries = Array.isArray(data.search_keys) ? data.search_keys : [];
+            index = buildIndex(countries);
+            return index;
+          })
+          .catch((error) => {
+            indexPromise = null;
+            console.error('[autocomplete] fetch gagal:', error);
+            return [];
+          });
+
+        return indexPromise;
+      };
+
       const isEuropeItem = (it) => {
         const en = normalize(it.country_en || '');
         const id = normalize(it.country_id || '');
@@ -145,7 +163,7 @@
         const nq = normalize(q);
         if (nq.length < 2) return [];
 
-        return index
+        return (index || [])
           .map((it) => {
             let score = 999;
             for (const t of it.tokens) {
@@ -201,7 +219,7 @@
             const flag = r.country_flag
               ? `<img src="${escapeHtml(r.country_flag)}"
             class="w-[40px] h-[40px] shrink-0 border border-slate-300 rounded-[10px] object-cover"
-            alt="${escapeHtml(label)}">`
+            alt="${escapeHtml(label)}" width="40" height="40" loading="lazy" decoding="async">`
               : `<span class="w-[40px] h-[40px] shrink-0 border border-slate-300 rounded-[10px] bg-slate-400 inline-block"></span>`;
 
             return `
@@ -224,7 +242,12 @@
       input.addEventListener('input', () => {
         clearTimeout(timer);
         timer = setTimeout(() => {
-          renderResults(searchCountries(input.value));
+          if (normalize(input.value).length < 2) {
+            hideBox();
+            return;
+          }
+
+          loadIndex().then(() => renderResults(searchCountries(input.value)));
         }, 120);
       });
 

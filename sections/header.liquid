@@ -1097,10 +1097,12 @@
 {% endunless %}
 
 <!-- SEARCH OVERLAY -->
-<div
-  id="header-search-overlay"
-  class="search-overlay"
-  hidden></div>
+{% if template.name == 'product' %}
+  <div
+    id="header-search-overlay"
+    class="search-overlay"
+    hidden></div>
+{% endif %}
 
 <!-- MENU MOBILE TOGGLE (ID-based) -->
 <script>
@@ -1219,75 +1221,77 @@
 </script>
 
 <!-- SEARCH MODAL -->
-<script type="module" defer>
-  (() => {
-    const triggers = [
-      document.getElementById('header-search-trigger-mobile'),
-      document.getElementById('header-search-trigger-desktop'),
-    ].filter(Boolean);
+{% if template.name == 'product' %}
+  <script type="module">
+    (() => {
+      const triggers = [
+        document.getElementById('header-search-trigger-mobile'),
+        document.getElementById('header-search-trigger-desktop'),
+      ].filter(Boolean);
   
-    const modal = document.getElementById('header-search-modal');
-    const overlay = document.getElementById('header-search-overlay');
-    const closeBtn = document.getElementById('header-search-close');
+      const modal = document.getElementById('header-search-modal');
+      const overlay = document.getElementById('header-search-overlay');
+      const closeBtn = document.getElementById('header-search-close');
   
-    if (!triggers.length || !modal || !overlay || !closeBtn) return;
+      if (!triggers.length || !modal || !overlay || !closeBtn) return;
   
-    let lastTrigger = null;
+      let lastTrigger = null;
   
-    const open = (triggerEl) => {
-      lastTrigger = triggerEl;
-      overlay.hidden = false;
-      modal.hidden = false;
-      document.documentElement.style.overflow = 'hidden';
+      const open = (triggerEl) => {
+        lastTrigger = triggerEl;
+        overlay.hidden = false;
+        modal.hidden = false;
+        document.documentElement.style.overflow = 'hidden';
   
-      const input = modal.querySelector('input, textarea, select, button');
-      if (input) input.focus();
-    };
+        const input = modal.querySelector('input, textarea, select, button');
+        if (input) input.focus();
+      };
   
-    const close = () => {
-      overlay.hidden = true;
-      modal.hidden = true;
-      document.documentElement.style.overflow = '';
-      if (lastTrigger) lastTrigger.focus();
-    };
+      const close = () => {
+        overlay.hidden = true;
+        modal.hidden = true;
+        document.documentElement.style.overflow = '';
+        if (lastTrigger) lastTrigger.focus();
+      };
   
-    triggers.forEach((btn) => btn.addEventListener('click', () => open(btn)));
+      triggers.forEach((btn) => btn.addEventListener('click', () => open(btn)));
   
-    closeBtn.addEventListener('click', close);
-    overlay.addEventListener('click', close);
+      closeBtn.addEventListener('click', close);
+      overlay.addEventListener('click', close);
   
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !modal.hidden) close();
-    });
-  })();
-</script>
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.hidden) close();
+      });
+    })();
+  </script>
 
 <!-- SEARCH MODAL MARKUP -->
-<div
-  id="header-search-modal"
-  class="search-modal"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="header-search-title"
-  hidden>
-  <div class="search-modal-inner">
-    <div class="search-modal-spacer">
-      <button
-        id="header-search-close"
-        type="button"
-        aria-label="Close search"
-        class="search-close-btn">
-        {% render 'icon-close'
-          , class: 'w-6 h-6 text-primary' %}
-      </button>
-    </div>
+  <div
+    id="header-search-modal"
+    class="search-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="header-search-title"
+    hidden>
+    <div class="search-modal-inner">
+      <div class="search-modal-spacer">
+        <button
+          id="header-search-close"
+          type="button"
+          aria-label="Close search"
+          class="search-close-btn">
+          {% render 'icon-close'
+            , class: 'w-6 h-6 text-primary' %}
+        </button>
+      </div>
 
-    <div class="search-body">
-      {% render 'search-bar'
-        , class: 'search-bar-wrap' %}
+      <div class="search-body">
+        {% render 'search-bar'
+          , class: 'search-bar-wrap' %}
+      </div>
     </div>
   </div>
-</div>
+{% endif %}
 
 <!-- CURRENCY DROPDOWN JS (Desktop + Mobile) -->
 <script>

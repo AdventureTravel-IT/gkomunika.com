@@ -543,6 +543,36 @@
   
     return result;
   }
+
+  function groupGsimProducts(results = [], mode = 'main') {
+    if (mode === 'topup') return results;
+
+    const gsimItems = [];
+    const seenGsimProducts = new Set();
+
+    const collectionsWithoutGsim = results.map((collection) => {
+      const items = (collection.items || []).filter((item) => {
+        if (!isGsimItem(item)) return true;
+
+        const productKey = String(item.id || item.handle || item.url || item.title || '').toLowerCase();
+        if (!seenGsimProducts.has(productKey)) {
+          seenGsimProducts.add(productKey);
+          gsimItems.push({ ...item, source_collection: collection.handle });
+        }
+
+        return false;
+      });
+
+      return { ...collection, items };
+    });
+
+    if (!gsimItems.length) return collectionsWithoutGsim;
+
+    return [
+      { handle: 'gsim', title: 'gSim', items: sortGsimByRegion(gsimItems) },
+      ...collectionsWithoutGsim,
+    ];
+  }
   
   // ==========================================================
   // ✅ NEW: EUROPE KEYWORD PRIORITY LOGIC
@@ -759,7 +789,7 @@
       })
     );
   
-    return results;
+    return groupGsimProducts(results, mode);
   }
   
   function escapeHtml(str = '') {
@@ -2127,10 +2157,11 @@ function shouldShowEuropeRating(item = {}, itemTitle = '') {
     const groupsHtml = visible
       .map((col, colIdx) => {
         const groupTitle = col.title ?? col.handle ?? 'Untitled';
-        const isSingleCountryCollection = col.handle === 'single-country';
-  
+
         const cardsHtml = sortGsimByRegion(col.items ?? [])
           .map((item) => {
+            const sourceCollection = item.source_collection || col.handle;
+            const isSingleCountryCollection = sourceCollection === 'single-country';
             const simTypeRaw = mode === 'topup' ? 'Top Up Plan' : item.category ?? 'Undefined';
             const simType = normalizeType(simTypeRaw);
   

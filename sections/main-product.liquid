@@ -130,6 +130,34 @@
   select.option-placeholder-red option[value=''] {
     color: #ef4444;
   }
+
+  .zurich-free-addon-card {
+    border-color: #22c55e;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 100%);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.14);
+  }
+
+  .zurich-free-addon-badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    border-radius: 9999px;
+    background: #16a34a;
+    color: #fff;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  .zurich-free-addon-price {
+    color: #15803d;
+  }
+
+  .zurich-free-addon-card input[type='checkbox'] {
+    accent-color: #16a34a;
+    opacity: 1;
+  }
 </style>
 
 <section>
@@ -747,7 +775,12 @@
 
       {%- comment -%} ================== INSURANCE BENEFITS (ONLY) ================== {%- endcomment -%}
       {% assign product_category = product.metafields.product.category.value | default: 'Undefined' %}
-      {% if product_category == 'Insurance' %}
+      {% assign hide_insurance_details = false %}
+      {% if product.handle == 'promo-zurich-europe-travel-insurance' %}
+        {% assign hide_insurance_details = true %}
+      {% endif %}
+
+      {% if product_category == 'Insurance' and hide_insurance_details == false %}
         <div class="mt-6 md:mt-8">
           {% render 'insurance-benefits' %}
         </div>
@@ -1189,6 +1222,12 @@
       {% endfor %}
     ]
   };
+
+  const LIMITED_PROMO_ZURICH_PRODUCT_ID = '9812409516249';
+  const LIMITED_PROMO_ZURICH_TITLE = 'limited promo zurich europe travel insurance';
+  const isLimitedPromoZurich =
+    String(filtered.id) === LIMITED_PROMO_ZURICH_PRODUCT_ID ||
+    String(filtered.title || '').trim().toLowerCase() === LIMITED_PROMO_ZURICH_TITLE;
 
   // Debug JSON output (tetap)
   const resultEl = document.getElementById('result');
@@ -1929,6 +1968,7 @@ async function updateTotalPriceDisplayIfInsurance() {
 
     if (addonButton) {
       addonButton.textContent = 'Choose Option';
+      addonButton.classList.add('truncate');
       addonButton.classList.remove('border-red-500', 'ring-2', 'ring-red-500/30');
       addonButton.classList.add('border-primary');
     }
@@ -1945,7 +1985,91 @@ async function updateTotalPriceDisplayIfInsurance() {
     if (displayOpt3) displayOpt3.textContent = mainVariant.options[2] || '-';
 
     const matched = matchInsuranceAddons(mainVariant);
-    renderAddonList(matched);
+    const isAdditionalPerWeek = isZurichAdditionalPerWeekVariant(mainVariant);
+
+    if (isAdditionalPerWeek) {
+      removeZurichVisaSelection();
+    } else {
+      syncZurichFreeVisaSelection(matched);
+    }
+
+    const visibleAddons = isAdditionalPerWeek
+      ? matched.filter(addon => !isVisaProtectionAddon(addon))
+      : matched;
+
+    renderAddonList(visibleAddons);
+    updateAddonButtonPreview();
+  }
+
+  function isVisaProtectionAddon(addon) {
+    const title = addon?.title || addon?.variantTitle || addon?.option3 || '';
+    return String(title).trim().toLowerCase() === 'visa protection';
+  }
+
+  function escapeAddonPreviewText(value) {
+    return String(value || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function isZurichFreeVisaAddon(addon) {
+    return isLimitedPromoZurich && isVisaProtectionAddon(addon) && Number(addon?.priceRaw || 0) === 0;
+  }
+
+  function isZurichAdditionalPerWeekVariant(mainVariant = selectedVariant) {
+    return isLimitedPromoZurich && (mainVariant?.options || []).some(option =>
+      String(option || '').trim().toLowerCase() === 'additional per week'
+    );
+  }
+
+  function removeZurichVisaSelection() {
+    selectedAddons = selectedAddons.filter(addon => !isVisaProtectionAddon(addon));
+
+    if (selectedAddons.length) {
+      sessionStorage.setItem('SelectedAddons', JSON.stringify(selectedAddons));
+    } else {
+      sessionStorage.removeItem('SelectedAddons');
+    }
+  }
+
+  function shouldAutoSelectZurichFreeVisa(mainVariant = selectedVariant) {
+    return isLimitedPromoZurich && !isZurichAdditionalPerWeekVariant(mainVariant);
+  }
+
+  function syncZurichFreeVisaSelection(addons) {
+    if (!isLimitedPromoZurich) return;
+
+    const freeVisa = addons.find(isZurichFreeVisaAddon);
+    if (!freeVisa) return;
+
+    const selectedIndex = selectedAddons.findIndex(a => String(a.id) === String(freeVisa.id));
+    const shouldAutoSelect = shouldAutoSelectZurichFreeVisa();
+
+    if (shouldAutoSelect) {
+      const selection = {
+        id: String(freeVisa.id),
+        variantTitle: freeVisa.title,
+        option1: freeVisa.option1,
+        option2: freeVisa.option2,
+        option3: freeVisa.option3,
+        quantity: freeVisa.quantity,
+        priceRaw: Number(freeVisa.priceRaw || 0),
+        isAutoSelected: true
+      };
+
+      if (selectedIndex === -1) {
+        selectedAddons.unshift(selection);
+      } else {
+        selectedAddons[selectedIndex] = { ...selectedAddons[selectedIndex], ...selection };
+      }
+    } else if (selectedIndex !== -1 && selectedAddons[selectedIndex].isAutoSelected) {
+      selectedAddons.splice(selectedIndex, 1);
+    }
+
+    sessionStorage.setItem('SelectedAddons', JSON.stringify(selectedAddons));
   }
 
   function matchInsuranceAddons(mainVariant) {
@@ -2031,25 +2155,33 @@ async function updateTotalPriceDisplayIfInsurance() {
         .join('');
 
       const isChecked = selectedAddons.some(sa => String(sa.id) === String(addon.id));
+      const isFreeVisa = isZurichFreeVisaAddon(addon);
+      const isAutoSelectedVisa = isFreeVisa && shouldAutoSelectZurichFreeVisa();
+      const priceLabel = isFreeVisa ? 'Gratis' : formatAddonPrice(addon.priceRaw, addon.quantity);
 
       return `
         <div
-          class="mt-4 rounded-[10px] border border-border bg-background p-4 transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] cursor-pointer select-none"
+          class="mt-4 rounded-[10px] border border-border bg-background p-4 transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] select-none ${isAutoSelectedVisa ? 'zurich-free-addon-card ring-2 ring-green-500/30' : 'cursor-pointer'}"
           data-addon-card="true"
         >
           <div class="mb-2 flex gap-5 md:flex-row md:items-center md:justify-between">
             <div class="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
-              <h1 class="m-0 text-[18px] font-bold leading-[1.3] text-primary md:text-[20px]">${addon.title}</h1>
-              <span class="whitespace-nowrap text-[16px] font-bold text-secondary md:text-[18px]">
-                ${formatAddonPrice(addon.priceRaw, addon.quantity)}
+              <div class="flex flex-col gap-2">
+                ${isAutoSelectedVisa ? '<span class="zurich-free-addon-badge">BONUS GRATIS</span>' : ''}
+                <h1 class="m-0 text-[18px] font-bold leading-[1.3] text-primary md:text-[20px]">${addon.title}</h1>
+              </div>
+              <span class="whitespace-nowrap text-[16px] font-bold text-secondary md:text-[18px] ${isFreeVisa ? 'zurich-free-addon-price' : ''}">
+                ${priceLabel}
               </span>
             </div>
 
             <label class="flex items-center justify-between gap-2 text-primary md:justify-end">
               <input
                 type="checkbox"
-                class="h-5 w-5 cursor-pointer accent-[var(--color-secondary)]"
+                class="h-5 w-5 accent-[var(--color-secondary)] ${isAutoSelectedVisa ? 'cursor-not-allowed' : 'cursor-pointer'}"
                 ${isChecked ? 'checked' : ''}
+                ${isAutoSelectedVisa ? 'disabled aria-label="Visa Protection otomatis aktif dan gratis"' : ''}
+                ${isFreeVisa ? 'data-zurich-free-visa="true"' : ''}
                 data-id="${addon.id}"
                 data-variant-title="${addon.title}"
                 data-price-raw="${addon.priceRaw}"
@@ -2059,7 +2191,7 @@ async function updateTotalPriceDisplayIfInsurance() {
                 data-quantity="${addon.quantity}"
                 onchange="handleAddonCheckboxChange(this)"
               />
-              <span class="text-[14px] font-medium">select</span>
+              <span class="whitespace-nowrap text-[14px] font-medium">${isAutoSelectedVisa ? 'Otomatis aktif' : 'select'}</span>
             </label>
           </div>
 
@@ -2069,9 +2201,21 @@ async function updateTotalPriceDisplayIfInsurance() {
         </div>
       `;
     }).join('');
+
+    // Pastikan state DOM ikut tercentang setiap kali modal dirender ulang.
+    if (shouldAutoSelectZurichFreeVisa()) {
+      const freeVisaCheckbox = addonList.querySelector('input[data-zurich-free-visa="true"]');
+      if (freeVisaCheckbox) {
+        freeVisaCheckbox.checked = true;
+        freeVisaCheckbox.defaultChecked = true;
+        freeVisaCheckbox.setAttribute('aria-checked', 'true');
+      }
+    }
   }
 
   function handleAddonCheckboxChange(checkbox) {
+    if (checkbox.disabled) return;
+
     const addonData = {
       id: checkbox.dataset.id,
       variantTitle: checkbox.dataset.variantTitle,
@@ -2113,7 +2257,7 @@ async function updateTotalPriceDisplayIfInsurance() {
       if (!card) return;
 
       const checkbox = card.querySelector('input[type="checkbox"]');
-      if (!checkbox) return;
+      if (!checkbox || checkbox.disabled) return;
 
       checkbox.checked = !checkbox.checked;
       handleAddonCheckboxChange(checkbox);
@@ -2126,10 +2270,30 @@ async function updateTotalPriceDisplayIfInsurance() {
 
     if (!selectedAddons.length) {
       addonButton.textContent = 'Choose Option';
+      addonButton.classList.add('truncate');
+      return;
+    }
+
+    const freeVisa = selectedAddons.find(isZurichFreeVisaAddon);
+    if (freeVisa) {
+      const otherTitles = selectedAddons
+        .filter(addon => String(addon.id) !== String(freeVisa.id))
+        .map(addon => escapeAddonPreviewText(addon.variantTitle))
+        .join(', ');
+
+      addonButton.classList.remove('truncate');
+      addonButton.innerHTML = `
+        <span class="flex w-full items-center justify-between gap-3 pr-1 font-semibold">
+          <span>Visa Protection</span>
+          <span class="zurich-free-addon-price font-bold">Gratis</span>
+        </span>
+        ${otherTitles ? `<span class="mt-1 block truncate text-sm font-normal">${otherTitles}</span>` : ''}
+      `;
       return;
     }
 
     const titles = selectedAddons.map(a => a.variantTitle).join(', ');
+    addonButton.classList.add('truncate');
     addonButton.textContent = titles.length > 50 ? titles.slice(0, 47) + '...' : titles;
   }
 

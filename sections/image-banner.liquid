@@ -11,23 +11,27 @@
   justify-content: center;
 }
 
+/* Tinggi banner desktop mengikuti rasio gambar asli, jadi tidak ada crop
+   maupun object-position. --banner-ratio di-set inline dari gambar section. */
 .banner__wrapper {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
-  height: 800px;
+  aspect-ratio: var(--banner-ratio, 2);
   overflow: visible;
+}
+
+.banner__picture {
+  display: contents;
 }
 
 .banner__image {
   position: absolute;
-  bottom: 0;
-  left: 70%;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  transform: translateX(-70%);
-  object-fit: cover;
   z-index: 0;
   pointer-events: none;
   user-select: none;
@@ -107,9 +111,6 @@
 }
 
 @media (max-width: 1440px) {
-  .banner__wrapper {
-    height: 650px;
-  }
   .cta-desktop {
     position: absolute;
     right: 160px;
@@ -118,9 +119,6 @@
 }
 
 @media (max-width: 1366px) {
-  .banner__wrapper {
-    height: 550px;
-  }
   .cta-desktop {
     position: absolute;
     right: 150px;
@@ -145,20 +143,30 @@
 }
 
 @media (max-width: 768px) {
+  /* Mobile tetap tinggi tetap + cover: gambar desktop 2:1 hanya jadi ~195px
+     tinggi di layar HP kalau ikut rasio asli. */
   .banner__wrapper {
-    height: 800px;
+    aspect-ratio: auto;
+    height: 600px;
     overflow: hidden;
   }
 
   .banner__image {
     width: 100%;
-    height: 800px;
+    height: 600px;
     top: 0;
     bottom: auto;
     left: 70%;
     transform: translateX(-70%);
     object-fit: cover;
     object-position: 70% bottom;
+  }
+
+  /* Gambar mobile khusus tidak perlu digeser seperti crop gambar desktop */
+  .banner__wrapper--has-mobile .banner__image {
+    left: 50%;
+    transform: translateX(-50%);
+    object-position: center bottom;
   }
 
   .banner__content--wrapper {
@@ -182,10 +190,11 @@
     color: var(--color-primary);
   }
 
+  /* Naik 200px mengikuti banner yang dipendekkan dari 800px ke 600px */
   .cta-desktop {
     position: absolute;
     right: 50px;
-    bottom: -500px;
+    bottom: -300px;
   }
 }
 
@@ -196,7 +205,7 @@
     max-width: none;
     position: absolute;
     right: 0;
-    bottom: -480px;
+    bottom: -280px;
   }
   .banner__heading--text p,
   #default-heading,
@@ -213,27 +222,47 @@
     max-width: none;
     position: absolute;
     right: 0;
-    bottom: -255px;
+    bottom: -55px;
     white-space: nowrap;
   }
 }
 {% endstyle %}
 
 <div class="banner-container">
-  <div class="banner__wrapper">
+  <div
+    class="banner__wrapper{% if section.settings.image_mobile != blank %} banner__wrapper--has-mobile{% endif %}"
+    {%- if section.settings.image != blank %} style="--banner-ratio: {{ section.settings.image.aspect_ratio }};"{% endif -%}
+  >
     {%- if section.settings.image != blank -%}
-      {{-
-        section.settings.image
-        | image_url: width: 1920
-        | image_tag:
-          class: 'banner__image',
-          widths: '480, 750, 960, 1280, 1600, 1920',
-          sizes: '100vw',
-          loading: 'eager',
-          preload: true,
-          fetchpriority: 'high',
-          alt: section.settings.image.alt
-      -}}
+      <picture class="banner__picture">
+        {%- if section.settings.image_mobile != blank -%}
+          {%- assign mobile_image = section.settings.image_mobile -%}
+          <source
+            media="(max-width: 768px)"
+            srcset="
+              {{ mobile_image | image_url: width: 480 }} 480w,
+              {{ mobile_image | image_url: width: 750 }} 750w,
+              {{ mobile_image | image_url: width: 1080 }} 1080w,
+              {{ mobile_image | image_url: width: 1536 }} 1536w
+            "
+            sizes="100vw"
+            width="{{ mobile_image.width }}"
+            height="{{ mobile_image.height }}"
+          >
+        {%- endif -%}
+        {{-
+          section.settings.image
+          | image_url: width: 3000
+          | image_tag:
+            class: 'banner__image',
+            widths: '480, 750, 960, 1280, 1600, 1920, 2400, 3000',
+            sizes: '(min-width: 1920px) 1920px, 100vw',
+            loading: 'eager',
+            preload: true,
+            fetchpriority: 'high',
+            alt: section.settings.image.alt
+        -}}
+      </picture>
     {%- endif -%}
     <div class="banner__content--wrapper">
       {%- for block in section.blocks -%}
@@ -283,7 +312,13 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Select Image"
+      "label": "Select Image (Desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Select Image (Mobile)",
+      "info": "Ditampilkan pada layar maksimal 768px. Jika dikosongkan, gambar desktop yang dipakai."
     }
   ],
   "presets": [
@@ -376,6 +411,6 @@
       "limit": 1,
       "settings": []
     }
-  ],
+  ]
 }
 {% endschema %}

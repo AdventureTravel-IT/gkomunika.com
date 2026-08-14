@@ -264,6 +264,17 @@
     }
   }
 
+  function decorateTrackedUrl(url) {
+    return window.gkomunikaAttribution?.decorateUrl
+      ? window.gkomunikaAttribution.decorateUrl(url)
+      : url;
+  }
+
+  async function syncAttributionToCart(extra = {}) {
+    if (!window.gkomunikaAttribution?.syncCartAttributes) return;
+    await window.gkomunikaAttribution.syncCartAttributes(extra);
+  }
+
   function escapeHtml(str) {
     return String(str)
       .replaceAll('&', '&amp;')
@@ -1217,7 +1228,10 @@
 
       if (!hasInsurance && allItems.length === 1) {
         const product = allItems[0];
-        const queryParams = Object.entries(allAttributes)
+        const checkoutAttributes = window.gkomunikaAttribution?.getCartAttributes
+          ? window.gkomunikaAttribution.getCartAttributes(allAttributes)
+          : allAttributes;
+        const queryParams = Object.entries(checkoutAttributes)
           .map(([key, val]) => `attributes[${encodeURIComponent(key)}]=${encodeURIComponent(val)}`)
           .join('&');
 
@@ -1228,9 +1242,10 @@
           });
         }
 
+        await syncAttributionToCart(allAttributes);
         clearSavedFormData();
         clearCheckoutSession();
-        window.location.href = `/cart/${cartItems.join(',')}${queryParams ? `?${queryParams}` : ''}`;
+        window.location.href = decorateTrackedUrl(`/cart/${cartItems.join(',')}${queryParams ? `?${queryParams}` : ''}`);
         return;
       }
 
@@ -1253,7 +1268,7 @@
           sessionStorage.setItem('CheckoutFlow', JSON.stringify(flowData));
           localStorage.setItem('CheckoutFlow', JSON.stringify(flowData));
 
-          window.location.href = '/pages/form-insurance';
+          window.location.href = decorateTrackedUrl('/pages/form-insurance');
           return;
         }
       }
@@ -1311,7 +1326,8 @@
 
       clearSavedFormData();
       clearCheckoutSession();
-      window.location.href = '/checkout';
+      await syncAttributionToCart(allAttributes);
+      window.location.href = decorateTrackedUrl('/checkout');
     } catch (error) {
       console.error('Checkout error:', error);
       showCheckoutError('There was an error during checkout. Please try again.');

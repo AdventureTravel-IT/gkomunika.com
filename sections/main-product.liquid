@@ -1853,6 +1853,133 @@ async function updateTotalPriceDisplayIfInsurance() {
     if (resetBtnInsurance) resetBtnInsurance.disabled = !hasSelection;
   }
 
+  function getVariantIdFromUrl() {
+    try {
+      return new URLSearchParams(window.location.search).get('variant');
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function findVariantById(variantId) {
+    if (!variantId) return null;
+    return filtered.variants.find(v => String(v.id) === String(variantId)) || null;
+  }
+
+  function updateVariantUrl(variantId) {
+    if (!window.history?.replaceState) return;
+
+    const url = new URL(window.location.href);
+
+    if (variantId) {
+      url.searchParams.set('variant', variantId);
+    } else {
+      url.searchParams.delete('variant');
+    }
+
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  function decorateTrackedUrl(url) {
+    return window.gkomunikaAttribution?.decorateUrl
+      ? window.gkomunikaAttribution.decorateUrl(url)
+      : url;
+  }
+
+  function getTrackedLoginUrl(returnUrl) {
+    return window.gkomunikaAttribution?.loginUrl
+      ? window.gkomunikaAttribution.loginUrl(returnUrl)
+      : `/account/login?return_url=${encodeURIComponent(returnUrl)}`;
+  }
+
+  async function syncAttributionToCart(extra = {}) {
+    if (!window.gkomunikaAttribution?.syncCartAttributes) return;
+    await window.gkomunikaAttribution.syncCartAttributes(extra);
+  }
+
+  function setOptionSelectValues(options = []) {
+    selectedOptions = new Array(filtered.options.length).fill(null);
+
+    filtered.options.forEach((_, index) => {
+      const value = options[index] || null;
+      selectedOptions[index] = value;
+
+      const el = document.getElementById(`option${index}`);
+      if (el) el.value = value || '';
+    });
+  }
+
+  async function setSelectedVariantState(variant, { syncUrl = true, suppressUnavailableToast = false } = {}) {
+    selectedVariant = variant;
+    if (syncUrl) updateVariantUrl(variant.id);
+
+    updateMobileSelectedVariantLabel();
+    enforceMinQtyByVariant(selectedVariant);
+
+    const handled = await updateTotalPriceDisplayIfInsurance();
+    if (!handled) {
+      updatePriceDisplay(variant.priceRaw);
+    }
+
+    if (filtered.category === 'Insurance') {
+      if (lastSelectedVariantId && lastSelectedVariantId !== variant.id) {
+        resetAddons();
+      }
+      lastSelectedVariantId = variant.id;
+
+      updateInsuranceAddonDisplay(variant);
+    }
+
+    if (!variant.available && !suppressUnavailableToast) {
+      showToast('This variant is not available. Please select another option.', 'error');
+    }
+
+    updateResetButtonState();
+  }
+
+  async function applyVariantSelection(variant, options = {}) {
+    if (!variant) return false;
+
+    setOptionSelectValues(variant.options);
+    clearOptionHighlights();
+    updateAvailableOptions();
+    await setSelectedVariantState(variant, options);
+
+    return true;
+  }
+
+  async function selectVariantFromUrl(options = {}) {
+    const variant = findVariantById(getVariantIdFromUrl());
+    return applyVariantSelection(variant, {
+      suppressUnavailableToast: true,
+      ...options
+    });
+  }
+
+  async function restoreSelectedOptionsAfterVariantRefresh(previousOptions = []) {
+    setOptionSelectValues(previousOptions);
+    updateAvailableOptions();
+
+    const allSelected = selectedOptions.every(opt => opt !== null);
+    const variant = allSelected
+      ? filtered.variants.find(v => selectedOptions.every((selected, idx) => v.options[idx] === selected))
+      : null;
+
+    if (variant) {
+      await setSelectedVariantState(variant, {
+        syncUrl: false,
+        suppressUnavailableToast: true
+      });
+      return;
+    }
+
+    selectedVariant = null;
+    lastSelectedVariantId = null;
+    updateMobileSelectedVariantLabel();
+    updatePriceDisplay();
+    updateResetButtonState();
+  }
+
   function resetSelection() {
     selectedOptions = new Array(filtered.options.length).fill(null);
     selectedVariant = null;
@@ -1880,6 +2007,7 @@ async function updateTotalPriceDisplayIfInsurance() {
     updatePriceDisplay();
     updateResetButtonState();
     clearOptionHighlights();
+    updateVariantUrl(null);
   }
 
   async function handleOptionChange(optionIndex, value) {
@@ -1920,34 +2048,11 @@ async function updateTotalPriceDisplayIfInsurance() {
 
       updatePriceDisplay();
       updateResetButtonState();
+      updateVariantUrl(null);
       return;
     }
 
-    selectedVariant = variant;
-
-    updateMobileSelectedVariantLabel();
-
-    enforceMinQtyByVariant(selectedVariant);
-
-    const handled = await updateTotalPriceDisplayIfInsurance();
-    if (!handled) {
-      updatePriceDisplay(variant.priceRaw);
-    }
-
-    if (filtered.category === 'Insurance') {
-      if (lastSelectedVariantId && lastSelectedVariantId !== variant.id) {
-        resetAddons();
-      }
-      lastSelectedVariantId = variant.id;
-
-      updateInsuranceAddonDisplay(variant);
-    }
-
-    if (!variant.available) {
-      showToast('This variant is not available. Please select another option.', 'error');
-    }
-
-    updateResetButtonState();
+    await setSelectedVariantState(variant);
   }
 
   /* =========================================================
@@ -2528,7 +2633,7 @@ async function updateTotalPriceDisplayIfInsurance() {
       ? `/search?q=${encodeURIComponent(query)}`
       : '/search';
 
-    window.location.href = url;
+    window.location.href = decorateTrackedUrl(url);
   }
 
   window.goToBuySim = goToBuySim;
@@ -2596,7 +2701,8 @@ async function updateTotalPriceDisplayIfInsurance() {
       console.warn('cart attributes update failed (ignored):', e);
     }
 
-    window.location.href = '/checkout';
+    await syncAttributionToCart({ ICCID: String(iccid) });
+    window.location.href = decorateTrackedUrl('/checkout');
   }
 
   async function handleTopUpBuyNow(qty) {
@@ -2700,7 +2806,7 @@ async function updateTotalPriceDisplayIfInsurance() {
         );
 
         setTimeout(() => {
-          window.location.href = '/pages/top-up';
+          window.location.href = decorateTrackedUrl('/pages/top-up');
         }, 1200);
 
       } catch (err) {
@@ -2868,8 +2974,8 @@ async function updateTotalPriceDisplayIfInsurance() {
   }
 
   function logoutForCheckoutRelogin() {
-    const returnUrl = window.location.pathname + window.location.search;
-    window.location.href = `/account/logout?return_url=/account/login?return_url=${encodeURIComponent(returnUrl)}`;
+    const returnUrl = decorateTrackedUrl(window.location.pathname + window.location.search);
+    window.location.href = `/account/logout?return_url=${encodeURIComponent(getTrackedLoginUrl(returnUrl))}`;
   }
 
   async function buyNow() {
@@ -2939,9 +3045,10 @@ async function updateTotalPriceDisplayIfInsurance() {
 
         sessionStorage.setItem('ProductItems', JSON.stringify([newItem]));
 
+        const targetUrl = decorateTrackedUrl('/pages/form-insurance');
         window.location.href = customerLoggedIn
-          ? '/pages/form-insurance'
-          : '/account/login?return_url=/pages/form-insurance';
+          ? targetUrl
+          : getTrackedLoginUrl(targetUrl);
         return;
       }
 
@@ -3034,9 +3141,10 @@ async function updateTotalPriceDisplayIfInsurance() {
         sessionStorage.setItem('ProductItems', JSON.stringify(items));
         localStorage.setItem('ProductItems',  JSON.stringify(items));
 
+        const targetUrl = decorateTrackedUrl('/pages/form-airport-transfer');
         window.location.href = customerLoggedIn
-          ? '/pages/form-airport-transfer'
-          : '/account/login?return_url=/pages/form-airport-transfer';
+          ? targetUrl
+          : getTrackedLoginUrl(targetUrl);
         return;
       }
 
@@ -3054,7 +3162,8 @@ async function updateTotalPriceDisplayIfInsurance() {
         throw new Error(errJson?.description || 'Failed to process buy now');
       }
 
-      window.location.href = '/checkout';
+      await syncAttributionToCart();
+      window.location.href = decorateTrackedUrl('/checkout');
     } catch (err) {
       console.error('Error:', err);
       showToast(err?.message || 'Failed to process buy now', 'error');
@@ -3247,6 +3356,7 @@ async function updateTotalPriceDisplayIfInsurance() {
 
     // ✅ 1. Render selector SEGERA, jangan tunggu apapun
     generateSelectors();
+    selectVariantFromUrl({ syncUrl: false });
     bindQuantityInput();
     bindAddonPopup();
     bindTopUpIccidUI();
@@ -3281,38 +3391,30 @@ async function updateTotalPriceDisplayIfInsurance() {
 
     // ✅ 3. Fetch semua variants di background (defer ke idle)
     if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        fetchAllVariants().then((allVariants) => {
-          if (allVariants.length > 0) {
-            filtered.variants = allVariants;
-            const prevSelected = [...selectedOptions];
-            generateSelectors();
-            prevSelected.forEach((val, idx) => {
-              if (!val) return;
-              const el = document.getElementById(`option${idx}`);
-              if (el) { el.value = val; selectedOptions[idx] = val; }
-            });
-            updateAvailableOptions();
-            updateResetButtonState();
+      requestIdleCallback(async () => {
+        const allVariants = await fetchAllVariants();
+        if (allVariants.length > 0) {
+          filtered.variants = allVariants;
+          const prevSelected = [...selectedOptions];
+          generateSelectors();
+          const selectedFromUrl = await selectVariantFromUrl({ syncUrl: false });
+          if (!selectedFromUrl) {
+            await restoreSelectedOptionsAfterVariantRefresh(prevSelected);
           }
-        });
+        }
       }, { timeout: 5000 });
     } else {
-      setTimeout(() => {
-        fetchAllVariants().then((allVariants) => {
-          if (allVariants.length > 0) {
-            filtered.variants = allVariants;
-            const prevSelected = [...selectedOptions];
-            generateSelectors();
-            prevSelected.forEach((val, idx) => {
-              if (!val) return;
-              const el = document.getElementById(`option${idx}`);
-              if (el) { el.value = val; selectedOptions[idx] = val; }
-            });
-            updateAvailableOptions();
-            updateResetButtonState();
+      setTimeout(async () => {
+        const allVariants = await fetchAllVariants();
+        if (allVariants.length > 0) {
+          filtered.variants = allVariants;
+          const prevSelected = [...selectedOptions];
+          generateSelectors();
+          const selectedFromUrl = await selectVariantFromUrl({ syncUrl: false });
+          if (!selectedFromUrl) {
+            await restoreSelectedOptionsAfterVariantRefresh(prevSelected);
           }
-        });
+        }
       }, 2000);
     }
   });

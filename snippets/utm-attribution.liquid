@@ -1,0 +1,215 @@
+<script>
+  (function () {
+    if (window.__gkomunikaAttributionInit) return;
+    window.__gkomunikaAttributionInit = true;
+
+    var STORAGE_KEY = 'gkomunika_attribution';
+    var PARAM_KEYS = [
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'utm_term',
+      'utm_content',
+      'utm_id',
+      'source',
+      'gclid',
+      'gbraid',
+      'wbraid',
+      'fbclid',
+      'msclkid',
+      'ttclid'
+    ];
+
+    function safeParse(value) {
+      try {
+        return value ? JSON.parse(value) : {};
+      } catch (err) {
+        return {};
+      }
+    }
+
+    function readStorage(storage) {
+      try {
+        return safeParse(storage.getItem(STORAGE_KEY));
+      } catch (err) {
+        return {};
+      }
+    }
+
+    function writeStorage(storage, value) {
+      try {
+        storage.setItem(STORAGE_KEY, JSON.stringify(value));
+      } catch (err) {}
+    }
+
+    function getStoredAttribution() {
+      return Object.assign({}, readStorage(localStorage), readStorage(sessionStorage));
+    }
+
+    function getCurrentCampaignParams() {
+      var params = new URLSearchParams(window.location.search);
+      var values = {};
+
+      PARAM_KEYS.forEach(function (key) {
+        var value = params.get(key);
+        if (value) values[key] = value;
+      });
+
+      return values;
+    }
+
+    function hasCampaignParams(values) {
+      return PARAM_KEYS.some(function (key) {
+        return !!values[key];
+      });
+    }
+
+    function captureAttribution() {
+      var stored = getStoredAttribution();
+      var current = getCurrentCampaignParams();
+      var now = new Date().toISOString();
+      var pageUrl = window.location.pathname + window.location.search;
+      var referrer = document.referrer || '';
+
+      var next = Object.assign({}, stored, current);
+
+      if (!next.first_landing_page) next.first_landing_page = pageUrl;
+      if (!next.first_seen_at) next.first_seen_at = now;
+      next.last_landing_page = pageUrl;
+      next.last_seen_at = now;
+
+      if (referrer) {
+        try {
+          var refUrl = new URL(referrer);
+          if (refUrl.hostname !== window.location.hostname && !next.referrer) {
+            next.referrer = referrer;
+          }
+        } catch (err) {
+          if (!next.referrer) next.referrer = referrer;
+        }
+      }
+
+      writeStorage(sessionStorage, next);
+      writeStorage(localStorage, next);
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'gkomunika_attribution',
+        attribution: next
+      });
+
+      return next;
+    }
+
+    function decorateUrl(rawUrl) {
+      if (!rawUrl) return rawUrl;
+
+      try {
+        var url = new URL(rawUrl, window.location.origin);
+        var attribution = getStoredAttribution();
+
+        PARAM_KEYS.forEach(function (key) {
+          if (attribution[key] && !url.searchParams.has(key)) {
+            url.searchParams.set(key, attribution[key]);
+          }
+        });
+
+        return url.origin === window.location.origin
+          ? url.pathname + url.search + url.hash
+          : url.toString();
+      } catch (err) {
+        return rawUrl;
+      }
+    }
+
+    function loginUrl(returnUrl) {
+      var target = decorateUrl(returnUrl || (window.location.pathname + window.location.search));
+      var login = new URL('/account/login', window.location.origin);
+      login.searchParams.set('return_url', target);
+
+      var attribution = getStoredAttribution();
+      PARAM_KEYS.forEach(function (key) {
+        if (attribution[key]) login.searchParams.set(key, attribution[key]);
+      });
+
+      return login.pathname + login.search;
+    }
+
+    function getCartAttributes(extra) {
+      var attribution = getStoredAttribution();
+      var attributes = {};
+
+      PARAM_KEYS.forEach(function (key) {
+        if (attribution[key]) attributes[key] = attribution[key];
+      });
+
+      ['first_landing_page', 'last_landing_page', 'referrer'].forEach(function (key) {
+        if (attribution[key]) attributes[key] = attribution[key];
+      });
+
+      return Object.assign(attributes, extra || {});
+    }
+
+    function syncCartAttributes(extra) {
+      var attributes = getCartAttributes(extra);
+      if (!Object.keys(attributes).length) return Promise.resolve();
+
+      return fetch('/cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ attributes: attributes })
+      }).catch(function (err) {
+        console.warn('Attribution cart sync failed:', err);
+      });
+    }
+
+    captureAttribution();
+
+    window.gkomunikaAttribution = {
+      keys: PARAM_KEYS.slice(),
+      get: getStoredAttribution,
+      has: function () {
+        return hasCampaignParams(getStoredAttribution());
+      },
+      decorateUrl: decorateUrl,
+      loginUrl: loginUrl,
+      getCartAttributes: getCartAttributes,
+      syncCartAttributes: syncCartAttributes
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('a[href^="/account/login"]').forEach(function (link) {
+        var url = new URL(link.getAttribute('href'), window.location.origin);
+        var returnUrl = url.searchParams.get('return_url') || (window.location.pathname + window.location.search);
+        link.href = loginUrl(returnUrl);
+      });
+
+      document.querySelectorAll('a[href^="/account/register"]').forEach(function (link) {
+        link.href = decorateUrl(link.getAttribute('href'));
+      });
+    });
+
+    document.addEventListener('submit', function (event) {
+      var form = event.target;
+      var submitter = event.submitter || document.activeElement;
+      var isCheckoutSubmit = submitter && submitter.name === 'checkout';
+
+      if (!isCheckoutSubmit || !form || form.dataset.attributionSynced === '1') return;
+
+      event.preventDefault();
+      form.dataset.attributionSynced = '1';
+
+      syncCartAttributes().finally(function () {
+        if (!form.querySelector('input[name="checkout"]')) {
+          var input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'checkout';
+          input.value = 'Checkout';
+          form.appendChild(input);
+        }
+
+        form.submit();
+      });
+    }, true);
+  })();
+</script>

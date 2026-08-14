@@ -622,6 +622,17 @@
 <script>
   const ProductItems = JSON.parse(sessionStorage.getItem('ProductItems'));
 
+  function decorateTrackedUrl(url) {
+    return window.gkomunikaAttribution?.decorateUrl
+      ? window.gkomunikaAttribution.decorateUrl(url)
+      : url;
+  }
+
+  async function syncAttributionToCart(extra = {}) {
+    if (!window.gkomunikaAttribution?.syncCartAttributes) return;
+    await window.gkomunikaAttribution.syncCartAttributes(extra);
+  }
+
   function injectCountryOptions(itineraryContainer, variantCoverage) {
     const dropdown = itineraryContainer.querySelector('.itinerary-country-dropdown');
     if (!dropdown) return;
@@ -2066,7 +2077,7 @@
         flow.currentStepIndex = currentIdx + 1;
         sessionStorage.setItem('CheckoutFlow', JSON.stringify(flow));
         localStorage.setItem('CheckoutFlow', JSON.stringify(flow));
-        window.location.href = '/pages/form-airport-transfer';
+        window.location.href = decorateTrackedUrl('/pages/form-airport-transfer');
         return;
       }
     }
@@ -2143,13 +2154,15 @@
         }
       }
 
+      await syncAttributionToCart(attributes);
+
       setCheckoutLoading(false);
 
       const modal = document.getElementById('checkout-modal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
 
-      document.getElementById('modal-checkout-btn').onclick = () => {
+      document.getElementById('modal-checkout-btn').onclick = async () => {
         // ✅ Loading untuk modal button
         const modalBtn = document.getElementById('modal-checkout-btn');
         const modalBtnText = document.getElementById('modal-btn-text');
@@ -2159,7 +2172,8 @@
         modalBtnText.classList.add('hidden');
         modalBtnLoading.classList.remove('hidden');
 
-        window.location.href = '/checkout';
+        await syncAttributionToCart(attributes);
+        window.location.href = decorateTrackedUrl('/checkout');
       };
     } catch (error) {
       console.error('Checkout error:', error);

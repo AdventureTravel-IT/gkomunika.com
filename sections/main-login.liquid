@@ -341,6 +341,23 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    function decorateTrackedUrl(url) {
+      return window.gkomunikaAttribution?.decorateUrl
+        ? window.gkomunikaAttribution.decorateUrl(url)
+        : url;
+    }
+
+    function getTrackedLoginUrl(returnUrl) {
+      return window.gkomunikaAttribution?.loginUrl
+        ? window.gkomunikaAttribution.loginUrl(returnUrl)
+        : `/account/login?return_url=${encodeURIComponent(returnUrl)}`;
+    }
+
+    function getReturnUrlFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      return decorateTrackedUrl(params.get('return_url') || '/');
+    }
+
     if (sessionStorage.getItem('login') === 'true') {
       document.querySelectorAll('.MainLogin-form > div').forEach((form) => {
         form.style.display = 'none';
@@ -353,16 +370,32 @@
     if (btn) {
       btn.addEventListener('click', function () {
         sessionStorage.removeItem('login');
-        window.location.href = '/account/login';
+        window.location.href = getTrackedLoginUrl('/');
       });
     }
 
     const loginForm = document.querySelector('#FormLogin form');
     const loginButton = document.getElementById('login-button');
 
+    const loginTab = document.querySelector('.MainLogin-TabButton[href="/account/login"]');
+    const registerTab = document.querySelector('.MainLogin-TabButton[href="/account/register"]');
+    if (loginTab) loginTab.href = getTrackedLoginUrl(getReturnUrlFromQuery());
+    if (registerTab) registerTab.href = decorateTrackedUrl('/account/register');
+
     if (loginForm && loginButton) {
+      let returnInput = loginForm.querySelector('input[name="return_url"], input[name="return_to"]');
+      if (!returnInput) {
+        returnInput = document.createElement('input');
+        returnInput.type = 'hidden';
+        returnInput.name = 'return_url';
+        loginForm.appendChild(returnInput);
+      }
+      returnInput.value = getReturnUrlFromQuery();
+
       loginButton.addEventListener('click', function () {
         if (loginButton.disabled) return;
+
+        returnInput.value = getReturnUrlFromQuery();
 
         const email = document.getElementById('Login-Email');
         const password = document.getElementById('Login-Password');

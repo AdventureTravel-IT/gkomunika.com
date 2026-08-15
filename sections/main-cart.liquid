@@ -861,7 +861,7 @@
     }
 
     // ---- Delegated listeners (attached ONCE on document) ----
-    document.addEventListener('click', async (e) => {
+    document.addEventListener('click', (e) => {
       const btnQty = e.target.closest('button[data-qty]');
       const btnRemove = e.target.closest('button[data-remove]');
       const btnUpsell = e.target.closest('button[data-upsell-variant-id]');
@@ -1134,23 +1134,6 @@
       return { items, loggedIn };
     }
 
-    function decorateTrackedUrl(url) {
-      return window.gkomunikaAttribution?.decorateUrl
-        ? window.gkomunikaAttribution.decorateUrl(url)
-        : url;
-    }
-
-    function getTrackedLoginUrl(returnUrl) {
-      return window.gkomunikaAttribution?.loginUrl
-        ? window.gkomunikaAttribution.loginUrl(returnUrl)
-        : `/account/login?return_url=${encodeURIComponent(returnUrl)}`;
-    }
-
-    async function syncAttributionToCart() {
-      if (!window.gkomunikaAttribution?.syncCartAttributes) return;
-      await window.gkomunikaAttribution.syncCartAttributes();
-    }
-
     async function handleSmartCheckout(btn) {
       if (btn.dataset.loading === '1') return;
       btn.dataset.loading = '1';
@@ -1214,17 +1197,13 @@
         sessionStorage.setItem('CheckoutFlow', JSON.stringify(flow));
         localStorage.setItem('CheckoutFlow', JSON.stringify(flow));
 
-        await syncAttributionToCart();
-
         const firstStep = flow.steps[0];
-        const targetUrl = decorateTrackedUrl(
-          firstStep === 'insurance' ? '/pages/form-insurance' : '/pages/form-airport-transfer'
-        );
+        const targetUrl = firstStep === 'insurance' ? '/pages/form-insurance' : '/pages/form-airport-transfer';
 
         if (loggedIn) {
           window.location.href = targetUrl;
         } else {
-          window.location.href = getTrackedLoginUrl(targetUrl);
+          window.location.href = `/account/login?return_url=${encodeURIComponent(targetUrl)}`;
         }
       } catch (e) {
         console.error('Smart checkout error', e);
@@ -1235,7 +1214,7 @@
       }
     }
 
-    document.addEventListener('click', async (e) => {
+    document.addEventListener('click', (e) => {
       const smartBtn = e.target.closest('#checkout-smart-unified');
       if (smartBtn) {
         handleSmartCheckout(smartBtn);
@@ -1246,26 +1225,11 @@
       const submitBtn = e.target.closest('button[type="submit"][name="checkout"]');
       if (submitBtn) {
         if (submitBtn.dataset.loading === '1') return;
-        e.preventDefault();
-
         submitBtn.dataset.loading = '1';
         submitBtn.style.opacity = '0.7';
         submitBtn.style.pointerEvents = 'none';
         submitBtn.textContent = 'Processing...';
-
-        const form = submitBtn.closest('form');
-        await syncAttributionToCart();
-
-        if (form) {
-          if (!form.querySelector('input[name="checkout"]')) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'checkout';
-            input.value = 'Checkout';
-            form.appendChild(input);
-          }
-          form.submit();
-        }
+        // Form submit tetap jalan natural, tidak preventDefault
       }
 
       // Continue Shopping & link navigasi internal

@@ -1725,6 +1725,51 @@ async function updateTotalPriceDisplayIfInsurance() {
     });
   }
 
+  function updateVariantQuery(variantId) {
+    const url = new URL(window.location.href);
+
+    if (variantId) {
+      url.searchParams.set('variant', String(variantId));
+    } else {
+      url.searchParams.delete('variant');
+    }
+
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${url.pathname}${url.search}${url.hash}`
+    );
+  }
+
+  async function restoreVariantFromQuery() {
+    const variantId = new URLSearchParams(window.location.search).get('variant');
+    if (!variantId) return false;
+
+    const variant = filtered.variants.find(v => String(v.id) === String(variantId));
+    if (!variant || !Array.isArray(variant.options) || !variant.options.length) return false;
+
+    selectedOptions = new Array(filtered.options.length).fill(null);
+
+    variant.options.forEach((value, index) => {
+      if (index >= filtered.options.length) return;
+
+      selectedOptions[index] = value;
+      const selectEl = document.getElementById(`option${index}`);
+      if (selectEl) selectEl.value = value;
+    });
+
+    updateAvailableOptions();
+
+    const lastOptionIndex = Math.min(filtered.options.length, variant.options.length) - 1;
+    if (lastOptionIndex < 0) return false;
+
+    const changeHandler = window.handleOptionChange || handleOptionChange;
+    await changeHandler(lastOptionIndex, variant.options[lastOptionIndex]);
+    clearOptionHighlights();
+
+    return true;
+  }
+
   /* ============================
   * HIGHLIGHT MISSING OPTIONS
   * ============================ */
@@ -1858,6 +1903,8 @@ async function updateTotalPriceDisplayIfInsurance() {
     selectedVariant = null;
     lastSelectedVariantId = null;
 
+    updateVariantQuery(null);
+
     updateMobileSelectedVariantLabel();
 
     resetAddons();
@@ -1911,6 +1958,8 @@ async function updateTotalPriceDisplayIfInsurance() {
       selectedVariant = null;
       lastSelectedVariantId = null;
 
+      updateVariantQuery(null);
+
       updateMobileSelectedVariantLabel();
 
       if (filtered.category === 'Insurance') {
@@ -1924,6 +1973,7 @@ async function updateTotalPriceDisplayIfInsurance() {
     }
 
     selectedVariant = variant;
+    updateVariantQuery(variant.id);
 
     updateMobileSelectedVariantLabel();
 
@@ -3247,6 +3297,7 @@ async function updateTotalPriceDisplayIfInsurance() {
 
     // ✅ 1. Render selector SEGERA, jangan tunggu apapun
     generateSelectors();
+    await restoreVariantFromQuery();
     bindQuantityInput();
     bindAddonPopup();
     bindTopUpIccidUI();
@@ -3282,7 +3333,7 @@ async function updateTotalPriceDisplayIfInsurance() {
     // ✅ 3. Fetch semua variants di background (defer ke idle)
     if ('requestIdleCallback' in window) {
       requestIdleCallback(() => {
-        fetchAllVariants().then((allVariants) => {
+        fetchAllVariants().then(async (allVariants) => {
           if (allVariants.length > 0) {
             filtered.variants = allVariants;
             const prevSelected = [...selectedOptions];
@@ -3294,12 +3345,13 @@ async function updateTotalPriceDisplayIfInsurance() {
             });
             updateAvailableOptions();
             updateResetButtonState();
+            await restoreVariantFromQuery();
           }
         });
       }, { timeout: 5000 });
     } else {
       setTimeout(() => {
-        fetchAllVariants().then((allVariants) => {
+        fetchAllVariants().then(async (allVariants) => {
           if (allVariants.length > 0) {
             filtered.variants = allVariants;
             const prevSelected = [...selectedOptions];
@@ -3311,6 +3363,7 @@ async function updateTotalPriceDisplayIfInsurance() {
             });
             updateAvailableOptions();
             updateResetButtonState();
+            await restoreVariantFromQuery();
           }
         });
       }, 2000);

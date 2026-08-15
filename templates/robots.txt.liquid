@@ -1,0 +1,35 @@
+{% comment %}
+  Preserve Shopify's managed defaults while excluding storefront pages that
+  shouldn't be crawled. Indexing is also controlled in layout/theme.liquid.
+{% endcomment %}
+{% for group in robots.default_groups %}
+{{ group.user_agent }}
+{% for rule in group.rules %}
+{% assign skip_rule = false %}
+{% if group.user_agent.value == '*' and rule.directive == 'Allow' %}
+  {% if rule.value == '/account/login'
+    or rule.value == '/*/account/login'
+    or rule.value contains '/collections/'
+  %}
+    {% assign skip_rule = true %}
+  {% endif %}
+{% endif %}
+{% unless skip_rule %}
+{{ rule }}
+{% endunless %}
+{% endfor %}
+{% if group.user_agent.value == '*' %}
+# Custom storefront exclusions
+Disallow: /account/login
+Disallow: /*/account/login
+Disallow: /collections
+Disallow: /*/collections
+Disallow: /search
+Disallow: /*/search
+Disallow: /404
+Disallow: /*/404
+{% endif %}
+{% if group.sitemap != blank %}
+{{ group.sitemap }}
+{% endif %}
+{% endfor %}

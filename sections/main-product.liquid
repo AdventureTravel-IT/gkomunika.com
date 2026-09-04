@@ -758,13 +758,16 @@
               </div>
             {% else %}
               <div class="h-full flex flex-col overflow-hidden">
-                {% if product.metafields.search.key.value.size > 10 %}
+                {%- assign coverage_count = product.metafields.search.key.value.size
+                  | plus: product.metafields.search.key2.value.size
+                -%}
+                {% if coverage_count > 10 %}
                   <div class="bg-neutral shrink-0 z-10">
                     {% render 'coverage-search' %}
                   </div>
                 {% endif %}
 
-                <div class="flex-1 overflow-y-auto {% if product.metafields.search.key.value.size > 10 %}mt-3{% endif %}">
+                <div class="flex-1 overflow-y-auto {% if coverage_count > 10 %}mt-3{% endif %}">
                   {% render 'coverage' %}
                 </div>
               </div>
@@ -1172,7 +1175,19 @@
               {% endfor %}
             ],
             flag: {% if country.flag.value %}"{{ country.flag.value | image_url }}"{% else %}null{% endif %}
-          }{% unless forloop.last %},{% endunless %}
+          },
+        {% endfor %}
+        {% for country in product.metafields.search.key2.value %}
+          {
+            country_en: "{{ country.country.value }}",
+            country_id: "{{ country.country_id.value }}",
+            country_alias: [
+              {% for alias in country.alias.value %}
+                "{{ alias }}"{% unless forloop.last %},{% endunless %}
+              {% endfor %}
+            ],
+            flag: {% if country.flag.value %}"{{ country.flag.value | image_url }}"{% else %}null{% endif %}
+          },
         {% endfor %}
       ],
       insurance_addons: [
@@ -1927,6 +1942,9 @@ async function updateTotalPriceDisplayIfInsurance() {
     updatePriceDisplay();
     updateResetButtonState();
     clearOptionHighlights();
+
+    // Balikin coverage ke daftar lengkap produk
+    if (typeof window.updateCoverageByVariant === 'function') window.updateCoverageByVariant();
   }
 
   async function handleOptionChange(optionIndex, value) {
@@ -1947,6 +1965,9 @@ async function updateTotalPriceDisplayIfInsurance() {
       iconEl?.classList.add('text-primary');
 
     updateAvailableOptions();
+
+    // Coverage ikut varian terpilih (snippet 'coverage')
+    if (typeof window.updateCoverageByVariant === 'function') window.updateCoverageByVariant();
 
     const variant = filtered.variants.find(v =>
       selectedOptions.every((selected, idx) => !selected || v.options[idx] === selected)

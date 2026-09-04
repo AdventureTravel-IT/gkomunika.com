@@ -1243,8 +1243,18 @@
         modal.hidden = false;
         document.documentElement.style.overflow = 'hidden';
   
-        const input = modal.querySelector('input, textarea, select, button');
-        if (input) input.focus();
+        // ⚠️ jangan pakai selector fokusable generik: tombol close ada lebih dulu di DOM
+        const input = modal.querySelector('[data-country-input]')
+          || modal.querySelector('input[type="search"], input[name="q"]');
+
+        if (input) {
+          // tunggu 1 frame supaya elemen sudah benar-benar visible saat difokus
+          requestAnimationFrame(() => {
+            input.focus({ preventScroll: true });
+            const end = input.value.length;
+            try { input.setSelectionRange(end, end); } catch (_) {}
+          });
+        }
       };
   
       const close = () => {

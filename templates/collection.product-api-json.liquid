@@ -54,7 +54,10 @@
     "option2": {{ opt2_last | strip | json }}, "collection": {{ collection.title | json }},
 
     "search_key": [
-    {%- assign mos = item.metafields.search.key.value -%}
+    {%- assign empty_list = '' | split: ',' -%}
+    {%- assign mos_key = item.metafields.search.key.value | default: empty_list -%}
+    {%- assign mos_key2 = item.metafields.search.key2.value | default: empty_list -%}
+    {%- assign mos = mos_key | concat: mos_key2 -%}
     {%- if mos != blank -%}
       {%- for mo in mos -%}
         {%- unless forloop.first -%},{%- endunless -%}

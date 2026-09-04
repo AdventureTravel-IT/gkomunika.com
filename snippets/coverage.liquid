@@ -1,6 +1,7 @@
 {%- comment -%}
   Coverage (Metaobject-based)
-  - Source: product.metafields.search.key.value
+  - Source (default): product.metafields.search.key.value + product.metafields.search.key2.value
+  - Source (per variant, jika terisi): variant.metafields.variant.search-coverage.value
   - Display name (single):
       * if language is id => country_id
       * else => country (country_en)
@@ -26,22 +27,42 @@
     const norm = (s) => String(s || '').trim().toLowerCase();
     const pretty = (s) => String(s || '').replace(/_/g, ' ').trim();
 
-    // ✅ MASTER LIST — paginate by 250 agar semua entry terbaca (fix limit 50)
+    // ✅ MASTER LIST — search.key + search.key2 (key dibatasi 128 entry per metafield)
+    // paginate by 250 agar semua entry terbaca (fix limit 50)
     const masterCoverage = [
-      {%- paginate product.metafields.search.key.value by 250 -%}
-        {%- for country in product.metafields.search.key.value -%}
-          {
-            country_en: {{ country.country.value | json }},
-            country_id: {{ country.country_id.value | json }},
-            country_alias: [
-              {%- for alias in country.alias.value -%}
-                {{ alias | json }}{% unless forloop.last %},{% endunless %}
-              {%- endfor -%}
-            ],
-            flag: {% if country.flag.value %}{{ country.flag.value | image_url | json }}{% else %}null{% endif %}
-          }{% unless forloop.last %},{% endunless %}
-        {%- endfor -%}
-      {%- endpaginate -%}
+      {%- if product.metafields.search.key.value != blank -%}
+        {%- paginate product.metafields.search.key.value by 250 -%}
+          {%- for country in product.metafields.search.key.value -%}
+            {
+              country_en: {{ country.country.value | json }},
+              country_id: {{ country.country_id.value | json }},
+              country_alias: [
+                {%- for alias in country.alias.value -%}
+                  {{ alias | json }}{% unless forloop.last %},{% endunless %}
+                {%- endfor -%}
+              ],
+              flag: {% if country.flag.value %}{{ country.flag.value | image_url | json }}{% else %}null{% endif %}
+            },
+          {%- endfor -%}
+        {%- endpaginate -%}
+      {%- endif -%}
+
+      {%- if product.metafields.search.key2.value != blank -%}
+        {%- paginate product.metafields.search.key2.value by 250 -%}
+          {%- for country in product.metafields.search.key2.value -%}
+            {
+              country_en: {{ country.country.value | json }},
+              country_id: {{ country.country_id.value | json }},
+              country_alias: [
+                {%- for alias in country.alias.value -%}
+                  {{ alias | json }}{% unless forloop.last %},{% endunless %}
+                {%- endfor -%}
+              ],
+              flag: {% if country.flag.value %}{{ country.flag.value | image_url | json }}{% else %}null{% endif %}
+            },
+          {%- endfor -%}
+        {%- endpaginate -%}
+      {%- endif -%}
     ];
 
     // Build lookup index by EN/ID/alias
@@ -138,16 +159,41 @@
       if (typeof window.filterCountries === 'function') window.filterCountries();
     }
 
-    // === Variant switching (works for your Tailwind selects option0..)
-    const variantDropdowns =
-      document.querySelectorAll('.variant-dropdown, select[id^="option"]');
+    // === Variant switching
+    // ⚠️ select[id^="option"] di-generate JS (generateSelectors) SETELAH DOMContentLoaded,
+    // jadi listener tidak boleh dipasang langsung ke elemennya. Pakai event delegation.
+    const VARIANT_SELECT_SELECTOR = '.variant-dropdown, select[id^="option"]';
 
     const variantsData = [
       {% for variant in product.variants %}
+        {%- assign v_coverage = variant.metafields.variant['search-coverage'].value -%}
+        {%- if v_coverage == blank -%}
+          {%- comment -%} fallback metafield lama (list string nama negara) {%- endcomment -%}
+          {%- assign v_coverage = variant.metafields.variant.coverage.value -%}
+        {%- endif -%}
         {
           id: {{ variant.id }},
           options: [{% for option in variant.options %}{{ option | escape | json }}{% unless forloop.last %}, {% endunless %}{% endfor %}],
-          coverage: {{ variant.metafields.variant.coverage.value | default: "[]" | json }}
+          coverage: [
+            {%- for country in v_coverage -%}
+              {%- if country.country.value != blank -%}
+                {%- comment -%} metaobject, struktur sama dengan product search.key {%- endcomment -%}
+                {
+                  country_en: {{ country.country.value | json }},
+                  country_id: {{ country.country_id.value | json }},
+                  country_alias: [
+                    {%- for alias in country.alias.value -%}
+                      {{ alias | json }}{% unless forloop.last %},{% endunless %}
+                    {%- endfor -%}
+                  ],
+                  flag: {% if country.flag.value %}{{ country.flag.value | image_url | json }}{% else %}null{% endif %}
+                },
+              {%- else -%}
+                {%- comment -%} string, dipetakan ke metaobject lewat index {%- endcomment -%}
+                {{ country | json }},
+              {%- endif -%}
+            {%- endfor -%}
+          ]
         }{% unless forloop.last %}, {% endunless %}
       {% endfor %}
     ];
@@ -175,7 +221,15 @@
       }
     }
 
-    variantDropdowns.forEach(el => el.addEventListener('change', updateCoverageByVariant));
+    document.addEventListener('change', (e) => {
+      if (e.target && e.target.closest && e.target.closest(VARIANT_SELECT_SELECTOR)) {
+        updateCoverageByVariant();
+      }
+    });
+
+    // Hook untuk perubahan yang di-set programatis (reset / preselect) — tidak memicu event 'change'
+    window.updateCoverageByVariant = updateCoverageByVariant;
+
     updateCoverageByVariant();
   });
 </script>

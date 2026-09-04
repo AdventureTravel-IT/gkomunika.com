@@ -576,8 +576,11 @@
     <h2>Enter ICCID</h2>
     <p>Please input your ICCID to continue to Top Up</p>
     <input
-      type="number"
+      type="text"
       id="popup-iccid"
+      inputmode="numeric"
+      pattern="[0-9]*"
+      autocomplete="off"
       placeholder="Input ICCID Number"
       style="width:100%;padding:15px;margin:15px 0;border-radius:10px;border:1px solid var(--color-primary);"
     >
@@ -635,6 +638,44 @@
 
     const iccidInput = document.getElementById('iccid');
     const checkBtn = document.getElementById('check-iccid');
+
+    /* ==============================
+       ICCID INPUT: angka saja
+       "0394 0234 02348304" -> "0394023402348304"
+       Berlaku untuk ketik, paste, drag-drop, dan autofill.
+    ============================== */
+    function attachDigitsOnly(el) {
+      if (!el) return;
+
+      const sanitize = () => {
+        const before = el.value;
+        const after = before.replace(/\D+/g, '');
+        if (before === after) return;
+
+        // Pertahankan posisi caret: hitung karakter non-digit sebelum caret
+        const caret = el.selectionStart == null ? before.length : el.selectionStart;
+        const removed = (before.slice(0, caret).match(/\D/g) || []).length;
+
+        el.value = after;
+
+        const next = Math.max(0, caret - removed);
+        try {
+          el.setSelectionRange(next, next);
+        } catch (_) {
+          /* input type tertentu tidak mendukung selection range */
+        }
+      };
+
+      el.addEventListener('input', sanitize);
+      // paste/drop menulis nilai setelah event, jadi sanitize di tick berikutnya
+      el.addEventListener('paste', () => setTimeout(sanitize, 0));
+      el.addEventListener('drop', () => setTimeout(sanitize, 0));
+
+      sanitize();
+    }
+
+    attachDigitsOnly(iccidInput);
+    attachDigitsOnly(document.getElementById('popup-iccid'));
     const resultEl = document.getElementById('result');
     const invalidPopup = document.getElementById('invalid-popup');
     const btnHidePopup = document.getElementById('invalid-popup__button-hide');

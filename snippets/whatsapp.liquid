@@ -1,11 +1,37 @@
-<a
-  href="https://wa.me/628986454071"
+<div
   class="whatsapp-fab"
   aria-label="Chat WhatsApp dengan kami"
 >
-  {{- 'whatsapp.svg' | inline_asset_content -}}
+  <script async src="https://chat.gkomunika.com/widget/v1/embed.js?key=wid_b7865048688cd7f840a8407cddcc5e0e"></script>
+
   <span class="sr-only">Chat WhatsApp dengan kami</span>
-</a>
+</div>
+
+<script>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var required = {
+      utm_source: 'gk_qontak',
+      utm_medium: 'Organic',
+      utm_campaign: 'GK_Qontak',
+      utm_content: 'gk_qontak'
+    };
+    for (var key in required) {
+      if (params.get(key) !== required[key]) return;
+    }
+
+    // embed.js loads async and exposes window.GKChat once ready.
+    var attempts = 0;
+    var timer = setInterval(function () {
+      if (window.GKChat && typeof window.GKChat.open === 'function') {
+        clearInterval(timer);
+        window.GKChat.open();
+      } else if (++attempts > 50) {
+        clearInterval(timer);
+      }
+    }, 200);
+  })();
+</script>
 
 {% style %}
   .whatsapp-fab {
@@ -15,7 +41,6 @@
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    background-color: #25d366;
     box-shadow: var(--box-shadow);
     z-index: 999;
     cursor: pointer;

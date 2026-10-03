@@ -1,6 +1,6 @@
 {%- comment -%}
   Coverage (Metaobject-based)
-  - Source (default): product.metafields.search.key.value + product.metafields.search.key2.value
+  - Source (default): product metafields search.key, search.key2, search.key3, search.key4
   - Source (per variant, jika terisi): variant.metafields.variant.search-coverage.value
   - Display name (single):
       * if language is id => country_id
@@ -27,42 +27,24 @@
     const norm = (s) => String(s || '').trim().toLowerCase();
     const pretty = (s) => String(s || '').replace(/_/g, ' ').trim();
 
-    // ✅ MASTER LIST — search.key + search.key2 (key dibatasi 128 entry per metafield)
-    // paginate by 250 agar semua entry terbaca (fix limit 50)
+    // Read each metafield separately, then render one coverage list.
     const masterCoverage = [
-      {%- if product.metafields.search.key.value != blank -%}
-        {%- paginate product.metafields.search.key.value by 250 -%}
-          {%- for country in product.metafields.search.key.value -%}
-            {
-              country_en: {{ country.country.value | json }},
-              country_id: {{ country.country_id.value | json }},
-              country_alias: [
-                {%- for alias in country.alias.value -%}
-                  {{ alias | json }}{% unless forloop.last %},{% endunless %}
-                {%- endfor -%}
-              ],
-              flag: {% if country.flag.value %}{{ country.flag.value | image_url | json }}{% else %}null{% endif %}
-            },
-          {%- endfor -%}
-        {%- endpaginate -%}
-      {%- endif -%}
-
-      {%- if product.metafields.search.key2.value != blank -%}
-        {%- paginate product.metafields.search.key2.value by 250 -%}
-          {%- for country in product.metafields.search.key2.value -%}
-            {
-              country_en: {{ country.country.value | json }},
-              country_id: {{ country.country_id.value | json }},
-              country_alias: [
-                {%- for alias in country.alias.value -%}
-                  {{ alias | json }}{% unless forloop.last %},{% endunless %}
-                {%- endfor -%}
-              ],
-              flag: {% if country.flag.value %}{{ country.flag.value | image_url | json }}{% else %}null{% endif %}
-            },
-          {%- endfor -%}
-        {%- endpaginate -%}
-      {%- endif -%}
+      {%- assign coverage_fields = 'key,key2,key3,key4' | split: ',' -%}
+      {%- for coverage_field in coverage_fields -%}
+        {%- assign countries = product.metafields.search[coverage_field].value -%}
+        {%- for country in countries -%}
+          {
+            country_en: {{ country.country.value | json }},
+            country_id: {{ country.country_id.value | json }},
+            country_alias: [
+              {%- for alias in country.alias.value -%}
+                {{ alias | json }}{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            ],
+            flag: {% if country.flag.value %}{{ country.flag.value | image_url | json }}{% else %}null{% endif %}
+          },
+        {%- endfor -%}
+      {%- endfor -%}
     ];
 
     // Build lookup index by EN/ID/alias

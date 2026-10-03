@@ -423,6 +423,7 @@
       { handle: 'single-country', title: 'Single Country' },
       { handle: 'multi-country', title: 'Multi Country' },
       { handle: 'airport-transfer', title: 'Airport Transfer' },
+      ...(mode === 'main' ? [{ handle: 'merch', title: 'Merch' }] : []),
     ];
   }
   
@@ -551,6 +552,7 @@
     const seenGsimProducts = new Set();
 
     const collectionsWithoutGsim = results.map((collection) => {
+      if (collection.handle === 'merch') return collection;
       const items = (collection.items || []).filter((item) => {
         if (!isGsimItem(item)) return true;
 
@@ -776,6 +778,10 @@
     const results = await Promise.all(
       COLLECTIONS.map(async ({ handle, title }) => {
         let items = await fetchCollectionAllPages(handle);
+
+        if (handle === 'merch') {
+          items = items.map((item) => ({ ...item, category: 'Merch' }));
+        }
   
         // FILTER TOPUP BERDASARKAN sessionStorage.category
         if (mode === 'topup' && wantedTopup) {
@@ -1267,8 +1273,8 @@ function shouldShowEuropeRating(item = {}, itemTitle = '') {
     const desired = ['esim', 'sim-card', 'insurance'];
     const types = Array.from(set);
     const ordered = desired.filter((t) => types.includes(t));
-    const extras = types.filter((t) => !desired.includes(t));
-    return [...ordered, ...extras];
+    const extras = types.filter((t) => !desired.includes(t) && t !== 'merch');
+    return [...ordered, ...extras, ...(types.includes('merch') ? ['merch'] : [])];
   }
   
   function getCardSearchText(item) {
@@ -1465,6 +1471,7 @@ function shouldShowEuropeRating(item = {}, itemTitle = '') {
       esim: "{{ 'product.sim_type.esim' | t }}",
       insurance: "{{ 'product.card.insurance_label' | t }}",
       'airport-transfer': 'Airport Transfer',
+      merch: 'Merch',
     };
   
     const CATEGORY_TABS = ['esim', 'sim-card', 'insurance'];

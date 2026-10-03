@@ -1,10 +1,14 @@
 {%- layout none -%}
 {
   "search_key": [
-    {%- assign mos = product.metafields.search.key.value -%}
+    {%- assign coverage_fields = 'key,key2,key3,key4' | split: ',' -%}
+    {%- assign first_coverage = true -%}
+    {%- for coverage_field in coverage_fields -%}
+    {%- assign mos = product.metafields.search[coverage_field].value -%}
     {%- if mos != blank -%}
       {%- for mo in mos -%}
-        {%- unless forloop.first -%},{%- endunless -%}
+        {%- unless first_coverage -%},{%- endunless -%}
+        {%- assign first_coverage = false -%}
         {%- assign flag = mo.flag.value -%}
         {%- assign aliases = mo.alias.value -%}
         {%- assign regions = mo.region.value -%}
@@ -47,5 +51,6 @@
         }
       {%- endfor -%}
     {%- endif -%}
+    {%- endfor -%}
   ]
 }

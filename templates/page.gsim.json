@@ -9,44 +9,116 @@
  */
 {
   "sections": {
-    "header_promo_gFRbbm": {
-      "type": "header-promo",
-      "disabled": true,
-      "name": "Header Promo",
-      "settings": {}
-    },
-    "main": {
-      "type": "landing-hero-gsim",
-      "settings": {}
-    },
-    "discover": {
-      "type": "landing-discover-gsim",
-      "settings": {}
-    },
-    "started": {
-      "type": "landing-started-gsim",
-      "settings": {}
-    },
-    "package": {
-      "type": "landing-package-gsim",
-      "settings": {}
-    },
-    "review": {
-      "type": "landing-review-gsim",
-      "settings": {}
-    },
-    "faq": {
-      "type": "landing-faq-gsim",
+    "landing_page_gsim_G3Epf8": {
+      "type": "landing-page-gsim",
+      "blocks": {
+        "product_cQXVi6": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "track": "esim",
+            "title": "",
+            "hook": "Kulineran Keliling Asia?",
+            "button_label": "Lihat Paket"
+          }
+        },
+        "product_jkJD3g": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "track": "esim",
+            "title": "",
+            "hook": "Roadtrip Keliling Amerika?",
+            "button_label": "Lihat Paket"
+          }
+        },
+        "product_87EJyL": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "track": "esim",
+            "title": "",
+            "hook": "Desert Adventure di Timur Tengah?",
+            "button_label": "Lihat Paket"
+          }
+        },
+        "product_WB7UCU": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "track": "esim",
+            "title": "",
+            "hook": "City Hopping Keliling Eropa?",
+            "button_label": "Lihat Paket"
+          }
+        },
+        "product_wPHJ34": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "track": "esim",
+            "title": "",
+            "hook": "Campervan Trip di Australia & New Zealand?",
+            "button_label": "Lihat Paket"
+          }
+        },
+        "product_HgMKL8": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "track": "esim",
+            "title": "",
+            "hook": "Liburan Tropis di Indonesia?",
+            "button_label": "Lihat Paket"
+          }
+        },
+        "product_9ipBwY": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "track": "sim",
+            "title": "",
+            "hook": "Kulineran Keliling Asia?",
+            "button_label": "Lihat Paket"
+          }
+        },
+        "product_ECi8Fm": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "track": "sim",
+            "title": "",
+            "hook": "City Hopping Keliling Eropa?",
+            "button_label": "Lihat Paket"
+          }
+        },
+        "product_NWetfw": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "track": "sim",
+            "title": "",
+            "hook": "Liburan Tropis di Indonesia?",
+            "button_label": "Lihat Paket"
+          }
+        }
+      },
+      "block_order": [
+        "product_cQXVi6",
+        "product_jkJD3g",
+        "product_87EJyL",
+        "product_WB7UCU",
+        "product_wPHJ34",
+        "product_HgMKL8",
+        "product_9ipBwY",
+        "product_ECi8Fm",
+        "product_NWetfw"
+      ],
+      "name": "Landing Page gSIM",
       "settings": {}
     }
   },
   "order": [
-    "header_promo_gFRbbm",
-    "main",
-    "discover",
-    "started",
-    "package",
-    "review",
-    "faq"
+    "landing_page_gsim_G3Epf8"
   ]
 }

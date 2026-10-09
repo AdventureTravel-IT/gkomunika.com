@@ -1,0 +1,494 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.gsim-lp{background:#F4F7FA;color:#005496;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+.gsim-lp *,.gsim-lp *::before,.gsim-lp *::after{box-sizing:border-box}
+.gsim-lp h1,.gsim-lp h2,.gsim-lp p,.gsim-lp button{font-family:inherit}
+.gsim-hero__img[src=""],.gsim-product__img[src=""]{visibility:hidden}
+.gsim-lp a{color:#005496}
+.gsim-lp a:hover{color:#00ADEE}
+.gsim-lp__h2{margin:0;font-size:clamp(26px,4vw,34px);line-height:1.2;font-weight:700;color:#005496;text-wrap:balance}
+.gsim-lp__tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#E3ECF3;border-radius:12px;max-width:360px}
+.gsim-lp__tab{min-height:44px;border:none;border-radius:9px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;background:transparent;color:#4F7799}
+.gsim-lp__tab--active{background:#FFFFFF;color:#005496;box-shadow:0 1px 3px rgba(0,40,75,0.1)}
+.gsim-lp__track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:20px;padding:4px 20px;scrollbar-width:none}
+.gsim-lp__track::-webkit-scrollbar{display:none}
+
+.gsim-hero{position:relative;min-height:clamp(600px,92vh,820px);display:flex;align-items:flex-start;background:#2E8FE0}
+.gsim-hero__pic{position:absolute;inset:0;display:block}
+.gsim-hero__img{width:100%;height:100%;object-fit:cover;object-position:center bottom;display:block}
+.gsim-hero__shade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,60,110,0.5) 0%,rgba(0,60,110,0.15) 38%,rgba(0,60,110,0) 55%),linear-gradient(to right,rgba(0,60,110,0.35) 0%,rgba(0,60,110,0) 45%)}
+.gsim-hero__content{position:relative;width:100%;padding:clamp(48px,9vh,96px) clamp(20px,6vw,96px) 0;color:#FFFFFF;display:flex;flex-direction:column;gap:16px}
+.gsim-hero__title{margin:0;max-width:min(100%,480px);font-size:clamp(34px,5.2vw,56px);line-height:1.1;font-weight:700;letter-spacing:-0.01em;text-wrap:balance;text-shadow:0 2px 16px rgba(0,40,75,0.25);color:#FFFFFF}
+.gsim-hero__text{margin:0;max-width:min(100%,400px);font-size:clamp(15px,1.5vw,18px);line-height:1.6;text-wrap:pretty;text-shadow:0 1px 10px rgba(0,40,75,0.3)}
+.gsim-hero__ctas{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:400px;margin-top:6px}
+.gsim-hero__btn{min-height:50px;padding:0 14px;border:none;border-radius:12px;color:#005496;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,40,75,0.18)}
+.gsim-hero__btn--primary{background:#FBB526}
+.gsim-hero__btn--primary:hover{background:#FFC547}
+.gsim-hero__btn--secondary{background:#FFFFFF}
+.gsim-hero__btn--secondary:hover{background:#E6F6FD}
+
+.gsim-problem{padding:56px 20px}
+.gsim-problem__inner{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.gsim-problem__list{display:flex;flex-direction:column;gap:10px}
+.gsim-problem__card{background:#FFFFFF;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.gsim-problem__label{font-size:15px;font-weight:700;color:#005496}
+.gsim-problem__steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.gsim-problem__chip{font-size:12px;font-weight:500;padding:6px 10px;border-radius:999px;white-space:nowrap;flex-shrink:0;background:#E6F6FD;color:#005496}
+.gsim-problem__chip--again{font-weight:700;background:#FEF0EF;color:#C21307}
+.gsim-problem__arrow{color:#9AB2C6;font-size:12px}
+.gsim-problem__punch{max-width:820px;margin:44px auto 0;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.gsim-problem__line{width:48px;height:3px;border-radius:3px;background:#C21307}
+.gsim-problem__quote{margin:0;font-size:clamp(20px,3.2vw,28px);line-height:1.4;font-weight:700;color:#005496;text-wrap:balance}
+.gsim-problem__quote-hl{color:#C21307}
+
+.gsim-solution{padding:8px 20px 56px}
+.gsim-solution__inner{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.gsim-solution__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
+.gsim-solution__card{background:#FFFFFF;border-radius:12px;padding:20px 16px;display:flex;flex-direction:column;gap:10px}
+.gsim-solution__title{font-size:15px;font-weight:700;color:#005496;line-height:1.3}
+.gsim-solution__desc{font-size:14px;line-height:1.5;color:#005496}
+.gsim-solution__icon{width:36px;height:36px;fill:none;stroke:#005496;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+
+.gsim-review{padding:56px 0;background:#FFFFFF}
+.gsim-review__inner{max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.gsim-review__title{padding:0 64px}
+.gsim-review__carousel{display:flex;align-items:center;gap:8px;padding:0 12px}
+.gsim-review__arrow{flex:0 0 44px;width:44px;height:44px;padding:0;border:none;border-radius:999px;background:#005496;color:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s,opacity .2s}
+.gsim-review__arrow:hover{background:#00ADEE}
+.gsim-review__arrow:disabled{opacity:0;pointer-events:none}
+.gsim-review__arrow svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.gsim-review__track{flex:1;min-width:0;padding:0 0 4px;scroll-padding-inline:0}
+@media (max-width:599px){
+  .gsim-review__title{padding:0 20px}
+  .gsim-review__carousel{padding:0}
+  .gsim-review__arrow{display:none}
+  .gsim-review__track{padding:0 20px 4px;scroll-padding-inline:20px}
+}
+.gsim-review__card{flex:0 0 min(82%,320px);scroll-snap-align:start;background:#F4F7FA;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.gsim-review__stars{color:#FBB526;font-size:15px;letter-spacing:2px}
+.gsim-review__text{margin:0;font-size:14px;line-height:1.55;color:#005496;flex:1}
+.gsim-review__name{font-size:14px;font-weight:700;color:#005496}
+
+.gsim-product{padding:56px 0}
+.gsim-product__inner{max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.gsim-product__head{padding:0 20px;display:flex;flex-direction:column;gap:10px;max-width:640px}
+.gsim-product__text{margin:0;font-size:15px;line-height:1.6;color:#005496;text-wrap:pretty}
+.gsim-product__tabs{margin-top:6px}
+.gsim-product__track[hidden]{display:none}
+.gsim-product__card{flex:0 0 min(80%,300px);scroll-snap-align:start;border-radius:16px;overflow:hidden;background:#FFFFFF;display:flex;flex-direction:column}
+.gsim-product__media{aspect-ratio:1/1;background:#DCE8F1}
+.gsim-product__img{width:100%;height:100%;object-fit:cover;display:block}
+svg.gsim-product__img{fill:#9AB2C6}
+.gsim-product__body{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1}
+.gsim-product__info{display:flex;flex-direction:column;gap:4px;flex:1}
+.gsim-product__name{font-size:14px;font-weight:700;color:#00ADEE}
+.gsim-product__hook{font-size:17px;font-weight:700;color:#005496;line-height:1.3}
+.gsim-product__btn{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:12px;background:#005496;color:#FFFFFF !important;font-weight:700;font-size:15px;text-decoration:none}
+.gsim-product__dots{display:flex;justify-content:center;gap:6px}
+.gsim-product__dot{width:8px;height:8px;padding:0;border:none;border-radius:999px;background:#C3D3E0;cursor:pointer;transition:width .2s}
+.gsim-product__dot--active{width:22px;background:#005496}
+
+.gsim-faq{padding:56px 20px 64px;background:#FFFFFF}
+.gsim-faq__inner{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.gsim-faq__list{display:flex;flex-direction:column;gap:8px}
+.gsim-faq__item{background:#F4F7FA;border-radius:12px;overflow:hidden}
+.gsim-faq__q{width:100%;min-height:56px;padding:14px 16px;border:none;background:transparent;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;font-family:inherit;font-size:15px;font-weight:700;line-height:1.35;color:#005496;cursor:pointer}
+.gsim-faq__icon{flex:0 0 28px;height:28px;border-radius:999px;background:#FFFFFF;color:#005496;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;transition:transform .2s}
+.gsim-faq__item--open .gsim-faq__icon{background:#005496;color:#FFFFFF;transform:rotate(45deg)}
+.gsim-faq__a{display:none;padding:0 16px 16px;font-size:14px;line-height:1.6;color:#005496;flex-direction:column;gap:8px}
+.gsim-faq__item--open .gsim-faq__a{display:flex}
+.gsim-faq__a p{margin:0}
+.gsim-faq__link{font-weight:700;color:#00ADEE !important}
+</style>
+
+<div class="gsim-lp" id="gsim-lp">
+
+  <section class="gsim-hero">
+    <picture class="gsim-hero__pic">
+      <source media="(min-width: 768px)" srcset="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/e5602c29-3d57-4034-9dd3-df17aa8f76a7.webp?v=1791434499">
+      <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/4d69e4f8-055b-491e-9de7-45c5bce67b92.webp?v=1791434499" fetchpriority="high" alt="Traveler berfoto dengan HP di samping campervan">
+    </picture>
+    <div class="gsim-hero__shade"></div>
+    <div class="gsim-hero__content">
+      <h1 class="gsim-hero__title">Aktivasi Sekali Traveling Berkali-kali</h1>
+      <p class="gsim-hero__text">Dengan gSim! cukup aktivasi sekali untuk berbagai perjalanan, termasuk saat transit dan top up kapan pun sesuai kebutuhan.</p>
+      <div class="gsim-hero__ctas">
+        <button type="button" class="gsim-hero__btn gsim-hero__btn--primary" data-gsim-goto="esim">Lihat gSim!</button>
+        <button type="button" class="gsim-hero__btn gsim-hero__btn--secondary" data-gsim-goto="sim">Lihat gSimCard!</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="gsim-problem">
+    <div class="gsim-problem__inner">
+      <h2 class="gsim-lp__h2">Kenapa setiap trip harus mulai dari nol lagi?</h2>
+      <div class="gsim-problem__list">
+        <div class="gsim-problem__card">
+          <div class="gsim-problem__label">Trip ke Jepang</div>
+          <div class="gsim-problem__steps"><span class="gsim-problem__chip">Cari paket</span><span class="gsim-problem__arrow">→</span><span class="gsim-problem__chip">Beli eSIM</span><span class="gsim-problem__arrow">→</span><span class="gsim-problem__chip">Aktivasi</span></div>
+        </div>
+        <div class="gsim-problem__card">
+          <div class="gsim-problem__label">Bulan depan trip ke Eropa</div>
+          <div class="gsim-problem__steps"><span class="gsim-problem__chip">Cari paket</span><span class="gsim-problem__arrow">→</span><span class="gsim-problem__chip">Beli eSIM</span><span class="gsim-problem__arrow">→</span><span class="gsim-problem__chip">Aktivasi</span><span class="gsim-problem__chip gsim-problem__chip--again">Ulang lagi</span></div>
+        </div>
+        <div class="gsim-problem__card">
+          <div class="gsim-problem__label">Lanjut trip ke New Zealand</div>
+          <div class="gsim-problem__steps"><span class="gsim-problem__chip">Cari paket</span><span class="gsim-problem__arrow">→</span><span class="gsim-problem__chip">Beli eSIM</span><span class="gsim-problem__arrow">→</span><span class="gsim-problem__chip">Aktivasi</span><span class="gsim-problem__chip gsim-problem__chip--again">Ulang lagi</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="gsim-problem__punch">
+      <div class="gsim-problem__line"></div>
+      <p class="gsim-problem__quote">Kuota habis di tengah trip, <span class="gsim-problem__quote-hl">repotnya muncul lagi</span></p>
+    </div>
+  </section>
+
+  <section class="gsim-solution">
+    <div class="gsim-solution__inner">
+      <h2 class="gsim-lp__h2">Yang Kamu Ganti Destinasinya, Bukan <span data-gsim-solword>eSIM</span>-nya</h2>
+      <div class="gsim-lp__tabs" data-gsim-tabs="solution">
+        <button type="button" class="gsim-lp__tab gsim-lp__tab--active" data-gsim-tab="esim">gSim!</button>
+        <button type="button" class="gsim-lp__tab" data-gsim-tab="sim">gSimCard!</button>
+      </div>
+      <div class="gsim-solution__grid">
+        <div class="gsim-solution__card">
+          <svg class="gsim-solution__icon" viewBox="0 0 24 24"><path data-gsim-firsticon d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M8 8h3v3H8zM13 13h3v3h-3zM13 8h3M8 13v3"></path></svg>
+          <div class="gsim-solution__title" data-gsim-firsttitle>Scan 1x</div>
+          <div class="gsim-solution__desc">Aktivasi sekali gunakan untuk perjalanan berikutnya.</div>
+        </div>
+        <div class="gsim-solution__card">
+          <svg class="gsim-solution__icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8v8M8 12h8"></path></svg>
+          <div class="gsim-solution__title">Top up</div>
+          <div class="gsim-solution__desc">Butuh kuota lagi? Tinggal pilih paket dan isi ulang sesuai kebutuhan kamu.</div>
+        </div>
+        <div class="gsim-solution__card">
+          <svg class="gsim-solution__icon" viewBox="0 0 24 24"><path d="M2.5 16.5l19-7-3-2-6 2-5-4-2 .8 3 4.2-4 1.5-2-1.3-1.5.6 1.5 5.2zM3 20h18"></path></svg>
+          <div class="gsim-solution__title">Transit</div>
+          <div class="gsim-solution__desc">Tetap terhubung saat berada di negara transit*</div>
+        </div>
+        <div class="gsim-solution__card">
+          <svg class="gsim-solution__icon" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6l8-3zM8.5 12l2.5 2.5 4.5-5"></path></svg>
+          <div class="gsim-solution__title">Dukungan Aktivasi</div>
+          <div class="gsim-solution__desc">Butuh bantuan saat aktivasi? CS siap mendampingi sampai <span data-gsim-supportname>gSim!</span> aktif.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="gsim-review">
+    <div class="gsim-review__inner">
+      <h2 class="gsim-lp__h2 gsim-review__title">Sudah Dibawa Jalan ke Mana-Mana</h2>
+      <div class="gsim-review__carousel">
+        <button type="button" class="gsim-review__arrow" data-gsim-review-prev aria-label="Review sebelumnya"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="gsim-lp__track gsim-review__track" data-gsim-review-track>
+          <div class="gsim-review__card"><div class="gsim-review__stars">★★★★★</div><p class="gsim-review__text">“Best banget, koneksi gampang, lancar dan cepet. Multi negara juga gas aja, ga perlu setting-setting lagi eSIM. Gak pernah ada masalah apapun. Mantep, perjalanan jadi nyaman.”</p><div class="gsim-review__name">F****</div></div>
+          <div class="gsim-review__card"><div class="gsim-review__stars">★★★★★</div><p class="gsim-review__text">“gSim! diaktivasi di Soeta, transit Singapore langsung nyala, begitupun saat sampai di Jepang. No problem at all.”</p><div class="gsim-review__name">S***</div></div>
+          <div class="gsim-review__card"><div class="gsim-review__stars">★★★★★</div><p class="gsim-review__text">“Pengiriman QR cepat, proses aktivasi mudah. Tidak ada kendala saat di Turki.”</p><div class="gsim-review__name">J****</div></div>
+          <div class="gsim-review__card"><div class="gsim-review__stars">★★★★★</div><p class="gsim-review__text">“Mudah instalasinya dan cepat tanggap bagian supportnya. Dan bagus, langsung konek begitu mendarat di negara tujuan.”</p><div class="gsim-review__name">O****</div></div>
+          <div class="gsim-review__card"><div class="gsim-review__stars">★★★★★</div><p class="gsim-review__text">“Direkomendasiin temen buat pake gSim! Berguna banget, sama sekali nggak lemot.”</p><div class="gsim-review__name">P****</div></div>
+        </div>
+        <button type="button" class="gsim-review__arrow" data-gsim-review-next aria-label="Review berikutnya"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="gsim-product" id="gsim-produk">
+    <div class="gsim-product__inner">
+      <div class="gsim-product__head">
+        <h2 class="gsim-lp__h2">Mau Mulai dari Mana?</h2>
+        <p class="gsim-product__text">Pilih paket gSim! sesuai destinasi perjalanan kamu sekarang. Saat trip berikutnya tiba, tinggal pilih paket yang sesuai tanpa perlu ganti gSim!</p>
+        <div class="gsim-lp__tabs gsim-product__tabs" data-gsim-tabs="product">
+          <button type="button" class="gsim-lp__tab gsim-lp__tab--active" data-gsim-tab="esim">gSim!</button>
+          <button type="button" class="gsim-lp__tab" data-gsim-tab="sim">gSimCard!</button>
+        </div>
+      </div>
+
+      {%- assign esim_cards = '' -%}
+      {%- assign sim_cards = '' -%}
+      {%- for block in section.blocks -%}
+        {%- assign p = block.settings.product -%}
+        {%- if p == blank and request.design_mode == false -%}{%- continue -%}{%- endif -%}
+        {%- assign img = block.settings.image | default: p.featured_image -%}
+        {%- assign name = block.settings.title | default: p.title | default: 'Pilih produk' -%}
+        {%- assign url = p.url | default: '#' -%}
+        {%- capture card -%}
+        <div class="gsim-product__card" {{ block.shopify_attributes }}><div class="gsim-product__media">
+          {%- if img != blank -%}
+            {{ img | image_url: width: 600 | image_tag: class: 'gsim-product__img', loading: 'lazy', alt: name, widths: '300,450,600', sizes: '(min-width: 768px) 300px, 80vw' }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'gsim-product__img' }}
+          {%- endif -%}
+        </div><div class="gsim-product__body"><div class="gsim-product__info"><div class="gsim-product__name">{{ name | escape }}</div>{% if block.settings.hook != blank %}<div class="gsim-product__hook">{{ block.settings.hook | escape }}</div>{% endif %}</div><a class="gsim-product__btn" href="{{ url }}">{{ block.settings.button_label | default: 'Lihat Paket' | escape }}</a></div></div>
+        {%- endcapture -%}
+        {%- if block.settings.track == 'sim' -%}
+          {%- assign sim_cards = sim_cards | append: card -%}
+        {%- else -%}
+          {%- assign esim_cards = esim_cards | append: card -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      <div class="gsim-lp__track gsim-product__track" data-gsim-track="esim">{{ esim_cards }}</div>
+
+      <div class="gsim-lp__track gsim-product__track" data-gsim-track="sim" hidden>{{ sim_cards }}</div>
+
+      <div class="gsim-product__dots" data-gsim-dots></div>
+    </div>
+  </section>
+
+  <section class="gsim-faq">
+    <div class="gsim-faq__inner">
+      <h2 class="gsim-lp__h2">Masih Bingung?</h2>
+      <div class="gsim-faq__list">
+        <div class="gsim-faq__item gsim-faq__item--open">
+          <button type="button" class="gsim-faq__q" aria-expanded="true"><span>Apakah gSim! bisa digunakan untuk semua jenis HP?</span><span class="gsim-faq__icon">+</span></button>
+          <div class="gsim-faq__a"><p>gSim! dapat digunakan pada perangkat yang mendukung eSIM. Silakan cek pengaturan ponsel kamu dengan mengikuti panduan berikut.</p><a class="gsim-faq__link" href="https://gkomunika.com/pages/here-s-how-to-check-if-your-phone-supports-esim">Lihat panduan cek eSIM</a></div>
+        </div>
+        <div class="gsim-faq__item">
+          <button type="button" class="gsim-faq__q" aria-expanded="false"><span>Bagaimana jika HP saya tidak mendukung penggunaan eSIM?</span><span class="gsim-faq__icon">+</span></button>
+          <div class="gsim-faq__a"><p>Tenang, Global Komunika juga menyediakan gSimCard! untuk kamu yang membutuhkan kartu SIM fisik. Jadi, kamu tetap bisa menikmati koneksi saat traveling meskipun perangkatmu belum mendukung eSIM.</p></div>
+        </div>
+        <div class="gsim-faq__item">
+          <button type="button" class="gsim-faq__q" aria-expanded="false"><span>Apakah gSim! bisa digunakan untuk trip berikutnya?</span><span class="gsim-faq__icon">+</span></button>
+          <div class="gsim-faq__a"><p>Ya. gSim! bisa digunakan kembali untuk perjalanan berikutnya, termasuk ke negara atau region yang berbeda. Kamu cukup memilih paket data sesuai destinasi dan kebutuhanmu.</p><p><strong>Tips:</strong> Disarankan untuk memberi nama 'gSim!' pada perangkat yang digunakan.</p></div>
+        </div>
+        <div class="gsim-faq__item">
+          <button type="button" class="gsim-faq__q" aria-expanded="false"><span>Bagaimana cara top up gSim!?</span><span class="gsim-faq__icon">+</span></button>
+          <div class="gsim-faq__a"><p>Kamu bisa melakukan top up gSim! dengan mudah melalui website Global Komunika. Masukkan ICCID gSim! kamu, lalu pilih paket top up yang sesuai.</p><a class="gsim-faq__link" href="https://gkomunika.com/pages/check-data-usage-topup">Top up sekarang</a></div>
+        </div>
+        <div class="gsim-faq__item">
+          <button type="button" class="gsim-faq__q" aria-expanded="false"><span>Apa itu ICCID dan di mana saya bisa menemukannya?</span><span class="gsim-faq__icon">+</span></button>
+          <div class="gsim-faq__a"><p>ICCID adalah nomor identitas eSIM/SIM. ICCID gSim! ada di email produk, sedangkan gSimCard! ada di SIM card.</p><p><strong>Tips:</strong> Simpan ICCID agar mudah saat melakukan top up.</p></div>
+        </div>
+        <div class="gsim-faq__item">
+          <button type="button" class="gsim-faq__q" aria-expanded="false"><span>Bagaimana jika gSim! tidak sengaja terhapus dari HP?</span><span class="gsim-faq__icon">+</span></button>
+          <div class="gsim-faq__a"><p>Tenang, kamu masih bisa scan ulang barcode gSim! di perangkat yang sama saat pertama kali aktivasi. Barcode tidak dapat digunakan di perangkat lain.</p></div>
+        </div>
+        <div class="gsim-faq__item">
+          <button type="button" class="gsim-faq__q" aria-expanded="false"><span>Bagaimana jika gSim! tidak bisa diaktivasi atau digunakan?</span><span class="gsim-faq__icon">+</span></button>
+          <div class="gsim-faq__a"><p>Jika terjadi kendala saat aktivasi atau penggunaan, tim Global Komunika akan membantu melakukan pengecekan. Apabila memenuhi ketentuan garansi, refund dapat diajukan sesuai syarat yang berlaku.</p><a class="gsim-faq__link" href="https://wa.me/628986454071">Informasikan kendala kamu di sini</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('gsim-lp');
+  if (!root) return;
+
+  function setTabs(group, val) {
+    var btns = group.querySelectorAll('[data-gsim-tab]');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle('gsim-lp__tab--active', btns[i].getAttribute('data-gsim-tab') === val);
+    }
+  }
+
+  // Solusi: gSim! / gSimCard!
+  var solTabs = root.querySelector('[data-gsim-tabs="solution"]');
+  var SOL = {
+    esim: { word: 'eSIM', name: 'gSim!', title: 'Scan 1x', icon: 'M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M8 8h3v3H8zM13 13h3v3h-3zM13 8h3M8 13v3' },
+    sim: { word: 'SIM', name: 'gSimCard!', title: 'Cukup 1 SIMCard', icon: 'M8 3h7l4 4v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM9.5 11h5v6h-5zM12 11v6M9.5 14h5' }
+  };
+  solTabs.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-gsim-tab]'); if (!b) return;
+    var v = b.getAttribute('data-gsim-tab'), d = SOL[v];
+    setTabs(solTabs, v);
+    root.querySelector('[data-gsim-solword]').textContent = d.word;
+    root.querySelector('[data-gsim-firsttitle]').textContent = d.title;
+    root.querySelector('[data-gsim-supportname]').textContent = d.name;
+    root.querySelector('[data-gsim-firsticon]').setAttribute('d', d.icon);
+  });
+
+  // Produk: tab + carousel dots
+  var prodTabs = root.querySelector('[data-gsim-tabs="product"]');
+  var dotsWrap = root.querySelector('[data-gsim-dots]');
+  var tracks = root.querySelectorAll('[data-gsim-track]');
+  var active = null;
+
+  function activeTrack() { return root.querySelector('[data-gsim-track]:not([hidden])'); }
+
+  function renderDots() {
+    var t = activeTrack(); if (!t) return;
+    var n = t.children.length, html = '';
+    for (var i = 0; i < n; i++) html += '<button type="button" class="gsim-product__dot" aria-label="Slide ' + (i + 1) + '" data-gsim-dot="' + i + '"></button>';
+    dotsWrap.innerHTML = html;
+    updateDots();
+  }
+  function updateDots() {
+    var t = activeTrack(); if (!t || !t.children[0]) return;
+    var w = t.children[0].offsetWidth + 12;
+    var idx = Math.max(0, Math.min(t.children.length - 1, Math.round(t.scrollLeft / w)));
+    var dots = dotsWrap.children;
+    for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('gsim-product__dot--active', i === idx);
+  }
+  function showProduct(v) {
+    setTabs(prodTabs, v);
+    for (var i = 0; i < tracks.length; i++) {
+      var on = tracks[i].getAttribute('data-gsim-track') === v;
+      tracks[i].hidden = !on;
+      if (on) tracks[i].scrollLeft = 0;
+    }
+    renderDots();
+  }
+
+  prodTabs.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-gsim-tab]'); if (b) showProduct(b.getAttribute('data-gsim-tab'));
+  });
+  for (var i = 0; i < tracks.length; i++) tracks[i].addEventListener('scroll', updateDots, { passive: true });
+  dotsWrap.addEventListener('click', function (e) {
+    var d = e.target.closest('[data-gsim-dot]'); if (!d) return;
+    var t = activeTrack(), c = t.children[+d.getAttribute('data-gsim-dot')];
+    if (c) t.scrollTo({ left: c.offsetLeft - t.offsetLeft - 20, behavior: 'smooth' });
+  });
+
+  // Review: tombol geser kiri/kanan
+  var revTrack = root.querySelector('[data-gsim-review-track]');
+  var revPrev = root.querySelector('[data-gsim-review-prev]');
+  var revNext = root.querySelector('[data-gsim-review-next]');
+  function updateReviewNav() {
+    var max = revTrack.scrollWidth - revTrack.clientWidth;
+    revPrev.disabled = revTrack.scrollLeft <= 2;
+    revNext.disabled = revTrack.scrollLeft >= max - 2;
+  }
+  function slideReview(dir) {
+    var c = revTrack.children[0]; if (!c) return;
+    revTrack.scrollBy({ left: dir * (c.offsetWidth + 12), behavior: 'smooth' });
+  }
+  revPrev.addEventListener('click', function () { slideReview(-1); });
+  revNext.addEventListener('click', function () { slideReview(1); });
+  revTrack.addEventListener('scroll', updateReviewNav, { passive: true });
+  window.addEventListener('resize', updateReviewNav);
+  updateReviewNav();
+
+  // Review: auto-scroll di mobile, berhenti sementara saat user menggeser
+  var revMobile = window.matchMedia('(max-width: 599px)');
+  var revReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var revTimer = null, revResume = null, revVisible = false, revHeld = false;
+  function revTick() {
+    var max = revTrack.scrollWidth - revTrack.clientWidth;
+    if (revTrack.scrollLeft >= max - 2) revTrack.scrollTo({ left: 0, behavior: 'smooth' });
+    else slideReview(1);
+  }
+  function revStop() { clearInterval(revTimer); revTimer = null; }
+  function revStart() {
+    revStop();
+    if (revMobile.matches && !revReduce.matches && revVisible && !revHeld && !document.hidden) revTimer = setInterval(revTick, 3500);
+  }
+  function revPause() { revHeld = true; revStop(); clearTimeout(revResume); }
+  function revResumeLater() { revHeld = false; clearTimeout(revResume); revResume = setTimeout(revStart, 4000); }
+  revTrack.addEventListener('touchstart', revPause, { passive: true });
+  revTrack.addEventListener('touchend', revResumeLater, { passive: true });
+  revTrack.addEventListener('pointerdown', revPause);
+  revTrack.addEventListener('pointerup', revResumeLater);
+  document.addEventListener('visibilitychange', revStart);
+  if (revMobile.addEventListener) revMobile.addEventListener('change', revStart);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      revVisible = entries[0].isIntersecting;
+      revStart();
+    }, { threshold: 0.3 }).observe(revTrack);
+  } else {
+    revVisible = true;
+    revStart();
+  }
+
+  // Hero CTA -> scroll ke produk + tab sesuai
+  var prodSection = document.getElementById('gsim-produk');
+  var ctas = root.querySelectorAll('[data-gsim-goto]');
+  for (var j = 0; j < ctas.length; j++) {
+    ctas[j].addEventListener('click', function () {
+      showProduct(this.getAttribute('data-gsim-goto'));
+      var top = prodSection.getBoundingClientRect().top + window.pageYOffset + 24;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    });
+  }
+
+  // FAQ accordion (satu terbuka)
+  var items = root.querySelectorAll('.gsim-faq__item');
+  for (var k = 0; k < items.length; k++) {
+    items[k].querySelector('.gsim-faq__q').addEventListener('click', function () {
+      var item = this.parentNode, wasOpen = item.classList.contains('gsim-faq__item--open');
+      for (var m = 0; m < items.length; m++) {
+        items[m].classList.remove('gsim-faq__item--open');
+        items[m].querySelector('.gsim-faq__q').setAttribute('aria-expanded', 'false');
+      }
+      if (!wasOpen) { item.classList.add('gsim-faq__item--open'); this.setAttribute('aria-expanded', 'true'); }
+    });
+  }
+
+  renderDots();
+})();
+</script>
+
+
+{% schema %}
+  {
+    "name": "Landing Page gSIM",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "product",
+        "name": "Produk",
+        "settings": [
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Produk"
+          },
+          {
+            "type": "select",
+            "id": "track",
+            "label": "Tampil di tab",
+            "options": [
+              { "value": "esim", "label": "gSim!" },
+              { "value": "sim", "label": "gSimCard!" }
+            ],
+            "default": "esim"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Nama (opsional)",
+            "info": "Kosongkan untuk memakai nama produk"
+          },
+          {
+            "type": "text",
+            "id": "hook",
+            "label": "Tagline"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Gambar (opsional)",
+            "info": "Kosongkan untuk memakai gambar utama produk"
+          },
+          {
+            "type": "text",
+            "id": "button_label",
+            "label": "Teks tombol",
+            "default": "Lihat Paket"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Landing Page gSIM",
+        "category": "Landing Pages",
+        "blocks": [
+          { "type": "product", "settings": { "track": "esim", "hook": "Kulineran Keliling Asia?" } },
+          { "type": "product", "settings": { "track": "esim", "hook": "Roadtrip Keliling Amerika?" } },
+          { "type": "product", "settings": { "track": "esim", "hook": "Desert Adventure di Timur Tengah?" } },
+          { "type": "product", "settings": { "track": "esim", "hook": "City Hopping Keliling Eropa?" } },
+          { "type": "product", "settings": { "track": "esim", "hook": "Campervan Trip di Australia & New Zealand?" } },
+          { "type": "product", "settings": { "track": "esim", "hook": "Liburan Tropis di Indonesia?" } },
+          { "type": "product", "settings": { "track": "sim", "hook": "Kulineran Keliling Asia?" } },
+          { "type": "product", "settings": { "track": "sim", "hook": "City Hopping Keliling Eropa?" } },
+          { "type": "product", "settings": { "track": "sim", "hook": "Liburan Tropis di Indonesia?" } }
+        ]
+      }
+    ]
+  }
+{% endschema %}

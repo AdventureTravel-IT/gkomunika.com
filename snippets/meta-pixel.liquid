@@ -1,0 +1,31 @@
+{%- comment -%}
+  Meta Pixel (671798165173716) — storefront.
+  PageView: semua halaman (termasuk landing page gSIM).
+  ViewContent: halaman produk.
+  InitiateCheckout & Purchase berjalan di halaman checkout, yang tidak memuat theme ini;
+  keduanya dipasang lewat Shopify Admin > Settings > Customer events (lihat src/shopify-custom-pixel/meta-pixel.js).
+{%- endcomment -%}
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '671798165173716');
+  fbq('track', 'PageView');
+  {%- if request.page_type == 'product' and product -%}
+    {%- assign mp_variant = product.selected_or_first_available_variant %}
+  fbq('track', 'ViewContent', {
+    content_ids: ['{{ product.id }}'],
+    content_name: {{ product.title | json }},
+    content_type: 'product',
+    content_category: {{ product.type | json }},
+    value: {{ mp_variant.price | divided_by: 100.0 }},
+    currency: {{ cart.currency.iso_code | json }}
+  });
+  {%- endif %}
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=671798165173716&ev=PageView&noscript=1"></noscript>

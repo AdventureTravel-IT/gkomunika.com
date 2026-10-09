@@ -12,53 +12,63 @@
     "landing_page_gsim_G3Epf8": {
       "type": "landing-page-gsim",
       "blocks": {
+        "product_HJaiLb": {
+          "type": "product",
+          "settings": {
+            "product": "gsim-asia",
+            "track": "esim",
+            "title": "gSim! Asia",
+            "hook": "Kulineran keliling Asia?",
+            "button_label": "Lihat Paket"
+          }
+        },
         "product_cQXVi6": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "gsim-europe",
             "track": "esim",
-            "title": "",
-            "hook": "Kulineran Keliling Asia?",
+            "title": "gSim! Europe",
+            "hook": "City hopping keliling Eropa?",
             "button_label": "Lihat Paket"
           }
         },
         "product_jkJD3g": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "gsim-middle-east",
             "track": "esim",
-            "title": "",
-            "hook": "Roadtrip Keliling Amerika?",
+            "title": "gSim! Middle East",
+            "hook": "Desert adventure di Timur Tengah?",
             "button_label": "Lihat Paket"
           }
         },
         "product_87EJyL": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "gsim-amerika",
             "track": "esim",
-            "title": "",
-            "hook": "Desert Adventure di Timur Tengah?",
+            "title": "gSim! Amerika",
+            "hook": "Roadtrip keliling Amerika",
             "button_label": "Lihat Paket"
           }
         },
         "product_WB7UCU": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "gsim-australia-new-zealand",
             "track": "esim",
             "title": "",
-            "hook": "City Hopping Keliling Eropa?",
+            "hook": "Campervan trip di Australia & New Zealand?",
             "button_label": "Lihat Paket"
           }
         },
         "product_wPHJ34": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "gsim-indonesia",
             "track": "esim",
             "title": "",
-            "hook": "Campervan Trip di Australia & New Zealand?",
+            "hook": "Liburan tropis di Indonesia?",
             "button_label": "Lihat Paket"
           }
         },
@@ -75,7 +85,7 @@
         "product_9ipBwY": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "sim-card-asia-10-countries",
             "track": "sim",
             "title": "",
             "hook": "Kulineran Keliling Asia?",
@@ -85,7 +95,7 @@
         "product_ECi8Fm": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "gsim-card-europe",
             "track": "sim",
             "title": "",
             "hook": "City Hopping Keliling Eropa?",
@@ -95,7 +105,7 @@
         "product_NWetfw": {
           "type": "product",
           "settings": {
-            "product": "",
+            "product": "sim-card-indonesia",
             "track": "sim",
             "title": "",
             "hook": "Liburan Tropis di Indonesia?",
@@ -104,6 +114,7 @@
         }
       },
       "block_order": [
+        "product_HJaiLb",
         "product_cQXVi6",
         "product_jkJD3g",
         "product_87EJyL",

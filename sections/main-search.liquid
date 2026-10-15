@@ -570,6 +570,7 @@
 
     if (!gsimItems.length) return collectionsWithoutGsim;
 
+    // Grup gSIM tetap di atas; eSIM didahulukan di level kartu di dalam tiap grid (sortCardsEsimFirst).
     return [
       { handle: 'gsim', title: 'gSim! TopUp & Reusable Sim', items: sortGsimByRegion(gsimItems) },
       ...collectionsWithoutGsim,
@@ -1432,7 +1433,98 @@ function shouldShowEuropeRating(item = {}, itemTitle = '') {
       cards.forEach((c) => grid.appendChild(c));
     });
   }
-  
+
+  // =========================
+  // ✅ eSIM-FIRST: kartu eSIM asli selalu di atas kartu gSIM (level kartu per grid)
+  // Bedakan via data-category-raw + data-title karena category display gSIM = "eSIM".
+  // category_raw eSIM selalu menang, walau judulnya menyebut gSIM.
+  // Paling bawah: kategori gSIM murni, atau judul gSIM dengan kategori selain eSIM.
+  // Stable sort: pertahankan urutan saat ini (hasil title-match / europe sort) untuk kategori sama.
+  // Dipanggil SETELAH sortSingleCountryByTitle dan SEBELUM applyEuropePriority,
+  // agar logic khusus Europe tetap menang saat keyword Europe aktif.
+  // =========================
+  function getEsimCardPriority(cardEl) {
+    const raw = cardEl.getAttribute('data-category-raw') || '';
+    const cat = normalizeKey(raw);
+    const title = (cardEl.getAttribute('data-title') || '').toLowerCase();
+    if (cat === 'esim') return 0;
+    if (cat === 'gsim') return 10;
+    if (title.includes('gsim')) return 10;
+    if (cat === 'sim_card') return 1;
+    if (cat === 'insurance') return 2;
+    if (cat === 'airport_transfer') return 3;
+    if (cat === 'merch') return 4;
+    return 5;
+  }
+
+  // Prioritas BADGE tampil (data-sim-type berasal dari category yang sudah di-map,
+  // sehingga item tag-gsim badge-nya eSIM): badge eSIM → 0, badge SIM → 1, lainnya → 2.
+  // Dipakai khusus grid gSIM teratas: per region (seperti head), dalam tiap region
+  // badge eSIM dulu baru badge SIM.
+  function getBadgePriority(cardEl) {
+    const st = String(cardEl.getAttribute('data-sim-type') || '')
+      .toLowerCase()
+      .replace(/[_-]/g, '');
+    if (st === 'esim') return 0;
+    if (st === 'simcard') return 1;
+    return 2;
+  }
+
+  function isGsimTopGrid(grid) {
+    const first = grid.querySelector('.product-card-container');
+    return !!first && first.getAttribute('data-collection') === 'gsim';
+  }
+
+  // Kunci negara dari judul: buang kata brand (gsim/gsm/esim/sim/card/...) dan angka,
+  // agar "gSim! Indonesia" dan "gSimCard! Indonesia" satu kelompok ("indonesia").
+  function getCardCountryKey(cardEl) {
+    const title = (cardEl.getAttribute('data-title') || '').toLowerCase();
+    const skip = new Set(['gsim', 'gsm', 'esim', 'sim', 'card', 'simcard', 'gsimcard']);
+    const words = String(title)
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w && !skip.has(w) && !/^\d+$/.test(w));
+    return words.join(' ');
+  }
+
+  function sortCardsEsimFirst(rootEl) {
+    const wrappers = Array.from(rootEl.querySelectorAll('.collection-wrapper'));
+    wrappers.forEach((wrapper) => {
+      const grid = wrapper.querySelector('.grid');
+      if (!grid) return;
+      const cards = Array.from(grid.querySelectorAll('.product-card-container'));
+      if (cards.length < 2) return;
+      const order = new Map(cards.map((c, i) => [c, i]));
+      const topGsim = isGsimTopGrid(grid);
+      // Rank kelompok negara by kemunculan pertama di DOM (stabil, = urutan API/head).
+      const countryRank = new Map();
+      if (topGsim) {
+        cards.forEach((c) => {
+          const k = getCardCountryKey(c);
+          if (!countryRank.has(k)) countryRank.set(k, countryRank.size);
+        });
+      }
+      cards.sort((a, b) => {
+        if (topGsim) {
+          const ra = getGsimRegionScore(a.getAttribute('data-title') || '');
+          const rb = getGsimRegionScore(b.getAttribute('data-title') || '');
+          if (ra !== rb) return ra - rb;
+          const ca = countryRank.get(getCardCountryKey(a)) ?? 0;
+          const cb = countryRank.get(getCardCountryKey(b)) ?? 0;
+          if (ca !== cb) return ca - cb;
+          const ba = getBadgePriority(a);
+          const bb = getBadgePriority(b);
+          if (ba !== bb) return ba - bb;
+          return (order.get(a) ?? 0) - (order.get(b) ?? 0);
+        }
+        const pa = getEsimCardPriority(a);
+        const pb = getEsimCardPriority(b);
+        if (pa !== pb) return pa - pb;
+        return (order.get(a) ?? 0) - (order.get(b) ?? 0);
+      });
+      cards.forEach((c) => grid.appendChild(c));
+    });
+  }
+
   // =========================
   // FILTER BAR
   // =========================
@@ -1657,10 +1749,11 @@ function shouldShowEuropeRating(item = {}, itemTitle = '') {
             updateIncludedBadges(rootEl, val);
             setUrlQueryKeyword(val);
             sortSingleCountryByTitle(rootEl, val);
+            sortCardsEsimFirst(rootEl);
             setSearchButtonLoading(rootEl, false);
           }, 80);
         });
-  
+
         window.addEventListener('popstate', () => {
           const qFromUrl = new URL(window.location.href).searchParams.get('q') || '';
           searchInput.value = qFromUrl;
@@ -1668,12 +1761,14 @@ function shouldShowEuropeRating(item = {}, itemTitle = '') {
           apply();
           updateIncludedBadges(rootEl, qFromUrl);
           sortSingleCountryByTitle(rootEl, qFromUrl);
+          sortCardsEsimFirst(rootEl);
         });
       }
-  
+
       apply();
       updateIncludedBadges(rootEl, searchInput ? searchInput.value : '');
       sortSingleCountryByTitle(rootEl, searchInput ? searchInput.value : '');
+      sortCardsEsimFirst(rootEl);
       return; // ✅ stop di sini biar logic tabs tidak jalan
     }
   
@@ -1835,7 +1930,8 @@ function shouldShowEuropeRating(item = {}, itemTitle = '') {
         setActiveTab(state.filters);
         apply();
         sortSingleCountryByTitle(rootEl, state.q);
-  
+        sortCardsEsimFirst(rootEl);
+
         // ✅ NEW: Apply Europe priority after tab change
         applyEuropePriority(rootEl, state.q);
   
@@ -1864,26 +1960,28 @@ function shouldShowEuropeRating(item = {}, itemTitle = '') {
             state.q = val;
             apply();
             sortSingleCountryByTitle(rootEl, val);
+            sortCardsEsimFirst(rootEl);
             updateIncludedBadges(rootEl, val);
             setUrlQueryKeyword(val);
             setSearchButtonLoading(rootEl, false);
             updateSearchPageTitle(rootEl, val);
-  
+
             // ✅ NEW: Apply Europe priority after search
             applyEuropePriority(rootEl, val);
           }, 80);
         });
-  
+
         window.addEventListener('popstate', () => {
           const qFromUrl = new URL(window.location.href).searchParams.get('q') || '';
           searchInput.value = qFromUrl;
           state.q = qFromUrl;
           apply();
-  
+
           sortSingleCountryByTitle(rootEl, qFromUrl);
+          sortCardsEsimFirst(rootEl);
           updateIncludedBadges(rootEl, qFromUrl);
           updateSearchPageTitle(rootEl, qFromUrl);
-  
+
           // ✅ NEW: Apply Europe priority on popstate
           applyEuropePriority(rootEl, qFromUrl);
         });
@@ -1896,22 +1994,24 @@ function shouldShowEuropeRating(item = {}, itemTitle = '') {
             state.q = val;
             apply();
             sortSingleCountryByTitle(rootEl, val);
+            sortCardsEsimFirst(rootEl);
             updateIncludedBadges(rootEl, val);
             setSearchButtonLoading(rootEl, false);
-  
+
             // ✅ NEW: Apply Europe priority after search (category mode)
             applyEuropePriority(rootEl, val);
           }, 80);
         });
-  
+
         window.addEventListener('popstate', () => {
           const cat = getCategoryFromUrl();
           state.filter = cat;
           setActiveTab(cat);
           apply();
-  
+
           sortSingleCountryByTitle(rootEl, state.q);
-  
+          sortCardsEsimFirst(rootEl);
+
           // ✅ NEW: Apply Europe priority on popstate (category mode)
           applyEuropePriority(rootEl, state.q);
         });
@@ -1934,8 +2034,9 @@ function shouldShowEuropeRating(item = {}, itemTitle = '') {
     updateIncludedBadges(rootEl, initialQ);
   
     sortSingleCountryByTitle(rootEl, initialQ);
+    sortCardsEsimFirst(rootEl);
     updateSearchPageTitle(rootEl, initialQ);
-  
+
     // ✅ NEW: Apply Europe priority on initial render
     applyEuropePriority(rootEl, initialQ);
   }

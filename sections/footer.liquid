@@ -140,27 +140,6 @@
         {% endfor %}
       </ul>
     </section>
-
-    <section class="footer__contact">
-      <h2 class="footer__heading-title">{{ section.settings.contact_heading }}</h2>
-
-      <ul class="footer__contact-wrapper">
-        <li style="display: flex; align-items: center; gap: 1rem;">
-          {% if section.settings.email != blank %}
-            <img
-              src="{{ 'icon-email.svg' | asset_url }}"
-              alt="Email Icon"
-              loading="lazy"
-              width="20px"
-              height="20px"
-            >
-            <div class="footer__contact-text">
-              <label class="footer__contact--label">Email</label>
-              <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
-            </div>
-          {% endif %}
-        </li>
-    </section>
   </div>
 </div>
 

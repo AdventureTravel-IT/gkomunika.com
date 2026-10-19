@@ -131,42 +131,6 @@
       {% endfor %}
     </ul>
   </section>
-
-  <section class="footer__contact">
-    <h2 class="footer__heading-title">{{ section.settings.contact_heading }}</h2>
-
-    {% if section.settings.email != blank %}
-      <ul class="footer__contact-wrapper">
-        <img
-          src="{{ 'icon-email.svg' | asset_url }}"
-          alt="Email Icon"
-          loading="lazy"
-          width="20px"
-          height="20px"
-        >
-        <li class="footer__contact-text">
-          <label class="footer__contact--label">Email</label>
-          <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
-        </li>
-      </ul>
-    {% endif %}
-
-    {% if section.settings.whatsapp != blank %}
-      <ul class="footer__contact-wrapper">
-        <img
-          src="{{ 'icon-whatsapp.svg' | asset_url }}"
-          alt="Email Icon"
-          loading="lazy"
-          width="20px"
-          height="20px"
-        >
-        <li class="footer__contact-text">
-          <label class="footer__contact--label">WhatsApp (Chat Only)</label>
-          <a href="https://wa.me/{{ section.settings.whatsapp }}">{{ section.settings.whatsapp }}</a>
-        </li>
-      </ul>
-    {% endif %}
-  </section>
   </div>
 </div>
 

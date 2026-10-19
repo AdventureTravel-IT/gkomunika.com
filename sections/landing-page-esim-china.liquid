@@ -1236,9 +1236,9 @@
 {%- capture ig_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_ig_url }}" alt="Instagram" class="gkcn-hero-app-icon gkcn-hero-app-icon--ig" width="30" height="30" loading="eager"></span>{%- endcapture -%}
 {%- capture tt_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_tt_url }}" alt="TikTok" class="gkcn-hero-app-icon gkcn-hero-app-icon--tt" width="30" height="30" loading="eager"></span>{%- endcapture -%}
 {%- capture gg_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_gg_url }}" alt="Google" class="gkcn-hero-app-icon gkcn-hero-app-icon--gg" width="30" height="30" loading="eager"></span>{%- endcapture -%}
-{%- capture and_gg_badge -%}<br class="gkcn-hero-amp-br"><span class="gkcn-hero-amp-wrap"><span class="gkcn-hero-amp">&amp;</span>{{ gg_badge }}</span>{%- endcapture -%}
+{%- capture and_gg_badge -%}{{ gg_badge }}{%- endcapture -%}
 
-{%- assign hero_raw_title = section.settings.hero_title | default: 'Sampai China, WhatsApp Instagram TikTok & Google Langsung Jalan!' -%}
+{%- assign hero_raw_title = section.settings.hero_title | default: 'Sampai China WhatsApp Instagram TikTok Google Langsung Jalan!' -%}
 {%- assign show_hero_icons = section.settings.show_hero_app_icons -%}
 {%- if show_hero_icons == nil -%}
   {%- assign show_hero_icons = true -%}
@@ -1268,20 +1268,21 @@
     | replace: 'TikTok', '##GK_TT##'
     | replace: 'Tiktok', '##GK_TT##'
     | replace: 'tiktok', '##GK_TT##'
-    | replace: ' & Google', ' ##GK_AND_GG##'
-    | replace: '& Google', '##GK_AND_GG##'
-    | replace: ' & google', ' ##GK_AND_GG##'
-    | replace: '& google', '##GK_AND_GG##'
-    | replace: '&Google', '##GK_AND_GG##'
-    | replace: '&google', '##GK_AND_GG##'
-    | replace: ' dan Google', ' ##GK_AND_GG##'
-    | replace: ' dan google', ' ##GK_AND_GG##'
+    | replace: ' & Google', ' ##GK_GG##'
+    | replace: '& Google', '##GK_GG##'
+    | replace: ' & google', ' ##GK_GG##'
+    | replace: '& google', '##GK_GG##'
+    | replace: '&Google', '##GK_GG##'
+    | replace: '&google', '##GK_GG##'
+    | replace: ' dan Google', ' ##GK_GG##'
+    | replace: ' dan google', ' ##GK_GG##'
+    | replace: ' & ', ' '
     | replace: 'Google', '##GK_GG##'
     | replace: 'google', '##GK_GG##'
     | replace: '##GK_WA##', wa_badge
     | replace: '##GK_IG##', ig_badge
     | replace: '##GK_TT##', tt_badge
-    | replace: '##GK_AND_GG##', and_gg_badge
+    | replace: '##GK_AND_GG##', gg_badge
     | replace: '##GK_GG##', gg_badge
   -%}
 {%- else -%}
@@ -1294,7 +1295,16 @@
     <div class="gkcn-wrap gkcn-hero-grid">
       <div class="gkcn-hero-text">
         <h1>{{ hero_rendered_title }}</h1>
-        <p class="gkcn-hero-sub">{{ section.settings.hero_sub | default: 'Jangan sampai yang harusnya sibuk eksplor China, malah sibuk cari koneksi. Siapin eSIM sebelum terbang, biar liburan nggak pakai drama!' }}</p>
+        {%- assign hero_sub_text = section.settings.hero_sub | default: 'Beberapa aplikasi favoritmu diblokir di China! Pastikan koneksi sudah siap sebelum berangkat biar liburanmu nggak sibuk ngurusin koneksi.' -%}
+        {%- if hero_sub_text == 'Jangan sampai yang harusnya sibuk eksplor China, malah sibuk cari koneksi. Siapin eSIM sebelum terbang, biar liburan nggak pakai drama!' -%}
+          {%- assign hero_sub_text = 'Beberapa aplikasi favoritmu diblokir di China! Pastikan koneksi sudah siap sebelum berangkat biar liburanmu nggak sibuk ngurusin koneksi.' -%}
+        {%- endif -%}
+        {%- assign hero_sub_text = hero_sub_text
+          | replace: 'diblokir di China!,', 'diblokir di China!'
+          | replace: 'diblokir di China,', 'diblokir di China!'
+          | replace: 'diblokir di China!.', 'diblokir di China!'
+        -%}
+        <p class="gkcn-hero-sub">{{ hero_sub_text }}</p>
         <div class="gkcn-price">
           <small>Mulai dari</small>
           <strong>{{ section.settings.hero_price | default: 'Rp29.000' }}</strong>
@@ -2009,7 +2019,7 @@
       "type": "text",
       "id": "hero_title",
       "label": "Hero Title",
-      "default": "Sampai China, WhatsApp Instagram TikTok & Google Langsung Jalan!"
+      "default": "Sampai China WhatsApp Instagram TikTok Google Langsung Jalan!"
     },
     {
       "type": "checkbox",
@@ -2065,7 +2075,7 @@
       "type": "textarea",
       "id": "hero_sub",
       "label": "Hero Subtitle",
-      "default": "Jangan sampai yang harusnya sibuk eksplor China, malah sibuk cari koneksi. Siapin eSIM sebelum terbang, biar liburan nggak pakai drama!"
+      "default": "Beberapa aplikasi favoritmu diblokir di China! Pastikan koneksi sudah siap sebelum berangkat biar liburanmu nggak sibuk ngurusin koneksi."
     },
     {
       "type": "text",

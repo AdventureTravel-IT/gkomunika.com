@@ -1,1200 +1,1947 @@
 {% comment %}
-  Shopify Section for Global Komunika eSIM China landing page.
-  Formatted as a single self-contained section ready to use or adapt.
-  Implements Hero, Features, Testimonial Carousel, FAQ Accordion, and Founder Note.
+  Shopify Section for Global Komunika eSIM & SIM Card China landing page.
+  Based on LP_China_Global_Komunika_FINAL.html with dynamic blocks for products, features, steps, testimonials, and FAQs.
 {% endcomment %}
 
-<style>
-  #gk-section-{{ section.id }} {
-    /* Color tokens defined in schema settings */
-    --gk-background: {{ section.settings.background_color | default: '#ffffff' }};
-    --gk-foreground: {{ section.settings.ink_color | default: '#1a1a1a' }};
-    --gk-brand-blue: {{ section.settings.brand_blue | default: '#00adee' }};
-    --gk-brand-blue-dark: {{ section.settings.brand_blue_dark | default: '#005496' }};
-    --gk-brand-yellow: {{ section.settings.brand_yellow | default: '#fbb526' }};
-    --gk-brand-green: #2e884a;
-    --gk-ink: {{ section.settings.ink_color | default: '#1a1a1a' }};
-
-    color: var(--gk-foreground);
-    background-color: var(--gk-background);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    width: 100%;
-    overflow-x: hidden;
-  }
-
-  #gk-section-{{ section.id }} * {
-    box-sizing: border-box;
-  }
-
-  /* Core Layout Components */
-  #gk-section-{{ section.id }} .gk-container {
-    max-width: 1920px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 24px;
-    padding-right: 24px;
-    width: 100%;
-  }
-
-  @media (min-width: 1024px) {
-    #gk-section-{{ section.id }} .gk-container {
-      padding-left: 100px;
-      padding-right: 100px;
-    }
-  }
-
-  /* Utility Headings and Typography */
-  #gk-section-{{ section.id }} h1,
-  #gk-section-{{ section.id }} h2,
-  #gk-section-{{ section.id }} h3,
-  #gk-section-{{ section.id }} h4,
-  #gk-section-{{ section.id }} .gk-font-display {
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-
-  /* Keyframe Animations */
-  @keyframes gkFadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(24px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Hero Section Styles */
-  #gk-section-{{ section.id }} .gk-hero-section {
-    position: relative;
-    background-color: #ffffff;
-    overflow: hidden;
-  }
-
-  #gk-section-{{ section.id }} .gk-hero-wave-bg {
-    position: relative;
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' preserveAspectRatio='none'%3E%3Cpath d='M0,0 H1440 V600 C1170,570 970,610 760,700 C500,810 230,850 0,790 Z' fill='black'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' preserveAspectRatio='none'%3E%3Cpath d='M0,0 H1440 V600 C1170,570 970,610 760,700 C500,810 230,850 0,790 Z' fill='black'/%3E%3C/svg%3E");
-    mask-size: 100% 100%;
-    -webkit-mask-size: 100% 100%;
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
-  }
-
-  #gk-section-{{ section.id }} .gk-hero-inner {
-    padding-top: 40px;
-    padding-bottom: 160px;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-hero-wave-bg {
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' preserveAspectRatio='none'%3E%3Cpath d='M0,0 H1440 V430 C1230,415 1020,490 760,620 C500,750 220,835 0,790 Z' fill='black'/%3E%3C/svg%3E");
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' preserveAspectRatio='none'%3E%3Cpath d='M0,0 H1440 V430 C1230,415 1020,490 760,620 C500,750 220,835 0,790 Z' fill='black'/%3E%3C/svg%3E");
-    }
-
-    #gk-section-{{ section.id }} .gk-hero-inner {
-      padding-top: 80px;
-      padding-bottom: 224px; /* 56 */
-    }
-  }
-
-  @media (min-width: 1024px) {
-    #gk-section-{{ section.id }} .gk-hero-inner {
-      padding-top: 80px;
-      padding-bottom: 256px; /* 64 */
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-hero-content {
-    max-width: 576px; /* max-w-xl */
-    color: #ffffff;
-    animation: gkFadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  #gk-section-{{ section.id }} .gk-tagline-badge {
-    display: inline-block;
-    background-color: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 8px 16px;
-    border-radius: 9999px;
-    font-size: 12px;
-    font-weight: 500;
-    margin-bottom: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-tagline-badge {
-      font-size: 14px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-hero-title {
-    font-size: clamp(27px, 9vw, 38px);
-    line-height: 1;
-    margin-top: 0;
-    margin-bottom: 24px;
-    text-transform: uppercase;
-  }
-
-  #gk-section-{{ section.id }} .gk-hero-title-line {
-    display: block;
-    white-space: nowrap;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-hero-title {
-      font-size: 72px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    #gk-section-{{ section.id }} .gk-hero-title {
-      font-size: 88px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-hero-price-wrapper {
-    margin-bottom: 24px;
-  }
-
-  #gk-section-{{ section.id }} .gk-hero-price {
-    font-size: 38px;
-    font-weight: 700;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-hero-price-wrapper {
-      margin-bottom: 32px;
-    }
-
-    #gk-section-{{ section.id }} .gk-hero-price {
-      font-size: 56px;
-    }
-  }
-
-  /* Button Premium Styling */
-  #gk-section-{{ section.id }} .gk-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--gk-brand-yellow);
-    color: var(--gk-ink);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 14px;
-    padding: 16px 32px;
-    border-radius: 9999px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-    text-decoration: none;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-    border: none;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-btn {
-      font-size: 16px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-btn:hover {
-    filter: brightness(0.95);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.15);
-  }
-
-  #gk-section-{{ section.id }} .gk-btn:active {
-    transform: translateY(1px);
-  }
-
-  #gk-section-{{ section.id }} .gk-btn[aria-disabled="true"] {
-    cursor: wait;
-    opacity: 0.7;
-    pointer-events: none;
-  }
-
-  /* Mascot Placement */
-  #gk-section-{{ section.id }} .gk-hero-mascot {
-    position: absolute;
-    right: 18px;
-    bottom: 70px;
-    width: 150px;
-    height: auto;
-    z-index: 20;
-    filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.15));
-    animation: gkFadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-    opacity: 0;
-    animation-fill-mode: forwards;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-hero-mascot {
-      right: 132px;
-      bottom: 224px;
-      width: 224px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    #gk-section-{{ section.id }} .gk-hero-mascot {
-      right: 180px;
-      width: 288px;
-      bottom: 208px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-hero-spacer {
-    height: 72px;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-hero-spacer {
-      height: 112px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    #gk-section-{{ section.id }} .gk-hero-spacer {
-      height: 128px;
-    }
-  }
-
-  /* Value Proposition / Features Styles */
-  #gk-section-{{ section.id }} .gk-features-section {
-    padding-top: 80px;
-    padding-bottom: 80px;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-features-section {
-      padding-top: 112px;
-      padding-bottom: 112px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-section-header {
-    text-align: center;
-    max-width: 672px; /* max-w-3xl */
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 56px;
-  }
-
-  #gk-section-{{ section.id }} .gk-section-title {
-    font-size: 28px;
-    line-height: 1.2;
-    margin-top: 0;
-    margin-bottom: 16px;
-    color: var(--gk-foreground);
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-section-title {
-      font-size: 36px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-section-subtitle {
-    color: #4b5563;
-    font-size: 18px;
-    margin: 0;
-  }
-
-  #gk-section-{{ section.id }} .gk-features-grid {
-    display: grid;
-    gap: 20px;
-    grid-template-columns: 1fr;
-  }
-
-  #gk-section-{{ section.id }} .gk-features-cta {
-    margin-top: 40px;
-    text-align: center;
-  }
-
-  #gk-section-{{ section.id }} .gk-features-cta-label {
-    margin-bottom: 8px;
-    color: var(--gk-ink);
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-
-  #gk-section-{{ section.id }} .gk-features-cta-price {
-    margin: 0;
-    color: var(--gk-ink);
-    font-size: 40px;
-    font-weight: 700;
-    line-height: 1.1;
-  }
-
-  #gk-section-{{ section.id }} .gk-features-cta .gk-btn {
-    margin-top: 24px;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-features-cta-label {
-      font-size: 32px;
-    }
-
-    #gk-section-{{ section.id }} .gk-features-cta-price {
-      font-size: 48px;
-    }
-  }
-
-  @media (min-width: 640px) {
-    #gk-section-{{ section.id }} .gk-features-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 1024px) {
-    #gk-section-{{ section.id }} .gk-features-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-feature-card {
-    border-radius: 16px;
-    padding: 24px;
-    border: 1px solid #eeeeee;
-    background-color: #ffffff;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
-  }
-
-  #gk-section-{{ section.id }} .gk-feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-    border-color: var(--gk-brand-blue);
-  }
-
-  #gk-section-{{ section.id }} .gk-feature-card-highlight {
-    border-color: var(--gk-brand-yellow);
-    background-color: #fff7e4;
-  }
-
-  #gk-section-{{ section.id }} .gk-feature-card-highlight:hover {
-    border-color: var(--gk-brand-yellow);
-  }
-
-  #gk-section-{{ section.id }} .gk-feature-card-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  #gk-section-{{ section.id }} .gk-feature-number {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    padding: 4px 8px;
-    border-radius: 4px;
-    background-color: rgba(0, 173, 238, 0.1);
-    color: var(--gk-brand-blue-dark);
-  }
-
-  #gk-section-{{ section.id }} .gk-feature-number-highlight {
-    background-color: var(--gk-brand-yellow);
-    color: var(--gk-ink);
-  }
-
-  #gk-section-{{ section.id }} .gk-feature-badge {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    background-color: var(--gk-ink);
-    color: #ffffff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-weight: 700;
-  }
-
-  #gk-section-{{ section.id }} .gk-feature-title {
-    font-size: 18px;
-    margin-top: 0;
-    margin-bottom: 8px;
-    color: var(--gk-ink);
-  }
-
-  #gk-section-{{ section.id }} .gk-feature-body {
-    color: #4b5563;
-    font-size: 14px;
-    line-height: 1.625;
-    margin: 0;
-  }
-
-  /* Social Proof / Testimonials Section */
-  #gk-section-{{ section.id }} .gk-testimonials-section {
-    padding-top: 80px;
-    padding-bottom: 80px;
-    background-color: #f9fafb;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-testimonials-section {
-      padding-top: 112px;
-      padding-bottom: 112px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-testimonials-header {
-    font-size: 24px;
-    line-height: 1.25;
-    text-align: center;
-    max-width: 672px; /* max-w-3xl */
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 48px;
-    color: var(--gk-ink);
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-testimonials-header {
-      font-size: 30px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-carousel-wrapper {
-    max-width: 672px; /* max-w-3xl */
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-  }
-
-  #gk-section-{{ section.id }} .gk-carousel-slides {
-    background-color: #ffffff;
-    border-radius: 24px;
-    padding: 32px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-    border: 1px solid #f3f4f6;
-    position: relative;
-    min-height: 200px;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-carousel-slides {
-      padding: 48px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-carousel-slide {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    text-align: center;
-  }
-
-  #gk-section-{{ section.id }} .gk-carousel-slide.active {
-    display: block;
-    opacity: 1;
-  }
-
-  #gk-section-{{ section.id }} .gk-stars {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin-bottom: 20px;
-    color: var(--gk-brand-yellow);
-    font-size: 20px;
-  }
-
-  #gk-section-{{ section.id }} .gk-quote {
-    font-size: 18px;
-    line-height: 1.625;
-    color: #1f2937;
-    margin-top: 0;
-    margin-bottom: 24px;
-    font-style: italic;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-quote {
-      font-size: 20px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-author {
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 14px;
-    color: var(--gk-brand-blue-dark);
-  }
-
-  #gk-section-{{ section.id }} .gk-carousel-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 24px;
-  }
-
-  #gk-section-{{ section.id }} .gk-carousel-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid #e5e7eb;
-    background-color: #ffffff;
-    display: grid;
-    place-items: center;
-    cursor: pointer;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-    font-size: 16px;
-  }
-
-  #gk-section-{{ section.id }} .gk-carousel-btn:hover {
-    border-color: var(--gk-brand-blue);
-  }
-
-  #gk-section-{{ section.id }} .gk-carousel-dots {
-    display: flex;
-    gap: 8px;
-  }
-
-  #gk-section-{{ section.id }} .gk-carousel-dot {
-    height: 8px;
-    width: 8px;
-    border-radius: 999px;
-    background-color: #d1d5db;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  #gk-section-{{ section.id }} .gk-carousel-dot.active {
-    width: 32px;
-    background-color: var(--gk-brand-blue);
-  }
-
-  /* FAQ Accordion Styles */
-  #gk-section-{{ section.id }} .gk-faq-section {
-    padding-top: 80px;
-    padding-bottom: 80px;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-faq-section {
-      padding-top: 112px;
-      padding-bottom: 112px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-container {
-    max-width: 672px; /* max-w-3xl */
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-title-main {
-    font-size: 30px;
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 40px;
-    color: var(--gk-ink);
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-faq-title-main {
-      font-size: 36px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-list {
-    border-top: 1px solid #e5e7eb;
-    border-bottom: 1px solid #e5e7eb;
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-item {
-    border-bottom: 1px solid #e5e7eb;
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-item:last-child {
-    border-bottom: none;
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-header {
-    width: 100%;
-    background: none;
-    border: none;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    cursor: pointer;
-    text-align: left;
-    color: var(--gk-ink);
-    transition: color 0.2s ease;
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-header:hover {
-    color: var(--gk-brand-blue-dark);
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-question {
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-faq-question {
-      font-size: 18px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-icon {
-    display: grid;
-    place-items: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: var(--gk-brand-blue);
-    color: #ffffff;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
-    font-size: 14px;
-    font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-item.active .gk-faq-icon {
-    transform: rotate(45deg);
-    background-color: var(--gk-brand-blue-dark);
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-answer {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-item.active .gk-faq-answer {
-    max-height: 300px; /* Adjust dynamically */
-  }
-
-  #gk-section-{{ section.id }} .gk-faq-answer-inner {
-    margin: 0;
-    padding-bottom: 20px;
-    padding-right: 40px;
-    color: #4b5563;
-    line-height: 1.625;
-    font-size: 15px;
-  }
-
-  /* Founder Note Styles */
-  #gk-section-{{ section.id }} .gk-founder-section {
-    padding-top: 80px;
-    padding-bottom: 80px;
-    color: #ffffff;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-founder-section {
-      padding-top: 112px;
-      padding-bottom: 112px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-founder-grid {
-    display: grid;
-    gap: 32px;
-    grid-template-columns: 1fr;
-    align-items: center;
-    justify-items: center;
-    text-align: center;
-    max-width: 896px; /* max-w-4xl */
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-founder-grid {
-      grid-template-columns: auto 1fr;
-      text-align: left;
-      justify-items: start;
-      gap: 48px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-founder-img-wrapper {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 4px solid rgba(255, 255, 255, 0.2);
-    flex-shrink: 0;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-founder-img-wrapper {
-      width: 192px;
-      height: 192px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-founder-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transform: scale(1.2);
-  }
-
-  #gk-section-{{ section.id }} .gk-founder-img-placeholder {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.25));
-  }
-
-  #gk-section-{{ section.id }} .gk-founder-text-content {
-    flex-grow: 1;
-  }
-
-  #gk-section-{{ section.id }} .gk-founder-quote {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 16px;
-    line-height: 1.625;
-    opacity: 0.95;
-    font-style: normal;
-    font-weight: 400;
-  }
-
-  @media (min-width: 768px) {
-    #gk-section-{{ section.id }} .gk-founder-quote {
-      font-size: 18px;
-    }
-  }
-
-  #gk-section-{{ section.id }} .gk-founder-name {
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 14px;
-    color: var(--gk-brand-yellow);
-  }
-
-</style>
-
-{%- assign buy_now_variant_id = section.settings.hero_variant_id | strip -%}
-{%- if buy_now_variant_id == blank and section.settings.hero_button_url != blank -%}
-  {%- assign buy_now_url = section.settings.hero_button_url -%}
-{%- else -%}
-  {%- assign buy_now_url = routes.cart_url -%}
+{%- assign hero_img_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/hero_section.webp?v=1792133645' -%}
+{%- if section.settings.hero_image != blank -%}
+  {%- assign hero_img_url = section.settings.hero_image | image_url: width: 1200 -%}
+{%- elsif section.settings.hero_image_url != blank -%}
+  {%- assign hero_img_url = section.settings.hero_image_url -%}
 {%- endif -%}
 
-<div id="gk-section-{{ section.id }}">
+{%- assign mascot_img_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/faq.webp?v=1792133641' -%}
+{%- if section.settings.mascot_image != blank -%}
+  {%- assign mascot_img_url = section.settings.mascot_image | image_url: width: 400 -%}
+{%- elsif section.settings.mascot_image_url != blank -%}
+  {%- assign mascot_img_url = section.settings.mascot_image_url -%}
+{%- endif -%}
 
-  <!-- HERO SECTION -->
-  <section class="gk-hero-section">
-    <div class="gk-hero-wave-bg" style="background: linear-gradient(to bottom, {{ section.settings.hero_bg_color_start }}, {{ section.settings.hero_bg_color_end }});">
-      <div class="gk-container gk-hero-inner">
-        <div class="gk-hero-content">
-          {%- if section.settings.hero_tagline != blank -%}
-            <span class="gk-tagline-badge">
-              {{ section.settings.hero_tagline }}
-            </span>
-          {%- endif -%}
-          
-          <h1 class="gk-hero-title">
-            <span class="gk-hero-title-line">Internet di China</span>
-            <span class="gk-hero-title-line">Tanpa Drama</span>
-          </h1>
-          
-          <div class="gk-hero-price-wrapper">
-            <div class="gk-hero-price">{{ section.settings.hero_price }}</div>
-          </div>
-          
-          {%- if section.settings.hero_button_text != blank -%}
-            <a
-              href="{{ buy_now_url }}"
-              class="gk-btn gk-add-to-cart"
-              data-variant-id="{{ buy_now_variant_id | escape }}"
-              data-cart-add-url="{{ routes.cart_add_url }}.js"
-              data-cart-url="{{ routes.cart_url }}"
-            >
-              {{ section.settings.hero_button_text }}
-            </a>
-          {%- endif -%}
+{%- assign steps_img_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/3_langkah_mudah.webp?v=1792209712' -%}
+{%- if section.settings.steps_image != blank -%}
+  {%- assign steps_img_url = section.settings.steps_image | image_url: width: 400 -%}
+{%- elsif section.settings.steps_image_url != blank -%}
+  {%- assign steps_img_url = section.settings.steps_image_url -%}
+{%- endif -%}
+
+{%- assign founder_img_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/pak_andy_hijau.webp?v=1792133640' -%}
+{%- if section.settings.founder_image != blank -%}
+  {%- assign founder_img_url = section.settings.founder_image | image_url: width: 300 -%}
+{%- elsif section.settings.founder_image_url != blank -%}
+  {%- assign founder_img_url = section.settings.founder_image_url -%}
+{%- endif -%}
+
+{%- assign stats_mark_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/GK-logo.webp?v=1792145708' -%}
+{%- if section.settings.stats_mark_image != blank -%}
+  {%- assign stats_mark_url = section.settings.stats_mark_image | image_url: width: 600 -%}
+{%- elsif section.settings.stats_mark_image_url != blank -%}
+  {%- assign stats_mark_url = section.settings.stats_mark_image_url -%}
+{%- endif -%}
+
+{%- assign hero_icon_wa_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/whatsapp.webp?v=1792380556' -%}
+{%- if section.settings.hero_icon_wa != blank -%}
+  {%- assign hero_icon_wa_url = section.settings.hero_icon_wa | image_url: width: 100 -%}
+{%- elsif section.settings.hero_icon_wa_url != blank -%}
+  {%- assign hero_icon_wa_url = section.settings.hero_icon_wa_url -%}
+{%- endif -%}
+
+{%- assign hero_icon_ig_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/instagram.webp?v=1792380557' -%}
+{%- if section.settings.hero_icon_ig != blank -%}
+  {%- assign hero_icon_ig_url = section.settings.hero_icon_ig | image_url: width: 100 -%}
+{%- elsif section.settings.hero_icon_ig_url != blank -%}
+  {%- assign hero_icon_ig_url = section.settings.hero_icon_ig_url -%}
+{%- endif -%}
+
+{%- assign hero_icon_tt_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/tiktok.webp?v=1792380556' -%}
+{%- if section.settings.hero_icon_tt != blank -%}
+  {%- assign hero_icon_tt_url = section.settings.hero_icon_tt | image_url: width: 100 -%}
+{%- elsif section.settings.hero_icon_tt_url != blank -%}
+  {%- assign hero_icon_tt_url = section.settings.hero_icon_tt_url -%}
+{%- endif -%}
+
+{%- assign hero_icon_gg_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Google.webp?v=1792380669' -%}
+{%- if section.settings.hero_icon_google != blank -%}
+  {%- assign hero_icon_gg_url = section.settings.hero_icon_google | image_url: width: 100 -%}
+{%- elsif section.settings.hero_icon_google_url != blank -%}
+  {%- assign hero_icon_gg_url = section.settings.hero_icon_google_url -%}
+{%- endif -%}
+
+{%- assign wa_number = section.settings.whatsapp_number | default: '628156080055' -%}
+{%- assign wa_text = section.settings.whatsapp_text | default: 'Halo Global Komunika, saya ingin tanya seputar paket internet China' | url_encode -%}
+
+<style>
+#gk-section-{{ section.id }} {
+  --gkcn-blue: {{ section.settings.brand_blue | default: '#005496' }};
+  --gkcn-sky: {{ section.settings.brand_sky | default: '#00ADEE' }};
+  --gkcn-ink: #222222;
+  --gkcn-mute: #5b6670;
+  --gkcn-bg: #F5F8FB;
+  --gkcn-line: #dfe6ec;
+  --gkcn-white: #ffffff;
+  --gkcn-red: #F61708;
+  --gkcn-orange: #EA5A1B;
+  --gkcn-teal: #66C0B6;
+  --gkcn-green: #2E884A;
+  --gkcn-yellow: #FBB526;
+  font-family: "Gotham Rounded", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  color: var(--gkcn-ink);
+  font-size: 16px;
+  line-height: 1.65;
+  background: var(--gkcn-white);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+#gk-section-{{ section.id }} *,
+#gk-section-{{ section.id }} *::before,
+#gk-section-{{ section.id }} *::after {
+  box-sizing: border-box;
+}
+
+#gk-section-{{ section.id }} img {
+  max-width: 100%;
+  display: block;
+}
+
+:where(#gk-section-{{ section.id }}) h1,
+:where(#gk-section-{{ section.id }}) h2,
+:where(#gk-section-{{ section.id }}) h3,
+:where(#gk-section-{{ section.id }}) p {
+  margin: 0;
+}
+
+#gk-section-{{ section.id }} .gkcn-wrap {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+#gk-section-{{ section.id }} .gkcn-sec {
+  padding: 64px 0;
+}
+
+#gk-section-{{ section.id }} .gkcn-sec--alt {
+  background: var(--gkcn-bg);
+}
+
+#gk-section-{{ section.id }} .gkcn-h2 {
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.25;
+  color: var(--gkcn-blue);
+  letter-spacing: -.01em;
+}
+
+#gk-section-{{ section.id }} .gkcn-lead {
+  margin-top: 12px;
+  color: var(--gkcn-mute);
+  max-width: 620px;
+}
+
+#gk-section-{{ section.id }} .gkcn-head {
+  margin-bottom: 32px;
+}
+
+#gk-section-{{ section.id }} .gkcn-head--c {
+  text-align: center;
+}
+
+#gk-section-{{ section.id }} .gkcn-head--c .gkcn-lead {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* buttons */
+#gk-section-{{ section.id }} .gkcn-btn,
+.gkcn-sticky .gkcn-btn,
+#gkcn-sticky-{{ section.id }} .gkcn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 28px;
+  border-radius: 999px;
+  font: 700 16px/1 "Gotham Rounded", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid var(--gkcn-blue, #005496);
+  box-sizing: border-box;
+  transition: background .2s, transform .2s, box-shadow .2s, border-color .2s;
+}
+
+#gk-section-{{ section.id }} .gkcn-btn--main,
+.gkcn-sticky .gkcn-btn--main,
+#gkcn-sticky-{{ section.id }} .gkcn-btn--main {
+  background: var(--gkcn-blue, #005496);
+  color: #fff;
+  border: 2px solid var(--gkcn-blue, #005496);
+  box-shadow: 0 8px 20px rgba(0,84,150,.25);
+}
+
+#gk-section-{{ section.id }} .gkcn-btn--main:hover,
+.gkcn-sticky .gkcn-btn--main:hover,
+#gkcn-sticky-{{ section.id }} .gkcn-btn--main:hover {
+  background: #00427a;
+  border-color: #00427a;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+#gk-section-{{ section.id }} .gkcn-btn--ghost,
+.gkcn-sticky .gkcn-btn--ghost,
+#gkcn-sticky-{{ section.id }} .gkcn-btn--ghost {
+  background: #fff;
+  color: var(--gkcn-blue, #005496);
+  border: 2px solid var(--gkcn-blue, #005496);
+}
+
+#gk-section-{{ section.id }} .gkcn-btn--ghost:hover,
+.gkcn-sticky .gkcn-btn--ghost:hover,
+#gkcn-sticky-{{ section.id }} .gkcn-btn--ghost:hover {
+  background: #eaf4fb;
+  border-color: var(--gkcn-blue, #005496);
+}
+
+#gk-section-{{ section.id }} .gkcn-btn:focus-visible,
+.gkcn-sticky .gkcn-btn:focus-visible,
+#gkcn-sticky-{{ section.id }} .gkcn-btn:focus-visible,
+#gk-section-{{ section.id }} .gkcn-tab:focus-visible,
+#gk-section-{{ section.id }} .gkcn-faq summary:focus-visible {
+  outline: 3px solid var(--gkcn-sky, #00ADEE);
+  outline-offset: 3px;
+}
+
+/* hero */
+#gk-section-{{ section.id }} .gkcn-hero {
+  padding: 0 0 40px;
+  background: linear-gradient(180deg, #eaf6fd 0%, #fff 100%);
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-grid {
+  display: grid;
+  gap: 24px;
+  align-items: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-media {
+  order: -1;
+  position: relative;
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-media img {
+  background: transparent;
+  width: 100%;
+  aspect-ratio: 4/3.3;
+  object-fit: cover;
+  object-position: 50% 30%;
+  display: block;
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-text {
+  padding: 0 20px;
+}
+
+#gk-section-{{ section.id }} .gkcn-hero h1 {
+  font-weight: 700;
+  font-size: 31px;
+  line-height: 1.25;
+  color: var(--gkcn-blue);
+  letter-spacing: -.015em;
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-app {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  gap: 0.15em;
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-app-icon {
+  display: inline-block;
+  width: 0.58em;
+  height: 0.58em;
+  object-fit: contain;
+  vertical-align: middle;
+  flex-shrink: 0;
+  mix-blend-mode: multiply;
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-app-icon--wa,
+#gk-section-{{ section.id }} .gkcn-hero-app-icon--tt,
+#gk-section-{{ section.id }} .gkcn-hero-app-icon--gg {
+  width: 0.72em;
+  height: 0.72em;
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-app-icon--gg {
+  filter: contrast(135%) brightness(110%);
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-sub {
+  margin-top: 16px;
+  font-size: 17px;
+  color: #33414d;
+  max-width: 520px;
+}
+
+#gk-section-{{ section.id }} .gkcn-price {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  line-height: 1.2;
+}
+
+#gk-section-{{ section.id }} .gkcn-price small {
+  font-size: 14px;
+  color: var(--gkcn-mute);
+  margin-bottom: 2px;
+}
+
+#gk-section-{{ section.id }} .gkcn-price strong {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--gkcn-ink);
+  letter-spacing: -.02em;
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-cta {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* stats — biru + watermark GK sesuai hero.png Opsi 4 */
+#gk-section-{{ section.id }} .gkcn-stats {
+  position: relative;
+  overflow: hidden;
+  background: var(--gkcn-blue);
+  color: #fff;
+}
+
+#gk-section-{{ section.id }} .gkcn-stats-wrap {
+  position: relative;
+}
+
+#gk-section-{{ section.id }} .gkcn-stats-mark {
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 220px;
+  height: auto;
+  opacity: {{ section.settings.stats_mark_opacity | default: 100 | divided_by: 100.0 }};
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  z-index: 0;
+}
+
+#gk-section-{{ section.id }} .gkcn-stats-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 26px 0 24px;
+  text-align: center;
+}
+
+#gk-section-{{ section.id }} .gkcn-stats-grid::before {
+  content: "";
+  position: absolute;
+  left: 16.6%;
+  right: 16.6%;
+  top: 44px;
+  border-top: 2px dashed rgba(255,255,255,.45);
+  z-index: 0;
+  pointer-events: none;
+}
+
+#gk-section-{{ section.id }} .gkcn-stat {
+  position: relative;
+  z-index: 1;
+}
+
+#gk-section-{{ section.id }} .gkcn-stat svg {
+  position: relative;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  border-radius: 50%;
+  background: var(--gkcn-sky);
+  box-shadow: 0 0 0 6px var(--gkcn-blue);
+  stroke: #fff;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  margin: 0 auto 10px;
+  display: block;
+}
+
+#gk-section-{{ section.id }} .gkcn-stat b {
+  display: block;
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+#gk-section-{{ section.id }} .gkcn-stat span {
+  font-size: 12px;
+  color: #cfe8f7;
+  line-height: 1.3;
+  display: block;
+  margin-top: 2px;
+}
+
+/* problem + compare */
+#gk-section-{{ section.id }} .gkcn-problem {
+  display: grid;
+  gap: 28px;
+  align-items: center;
+}
+
+#gk-section-{{ section.id }} .gkcn-compare {
+  border: 1px solid var(--gkcn-line);
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fff;
+}
+
+#gk-section-{{ section.id }} .gkcn-compare table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+}
+
+#gk-section-{{ section.id }} .gkcn-compare th,
+#gk-section-{{ section.id }} .gkcn-compare td {
+  padding: 14px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--gkcn-line);
+  vertical-align: middle;
+}
+
+#gk-section-{{ section.id }} .gkcn-compare tr:last-child td {
+  border-bottom: 0;
+}
+
+#gk-section-{{ section.id }} .gkcn-compare thead th {
+  background: var(--gkcn-bg);
+  font-size: 13px;
+  color: var(--gkcn-mute);
+  font-weight: 500;
+}
+
+#gk-section-{{ section.id }} .gkcn-compare thead th.gkcn-us {
+  background: var(--gkcn-blue);
+  color: #fff;
+  font-weight: 700;
+}
+
+#gk-section-{{ section.id }} .gkcn-compare td.gkcn-us {
+  background: #eef7fd;
+  text-align: center;
+}
+
+#gk-section-{{ section.id }} .gkcn-compare td.gkcn-them,
+#gk-section-{{ section.id }} .gkcn-compare th.gkcn-them {
+  text-align: center;
+}
+
+#gk-section-{{ section.id }} .gkcn-yes,
+#gk-section-{{ section.id }} .gkcn-no {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+#gk-section-{{ section.id }} .gkcn-yes {
+  background: var(--gkcn-green);
+  color: #fff;
+}
+
+#gk-section-{{ section.id }} .gkcn-no {
+  background: #fde4e2;
+  color: #b3140a;
+}
+
+#gk-section-{{ section.id }} .gkcn-small {
+  display: block;
+  font-size: 12px;
+  color: var(--gkcn-mute);
+  margin-top: 4px;
+}
+
+/* benefits (feature cards) */
+#gk-section-{{ section.id }} .gkcn-benefits {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+#gk-section-{{ section.id }} .gkcn-benefit {
+  display: flex;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid var(--gkcn-line);
+  border-radius: 18px;
+  padding: 18px;
+}
+
+#gk-section-{{ section.id }} .gkcn-benefit i {
+  flex: 0 0 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #e6f5fd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#gk-section-{{ section.id }} .gkcn-benefit svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--gkcn-blue);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#gk-section-{{ section.id }} .gkcn-benefit h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gkcn-ink);
+  line-height: 1.35;
+}
+
+#gk-section-{{ section.id }} .gkcn-benefit p {
+  font-size: 14.5px;
+  color: var(--gkcn-mute);
+  margin-top: 4px;
+}
+
+/* steps */
+#gk-section-{{ section.id }} .gkcn-steps {
+  display: grid;
+  gap: 16px;
+  counter-reset: gkcnstep;
+}
+
+#gk-section-{{ section.id }} .gkcn-step {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px 20px 22px 76px;
+  border: 1px solid var(--gkcn-line);
+}
+
+#gk-section-{{ section.id }} .gkcn-step::before {
+  counter-increment: gkcnstep;
+  content: counter(gkcnstep);
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--gkcn-sky);
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#gk-section-{{ section.id }} .gkcn-step h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gkcn-blue);
+}
+
+#gk-section-{{ section.id }} .gkcn-step p {
+  margin-top: 4px;
+  font-size: 15px;
+  color: var(--gkcn-mute);
+}
+
+/* reviews */
+#gk-section-{{ section.id }} .gkcn-rv {
+  position: relative;
+  padding: 0 26px;
+}
+
+#gk-section-{{ section.id }} .gkcn-rv-view {
+  overflow: hidden;
+}
+
+#gk-section-{{ section.id }} .gkcn-rv-track {
+  --pv: 1;
+  display: flex;
+  gap: 14px;
+  transition: transform .45s ease;
+  will-change: transform;
+}
+
+#gk-section-{{ section.id }} .gkcn-rv-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--gkcn-line);
+  color: var(--gkcn-blue);
+  font: 700 28px/1 "Gotham Rounded", system-ui, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 3px;
+}
+
+#gk-section-{{ section.id }} .gkcn-rv-btn:hover {
+  background: #eaf4fb;
+}
+
+#gk-section-{{ section.id }} .gkcn-rv-btn:focus-visible {
+  outline: 3px solid var(--gkcn-sky);
+  outline-offset: 2px;
+}
+
+#gk-section-{{ section.id }} .gkcn-rv-prev {
+  left: -14px;
+}
+
+#gk-section-{{ section.id }} .gkcn-rv-next {
+  right: -14px;
+}
+
+#gk-section-{{ section.id }} .gkcn-review {
+  flex: 0 0 calc((100% - 14px * (var(--pv) - 1)) / var(--pv));
+  background: #fff;
+  border: 1px solid var(--gkcn-line);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+#gk-section-{{ section.id }} .gkcn-stars {
+  color: var(--gkcn-yellow);
+  letter-spacing: 2px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+#gk-section-{{ section.id }} .gkcn-review p {
+  margin-top: 10px;
+  font-size: 15px;
+  flex: 1;
+}
+
+#gk-section-{{ section.id }} .gkcn-who {
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gkcn-blue);
+}
+
+#gk-section-{{ section.id }} .gkcn-who span {
+  font-weight: 400;
+  color: var(--gkcn-mute);
+}
+
+/* packages / products */
+#gk-section-{{ section.id }} .gkcn-tabs {
+  display: inline-flex;
+  background: #e8eef4;
+  border-radius: 999px;
+  padding: 5px;
+  margin-bottom: 22px;
+}
+
+#gk-section-{{ section.id }} .gkcn-tab {
+  min-height: 44px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: 700 15px/1 "Gotham Rounded", system-ui, sans-serif;
+  color: var(--gkcn-mute);
+  cursor: pointer;
+}
+
+#gk-section-{{ section.id }} .gkcn-tab[aria-selected="true"] {
+  background: #fff;
+  color: var(--gkcn-blue);
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+#gk-section-{{ section.id }} .gkcn-pk {
+  position: relative;
+  padding: 0 26px;
+}
+
+#gk-section-{{ section.id }} .gkcn-pk[hidden] {
+  display: none;
+}
+
+#gk-section-{{ section.id }} .gkcn-pk .gkcn-rv-btn {
+  top: 30%;
+}
+
+#gk-section-{{ section.id }} .gkcn-track {
+  --pv: 1;
+  display: flex;
+  gap: 16px;
+  transition: transform .45s ease;
+  will-change: transform;
+}
+
+#gk-section-{{ section.id }} .gkcn-card {
+  flex: 0 0 calc((100% - 16px * (var(--pv) - 1)) / var(--pv));
+  background: #fff;
+  border: 1px solid var(--gkcn-line);
+  border-radius: 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#gk-section-{{ section.id }} .gkcn-card-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 809/581;
+  display: block;
+  background: #e8eef4;
+  object-fit: cover;
+}
+
+#gk-section-{{ section.id }} .gkcn-card-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#gk-section-{{ section.id }} .gkcn-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+#gk-section-{{ section.id }} .gkcn-flags {
+  display: flex;
+  padding-right: 6px;
+}
+
+#gk-section-{{ section.id }} .gkcn-flag {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: inline-block;
+  margin-right: -8px;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  position: relative;
+  background: #f0f0f0;
+}
+
+#gk-section-{{ section.id }} .gkcn-flag:first-child {
+  z-index: 3;
+}
+
+#gk-section-{{ section.id }} .gkcn-flag:nth-child(2) {
+  z-index: 2;
+}
+
+#gk-section-{{ section.id }} .gkcn-flag:nth-child(3) {
+  z-index: 1;
+}
+
+#gk-section-{{ section.id }} .gkcn-flag svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+#gk-section-{{ section.id }} .gkcn-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gkcn-blue);
+  background: #e6f5fd;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+#gk-section-{{ section.id }} .gkcn-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gkcn-ink);
+  line-height: 1.3;
+}
+
+#gk-section-{{ section.id }} .gkcn-meta {
+  font-size: 13.5px;
+  color: var(--gkcn-mute);
+  margin: 6px 0 14px;
+  line-height: 1.4;
+  flex: 1;
+}
+
+#gk-section-{{ section.id }} .gkcn-from {
+  font-size: 12px;
+  color: var(--gkcn-mute);
+  margin-bottom: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--gkcn-line);
+}
+
+#gk-section-{{ section.id }} .gkcn-from b {
+  display: block;
+  font-size: 19px;
+  color: var(--gkcn-ink);
+  line-height: 1.15;
+  margin-top: 2px;
+}
+
+#gk-section-{{ section.id }} .gkcn-card .gkcn-btn {
+  width: 100%;
+  min-height: 44px;
+  font-size: 14.5px;
+  padding: 0 16px;
+  border-radius: 16px;
+}
+
+/* faq */
+#gk-section-{{ section.id }} .gkcn-faq {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#gk-section-{{ section.id }} .gkcn-faq details {
+  background: #fff;
+  border: 1px solid var(--gkcn-line);
+  border-radius: 16px;
+  padding: 16px 20px;
+  transition: box-shadow .2s;
+}
+
+#gk-section-{{ section.id }} .gkcn-faq details[open] {
+  box-shadow: 0 6px 18px rgba(0,84,150,.08);
+}
+
+#gk-section-{{ section.id }} .gkcn-faq summary {
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+  position: relative;
+  padding-right: 28px;
+  font-size: 16px;
+  color: var(--gkcn-blue);
+}
+
+#gk-section-{{ section.id }} .gkcn-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+#gk-section-{{ section.id }} .gkcn-faq summary::after {
+  content: "+";
+  position: absolute;
+  right: 0;
+  top: -2px;
+  font-size: 22px;
+  color: var(--gkcn-blue);
+  font-weight: 700;
+  line-height: 1;
+}
+
+#gk-section-{{ section.id }} .gkcn-faq details[open] summary::after {
+  content: "\2212";
+}
+
+#gk-section-{{ section.id }} .gkcn-faq p {
+  margin-top: 10px;
+  font-size: 14.5px;
+  color: #33414d;
+}
+
+/* founder */
+#gk-section-{{ section.id }} .gkcn-founder {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#gk-section-{{ section.id }} .gkcn-founder-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+#gk-section-{{ section.id }} .gkcn-founder-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e6f5fd;
+}
+
+#gk-section-{{ section.id }} .gkcn-quote-by b {
+  display: block;
+  font-size: 16px;
+  color: var(--gkcn-ink);
+}
+
+#gk-section-{{ section.id }} .gkcn-quote-by {
+  font-size: 13px;
+  color: var(--gkcn-mute);
+  margin: 0;
+}
+
+#gk-section-{{ section.id }} .gkcn-quote {
+  font-style: italic;
+  color: var(--gkcn-ink);
+  font-size: 15.5px;
+  line-height: 1.7;
+}
+
+/* final */
+#gk-section-{{ section.id }} .gkcn-final {
+  background: var(--gkcn-blue);
+  color: #fff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+#gk-section-{{ section.id }} .gkcn-final h2 {
+  font-size: 28px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+#gk-section-{{ section.id }} .gkcn-final p {
+  margin-top: 12px;
+  color: #d6e8f6;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#gk-section-{{ section.id }} .gkcn-final .gkcn-price strong {
+  color: var(--gkcn-yellow);
+}
+
+#gk-section-{{ section.id }} .gkcn-final .gkcn-price small {
+  color: #cfe3f3;
+}
+
+#gk-section-{{ section.id }} .gkcn-final .gkcn-price {
+  align-items: center;
+}
+
+#gk-section-{{ section.id }} .gkcn-final .gkcn-hero-cta {
+  justify-content: center;
+}
+
+#gk-section-{{ section.id }} .gkcn-final .gkcn-btn--main {
+  background: #fff;
+  color: var(--gkcn-blue, #005496);
+  border: 2px solid #fff;
+  box-shadow: none;
+}
+
+#gk-section-{{ section.id }} .gkcn-final .gkcn-btn--main:hover {
+  background: #eaf4fb;
+  border-color: #eaf4fb;
+}
+
+#gk-section-{{ section.id }} .gkcn-final .gkcn-btn--ghost {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+#gk-section-{{ section.id }} .gkcn-final .gkcn-btn--ghost:hover {
+  background: rgba(255,255,255,.12);
+  border-color: #fff;
+}
+
+/* sticky */
+#gk-section-{{ section.id }} .gkcn-sticky,
+.gkcn-sticky,
+#gkcn-sticky-{{ section.id }} {
+  --gkcn-blue: {{ section.settings.brand_blue | default: '#005496' }};
+  --gkcn-sky: {{ section.settings.brand_sky | default: '#00ADEE' }};
+  --gkcn-ink: #222222;
+  --gkcn-mute: #5b6670;
+  --gkcn-bg: #F5F8FB;
+  --gkcn-line: #dfe6ec;
+  font-family: "Gotham Rounded", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 998;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid var(--gkcn-line, #dfe6ec);
+  box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(110%);
+  visibility: hidden;
+  transition: transform 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.gkcn-sticky *,
+.gkcn-sticky *::before,
+.gkcn-sticky *::after,
+#gkcn-sticky-{{ section.id }} *,
+#gkcn-sticky-{{ section.id }} *::before,
+#gkcn-sticky-{{ section.id }} *::after {
+  box-sizing: border-box;
+}
+
+#gk-section-{{ section.id }} .gkcn-sticky.gkcn-on,
+.gkcn-sticky.gkcn-on,
+#gkcn-sticky-{{ section.id }}.gkcn-on {
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#gk-section-{{ section.id }} .gkcn-sticky-in,
+.gkcn-sticky-in,
+#gkcn-sticky-{{ section.id }} .gkcn-sticky-in {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#gk-section-{{ section.id }} .gkcn-sticky small,
+.gkcn-sticky small,
+#gkcn-sticky-{{ section.id }} small {
+  display: block;
+  font-size: 12px;
+  color: var(--gkcn-mute, #5b6670);
+  line-height: 1.2;
+}
+
+#gk-section-{{ section.id }} .gkcn-sticky b,
+.gkcn-sticky b,
+#gkcn-sticky-{{ section.id }} b {
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--gkcn-ink, #222222);
+}
+
+#gk-section-{{ section.id }} .gkcn-sticky .gkcn-btn,
+.gkcn-sticky .gkcn-btn,
+#gkcn-sticky-{{ section.id }} .gkcn-btn {
+  min-height: 48px;
+  padding: 0 24px;
+  font: 700 16px/1 "Gotham Rounded", system-ui, -apple-system, sans-serif;
+  white-space: nowrap;
+}
+
+.gkcn-pad {
+  height: 76px;
+}
+
+/* mascot & general images */
+#gk-section-{{ section.id }} .gkcn-masc[src=""],
+#gk-section-{{ section.id }} img[src=""] {
+  visibility: hidden;
+}
+
+#gk-section-{{ section.id }} .gkcn-masc {
+  display: block;
+  margin: 0 auto 14px;
+  height: 118px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Responsive Styles */
+@media (min-width: 760px) {
+  #gk-section-{{ section.id }} .gkcn-sec {
+    padding: 88px 0;
+  }
+  #gk-section-{{ section.id }} .gkcn-h2 {
+    font-size: 34px;
+  }
+  #gk-section-{{ section.id }} .gkcn-hero {
+    padding: 72px 0 80px;
+  }
+  #gk-section-{{ section.id }} .gkcn-hero-grid {
+    grid-template-columns: 1fr 1.1fr;
+    gap: 56px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  #gk-section-{{ section.id }} .gkcn-hero-text {
+    padding: 0;
+  }
+  #gk-section-{{ section.id }} .gkcn-hero-media {
+    order: 0;
+  }
+  #gk-section-{{ section.id }} .gkcn-hero-media img {
+    position: relative;
+    aspect-ratio: 1/1;
+    border-radius: 32px;
+    object-position: 10% 50%;
+    box-shadow: 0 22px 48px rgba(0,0,0,.1);
+  }
+  #gk-section-{{ section.id }} .gkcn-hero h1 {
+    font-size: 46px;
+  }
+  #gk-section-{{ section.id }} .gkcn-hero-sub {
+    font-size: 18px;
+  }
+  #gk-section-{{ section.id }} .gkcn-stats-grid {
+    padding: 30px 0 28px;
+  }
+  #gk-section-{{ section.id }} .gkcn-stats-grid::before {
+    top: 52px;
+  }
+  #gk-section-{{ section.id }} .gkcn-stats-mark {
+    width: 420px;
+    right: -24px;
+  }
+  #gk-section-{{ section.id }} .gkcn-stat svg {
+    width: 46px;
+    height: 46px;
+    padding: 11px;
+  }
+  #gk-section-{{ section.id }} .gkcn-stat b {
+    font-size: 28px;
+  }
+  #gk-section-{{ section.id }} .gkcn-stat span {
+    font-size: 14px;
+  }
+  #gk-section-{{ section.id }} .gkcn-problem {
+    grid-template-columns: .8fr 1.2fr;
+    gap: 48px;
+  }
+  #gk-section-{{ section.id }} .gkcn-compare table {
+    font-size: 15.5px;
+  }
+  #gk-section-{{ section.id }} .gkcn-benefits {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  #gk-section-{{ section.id }} .gkcn-steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  #gk-section-{{ section.id }} .gkcn-step {
+    padding: 80px 22px 24px;
+  }
+  #gk-section-{{ section.id }} .gkcn-step::before {
+    left: 22px;
+    top: 22px;
+  }
+  #gk-section-{{ section.id }} .gkcn-rv {
+    padding: 0 30px;
+  }
+  #gk-section-{{ section.id }} .gkcn-rv-track {
+    --pv: 3;
+  }
+  #gk-section-{{ section.id }} .gkcn-rv-prev {
+    left: -22px;
+  }
+  #gk-section-{{ section.id }} .gkcn-rv-next {
+    right: -22px;
+  }
+  #gk-section-{{ section.id }} .gkcn-pk {
+    padding: 0 30px;
+  }
+  #gk-section-{{ section.id }} .gkcn-track {
+    --pv: 3;
+  }
+  #gk-section-{{ section.id }} .gkcn-founder-photo {
+    width: 104px;
+    height: 104px;
+    flex-basis: 104px;
+  }
+  #gk-section-{{ section.id }} .gkcn-founder-head {
+    gap: 22px;
+  }
+  #gk-section-{{ section.id }} .gkcn-final h2 {
+    font-size: 38px;
+  }
+  #gk-section-{{ section.id }} .gkcn-sticky,
+  .gkcn-sticky,
+  #gkcn-sticky-{{ section.id }} {
+    display: none !important;
+  }
+  .gkcn-pad {
+    display: none !important;
+  }
+  #gk-section-{{ section.id }} .gkcn-masc {
+    height: 140px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #gk-section-{{ section.id }} * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+
+{%- capture wa_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_wa_url }}" alt="WhatsApp" class="gkcn-hero-app-icon gkcn-hero-app-icon--wa" width="30" height="30" loading="eager">WhatsApp</span>{%- endcapture -%}
+{%- capture ig_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_ig_url }}" alt="Instagram" class="gkcn-hero-app-icon gkcn-hero-app-icon--ig" width="30" height="30" loading="eager">Instagram</span>{%- endcapture -%}
+{%- capture tt_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_tt_url }}" alt="TikTok" class="gkcn-hero-app-icon gkcn-hero-app-icon--tt" width="30" height="30" loading="eager">TikTok</span>{%- endcapture -%}
+{%- capture gg_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_gg_url }}" alt="Google" class="gkcn-hero-app-icon gkcn-hero-app-icon--gg" width="30" height="30" loading="eager">Google</span>{%- endcapture -%}
+
+{%- assign hero_raw_title = section.settings.hero_title | default: 'Sampai China, WhatsApp, Instagram, TikTok & Google Langsung Jalan!' -%}
+{%- assign show_hero_icons = section.settings.show_hero_app_icons -%}
+{%- if show_hero_icons == nil -%}
+  {%- assign show_hero_icons = true -%}
+{%- endif -%}
+
+{%- if show_hero_icons -%}
+  {%- assign hero_rendered_title = hero_raw_title
+    | replace: 'WhatsApp', '##GK_WA##'
+    | replace: 'Whatsapp', '##GK_WA##'
+    | replace: 'whatsapp', '##GK_WA##'
+    | replace: 'Instagram', '##GK_IG##'
+    | replace: 'instagram', '##GK_IG##'
+    | replace: 'TikTok', '##GK_TT##'
+    | replace: 'Tiktok', '##GK_TT##'
+    | replace: 'tiktok', '##GK_TT##'
+    | replace: 'Google', '##GK_GG##'
+    | replace: 'google', '##GK_GG##'
+    | replace: '##GK_WA##', wa_badge
+    | replace: '##GK_IG##', ig_badge
+    | replace: '##GK_TT##', tt_badge
+    | replace: '##GK_GG##', gg_badge
+  -%}
+{%- else -%}
+  {%- assign hero_rendered_title = hero_raw_title -%}
+{%- endif -%}
+
+<div class="gkcn" id="gk-section-{{ section.id }}">
+  <!-- HERO -->
+  <section class="gkcn-hero" id="gkcn-hero-{{ section.id }}">
+    <div class="gkcn-wrap gkcn-hero-grid">
+      <div class="gkcn-hero-text">
+        <h1>{{ hero_rendered_title }}</h1>
+        <p class="gkcn-hero-sub">{{ section.settings.hero_sub | default: 'Jangan sampai yang harusnya sibuk eksplor China, malah sibuk cari koneksi. Siapin eSIM sebelum terbang, biar liburan nggak pakai drama!' }}</p>
+        <div class="gkcn-price">
+          <small>Mulai dari</small>
+          <strong>{{ section.settings.hero_price | default: 'Rp29.000' }}</strong>
+        </div>
+        <div class="gkcn-hero-cta">
+          <a class="gkcn-btn gkcn-btn--main" href="{{ section.settings.hero_btn_url | default: '#gkcn-paket' }}">{{ section.settings.hero_btn_text | default: 'Lihat paket eSIM China' }}</a>
+        </div>
+      </div>
+      <div class="gkcn-hero-media">
+        <img src="{{ hero_img_url }}" alt="Traveler perempuan membuka peta di ponsel dengan latar Shanghai, ikon WhatsApp, Instagram, TikTok, dan Google melayang di sekitarnya" width="800" height="660" loading="eager">
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS RIBBON -->
+  <section class="gkcn-stats" aria-label="Pengalaman Global Komunika">
+    <div class="gkcn-wrap gkcn-stats-wrap">
+      <img
+        class="gkcn-stats-mark"
+        src="{{ stats_mark_url }}"
+        alt=""
+        aria-hidden="true"
+        loading="eager"
+        decoding="async"
+        draggable="false"
+        width="420"
+        height="420"
+      >
+      <div class="gkcn-stats-grid">
+        <div class="gkcn-stat">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M17 14c2.4 0 4 1.8 4 4.5"/></svg>
+          <b>{{ section.settings.stat_1_val | default: '500.000+' }}</b>
+          <span>{{ section.settings.stat_1_lbl | default: 'Dipercaya Traveler' }}</span>
+        </div>
+        <div class="gkcn-stat">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17M9 15l2 2 4-4"/></svg>
+          <b>{{ section.settings.stat_2_val | default: 'Sejak 2016' }}</b>
+          <span>{{ section.settings.stat_2_lbl | default: 'Menemani traveler' }}</span>
+        </div>
+        <div class="gkcn-stat">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19c0 1.5-1.5 2-4 2"/></svg>
+          <b>{{ section.settings.stat_3_val | default: 'Customer Support' }}</b>
+          <span>{{ section.settings.stat_3_lbl | default: 'Siap bantu' }}</span>
         </div>
       </div>
     </div>
-
-    <!-- Mascot overlay -->
-    {%- if section.settings.hero_mascot != blank -%}
-      <img
-        src="{{ section.settings.hero_mascot | image_url: width: 600 }}"
-        alt="{{ section.settings.hero_mascot_alt | default: 'Mascot Global Komunika' | escape }}"
-        class="gk-hero-mascot"
-        width="600"
-        height="600"
-        loading="eager"
-      >
-    {%- elsif section.settings.hero_mascot_asset_filename != blank -%}
-      <!-- Fallback: upload file ke Edit code > Assets, lalu samakan nama file di setting ini -->
-      <img
-        src="{{ section.settings.hero_mascot_asset_filename | asset_url }}"
-        onerror="this.style.display='none'"
-        alt="{{ section.settings.hero_mascot_alt | default: 'Mascot Global Komunika' | escape }}"
-        class="gk-hero-mascot"
-        width="600"
-        height="600"
-        loading="eager"
-      >
-    {%- endif -%}
-    
-    <div class="gk-hero-spacer"></div>
   </section>
 
-  <!-- VALUE PROPOSITION (FEATURES) -->
-  <section class="gk-features-section">
-    <div class="gk-container">
-      <div class="gk-section-header">
-        <h2 class="gk-section-title">{{ section.settings.features_title }}</h2>
-        {%- if section.settings.features_subtitle != blank -%}
-          <p class="gk-section-subtitle">{{ section.settings.features_subtitle }}</p>
-        {%- endif -%}
+  <!-- PROBLEM + COMPARE -->
+  <section class="gkcn-sec" id="gkcn-masalah">
+    <div class="gkcn-wrap gkcn-problem">
+      <div>
+        <h2 class="gkcn-h2">{{ section.settings.problem_title | default: 'Di China, Belum Tentu Aplikasi Favoritmu Bisa Dibuka!' }}</h2>
+        <p class="gkcn-lead">{{ section.settings.problem_desc_1 | default: 'Internet di China beda dari Indonesia. Kalau salah pilih koneksi, aplikasi yang biasa kamu pakai bisa saja tidak bisa diakses.' }}</p>
+        <p class="gkcn-lead">{{ section.settings.problem_desc_2 | default: 'Makanya, pilih paket internet yang sudah disiapkan untuk kebutuhan traveling di China.' }}</p>
       </div>
-      
-      <div class="gk-features-grid">
+      <div>
+        <p style="font-weight:700;margin-bottom:12px">Kenapa pilih Global Komunika?</p>
+        <div class="gkcn-compare">
+          <table>
+            <thead>
+              <tr>
+                <th>Perbandingan</th>
+                <th class="gkcn-us">Global Komunika</th>
+                <th class="gkcn-them">SIM Lokal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Bisa disiapkan dari Indonesia</td>
+                <td class="gkcn-us"><span class="gkcn-yes" aria-label="Ya">&#10003;</span></td>
+                <td class="gkcn-them"><span class="gkcn-no" aria-label="Tidak">&#10005;</span></td>
+              </tr>
+              <tr>
+                <td>Akses WhatsApp, Instagram &amp; Google</td>
+                <td class="gkcn-us"><span class="gkcn-yes" aria-label="Ya">&#10003;</span></td>
+                <td class="gkcn-them"><span class="gkcn-no" aria-label="Tidak">&#10005;</span></td>
+              </tr>
+              <tr>
+                <td>Bantuan aktivasi berbahasa Indonesia</td>
+                <td class="gkcn-us"><span class="gkcn-yes" aria-label="Ya">&#10003;</span></td>
+                <td class="gkcn-them"><span class="gkcn-no" aria-label="Tidak">&#10005;</span><span class="gkcn-small">Bergantung penjual</span></td>
+              </tr>
+              <tr>
+                <td>Tersedia pilihan eSIM dan SIM Card</td>
+                <td class="gkcn-us"><span class="gkcn-yes" aria-label="Ya">&#10003;</span></td>
+                <td class="gkcn-them"><span class="gkcn-small" style="margin:0">SIM fisik</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS / FEATURE CARDS -->
+  <section class="gkcn-sec gkcn-sec--alt" id="gkcn-manfaat">
+    <div class="gkcn-wrap">
+      <div class="gkcn-head gkcn-head--c">
+        <h2 class="gkcn-h2">{{ section.settings.benefits_title | default: 'Internet di China Tanpa Ribet: Scan QR, Langsung Jalan' }}</h2>
+      </div>
+      <div class="gkcn-benefits">
         {%- assign feature_count = 0 -%}
         {%- for block in section.blocks -%}
           {%- if block.type == 'feature' -%}
             {%- assign feature_count = feature_count | plus: 1 -%}
-            <div class="gk-feature-card{% if block.settings.highlight %} gk-feature-card-highlight{% endif %}" {{ block.shopify_attributes }}>
-              <div class="gk-feature-card-header">
-                <span class="gk-feature-number{% if block.settings.highlight %} gk-feature-number-highlight{% endif %}">
-                  {%- if block.settings.number != blank -%}
-                    {{ block.settings.number }}
+            <div class="gkcn-benefit" {{ block.shopify_attributes }}>
+              <i>
+                {%- case block.settings.icon -%}
+                  {%- when 'chat' -%}
+                    <svg viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.4 7.5L3 21l1.6-5.3A8.5 8.5 0 1 1 21 12z"/></svg>
+                  {%- when 'wifi' -%}
+                    <svg viewBox="0 0 24 24"><path d="M2.5 9a15 15 0 0 1 19 0M5.5 12.5a10.5 10.5 0 0 1 13 0M8.6 16a6 6 0 0 1 6.8 0"/><circle cx="12" cy="19.2" r="1"/></svg>
+                  {%- when 'signal' -%}
+                    <svg viewBox="0 0 24 24"><path d="M4 20V14M9 20V10M14 20V6M19 20V3"/></svg>
+                  {%- when 'support' -%}
+                    <svg viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/></svg>
+                  {%- when 'sim' -%}
+                    <svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>
                   {%- else -%}
-                    {{ feature_count | prepend: '0' | slice: -2, 2 }}
-                  {%- endif -%}
-                </span>
-                {%- if block.settings.highlight -%}
-                  <span class="gk-feature-badge">Best value</span>
-                {%- endif -%}
+                    <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><path d="M14 14h3v3M20.5 14v.1M14 20.5h.1M17.5 20.5h3v-3"/></svg>
+                {%- endcase -%}
+              </i>
+              <div>
+                <h3>{{ block.settings.title }}</h3>
+                <p>{{ block.settings.body }}</p>
               </div>
-              <h3 class="gk-feature-title">{{ block.settings.title }}</h3>
-              <p class="gk-feature-body">{{ block.settings.body }}</p>
             </div>
           {%- endif -%}
         {%- endfor -%}
-      </div>
 
-      {%- if section.settings.hero_price != blank -%}
-        <div class="gk-features-cta">
-          <div class="gk-features-cta-label">eSIM China</div>
-          <div class="gk-features-cta-price">{{ section.settings.hero_price }}</div>
-          {%- if section.settings.hero_button_text != blank -%}
-            <a
-              href="{{ buy_now_url }}"
-              class="gk-btn gk-add-to-cart"
-              data-variant-id="{{ buy_now_variant_id | escape }}"
-              data-cart-add-url="{{ routes.cart_add_url }}.js"
-              data-cart-url="{{ routes.cart_url }}"
-            >
-              {{ section.settings.hero_button_text }}
-            </a>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
+        {%- if feature_count == 0 -%}
+          <!-- Default Fallback Benefits -->
+          <div class="gkcn-benefit"><i><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><path d="M14 14h3v3M20.5 14v.1M14 20.5h.1M17.5 20.5h3v-3"/></svg></i><div><h3>Aktivasi praktis</h3><p>Cukup scan QR Code sebelum berangkat, lalu aktifkan saat tiba di China.</p></div></div>
+          <div class="gkcn-benefit"><i><svg viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.4 7.5L3 21l1.6-5.3A8.5 8.5 0 1 1 21 12z"/></svg></i><div><h3>Akses aplikasi favorit</h3><p>Tetap terhubung lewat WhatsApp, Instagram, Google, dan aplikasi lainnya sesuai paket.</p></div></div>
+          <div class="gkcn-benefit"><i><svg viewBox="0 0 24 24"><path d="M2.5 9a15 15 0 0 1 19 0M5.5 12.5a10.5 10.5 0 0 1 13 0M8.6 16a6 6 0 0 1 6.8 0"/><circle cx="12" cy="19.2" r="1"/></svg></i><div><h3>Bisa berbagi koneksi</h3><p>Bagikan internet ke laptop atau perangkat lain dengan paket yang mendukung hotspot.</p></div></div>
+          <div class="gkcn-benefit"><i><svg viewBox="0 0 24 24"><path d="M4 20V14M9 20V10M14 20V6M19 20V3"/></svg></i><div><h3>Koneksi untuk traveling</h3><p>Tetap online saat eksplor kota, di hotel, atau naik kereta cepat dengan jaringan yang tersedia.</p></div></div>
+          <div class="gkcn-benefit"><i><svg viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/></svg></i><div><h3>CS siap membantu</h3><p>Ada kendala aktivasi atau koneksi? Tim CS siap membantu lewat WhatsApp.</p></div></div>
+          <div class="gkcn-benefit"><i><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></i><div><h3>Pilihan sesuai HP kamu</h3><p>HP belum mendukung eSIM? Tenang, tersedia SIM Card fisik untuk perjalananmu.</p></div></div>
+        {%- endif -%}
+      </div>
     </div>
   </section>
 
-  <!-- SOCIAL PROOF (TESTIMONIALS) -->
-  {%- assign has_testimonials = false -%}
-  {%- for block in section.blocks -%}
-    {%- if block.type == 'testimonial' -%}{%- assign has_testimonials = true -%}{%- break -%}{%- endif -%}
-  {%- endfor -%}
-
-  {%- if has_testimonials -%}
-    <section class="gk-testimonials-section">
-      <div class="gk-container">
-        {%- if section.settings.testimonials_title != blank -%}
-          <h2 class="gk-testimonials-header">{{ section.settings.testimonials_title }}</h2>
+  <!-- HOW IT WORKS (STEPS) -->
+  <section class="gkcn-sec" id="gkcn-cara">
+    <div class="gkcn-wrap">
+      <div class="gkcn-head gkcn-head--c">
+        {%- if steps_img_url != blank -%}
+          <img class="gkcn-masc" src="{{ steps_img_url }}" alt="3 Langkah Mudah Global Komunika" loading="lazy">
         {%- endif -%}
-        
-        <div class="gk-carousel-wrapper">
-          <div class="gk-carousel-slides">
+        <h2 class="gkcn-h2">{{ section.settings.steps_title | default: '3 Langkah Mudah, Siap Online di China!' }}</h2>
+      </div>
+      <div class="gkcn-steps">
+        {%- assign step_count = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'step' -%}
+            {%- assign step_count = step_count | plus: 1 -%}
+            <div class="gkcn-step" {{ block.shopify_attributes }}>
+              <h3>{{ block.settings.title }}</h3>
+              <p>{{ block.settings.body }}</p>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if step_count == 0 -%}
+          <div class="gkcn-step"><h3>Pilih paket internet</h3><p>Pilih paket sesuai destinasi, durasi perjalanan, dan kebutuhan kuota kamu.</p></div>
+          <div class="gkcn-step"><h3>Aktivasi mudah</h3><p>Scan QR Code dari email atau pasang SIM Card sesuai panduan pada produk.</p></div>
+          <div class="gkcn-step"><h3>Sampai China, tinggal online!</h3><p>Aktifkan data sesuai instruksi paket, lalu langsung online setibanya di China.</p></div>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS / TESTIMONIALS -->
+  <section class="gkcn-sec gkcn-sec--alt" id="gkcn-testimoni">
+    <div class="gkcn-wrap">
+      <div class="gkcn-head gkcn-head--c">
+        <h2 class="gkcn-h2">{{ section.settings.testimonials_title | default: 'Udah Jadi Teman Traveling 500.000+ Orang!' }}</h2>
+        <p class="gkcn-lead">{{ section.settings.testimonials_lead | default: 'Dari liburan singkat sampai perjalanan panjang, banyak traveler memilih Global Komunika untuk tetap terhubung selama di luar negeri.' }}</p>
+      </div>
+      <div class="gkcn-rv" id="gkcn-rv-{{ section.id }}" role="region" aria-roledescription="carousel" aria-label="Testimoni pelanggan">
+        <button class="gkcn-rv-btn gkcn-rv-prev" type="button" aria-label="Testimoni sebelumnya">&lsaquo;</button>
+        <div class="gkcn-rv-view">
+          <div class="gkcn-rv-track">
             {%- assign testimonial_count = 0 -%}
             {%- for block in section.blocks -%}
               {%- if block.type == 'testimonial' -%}
-                <div class="gk-carousel-slide{% if testimonial_count == 0 %} active{% endif %}" data-index="{{ testimonial_count }}" {{ block.shopify_attributes }}>
-                  <div class="gk-stars" aria-hidden="true">
-                    {%- assign stars = block.settings.rating | default: 5 -%}
-                    {%- for i in (1..stars) -%}★{%- endfor -%}
-                  </div>
-                  <p class="gk-quote">"{{ block.settings.quote }}"</p>
-                  <div class="gk-author">{{ block.settings.name }}</div>
-                </div>
                 {%- assign testimonial_count = testimonial_count | plus: 1 -%}
+                <article class="gkcn-review" {{ block.shopify_attributes }}>
+                  <div class="gkcn-stars" aria-label="Bintang {{ block.settings.rating }}">
+                    {%- for i in (1..block.settings.rating) -%}&#9733;{%- endfor -%}
+                  </div>
+                  <p>{{ block.settings.quote }}</p>
+                  <div class="gkcn-who">{{ block.settings.name }}</div>
+                </article>
               {%- endif -%}
             {%- endfor -%}
+
+            {%- if testimonial_count == 0 -%}
+              <article class="gkcn-review"><div class="gkcn-stars" aria-label="Bintang 5">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>Koneksi stabil &amp; langsung konek. Super terpercaya &amp; admin sangat baik. Dipakai 8 hari di China lancar jaya &amp; pakai buat WA semua lancar. Walau di hotel, di bullet train, lancar semua.</p><div class="gkcn-who">Naidanymph_00</div></article>
+              <article class="gkcn-review"><div class="gkcn-stars" aria-label="Bintang 5">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>Koneksi cepat dan di China WA, IG, FB tembus koneksinya tanpa harus beli VPN. Jadi sangat terbantu selama trip ke sana.</p><div class="gkcn-who">f*****5</div></article>
+              <article class="gkcn-review"><div class="gkcn-stars" aria-label="Bintang 5">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>Lancar jaya, internet cepat, tidak ada gangguan sama sekali selama trip ke Harbin, China. Bisa hotspot ke laptop juga sambil kerja.</p><div class="gkcn-who">faridanorlita23</div></article>
+              <article class="gkcn-review"><div class="gkcn-stars" aria-label="Bintang 5">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>Butuh urgent dan besoknya jam 11 siang langsung dikirim. Di negara tujuan juga berfungsi dengan baik. Dengan eSIM tidak usah repot ganti-ganti kartu.</p><div class="gkcn-who">h*****9</div></article>
+              <article class="gkcn-review"><div class="gkcn-stars" aria-label="Bintang 5">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>Signal bagus, mudah connect-nya, dikirim via email. Seller ramah dan adminnya siap membantu. Cek kuota juga bisa lewat admin.</p><div class="gkcn-who">M*****o</div></article>
+              <article class="gkcn-review"><div class="gkcn-stars" aria-label="Bintang 5">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>Punya paket data ini selama trip ke China sangat membantu. Ke mana-mana selalu on.</p><div class="gkcn-who">e*****s</div></article>
+            {%- endif -%}
           </div>
-          
-          {%- if testimonial_count > 1 -%}
-            <div class="gk-carousel-controls">
-              <button type="button" class="gk-carousel-btn gk-prev" aria-label="Sebelumnya">←</button>
-                <div class="gk-carousel-dots">
-                  {%- for i in (1..testimonial_count) -%}
-                    {%- assign index_zero = i | minus: 1 -%}
-                    <button type="button" class="gk-carousel-dot{% if index_zero == 0 %} active{% endif %}" data-index="{{ index_zero }}" aria-label="Testimoni {{ i }}"></button>
-                  {%- endfor -%}
-                </div>
-              <button type="button" class="gk-carousel-btn gk-next" aria-label="Selanjutnya">→</button>
-            </div>
-          {%- endif -%}
         </div>
+        <button class="gkcn-rv-btn gkcn-rv-next" type="button" aria-label="Testimoni berikutnya">&rsaquo;</button>
       </div>
-    </section>
-  {%- endif -%}
+    </div>
+  </section>
+
+  <!-- PACKAGES / PRODUCTS (DYNAMIC FEATURE / PRODUCT CARDS) -->
+  <section class="gkcn-sec" id="gkcn-paket">
+    <div class="gkcn-wrap">
+      <div class="gkcn-head">
+        <h2 class="gkcn-h2">{{ section.settings.packages_title | default: 'Pilih Paket Sesuai Gaya Trip Kamu!' }}</h2>
+        <p class="gkcn-lead">{{ section.settings.packages_lead | default: 'Kuota dan masa aktif menyesuaikan varian yang kamu pilih. Cek keterangan varian sebelum membeli.' }}</p>
+      </div>
+      <div class="gkcn-tabs" role="tablist" aria-label="Jenis kartu">
+        <button class="gkcn-tab" role="tab" id="gkcn-tab-esim-{{ section.id }}" aria-selected="true" aria-controls="gkcn-pane-esim-{{ section.id }}" type="button">eSIM</button>
+        <button class="gkcn-tab" role="tab" id="gkcn-tab-sim-{{ section.id }}" aria-selected="false" aria-controls="gkcn-pane-sim-{{ section.id }}" type="button">SIM Card</button>
+      </div>
+
+      {%- comment -%} Tab eSIM {%- endcomment -%}
+      <div class="gkcn-pk" role="tabpanel" id="gkcn-pane-esim-{{ section.id }}" aria-labelledby="gkcn-tab-esim-{{ section.id }}">
+        <button class="gkcn-rv-btn gkcn-rv-prev" type="button" aria-label="Paket sebelumnya">&lsaquo;</button>
+        <div class="gkcn-rv-view">
+          <div class="gkcn-track">
+            {%- assign esim_count = 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'product_card' and block.settings.category == 'esim' or block.settings.category == 'both' -%}
+                {%- assign esim_count = esim_count | plus: 1 -%}
+                {%- assign p_obj = block.settings.product -%}
+                {%- assign c_img = '' -%}
+                {%- if block.settings.image != blank -%}
+                  {%- assign c_img = block.settings.image | image_url: width: 809 -%}
+                {%- elsif p_obj != blank and p_obj.featured_image != blank -%}
+                  {%- assign c_img = p_obj.featured_image | image_url: width: 809 -%}
+                {%- elsif block.settings.image_url != blank -%}
+                  {%- assign c_img = block.settings.image_url -%}
+                {%- endif -%}
+
+                {%- assign c_title = block.settings.title -%}
+                {%- if c_title == blank and p_obj != blank -%}
+                  {%- assign c_title = p_obj.title -%}
+                {%- endif -%}
+
+                {%- assign c_price = block.settings.price -%}
+                {%- if c_price == blank and p_obj != blank -%}
+                  {%- assign c_price = p_obj.price | money -%}
+                {%- endif -%}
+
+                {%- assign c_url = block.settings.button_url -%}
+                {%- if c_url == blank and p_obj != blank -%}
+                  {%- assign c_url = p_obj.url -%}
+                {%- endif -%}
+
+                <article class="gkcn-card" {{ block.shopify_attributes }}>
+                  {%- if c_img != blank -%}
+                    <img class="gkcn-card-img" src="{{ c_img }}" alt="{{ c_title | escape }}" loading="lazy">
+                  {%- else -%}
+                    <div class="gkcn-card-img" style="display:flex;align-items:center;justify-content:center;background:#e8eef4;color:var(--gkcn-mute);font-weight:700;">{{ c_title }}</div>
+                  {%- endif -%}
+                  <div class="gkcn-card-body">
+                    <div class="gkcn-card-top">
+                      <span class="gkcn-flags">
+                        {%- if block.settings.flags == 'cn' or block.settings.flags == 'cn_hk_mo' -%}
+                          <i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><polygon points="6,4 7.2,7.6 11,7.6 8,9.8 9.1,13.4 6,11.2 2.9,13.4 4,9.8 1,7.6 4.8,7.6" fill="#FFDE00"/></svg></i>
+                        {%- endif -%}
+                        {%- if block.settings.flags == 'cn_hk_mo' -%}
+                          <i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><circle cx="12" cy="12" r="5" fill="#fff"/></svg></i>
+                          <i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#00785E"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg></i>
+                        {%- endif -%}
+                      </span>
+                      <span class="gkcn-tag">{{ block.settings.tag | default: 'eSIM' }}</span>
+                    </div>
+                    <h3>{{ c_title }}</h3>
+                    <p class="gkcn-meta">{{ block.settings.meta }}</p>
+                    <div class="gkcn-from">{{ block.settings.price_prefix | default: 'Mulai dari' }}<b>{{ c_price }}</b></div>
+                    <a class="gkcn-btn gkcn-btn--main" href="{{ c_url | default: '#' }}">{{ block.settings.button_label | default: 'Pilih paket' }}</a>
+                  </div>
+                </article>
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if esim_count == 0 -%}
+              <!-- Fallback eSIM Cards -->
+              <article class="gkcn-card">
+                <div class="gkcn-card-img" style="display:flex;align-items:center;justify-content:center;background:#e8eef4;color:var(--gkcn-mute);font-weight:700;">eSIM China</div>
+                <div class="gkcn-card-body">
+                  <div class="gkcn-card-top"><span class="gkcn-flags"><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><polygon points="6,4 7.2,7.6 11,7.6 8,9.8 9.1,13.4 6,11.2 2.9,13.4 4,9.8 1,7.6 4.8,7.6" fill="#FFDE00"/></svg></i></span><span class="gkcn-tag">eSIM</span></div>
+                  <h3>eSIM China</h3>
+                  <p class="gkcn-meta">Keliling China, transit tetap online?</p>
+                  <div class="gkcn-from">Mulai dari<b>Rp39.000</b></div>
+                  <a class="gkcn-btn gkcn-btn--main" href="#">Pilih paket</a>
+                </div>
+              </article>
+              <article class="gkcn-card">
+                <div class="gkcn-card-img" style="display:flex;align-items:center;justify-content:center;background:#e8eef4;color:var(--gkcn-mute);font-weight:700;">eSIM China TikTok</div>
+                <div class="gkcn-card-body">
+                  <div class="gkcn-card-top"><span class="gkcn-flags"><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><polygon points="6,4 7.2,7.6 11,7.6 8,9.8 9.1,13.4 6,11.2 2.9,13.4 4,9.8 1,7.6 4.8,7.6" fill="#FFDE00"/></svg></i></span><span class="gkcn-tag">eSIM</span></div>
+                  <h3>eSIM China TikTok</h3>
+                  <p class="gkcn-meta">Ke China, tetap eksis di TikTok?</p>
+                  <div class="gkcn-from">Mulai dari<b>Rp29.000</b></div>
+                  <a class="gkcn-btn gkcn-btn--main" href="#">Pilih paket</a>
+                </div>
+              </article>
+              <article class="gkcn-card">
+                <div class="gkcn-card-img" style="display:flex;align-items:center;justify-content:center;background:#e8eef4;color:var(--gkcn-mute);font-weight:700;">eSIM China Data Max</div>
+                <div class="gkcn-card-body">
+                  <div class="gkcn-card-top"><span class="gkcn-flags"><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><polygon points="6,4 7.2,7.6 11,7.6 8,9.8 9.1,13.4 6,11.2 2.9,13.4 4,9.8 1,7.6 4.8,7.6" fill="#FFDE00"/></svg></i></span><span class="gkcn-tag">eSIM</span></div>
+                  <h3>eSIM China Data Max</h3>
+                  <p class="gkcn-meta">Trip panjang, butuh kuota lebih?</p>
+                  <div class="gkcn-from">Mulai dari<b>Rp289.000</b></div>
+                  <a class="gkcn-btn gkcn-btn--main" href="#">Pilih paket</a>
+                </div>
+              </article>
+              <article class="gkcn-card">
+                <div class="gkcn-card-img" style="display:flex;align-items:center;justify-content:center;background:#e8eef4;color:var(--gkcn-mute);font-weight:700;">eSIM China HK Macau</div>
+                <div class="gkcn-card-body">
+                  <div class="gkcn-card-top"><span class="gkcn-flags"><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><polygon points="6,4 7.2,7.6 11,7.6 8,9.8 9.1,13.4 6,11.2 2.9,13.4 4,9.8 1,7.6 4.8,7.6" fill="#FFDE00"/></svg></i><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><circle cx="12" cy="12" r="5" fill="#fff"/></svg></i><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#00785E"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg></i></span><span class="gkcn-tag">eSIM</span></div>
+                  <h3>eSIM China Hong Kong Macau</h3>
+                  <p class="gkcn-meta">Eksplor tiga destinasi sekaligus?</p>
+                  <div class="gkcn-from">Mulai dari<b>Rp39.000</b></div>
+                  <a class="gkcn-btn gkcn-btn--main" href="#">Pilih paket</a>
+                </div>
+              </article>
+            {%- endif -%}
+          </div>
+        </div>
+        <button class="gkcn-rv-btn gkcn-rv-next" type="button" aria-label="Paket berikutnya">&rsaquo;</button>
+      </div>
+
+      {%- comment -%} Tab SIM Card {%- endcomment -%}
+      <div class="gkcn-pk" role="tabpanel" id="gkcn-pane-sim-{{ section.id }}" aria-labelledby="gkcn-tab-sim-{{ section.id }}" hidden>
+        <button class="gkcn-rv-btn gkcn-rv-prev" type="button" aria-label="Paket sebelumnya">&lsaquo;</button>
+        <div class="gkcn-rv-view">
+          <div class="gkcn-track">
+            {%- assign sim_count = 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'product_card' and block.settings.category == 'sim' or block.settings.category == 'both' -%}
+                {%- assign sim_count = sim_count | plus: 1 -%}
+                {%- assign p_obj = block.settings.product -%}
+                {%- assign c_img = '' -%}
+                {%- if block.settings.image != blank -%}
+                  {%- assign c_img = block.settings.image | image_url: width: 809 -%}
+                {%- elsif p_obj != blank and p_obj.featured_image != blank -%}
+                  {%- assign c_img = p_obj.featured_image | image_url: width: 809 -%}
+                {%- elsif block.settings.image_url != blank -%}
+                  {%- assign c_img = block.settings.image_url -%}
+                {%- endif -%}
+
+                {%- assign c_title = block.settings.title -%}
+                {%- if c_title == blank and p_obj != blank -%}
+                  {%- assign c_title = p_obj.title -%}
+                {%- endif -%}
+
+                {%- assign c_price = block.settings.price -%}
+                {%- if c_price == blank and p_obj != blank -%}
+                  {%- assign c_price = p_obj.price | money -%}
+                {%- endif -%}
+
+                {%- assign c_url = block.settings.button_url -%}
+                {%- if c_url == blank and p_obj != blank -%}
+                  {%- assign c_url = p_obj.url -%}
+                {%- endif -%}
+
+                <article class="gkcn-card" {{ block.shopify_attributes }}>
+                  {%- if c_img != blank -%}
+                    <img class="gkcn-card-img" src="{{ c_img }}" alt="{{ c_title | escape }}" loading="lazy">
+                  {%- else -%}
+                    <div class="gkcn-card-img" style="display:flex;align-items:center;justify-content:center;background:#e8eef4;color:var(--gkcn-mute);font-weight:700;">{{ c_title }}</div>
+                  {%- endif -%}
+                  <div class="gkcn-card-body">
+                    <div class="gkcn-card-top">
+                      <span class="gkcn-flags">
+                        {%- if block.settings.flags == 'cn' or block.settings.flags == 'cn_hk_mo' -%}
+                          <i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><polygon points="6,4 7.2,7.6 11,7.6 8,9.8 9.1,13.4 6,11.2 2.9,13.4 4,9.8 1,7.6 4.8,7.6" fill="#FFDE00"/></svg></i>
+                        {%- endif -%}
+                        {%- if block.settings.flags == 'cn_hk_mo' -%}
+                          <i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><circle cx="12" cy="12" r="5" fill="#fff"/></svg></i>
+                          <i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#00785E"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg></i>
+                        {%- endif -%}
+                      </span>
+                      <span class="gkcn-tag">{{ block.settings.tag | default: 'SIM Card' }}</span>
+                    </div>
+                    <h3>{{ c_title }}</h3>
+                    <p class="gkcn-meta">{{ block.settings.meta }}</p>
+                    <div class="gkcn-from">{{ block.settings.price_prefix | default: 'Mulai dari' }}<b>{{ c_price }}</b></div>
+                    <a class="gkcn-btn gkcn-btn--main" href="{{ c_url | default: '#' }}">{{ block.settings.button_label | default: 'Pilih paket' }}</a>
+                  </div>
+                </article>
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if sim_count == 0 -%}
+              <!-- Fallback SIM Card Cards -->
+              <article class="gkcn-card">
+                <div class="gkcn-card-img" style="display:flex;align-items:center;justify-content:center;background:#e8eef4;color:var(--gkcn-mute);font-weight:700;">SIM Card China</div>
+                <div class="gkcn-card-body">
+                  <div class="gkcn-card-top"><span class="gkcn-flags"><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><polygon points="6,4 7.2,7.6 11,7.6 8,9.8 9.1,13.4 6,11.2 2.9,13.4 4,9.8 1,7.6 4.8,7.6" fill="#FFDE00"/></svg></i></span><span class="gkcn-tag">SIM Card</span></div>
+                  <h3>SIM Card China</h3>
+                  <p class="gkcn-meta">Keliling China, transit tetap online?</p>
+                  <div class="gkcn-from">Mulai dari<b>Rp39.000</b></div>
+                  <a class="gkcn-btn gkcn-btn--main" href="#">Pilih paket</a>
+                </div>
+              </article>
+              <article class="gkcn-card">
+                <div class="gkcn-card-img" style="display:flex;align-items:center;justify-content:center;background:#e8eef4;color:var(--gkcn-mute);font-weight:700;">SIM Card China TikTok</div>
+                <div class="gkcn-card-body">
+                  <div class="gkcn-card-top"><span class="gkcn-flags"><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><polygon points="6,4 7.2,7.6 11,7.6 8,9.8 9.1,13.4 6,11.2 2.9,13.4 4,9.8 1,7.6 4.8,7.6" fill="#FFDE00"/></svg></i></span><span class="gkcn-tag">SIM Card</span></div>
+                  <h3>SIM Card China TikTok</h3>
+                  <p class="gkcn-meta">Ke China, tetap eksis di TikTok?</p>
+                  <div class="gkcn-from">Mulai dari<b>Rp49.000</b></div>
+                  <a class="gkcn-btn gkcn-btn--main" href="#">Pilih paket</a>
+                </div>
+              </article>
+              <article class="gkcn-card">
+                <div class="gkcn-card-img" style="display:flex;align-items:center;justify-content:center;background:#e8eef4;color:var(--gkcn-mute);font-weight:700;">SIM Card China HK Macau</div>
+                <div class="gkcn-card-body">
+                  <div class="gkcn-card-top"><span class="gkcn-flags"><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><polygon points="6,4 7.2,7.6 11,7.6 8,9.8 9.1,13.4 6,11.2 2.9,13.4 4,9.8 1,7.6 4.8,7.6" fill="#FFDE00"/></svg></i><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#DE2910"/><circle cx="12" cy="12" r="5" fill="#fff"/></svg></i><i class="gkcn-flag"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#00785E"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg></i></span><span class="gkcn-tag">SIM Card</span></div>
+                  <h3>SIM Card China Hong Kong Macau</h3>
+                  <p class="gkcn-meta">Eksplor tiga destinasi sekaligus?</p>
+                  <div class="gkcn-from">Mulai dari<b>Rp39.000</b></div>
+                  <a class="gkcn-btn gkcn-btn--main" href="#">Pilih paket</a>
+                </div>
+              </article>
+            {%- endif -%}
+          </div>
+        </div>
+        <button class="gkcn-rv-btn gkcn-rv-next" type="button" aria-label="Paket berikutnya">&rsaquo;</button>
+      </div>
+    </div>
+  </section>
 
   <!-- FAQ ACCORDION -->
-  {%- assign has_faqs = false -%}
-  {%- for block in section.blocks -%}
-    {%- if block.type == 'faq' -%}{%- assign has_faqs = true -%}{%- break -%}{%- endif -%}
-  {%- endfor -%}
-
-  {%- if has_faqs -%}
-    <section class="gk-faq-section">
-      <div class="gk-container gk-faq-container">
-        {%- if section.settings.faq_title != blank -%}
-          <h2 class="gk-faq-title-main">{{ section.settings.faq_title }}</h2>
+  <section class="gkcn-sec gkcn-sec--alt" id="gkcn-faq">
+    <div class="gkcn-wrap">
+      <div class="gkcn-head gkcn-head--c">
+        {%- if mascot_img_url != blank -%}
+          <img class="gkcn-masc" src="{{ mascot_img_url }}" alt="Mascot Global Komunika" loading="lazy">
         {%- endif -%}
-        
-        <div class="gk-faq-list">
-          {%- assign faq_count = 0 -%}
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'faq' -%}
-              <div class="gk-faq-item{% if faq_count == 0 %} active{% endif %}" {{ block.shopify_attributes }}>
-                <button type="button" class="gk-faq-header" aria-expanded="{% if faq_count == 0 %}true{% else %}false{% endif %}">
-                  <span class="gk-faq-question">{{ block.settings.question }}</span>
-                  <span class="gk-faq-icon">+</span>
-                </button>
-                <div class="gk-faq-answer">
-                  <p class="gk-faq-answer-inner">{{ block.settings.answer }}</p>
-                </div>
-              </div>
-              {%- assign faq_count = faq_count | plus: 1 -%}
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
+        <h2 class="gkcn-h2">{{ section.settings.faq_title | default: 'Masih Bingung?' }}</h2>
       </div>
-    </section>
-  {%- endif -%}
+      <div class="gkcn-faq">
+        {%- assign faq_count = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'faq' -%}
+            {%- assign faq_count = faq_count | plus: 1 -%}
+            <details {{ block.shopify_attributes }}>
+              <summary>{{ block.settings.question }}</summary>
+              <p>{{ block.settings.answer }}</p>
+            </details>
+          {%- endif -%}
+        {%- endfor -%}
 
-  <!-- FOUNDER NOTE -->
-  <section class="gk-founder-section" style="background-color: {{ section.settings.founder_bg_color | default: '#005496' }};">
-    <div class="gk-container">
-      <div class="gk-founder-grid">
-        <div class="gk-founder-img-wrapper">
-          {%- if section.settings.founder_image != blank -%}
-            <img
-              src="{{ section.settings.founder_image | image_url: width: 400 }}"
-              alt="{{ section.settings.founder_image_alt | default: section.settings.founder_name | escape }}"
-              class="gk-founder-img"
-              width="400"
-              height="400"
-              loading="lazy"
-            >
-          {%- elsif section.settings.founder_asset_filename != blank -%}
-            <!-- Fallback: upload file ke Edit code > Assets, lalu samakan nama file di setting ini -->
-            <img
-              src="{{ section.settings.founder_asset_filename | asset_url }}"
-              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-              alt="{{ section.settings.founder_image_alt | default: section.settings.founder_name | escape }}"
-              class="gk-founder-img"
-              width="400"
-              height="400"
-              loading="lazy"
-            >
-            <div class="gk-founder-img-placeholder" style="display: none;"></div>
-          {%- else -%}
-            <div class="gk-founder-img-placeholder"></div>
+        {%- if faq_count == 0 -%}
+          <details><summary>Apakah HP saya bisa pakai eSIM China?</summary><p>Gampang banget! Cukup ketik *#06# di HP kamu. Kalau muncul EID, berarti HP kamu mendukung eSIM. Kamu juga bisa cek lewat menu Pengaturan &gt; SIM/Cellular.</p></details>
+          <details><summary>Apakah perlu VPN untuk buka WhatsApp, Instagram, TikTok atau Google di China?</summary><p>Untuk paket Global Komunika yang mendukung akses aplikasi tersebut, tidak perlu memasang VPN tambahan. Pastikan kamu memilih varian yang sesuai karena dukungan aplikasi dapat berbeda antar paket.</p></details>
+          <details><summary>Apakah eSIM China bisa digunakan untuk hotspot?</summary><p>Bisa pada paket yang mendukung tethering atau hotspot. Periksa keterangan varian sebelum membeli, ya!</p></details>
+          <details><summary>Kapan QR Code eSIM dikirim setelah beli?</summary><p>Setelah pembayaran berhasil, QR Code akan dikirim ke email kamu. Tinggal scan dan ikuti petunjuk pemasangannya, ya!</p></details>
+          <details><summary>Apakah eSIM saya bisa dipakai saat transit di negara lain?</summary><p>Tergantung paket yang kamu pilih. Beberapa paket bisa digunakan di negara transit tertentu. Cek daftar negara yang termasuk dalam paket sebelum membeli, ya!</p></details>
+          <details><summary>Bagaimana kalau eSIM saya tidak bisa aktif atau internet bermasalah?</summary><p>Tenang, tim CS Global Komunika siap bantu lewat WhatsApp, mulai dari aktivasi sampai kendala koneksi selama perjalanan. Hubungi: 0815-6080-055.</p></details>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUNDER -->
+  <section class="gkcn-sec" id="gkcn-founder">
+    <div class="gkcn-wrap">
+      <div class="gkcn-founder">
+        <div class="gkcn-founder-head">
+          {%- if founder_img_url != blank -%}
+            <img class="gkcn-founder-photo" src="{{ founder_img_url }}" alt="{{ section.settings.founder_name | default: 'Andy Ho' }}" loading="lazy">
           {%- endif -%}
+          <p class="gkcn-quote-by">
+            <b>{{ section.settings.founder_name | default: 'Andy Ho' }}</b>
+            {{ section.settings.founder_title | default: 'Founder & CEO, Global Komunika' }}
+          </p>
         </div>
-        <div class="gk-founder-text-content">
-          {%- if section.settings.founder_quote != blank -%}
-            <blockquote class="gk-founder-quote">
-              "{{ section.settings.founder_quote }}"
-            </blockquote>
-          {%- endif -%}
-          {%- if section.settings.founder_name != blank -%}
-            <div class="gk-founder-name">{{ section.settings.founder_name }}</div>
-          {%- endif -%}
-        </div>
+        <p class="gkcn-quote">&ldquo;{{ section.settings.founder_quote | default: 'Saya mendirikan Global Komunika pada 2016 untuk membantu traveler Indonesia menjelajahi dunia dengan lebih nyaman. Berbekal pengalaman traveling mandiri sejak 2007, saya ingin memastikan setiap perjalanan jadi lebih mudah, praktis, dan tetap terhubung internet di mana pun berada.' }}&rdquo;</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="gkcn-sec gkcn-final" id="gkcn-final">
+    <div class="gkcn-wrap">
+      <h2>{{ section.settings.final_title | default: 'Trip ke China Udah Siap? Internetnya Juga Harus Siap!' }}</h2>
+      <p>{{ section.settings.final_lead | default: 'Nggak perlu repot cari SIM lokal setelah sampai. Pilih eSIM atau SIM Card China dari sekarang, supaya kamu bisa langsung fokus menikmati perjalanan!' }}</p>
+      <div class="gkcn-price" style="margin-top:22px">
+        <small>Paket mulai dari</small>
+        <strong>{{ section.settings.final_price | default: 'Rp29.000' }}</strong>
+      </div>
+      <div class="gkcn-hero-cta">
+        <a class="gkcn-btn gkcn-btn--main" href="{{ section.settings.final_btn_url | default: '#gkcn-paket' }}">{{ section.settings.final_btn_text | default: 'Lihat paket China' }}</a>
+        <a class="gkcn-btn gkcn-btn--ghost" href="https://wa.me/{{ wa_number }}?text={{ wa_text }}" target="_blank" rel="noopener">Tanya CS via WhatsApp</a>
       </div>
     </div>
   </section>
 
 </div>
 
+<!-- STICKY CTA (mobile) – di luar wrapper agar position:fixed tidak terganggu overflow -->
+<div class="gkcn-sticky" id="gkcn-sticky-{{ section.id }}" aria-hidden="true">
+  <div class="gkcn-sticky-in">
+    <div>
+      <small>Mulai dari</small>
+      <b>{{ section.settings.hero_price | default: 'Rp29.000' }}</b>
+    </div>
+    <a class="gkcn-btn gkcn-btn--main" href="#gkcn-paket" tabindex="-1">Lihat paket</a>
+  </div>
+</div>
+<div class="gkcn-pad" aria-hidden="true"></div>
+
 <script>
-  (function() {
-    function initGKSection(container) {
-      if (!container) return;
+(function(){
+  function initGK() {
+    var root = document.getElementById('gk-section-{{ section.id }}');
+    if (!root) return;
+    var AUTOPLAY_MS = 3500;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // Testimonials Carousel
-      const carousels = container.querySelectorAll(".gk-carousel-wrapper");
-      carousels.forEach(carousel => {
-        const slides = carousel.querySelectorAll(".gk-carousel-slide");
-        const dots = carousel.querySelectorAll(".gk-carousel-dot");
-        const prevBtn = carousel.querySelector(".gk-prev");
-        const nextBtn = carousel.querySelector(".gk-next");
-        
-        if (slides.length <= 1) return;
-        
-        let currentIndex = 0;
-        
-        function goToSlide(index) {
-          slides[currentIndex].classList.remove("active");
-          if (dots[currentIndex]) dots[currentIndex].classList.remove("active");
-          
-          currentIndex = (index + slides.length) % slides.length;
-          
-          slides[currentIndex].classList.add("active");
-          if (dots[currentIndex]) dots[currentIndex].classList.add("active");
-        }
-        
-        if (prevBtn) {
-          prevBtn.onclick = (e) => {
-            e.preventDefault();
-            goToSlide(currentIndex - 1);
-          };
-        }
-        if (nextBtn) {
-          nextBtn.onclick = (e) => {
-            e.preventDefault();
-            goToSlide(currentIndex + 1);
-          };
-        }
-        
-        dots.forEach((dot, idx) => {
-          dot.onclick = (e) => {
-            e.preventDefault();
-            goToSlide(idx);
-          };
-        });
-      });
+    function carousel(wrap, autoplay) {
+      var track = wrap.querySelector('.gkcn-rv-track, .gkcn-track');
+      if (!track) return;
+      var slides = track.children;
+      if (!slides.length) return;
+      var idx = 0, timer = null;
 
-      // FAQ Accordion
-      const faqItems = container.querySelectorAll(".gk-faq-item");
-      faqItems.forEach(item => {
-        const header = item.querySelector(".gk-faq-header");
-        
-        if (header) {
-          header.onclick = (e) => {
-            e.preventDefault();
-            const isOpen = item.classList.contains("active");
-            
-            // Close other items in this section for a clean accordion effect
-            const parentList = item.closest(".gk-faq-list");
-            if (parentList) {
-              parentList.querySelectorAll(".gk-faq-item").forEach(otherItem => {
-                if (otherItem !== item) {
-                  otherItem.classList.remove("active");
-                  const otherHeader = otherItem.querySelector(".gk-faq-header");
-                  if (otherHeader) otherHeader.setAttribute("aria-expanded", "false");
-                }
-              });
-            }
-            
-            if (isOpen) {
-              item.classList.remove("active");
-              header.setAttribute("aria-expanded", "false");
-            } else {
-              item.classList.add("active");
-              header.setAttribute("aria-expanded", "true");
-            }
-          };
-        }
-      });
+      function perView() { return window.innerWidth >= 760 ? 3 : 1; }
+      function maxIdx() { return Math.max(0, slides.length - perView()); }
+      function render() {
+        var w = slides[0].offsetWidth;
+        if (!w) return;
+        var gap = parseFloat(getComputedStyle(track).gap) || 16;
+        track.style.transform = 'translateX(' + (-idx * (w + gap)) + 'px)';
+      }
+      function go(i) {
+        var m = maxIdx();
+        idx = i > m ? 0 : (i < 0 ? m : i);
+        render();
+      }
+      function start() {
+        if (!autoplay || reduce || timer) return;
+        timer = setInterval(function(){ go(idx + 1); }, AUTOPLAY_MS);
+      }
+      function stop() {
+        if (timer) { clearInterval(timer); timer = null; }
+      }
 
-      // Add the selected variant through Shopify Ajax Cart API, then open cart.
-      const addToCartButtons = container.querySelectorAll(".gk-add-to-cart[data-variant-id]");
-      addToCartButtons.forEach(button => {
-        const variantId = button.dataset.variantId;
-        if (!variantId) return;
+      var prevBtn = wrap.querySelector('.gkcn-rv-prev');
+      var nextBtn = wrap.querySelector('.gkcn-rv-next');
+      if (prevBtn) prevBtn.onclick = function() { go(idx - 1); };
+      if (nextBtn) nextBtn.onclick = function() { go(idx + 1); };
 
-        // Restore the button when this page is reopened from the browser cache.
-        if (!button.dataset.originalText) {
-          button.dataset.originalText = button.textContent.trim();
-        }
-        button.removeAttribute("aria-disabled");
-        button.textContent = button.dataset.originalText;
+      if (autoplay) {
+        wrap.addEventListener('mouseenter', stop);
+        wrap.addEventListener('mouseleave', start);
+        wrap.addEventListener('touchstart', stop, {passive: true});
+        wrap.addEventListener('touchend', function(){ setTimeout(start, 2500); }, {passive: true});
+      }
 
-        if (button.dataset.cartHandlerInitialized === "true") return;
-
-        button.dataset.cartHandlerInitialized = "true";
-        button.addEventListener("click", async (event) => {
-          event.preventDefault();
-          if (button.getAttribute("aria-disabled") === "true") return;
-
-          const originalText = button.dataset.originalText;
-          button.setAttribute("aria-disabled", "true");
-          button.textContent = "Menambahkan...";
-
-          try {
-            const response = await fetch(button.dataset.cartAddUrl, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-              },
-              body: JSON.stringify({
-                items: [{
-                  id: Number(variantId),
-                  quantity: 1
-                }]
-              })
-            });
-
-            const result = await response.json();
-            if (!response.ok) {
-              throw new Error(result.description || "Produk tidak dapat ditambahkan ke cart.");
-            }
-
-            window.location.assign(button.dataset.cartUrl);
-          } catch (error) {
-            console.error("Add to cart failed:", error);
-            window.alert(error.message || "Produk tidak dapat ditambahkan ke cart. Silakan coba lagi.");
-            button.removeAttribute("aria-disabled");
-            button.textContent = originalText;
-          }
-        });
-      });
+      window.addEventListener('resize', function(){ go(Math.min(idx, maxIdx())); });
+      wrap.gkcnReset = function(){ idx = 0; render(); };
+      render();
+      start();
     }
 
-    // Run on initial load
-    document.addEventListener("DOMContentLoaded", () => {
-      initGKSection(document.getElementById("gk-section-{{ section.id }}"));
+    var rv = root.querySelector('#gkcn-rv-{{ section.id }}');
+    if (rv) carousel(rv, true);
+    root.querySelectorAll('.gkcn-pk').forEach(function(p){ carousel(p, false); });
+
+    var tabs = root.querySelectorAll('.gkcn-tab');
+    tabs.forEach(function(tab){
+      tab.onclick = function(){
+        tabs.forEach(function(t){
+          var on = (t === tab);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          var pane = root.querySelector('#' + t.getAttribute('aria-controls'));
+          if (pane) {
+            pane.hidden = !on;
+            if (on && pane.gkcnReset) pane.gkcnReset();
+          }
+        });
+      };
     });
 
-    // The pageshow event also runs when returning from cart with the Back button.
-    window.addEventListener("pageshow", () => {
-      initGKSection(document.getElementById("gk-section-{{ section.id }}"));
-    });
-
-    // Run when section loads/reloads in Shopify Theme Editor
-    document.addEventListener("shopify:section:load", (event) => {
-      if (event.target && event.target.querySelector("#gk-section-{{ section.id }}")) {
-        initGKSection(event.target);
+    // Sticky CTA: tampil dari setelah Hero CTA sampai tiba di awal section "Udah Jadi Teman Traveling 500.000+ Orang!" (#gkcn-testimoni)
+    var sticky = document.getElementById('gkcn-sticky-{{ section.id }}');
+    var heroCta = root.querySelector('.gkcn-hero-cta') || root.querySelector('.gkcn-hero');
+    var to = document.getElementById('gkcn-testimoni') || root.querySelector('#gkcn-testimoni');
+    function updateSticky(){
+      if (!sticky || !to) return;
+      var heroBottom = heroCta ? heroCta.getBoundingClientRect().bottom : 0;
+      var toTop = to.getBoundingClientRect().top;
+      var pastHero = heroBottom <= 40;
+      var beforeTestimoni = toTop > (window.innerHeight - 80);
+      var show = pastHero && beforeTestimoni;
+      sticky.classList.toggle('gkcn-on', show);
+      sticky.setAttribute('aria-hidden', show ? 'false' : 'true');
+      var a = sticky.querySelector('a');
+      if (a) a.tabIndex = show ? 0 : -1;
+    }
+    if (sticky) {
+      var stickyBtn = sticky.querySelector('a[href^="#"]');
+      if (stickyBtn) {
+        stickyBtn.addEventListener('click', function(e) {
+          var targetId = this.getAttribute('href');
+          var targetEl = targetId ? (root.querySelector(targetId) || document.querySelector(targetId)) : null;
+          if (targetEl) {
+            e.preventDefault();
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
       }
+    }
+    window.addEventListener('scroll', updateSticky, {passive: true});
+    document.addEventListener('scroll', updateSticky, {passive: true});
+    window.addEventListener('resize', updateSticky);
+    window.addEventListener('orientationchange', updateSticky);
+    setTimeout(updateSticky, 100);
+    updateSticky();
+
+    // Meta Pixel (671798165173716) Event Tracking
+    var pixelId = '{{ section.settings.meta_pixel_id | default: "671798165173716" }}';
+    if (typeof window.fbq === 'function') {
+      window.fbq('init', pixelId);
+    }
+
+    // Tracking klik tombol "Pilih paket" -> ViewContent
+    root.querySelectorAll('.gkcn-card .gkcn-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var card = btn.closest('.gkcn-card');
+        var title = card && card.querySelector('h3') ? card.querySelector('h3').textContent.trim() : 'Paket eSIM China';
+        var tag = card && card.querySelector('.gkcn-tag') ? card.querySelector('.gkcn-tag').textContent.trim() : 'eSIM';
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'ViewContent', {
+            content_name: title,
+            content_category: tag
+          });
+        }
+      });
     });
-  })();
+
+    // Tracking klik tombol WhatsApp -> Contact
+    root.querySelectorAll('a[href*="wa.me"]').forEach(function(waBtn) {
+      waBtn.addEventListener('click', function() {
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'Contact', {
+            content_name: 'WhatsApp Support',
+            content_category: 'eSIM China'
+          });
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGK);
+  } else {
+    initGK();
+  }
+  document.addEventListener('shopify:section:load', function(e){
+    initGK();
+  });
+  document.addEventListener('shopify:section:select', function(e){
+    initGK();
+  });
+})();
 </script>
 
 {% schema %}
 {
-  "name": "Global Komunika",
+  "name": "Landing Page eSIM China",
   "settings": [
     {
       "type": "header",
@@ -1202,231 +1949,525 @@
     },
     {
       "type": "color",
-      "id": "background_color",
-      "label": "Background Color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "ink_color",
-      "label": "Text Color",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "color",
       "id": "brand_blue",
       "label": "Brand Blue",
-      "default": "#00adee"
-    },
-    {
-      "type": "color",
-      "id": "brand_blue_dark",
-      "label": "Brand Blue Dark",
       "default": "#005496"
     },
     {
       "type": "color",
-      "id": "brand_yellow",
-      "label": "Brand Yellow",
-      "default": "#fbb526"
+      "id": "brand_sky",
+      "label": "Brand Sky (Aksen)",
+      "default": "#00ADEE"
     },
     {
       "type": "header",
-      "content": "Hero Settings"
-    },
-    {
-      "type": "color",
-      "id": "hero_bg_color_start",
-      "label": "Gradient Awal",
-      "default": "#00adee"
-    },
-    {
-      "type": "color",
-      "id": "hero_bg_color_end",
-      "label": "Gradient Akhir",
-      "default": "#005496"
+      "content": "Meta Pixel Tracking"
     },
     {
       "type": "text",
-      "id": "hero_tagline",
-      "label": "Hero Badge Tagline",
-      "default": "100.000+ Traveler Telah Memilih Kami · Pelopor eSIM Travel Sejak 2016"
+      "id": "meta_pixel_id",
+      "label": "Meta Pixel ID",
+      "default": "671798165173716"
+    },
+    {
+      "type": "header",
+      "content": "Hero Section"
     },
     {
       "type": "text",
       "id": "hero_title",
-      "label": "Hero Title (HTML support)",
-      "default": "Internet di China tanpa Drama"
+      "label": "Hero Title",
+      "default": "Sampai China, WhatsApp, Instagram, TikTok & Google Langsung Jalan!"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero_app_icons",
+      "label": "Tampilkan Icon Logo Aplikasi di Judul Hero",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_icon_wa",
+      "label": "WhatsApp Icon"
+    },
+    {
+      "type": "text",
+      "id": "hero_icon_wa_url",
+      "label": "WhatsApp Icon URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/whatsapp.webp?v=1792380556"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_icon_ig",
+      "label": "Instagram Icon"
+    },
+    {
+      "type": "text",
+      "id": "hero_icon_ig_url",
+      "label": "Instagram Icon URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/instagram.webp?v=1792380557"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_icon_tt",
+      "label": "TikTok Icon"
+    },
+    {
+      "type": "text",
+      "id": "hero_icon_tt_url",
+      "label": "TikTok Icon URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/tiktok.webp?v=1792380556"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_icon_google",
+      "label": "Google Icon"
+    },
+    {
+      "type": "text",
+      "id": "hero_icon_google_url",
+      "label": "Google Icon URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Google.webp?v=1792380669"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_sub",
+      "label": "Hero Subtitle",
+      "default": "Jangan sampai yang harusnya sibuk eksplor China, malah sibuk cari koneksi. Siapin eSIM sebelum terbang, biar liburan nggak pakai drama!"
     },
     {
       "type": "text",
       "id": "hero_price",
-      "label": "Hero Price",
-      "default": "Rp 69.000"
+      "label": "Hero Price Text",
+      "default": "Rp29.000"
     },
     {
       "type": "text",
-      "id": "hero_button_text",
+      "id": "hero_btn_text",
       "label": "Hero Button Text",
-      "default": "Beli Sekarang"
-    },
-    {
-      "type": "text",
-      "id": "hero_variant_id",
-      "label": "Variant ID",
-      "info": "Variant ditambahkan sebanyak 1 item melalui Ajax Cart API, lalu pembeli diarahkan ke halaman cart.",
-      "default": "46518790324441"
+      "default": "Lihat paket eSIM China"
     },
     {
       "type": "url",
-      "id": "hero_button_url",
-      "label": "Hero Button URL (Fallback)",
-      "info": "Dipakai hanya jika Variant ID dikosongkan."
+      "id": "hero_btn_url",
+      "label": "Hero Button Link"
     },
     {
       "type": "image_picker",
-      "id": "hero_mascot",
+      "id": "hero_image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "text",
+      "id": "hero_image_url",
+      "label": "Hero Image URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/hero_section.webp?v=1792133645"
+    },
+    {
+      "type": "header",
+      "content": "Mascot & Founder Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "mascot_image",
       "label": "Mascot Image"
     },
     {
       "type": "text",
-      "id": "hero_mascot_asset_filename",
-      "label": "Fallback Mascot Asset Filename",
-      "default": "mascot_china.png"
-    },
-    {
-      "type": "text",
-      "id": "hero_mascot_alt",
-      "label": "Mascot Alt Text",
-      "default": "Mascot Global Komunika"
+      "id": "mascot_image_url",
+      "label": "Mascot Image URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/faq.webp?v=1792133641"
     },
     {
       "type": "header",
-      "content": "Value Proposition (Features)"
+      "content": "Stats Ribbon"
+    },
+    {
+      "type": "image_picker",
+      "id": "stats_mark_image",
+      "label": "Watermark Logo GK"
     },
     {
       "type": "text",
-      "id": "features_title",
-      "label": "Features Section Title",
-      "default": "Great Firewall Membatasi Akses Internet di China"
+      "id": "stats_mark_image_url",
+      "label": "Watermark Logo GK URL (Fallback)"
+    },
+    {
+      "type": "range",
+      "id": "stats_mark_opacity",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Watermark Opacity",
+      "default": 100,
+      "info": "Gunakan 100% untuk logo bawaan (karena sudah semi-transparan), atau turunkan jika mengunggah logo putih solid."
     },
     {
       "type": "text",
-      "id": "features_subtitle",
-      "label": "Features Section Subtitle",
-      "default": "Pastikan internet kamu bisa diandalkan begitu kamu tiba."
+      "id": "stat_1_val",
+      "label": "Stat 1 Nilai",
+      "default": "500.000+"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_lbl",
+      "label": "Stat 1 Label",
+      "default": "Dipercaya Traveler"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_val",
+      "label": "Stat 2 Nilai",
+      "default": "Sejak 2016"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_lbl",
+      "label": "Stat 2 Label",
+      "default": "Menemani traveler"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_val",
+      "label": "Stat 3 Nilai",
+      "default": "Customer Support"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_lbl",
+      "label": "Stat 3 Label",
+      "default": "Siap bantu"
     },
     {
       "type": "header",
-      "content": "Testimonials Settings"
+      "content": "Problem + Compare"
+    },
+    {
+      "type": "text",
+      "id": "problem_title",
+      "label": "Judul Masalah",
+      "default": "Di China, Belum Tentu Aplikasi Favoritmu Bisa Dibuka!"
     },
     {
       "type": "textarea",
-      "id": "testimonials_title",
-      "label": "Testimonials Header Title",
-      "default": "Lebih dari 100.000 traveler telah memilih Global Komunika sebagai solusi konektivitas perjalanan mereka."
+      "id": "problem_desc_1",
+      "label": "Deskripsi 1",
+      "default": "Internet di China beda dari Indonesia. Kalau salah pilih koneksi, aplikasi yang biasa kamu pakai bisa saja tidak bisa diakses."
+    },
+    {
+      "type": "textarea",
+      "id": "problem_desc_2",
+      "label": "Deskripsi 2",
+      "default": "Makanya, pilih paket internet yang sudah disiapkan untuk kebutuhan traveling di China."
     },
     {
       "type": "header",
-      "content": "FAQ Settings"
+      "content": "Keunggulan / Benefits"
+    },
+    {
+      "type": "text",
+      "id": "benefits_title",
+      "label": "Judul Keunggulan",
+      "default": "Internet di China Tanpa Ribet: Scan QR, Langsung Jalan"
+    },
+    {
+      "type": "header",
+      "content": "Langkah Aktivasi (Steps)"
+    },
+    {
+      "type": "image_picker",
+      "id": "steps_image",
+      "label": "Gambar Langkah"
+    },
+    {
+      "type": "text",
+      "id": "steps_image_url",
+      "label": "URL Gambar Langkah (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/3_langkah_mudah.webp?v=1792209712"
+    },
+    {
+      "type": "text",
+      "id": "steps_title",
+      "label": "Judul Langkah",
+      "default": "3 Langkah Mudah, Siap Online di China!"
+    },
+    {
+      "type": "header",
+      "content": "Testimoni"
+    },
+    {
+      "type": "text",
+      "id": "testimonials_title",
+      "label": "Judul Testimoni",
+      "default": "Udah Jadi Teman Traveling 500.000+ Orang!"
+    },
+    {
+      "type": "textarea",
+      "id": "testimonials_lead",
+      "label": "Subjudul Testimoni",
+      "default": "Dari liburan singkat sampai perjalanan panjang, banyak traveler memilih Global Komunika untuk tetap terhubung selama di luar negeri."
+    },
+    {
+      "type": "header",
+      "content": "Daftar Paket (Packages / Products)"
+    },
+    {
+      "type": "text",
+      "id": "packages_title",
+      "label": "Judul Paket",
+      "default": "Pilih Paket Sesuai Gaya Trip Kamu!"
+    },
+    {
+      "type": "textarea",
+      "id": "packages_lead",
+      "label": "Subjudul Paket",
+      "default": "Kuota dan masa aktif menyesuaikan varian yang kamu pilih. Cek keterangan varian sebelum membeli."
+    },
+    {
+      "type": "header",
+      "content": "FAQ"
     },
     {
       "type": "text",
       "id": "faq_title",
-      "label": "FAQ Title",
-      "default": "Pertanyaan yang sering ditanya"
+      "label": "Judul FAQ",
+      "default": "Masih Bingung?"
     },
     {
       "type": "header",
       "content": "Founder Section"
     },
     {
-      "type": "color",
-      "id": "founder_bg_color",
-      "label": "Founder Section Background Color",
-      "default": "#005496"
-    },
-    {
       "type": "image_picker",
       "id": "founder_image",
-      "label": "Founder Image"
+      "label": "Founder Photo"
     },
     {
       "type": "text",
-      "id": "founder_asset_filename",
-      "label": "Fallback Founder Asset Filename",
-      "default": "founder_photo.png"
-    },
-    {
-      "type": "text",
-      "id": "founder_image_alt",
-      "label": "Founder Image Alt Text",
-      "default": "Foto founder Global Komunika"
-    },
-    {
-      "type": "textarea",
-      "id": "founder_quote",
-      "label": "Founder Quote Text",
-      "default": "Saya mendirikan Global Komunika pada tahun 2016 untuk membantu para traveler Indonesia mendapatkan pengalaman terbaik ketika menjelajahi Dunia. Berbekal pengalaman pribadi traveling mandiri sejak 2007, saya bisa berbagi banyak hal—mulai dari pilihan transportasi, rekomendasi destinasi menarik, hingga tips perjalanan lainnya. Kecintaan saya terhadap perjalanan mandiri, tanpa paket tur, memacu saya untuk terus mengembangkan Global Komunika agar setiap perjalanan Anda dapat selalu terhubung internet di mana pun Anda berada."
+      "id": "founder_image_url",
+      "label": "Founder Photo URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/pak_andy_hijau.webp?v=1792133640"
     },
     {
       "type": "text",
       "id": "founder_name",
-      "label": "Founder Name & Title",
-      "default": "Andy · Founder & CEO"
+      "label": "Nama Founder",
+      "default": "Andy Ho"
+    },
+    {
+      "type": "text",
+      "id": "founder_title",
+      "label": "Jabatan Founder",
+      "default": "Founder & CEO, Global Komunika"
+    },
+    {
+      "type": "textarea",
+      "id": "founder_quote",
+      "label": "Kutipan Founder",
+      "default": "Saya mendirikan Global Komunika pada 2016 untuk membantu traveler Indonesia menjelajahi dunia dengan lebih nyaman. Berbekal pengalaman traveling mandiri sejak 2007, saya ingin memastikan setiap perjalanan jadi lebih mudah, praktis, dan tetap terhubung internet di mana pun berada."
+    },
+    {
+      "type": "header",
+      "content": "Final CTA & WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "final_title",
+      "label": "Judul Final CTA",
+      "default": "Trip ke China Udah Siap? Internetnya Juga Harus Siap!"
+    },
+    {
+      "type": "textarea",
+      "id": "final_lead",
+      "label": "Deskripsi Final CTA",
+      "default": "Nggak perlu repot cari SIM lokal setelah sampai. Pilih eSIM atau SIM Card China dari sekarang, supaya kamu bisa langsung fokus menikmati perjalanan!"
+    },
+    {
+      "type": "text",
+      "id": "final_price",
+      "label": "Harga Final CTA",
+      "default": "Rp29.000"
+    },
+    {
+      "type": "text",
+      "id": "final_btn_text",
+      "label": "Teks Tombol Final CTA",
+      "default": "Lihat paket China"
+    },
+    {
+      "type": "url",
+      "id": "final_btn_url",
+      "label": "Link Tombol Final CTA"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "Nomor WhatsApp CS (tanpa tanda +)",
+      "default": "628156080055"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_text",
+      "label": "Pesan Awal WhatsApp CS",
+      "default": "Halo Global Komunika, saya ingin tanya seputar paket internet China"
     }
   ],
   "blocks": [
     {
-      "type": "feature",
-      "name": "Feature Card",
-      "limit": 8,
+      "type": "product_card",
+      "name": "Produk / Paket Card",
       "settings": [
         {
+          "type": "select",
+          "id": "category",
+          "label": "Kategori Tab",
+          "options": [
+            { "value": "esim", "label": "eSIM" },
+            { "value": "sim", "label": "SIM Card" },
+            { "value": "both", "label": "Keduanya (eSIM & SIM Card)" }
+          ],
+          "default": "esim"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Pilih Produk Shopify (Opsional)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Gambar Produk (Opsional)"
+        },
+        {
           "type": "text",
-          "id": "number",
-          "label": "Card Number (Optional)"
+          "id": "image_url",
+          "label": "URL Gambar Luar (Opsional)"
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Tag / Badge",
+          "default": "eSIM"
+        },
+        {
+          "type": "select",
+          "id": "flags",
+          "label": "Pilihan Bendera",
+          "options": [
+            { "value": "cn", "label": "China" },
+            { "value": "cn_hk_mo", "label": "China + Hong Kong + Macau" },
+            { "value": "none", "label": "Tanpa Bendera" }
+          ],
+          "default": "cn"
         },
         {
           "type": "text",
           "id": "title",
-          "label": "Card Title",
-          "default": "Aktivasi Instan"
+          "label": "Nama Produk / Paket",
+          "default": "eSIM China"
+        },
+        {
+          "type": "text",
+          "id": "meta",
+          "label": "Deskripsi Singkat",
+          "default": "Keliling China, transit tetap online?"
+        },
+        {
+          "type": "text",
+          "id": "price_prefix",
+          "label": "Teks Sebelum Harga",
+          "default": "Mulai dari"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Harga",
+          "default": "Rp39.000"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Teks Tombol",
+          "default": "Pilih paket"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Link Tombol"
+        }
+      ]
+    },
+    {
+      "type": "feature",
+      "name": "Feature / Benefit Card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Ikon Keunggulan",
+          "options": [
+            { "value": "qr", "label": "Scan QR Code" },
+            { "value": "chat", "label": "Akses Aplikasi / Chat" },
+            { "value": "wifi", "label": "Berbagi Hotspot / WiFi" },
+            { "value": "signal", "label": "Koneksi Cepat / Sinyal" },
+            { "value": "support", "label": "Customer Support CS" },
+            { "value": "sim", "label": "SIM Fisik / Fleksibel" }
+          ],
+          "default": "qr"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Judul",
+          "default": "Aktivasi praktis"
         },
         {
           "type": "textarea",
           "id": "body",
-          "label": "Card Description",
-          "default": "Aktivasi mudah, cukup scan QR dan langsung aktif."
+          "label": "Deskripsi",
+          "default": "Cukup scan QR Code sebelum berangkat, lalu aktifkan saat tiba di China."
+        }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "Langkah Aktivasi (Step)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Judul Langkah",
+          "default": "Pilih paket internet"
         },
         {
-          "type": "checkbox",
-          "id": "highlight",
-          "label": "Highlight Card",
-          "default": false
+          "type": "textarea",
+          "id": "body",
+          "label": "Deskripsi",
+          "default": "Pilih paket sesuai destinasi, durasi perjalanan, dan kebutuhan kuota kamu."
         }
       ]
     },
     {
       "type": "testimonial",
-      "name": "Testimonial",
+      "name": "Ulasan Pelanggan",
       "settings": [
         {
           "type": "text",
           "id": "name",
-          "label": "Customer Name",
-          "default": "Customer Name"
+          "label": "Nama Pelanggan",
+          "default": "Pelanggan"
         },
         {
           "type": "textarea",
           "id": "quote",
-          "label": "Quote",
-          "default": "Beneran plug-and-play, sampai Shanghai langsung nyala."
+          "label": "Isi Ulasan",
+          "default": "Koneksi stabil & langsung konek."
         },
         {
           "type": "range",
           "id": "rating",
-          "label": "Rating (Stars)",
+          "label": "Rating Bintang",
           "min": 1,
           "max": 5,
           "step": 1,
@@ -1436,116 +2477,247 @@
     },
     {
       "type": "faq",
-      "name": "FAQ",
+      "name": "Pertanyaan (FAQ)",
       "settings": [
         {
           "type": "text",
           "id": "question",
-          "label": "Question",
-          "default": "Question text?"
+          "label": "Pertanyaan",
+          "default": "Apakah HP saya bisa pakai eSIM China?"
         },
         {
           "type": "textarea",
           "id": "answer",
-          "label": "Answer",
-          "default": "Answer content goes here."
+          "label": "Jawaban",
+          "default": "Gampang banget! Cukup ketik *#06# di HP kamu."
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Global Komunika eSIM China",
+      "name": "Landing Page eSIM China",
       "blocks": [
         {
           "type": "feature",
           "settings": {
-            "title": "Aktivasi Instan",
-            "body": "Aktivasi mudah, cukup scan QR dan langsung aktif."
+            "icon": "qr",
+            "title": "Aktivasi praktis",
+            "body": "Cukup scan QR Code sebelum berangkat, lalu aktifkan saat tiba di China."
           }
         },
         {
           "type": "feature",
           "settings": {
-            "title": "Akses Bebas",
-            "body": "Akses WhatsApp, Instagram & Google tanpa hambatan."
+            "icon": "chat",
+            "title": "Akses aplikasi favorit",
+            "body": "Tetap terhubung lewat WhatsApp, Instagram, Google, dan aplikasi lainnya sesuai paket."
           }
         },
         {
           "type": "feature",
           "settings": {
-            "title": "Pioneer Sejak 2016",
-            "body": "Dipercaya 100.000+ traveler Indonesia."
+            "icon": "wifi",
+            "title": "Bisa berbagi koneksi",
+            "body": "Bagikan internet ke laptop atau perangkat lain dengan paket yang mendukung hotspot."
           }
         },
         {
           "type": "feature",
           "settings": {
-            "title": "CS Responsif",
-            "body": "Tim CS siap bantu via WhatsApp kapan pun."
+            "icon": "signal",
+            "title": "Koneksi untuk traveling",
+            "body": "Tetap online saat eksplor kota, di hotel, atau naik kereta cepat dengan jaringan yang tersedia."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "support",
+            "title": "CS siap membantu",
+            "body": "Ada kendala aktivasi atau koneksi? Tim CS siap membantu lewat WhatsApp."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "sim",
+            "title": "Pilihan sesuai HP kamu",
+            "body": "HP belum mendukung eSIM? Tenang, tersedia SIM Card fisik untuk perjalananmu."
+          }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "category": "esim",
+            "tag": "eSIM",
+            "flags": "cn",
+            "title": "eSIM China",
+            "meta": "Keliling China, transit tetap online?",
+            "price": "Rp39.000",
+            "button_label": "Pilih paket"
+          }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "category": "esim",
+            "tag": "eSIM",
+            "flags": "cn",
+            "title": "eSIM China TikTok",
+            "meta": "Ke China, tetap eksis di TikTok?",
+            "price": "Rp29.000",
+            "button_label": "Pilih paket"
+          }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "category": "esim",
+            "tag": "eSIM",
+            "flags": "cn",
+            "title": "eSIM China Data Max",
+            "meta": "Trip panjang, butuh kuota lebih?",
+            "price": "Rp289.000",
+            "button_label": "Pilih paket"
+          }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "category": "esim",
+            "tag": "eSIM",
+            "flags": "cn_hk_mo",
+            "title": "eSIM China Hong Kong Macau",
+            "meta": "Eksplor tiga destinasi sekaligus?",
+            "price": "Rp39.000",
+            "button_label": "Pilih paket"
+          }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "category": "sim",
+            "tag": "SIM Card",
+            "flags": "cn",
+            "title": "SIM Card China",
+            "meta": "Keliling China, transit tetap online?",
+            "price": "Rp39.000",
+            "button_label": "Pilih paket"
+          }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "category": "sim",
+            "tag": "SIM Card",
+            "flags": "cn",
+            "title": "SIM Card China TikTok",
+            "meta": "Ke China, tetap eksis di TikTok?",
+            "price": "Rp49.000",
+            "button_label": "Pilih paket"
+          }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "category": "sim",
+            "tag": "SIM Card",
+            "flags": "cn_hk_mo",
+            "title": "SIM Card China Hong Kong Macau",
+            "meta": "Eksplor tiga destinasi sekaligus?",
+            "price": "Rp39.000",
+            "button_label": "Pilih paket"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "name": "Rina W.",
-            "quote": "Beneran plug-and-play, sampai Shanghai langsung nyala. WA & Google jalan tanpa VPN tambahan."
+            "name": "Naidanymph_00",
+            "quote": "Koneksi stabil & langsung konek. Super terpercaya & admin sangat baik. Dipakai 8 hari di China lancar jaya & pakai buat WA semua lancar. Walau di hotel, di bullet train, lancar semua.",
+            "rating": 5
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "name": "Arief S.",
-            "quote": "Sudah 3x ke China pakai Global Komunika. CS-nya cepat balas, sekali kena kendala dibantu sampai kelar."
+            "name": "f*****5",
+            "quote": "Koneksi cepat dan di China WA, IG, FB tembus koneksinya tanpa harus beli VPN. Jadi sangat terbantu selama trip ke sana.",
+            "rating": 5
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "name": "Michelle T.",
-            "quote": "Sebelumnya beli eSIM murahan di marketplace, gagal aktif. Yang ini smooth, worth every rupiah."
+            "name": "faridanorlita23",
+            "quote": "Lancar jaya, internet cepat, tidak ada gangguan sama sekali selama trip ke Harbin, China. Bisa hotspot ke laptop juga sambil kerja.",
+            "rating": 5
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "name": "Bagus P.",
-            "quote": "Nomor Indo tetap aktif buat OTP, data pakai eSIM China. Solusi paling praktis buat business trip."
+            "name": "h*****9",
+            "quote": "Butuh urgent dan besoknya jam 11 siang langsung dikirim. Di negara tujuan juga berfungsi dengan baik. Dengan eSIM tidak usah repot ganti-ganti kartu.",
+            "rating": 5
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "name": "Dita R.",
-            "quote": "Instruksinya jelas banget dari email. Scan QR, tunggu 1 menit, langsung online."
+            "name": "M*****o",
+            "quote": "Signal bagus, mudah connect-nya, dikirim via email. Seller ramah dan adminnya siap membantu. Cek kuota juga bisa lewat admin.",
+            "rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "name": "e*****s",
+            "quote": "Punya paket data ini selama trip ke China sangat membantu. Ke mana-mana selalu on.",
+            "rating": 5
           }
         },
         {
           "type": "faq",
           "settings": {
-            "question": "Apakah HP saya support eSIM China ini?",
-            "answer": "Ketik *#06#. Jika muncul EID, berarti perangkat Anda mendukung eSIM. Anda juga dapat mengeceknya melalui menu Pengaturan > SIM/Cellular."
+            "question": "Apakah HP saya bisa pakai eSIM China?",
+            "answer": "Gampang banget! Cukup ketik *#06# di HP kamu. Kalau muncul EID, berarti HP kamu mendukung eSIM. Kamu juga bisa cek lewat menu Pengaturan > SIM/Cellular."
           }
         },
         {
           "type": "faq",
           "settings": {
-            "question": "Berapa lama setelah beli saya bisa aktif?",
-            "answer": "QR code dikirim ke email setelah pembayaran berhasil. Kamu bisa langsung scan dan aktifkan kapan saja."
+            "question": "Apakah perlu VPN untuk buka WhatsApp, Instagram, TikTok atau Google di China?",
+            "answer": "Untuk paket Global Komunika yang mendukung akses aplikasi tersebut, tidak perlu memasang VPN tambahan. Pastikan kamu memilih varian yang sesuai karena dukungan aplikasi dapat berbeda antar paket."
           }
         },
         {
           "type": "faq",
           "settings": {
-            "question": "Nomor HP asli saya tetap aktif?",
-            "answer": "Ya, kamu tetap bisa terima SMS/telepon di nomor lama untuk OTP atau hal penting lainnya, sambil pakai data dari eSIM China by Global Komunika."
+            "question": "Apakah eSIM China bisa digunakan untuk hotspot?",
+            "answer": "Bisa pada paket yang mendukung tethering atau hotspot. Periksa keterangan varian sebelum membeli, ya!"
           }
         },
         {
           "type": "faq",
           "settings": {
-            "question": "Bagaimana kalau eSIM saya gagal aktif?",
-            "answer": "Tim CS Global Komunika siap bantu via WhatsApp, kamu bisa jelaskan keluhanmu ke no 08986454071."
+            "question": "Kapan QR Code eSIM dikirim setelah beli?",
+            "answer": "Setelah pembayaran berhasil, QR Code akan dikirim ke email kamu. Tinggal scan dan ikuti petunjuk pemasangannya, ya!"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Apakah eSIM saya bisa dipakai saat transit di negara lain?",
+            "answer": "Tergantung paket yang kamu pilih. Beberapa paket bisa digunakan di negara transit tertentu. Cek daftar negara yang termasuk dalam paket sebelum membeli, ya!"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Bagaimana kalau eSIM saya tidak bisa aktif atau internet bermasalah?",
+            "answer": "Tenang, tim CS Global Komunika siap bantu lewat WhatsApp, mulai dari aktivasi sampai kendala koneksi selama perjalanan. Hubungi: 0815-6080-055."
           }
         }
       ]

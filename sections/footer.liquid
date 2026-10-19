@@ -160,24 +160,6 @@
             </div>
           {% endif %}
         </li>
-
-        <li style="display: flex; align-items: center; gap: 1rem;">
-          {% if section.settings.whatsapp != blank %}
-            <img
-              src="{{ 'icon-whatsapp.svg' | asset_url }}"
-              alt="Email Icon"
-              loading="lazy"
-              width="20px"
-              height="20px"
-            >
-            <div class="footer__contact-text">
-              <label class="footer__contact--label">WhatsApp (Chat Only)</label>
-              <a href="https://wa.me/{{ section.settings.whatsapp }}" target="_blank">
-                {{- section.settings.whatsapp -}}
-              </a>
-            </div>
-          {% endif %}
-        </li>
       </ul>
     </section>
   </div>

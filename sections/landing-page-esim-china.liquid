@@ -38,31 +38,31 @@
   {%- assign stats_mark_url = section.settings.stats_mark_image_url -%}
 {%- endif -%}
 
-{%- assign hero_icon_wa_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/whatsapp.webp?v=1792380556' -%}
+{%- assign hero_icon_wa_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/whatsapp-tile.webp?v=1792394040' -%}
 {%- if section.settings.hero_icon_wa != blank -%}
   {%- assign hero_icon_wa_url = section.settings.hero_icon_wa | image_url: width: 100 -%}
-{%- elsif section.settings.hero_icon_wa_url != blank -%}
+{%- elsif section.settings.hero_icon_wa_url != blank and section.settings.hero_icon_wa_url != 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/whatsapp.webp?v=1792380556' -%}
   {%- assign hero_icon_wa_url = section.settings.hero_icon_wa_url -%}
 {%- endif -%}
 
-{%- assign hero_icon_ig_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/instagram.webp?v=1792380557' -%}
+{%- assign hero_icon_ig_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/instagram-tile.webp?v=1792394040' -%}
 {%- if section.settings.hero_icon_ig != blank -%}
   {%- assign hero_icon_ig_url = section.settings.hero_icon_ig | image_url: width: 100 -%}
-{%- elsif section.settings.hero_icon_ig_url != blank -%}
+{%- elsif section.settings.hero_icon_ig_url != blank and section.settings.hero_icon_ig_url != 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/instagram.webp?v=1792380557' -%}
   {%- assign hero_icon_ig_url = section.settings.hero_icon_ig_url -%}
 {%- endif -%}
 
-{%- assign hero_icon_tt_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/tiktok.webp?v=1792380556' -%}
+{%- assign hero_icon_tt_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/tiktok-tile.webp?v=1792394040' -%}
 {%- if section.settings.hero_icon_tt != blank -%}
   {%- assign hero_icon_tt_url = section.settings.hero_icon_tt | image_url: width: 100 -%}
-{%- elsif section.settings.hero_icon_tt_url != blank -%}
+{%- elsif section.settings.hero_icon_tt_url != blank and section.settings.hero_icon_tt_url != 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/tiktok.webp?v=1792380556' -%}
   {%- assign hero_icon_tt_url = section.settings.hero_icon_tt_url -%}
 {%- endif -%}
 
-{%- assign hero_icon_gg_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Google.webp?v=1792380669' -%}
+{%- assign hero_icon_gg_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/google-tile.webp?v=1792394039' -%}
 {%- if section.settings.hero_icon_google != blank -%}
   {%- assign hero_icon_gg_url = section.settings.hero_icon_google | image_url: width: 100 -%}
-{%- elsif section.settings.hero_icon_google_url != blank -%}
+{%- elsif section.settings.hero_icon_google_url != blank and section.settings.hero_icon_google_url != 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Google.webp?v=1792380669' -%}
   {%- assign hero_icon_gg_url = section.settings.hero_icon_google_url -%}
 {%- endif -%}
 
@@ -263,23 +263,28 @@
 
 #gk-section-{{ section.id }} .gkcn-hero-app-icon {
   display: inline-block;
-  width: 0.58em;
-  height: 0.58em;
+  width: 0.8em;
+  height: 0.8em;
   object-fit: contain;
   vertical-align: middle;
   flex-shrink: 0;
-  mix-blend-mode: multiply;
 }
 
-#gk-section-{{ section.id }} .gkcn-hero-app-icon--wa,
-#gk-section-{{ section.id }} .gkcn-hero-app-icon--tt,
-#gk-section-{{ section.id }} .gkcn-hero-app-icon--gg {
-  width: 0.72em;
-  height: 0.72em;
+#gk-section-{{ section.id }} .gkcn-hero-amp-br {
+  display: inline;
 }
 
-#gk-section-{{ section.id }} .gkcn-hero-app-icon--gg {
-  filter: contrast(135%) brightness(110%);
+#gk-section-{{ section.id }} .gkcn-hero-amp-wrap {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  gap: 0.18em;
+}
+
+#gk-section-{{ section.id }} .gkcn-hero-amp {
+  font-weight: 700;
+  color: inherit;
 }
 
 #gk-section-{{ section.id }} .gkcn-hero-sub {
@@ -1126,6 +1131,9 @@
     object-position: 10% 50%;
     box-shadow: 0 22px 48px rgba(0,0,0,.1);
   }
+  #gk-section-{{ section.id }} .gkcn-hero-amp-br {
+    display: none !important;
+  }
   #gk-section-{{ section.id }} .gkcn-hero h1 {
     font-size: 46px;
   }
@@ -1224,19 +1232,34 @@
 }
 </style>
 
-{%- capture wa_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_wa_url }}" alt="WhatsApp" class="gkcn-hero-app-icon gkcn-hero-app-icon--wa" width="30" height="30" loading="eager">WhatsApp</span>{%- endcapture -%}
-{%- capture ig_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_ig_url }}" alt="Instagram" class="gkcn-hero-app-icon gkcn-hero-app-icon--ig" width="30" height="30" loading="eager">Instagram</span>{%- endcapture -%}
-{%- capture tt_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_tt_url }}" alt="TikTok" class="gkcn-hero-app-icon gkcn-hero-app-icon--tt" width="30" height="30" loading="eager">TikTok</span>{%- endcapture -%}
-{%- capture gg_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_gg_url }}" alt="Google" class="gkcn-hero-app-icon gkcn-hero-app-icon--gg" width="30" height="30" loading="eager">Google</span>{%- endcapture -%}
+{%- capture wa_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_wa_url }}" alt="WhatsApp" class="gkcn-hero-app-icon gkcn-hero-app-icon--wa" width="30" height="30" loading="eager"></span>{%- endcapture -%}
+{%- capture ig_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_ig_url }}" alt="Instagram" class="gkcn-hero-app-icon gkcn-hero-app-icon--ig" width="30" height="30" loading="eager"></span>{%- endcapture -%}
+{%- capture tt_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_tt_url }}" alt="TikTok" class="gkcn-hero-app-icon gkcn-hero-app-icon--tt" width="30" height="30" loading="eager"></span>{%- endcapture -%}
+{%- capture gg_badge -%}<span class="gkcn-hero-app"><img src="{{ hero_icon_gg_url }}" alt="Google" class="gkcn-hero-app-icon gkcn-hero-app-icon--gg" width="30" height="30" loading="eager"></span>{%- endcapture -%}
+{%- capture and_gg_badge -%}<br class="gkcn-hero-amp-br"><span class="gkcn-hero-amp-wrap"><span class="gkcn-hero-amp">&amp;</span>{{ gg_badge }}</span>{%- endcapture -%}
 
-{%- assign hero_raw_title = section.settings.hero_title | default: 'Sampai China, WhatsApp, Instagram, TikTok & Google Langsung Jalan!' -%}
+{%- assign hero_raw_title = section.settings.hero_title | default: 'Sampai China, WhatsApp Instagram TikTok & Google Langsung Jalan!' -%}
 {%- assign show_hero_icons = section.settings.show_hero_app_icons -%}
 {%- if show_hero_icons == nil -%}
   {%- assign show_hero_icons = true -%}
 {%- endif -%}
 
 {%- if show_hero_icons -%}
-  {%- assign hero_rendered_title = hero_raw_title
+  {%- assign hero_clean_title = hero_raw_title
+    | replace: '&amp;', '&'
+    | replace: '&#38;', '&'
+    | replace: '&#x26;', '&'
+    | replace: '&nbsp;', ' '
+  -%}
+  {%- assign hero_rendered_title = hero_clean_title
+    | replace: 'WhatsApp,', '##GK_WA##'
+    | replace: 'Whatsapp,', '##GK_WA##'
+    | replace: 'whatsapp,', '##GK_WA##'
+    | replace: 'Instagram,', '##GK_IG##'
+    | replace: 'instagram,', '##GK_IG##'
+    | replace: 'TikTok,', '##GK_TT##'
+    | replace: 'Tiktok,', '##GK_TT##'
+    | replace: 'tiktok,', '##GK_TT##'
     | replace: 'WhatsApp', '##GK_WA##'
     | replace: 'Whatsapp', '##GK_WA##'
     | replace: 'whatsapp', '##GK_WA##'
@@ -1245,11 +1268,20 @@
     | replace: 'TikTok', '##GK_TT##'
     | replace: 'Tiktok', '##GK_TT##'
     | replace: 'tiktok', '##GK_TT##'
+    | replace: ' & Google', ' ##GK_AND_GG##'
+    | replace: '& Google', '##GK_AND_GG##'
+    | replace: ' & google', ' ##GK_AND_GG##'
+    | replace: '& google', '##GK_AND_GG##'
+    | replace: '&Google', '##GK_AND_GG##'
+    | replace: '&google', '##GK_AND_GG##'
+    | replace: ' dan Google', ' ##GK_AND_GG##'
+    | replace: ' dan google', ' ##GK_AND_GG##'
     | replace: 'Google', '##GK_GG##'
     | replace: 'google', '##GK_GG##'
     | replace: '##GK_WA##', wa_badge
     | replace: '##GK_IG##', ig_badge
     | replace: '##GK_TT##', tt_badge
+    | replace: '##GK_AND_GG##', and_gg_badge
     | replace: '##GK_GG##', gg_badge
   -%}
 {%- else -%}
@@ -1977,7 +2009,7 @@
       "type": "text",
       "id": "hero_title",
       "label": "Hero Title",
-      "default": "Sampai China, WhatsApp, Instagram, TikTok & Google Langsung Jalan!"
+      "default": "Sampai China, WhatsApp Instagram TikTok & Google Langsung Jalan!"
     },
     {
       "type": "checkbox",
@@ -1994,7 +2026,7 @@
       "type": "text",
       "id": "hero_icon_wa_url",
       "label": "WhatsApp Icon URL (Fallback)",
-      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/whatsapp.webp?v=1792380556"
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/whatsapp-tile.webp?v=1792394040"
     },
     {
       "type": "image_picker",
@@ -2005,7 +2037,7 @@
       "type": "text",
       "id": "hero_icon_ig_url",
       "label": "Instagram Icon URL (Fallback)",
-      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/instagram.webp?v=1792380557"
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/instagram-tile.webp?v=1792394040"
     },
     {
       "type": "image_picker",
@@ -2016,7 +2048,7 @@
       "type": "text",
       "id": "hero_icon_tt_url",
       "label": "TikTok Icon URL (Fallback)",
-      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/tiktok.webp?v=1792380556"
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/tiktok-tile.webp?v=1792394040"
     },
     {
       "type": "image_picker",
@@ -2027,7 +2059,7 @@
       "type": "text",
       "id": "hero_icon_google_url",
       "label": "Google Icon URL (Fallback)",
-      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Google.webp?v=1792380669"
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/google-tile.webp?v=1792394039"
     },
     {
       "type": "textarea",

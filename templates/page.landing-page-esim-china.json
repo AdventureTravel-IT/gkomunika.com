@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
@@ -20,154 +11,296 @@
     "landing_page_esim_china_mpNT3x": {
       "type": "landing-page-esim-china",
       "blocks": {
-        "feature_ReGrR8": {
+        "feature_1": {
           "type": "feature",
           "settings": {
-            "number": "",
-            "title": "Aktivasi Instan",
-            "body": "Aktivasi mudah, cukup scan QR dan langsung aktif.",
-            "highlight": false
+            "icon": "qr",
+            "title": "Aktivasi praktis",
+            "body": "Cukup scan QR Code sebelum berangkat, lalu aktifkan saat tiba di China."
           }
         },
-        "feature_wWyYiY": {
+        "feature_2": {
           "type": "feature",
           "settings": {
-            "number": "",
-            "title": "Akses Bebas",
-            "body": "Akses WhatsApp, Instagram & Google tanpa hambatan.",
-            "highlight": false
+            "icon": "chat",
+            "title": "Akses aplikasi favorit",
+            "body": "Tetap terhubung lewat WhatsApp, Instagram, Google, dan aplikasi lainnya sesuai paket."
           }
         },
-        "feature_rm3JEA": {
+        "feature_3": {
           "type": "feature",
           "settings": {
-            "number": "",
-            "title": "Pioneer Sejak 2016",
-            "body": "Dipercaya 100.000+ traveler Indonesia.",
-            "highlight": false
+            "icon": "wifi",
+            "title": "Bisa berbagi koneksi",
+            "body": "Bagikan internet ke laptop atau perangkat lain dengan paket yang mendukung hotspot."
           }
         },
-        "feature_HRJrkw": {
+        "feature_4": {
           "type": "feature",
           "settings": {
-            "number": "",
-            "title": "CS Responsif",
-            "body": "Tim CS siap bantu via WhatsApp kapan pun.",
-            "highlight": false
+            "icon": "signal",
+            "title": "Koneksi untuk traveling",
+            "body": "Tetap online saat eksplor kota, di hotel, atau naik kereta cepat dengan jaringan yang tersedia."
           }
         },
-        "testimonial_j49JHG": {
+        "feature_5": {
+          "type": "feature",
+          "settings": {
+            "icon": "support",
+            "title": "CS siap membantu",
+            "body": "Ada kendala aktivasi atau koneksi? Tim CS siap membantu lewat WhatsApp."
+          }
+        },
+        "feature_6": {
+          "type": "feature",
+          "settings": {
+            "icon": "sim",
+            "title": "Pilihan sesuai HP kamu",
+            "body": "HP belum mendukung eSIM? Tenang, tersedia SIM Card fisik untuk perjalananmu."
+          }
+        },
+        "product_1": {
+          "type": "product_card",
+          "settings": {
+            "category": "esim",
+            "tag": "eSIM",
+            "flags": "cn",
+            "title": "eSIM China",
+            "meta": "Keliling China, transit tetap online?",
+            "price_prefix": "Mulai dari",
+            "price": "Rp39.000",
+            "button_label": "Pilih paket",
+            "button_url": ""
+          }
+        },
+        "product_2": {
+          "type": "product_card",
+          "settings": {
+            "category": "esim",
+            "tag": "eSIM",
+            "flags": "cn",
+            "title": "eSIM China TikTok",
+            "meta": "Ke China, tetap eksis di TikTok?",
+            "price_prefix": "Mulai dari",
+            "price": "Rp29.000",
+            "button_label": "Pilih paket",
+            "button_url": ""
+          }
+        },
+        "product_3": {
+          "type": "product_card",
+          "settings": {
+            "category": "esim",
+            "tag": "eSIM",
+            "flags": "cn",
+            "title": "eSIM China Data Max",
+            "meta": "Trip panjang, butuh kuota lebih?",
+            "price_prefix": "Mulai dari",
+            "price": "Rp289.000",
+            "button_label": "Pilih paket",
+            "button_url": ""
+          }
+        },
+        "product_4": {
+          "type": "product_card",
+          "settings": {
+            "category": "esim",
+            "tag": "eSIM",
+            "flags": "cn_hk_mo",
+            "title": "eSIM China Hong Kong Macau",
+            "meta": "Eksplor tiga destinasi sekaligus?",
+            "price_prefix": "Mulai dari",
+            "price": "Rp39.000",
+            "button_label": "Pilih paket",
+            "button_url": ""
+          }
+        },
+        "product_5": {
+          "type": "product_card",
+          "settings": {
+            "category": "sim",
+            "tag": "SIM Card",
+            "flags": "cn",
+            "title": "SIM Card China",
+            "meta": "Keliling China, transit tetap online?",
+            "price_prefix": "Mulai dari",
+            "price": "Rp39.000",
+            "button_label": "Pilih paket",
+            "button_url": ""
+          }
+        },
+        "product_6": {
+          "type": "product_card",
+          "settings": {
+            "category": "sim",
+            "tag": "SIM Card",
+            "flags": "cn",
+            "title": "SIM Card China TikTok",
+            "meta": "Ke China, tetap eksis di TikTok?",
+            "price_prefix": "Mulai dari",
+            "price": "Rp49.000",
+            "button_label": "Pilih paket",
+            "button_url": ""
+          }
+        },
+        "product_7": {
+          "type": "product_card",
+          "settings": {
+            "category": "sim",
+            "tag": "SIM Card",
+            "flags": "cn_hk_mo",
+            "title": "SIM Card China Hong Kong Macau",
+            "meta": "Eksplor tiga destinasi sekaligus?",
+            "price_prefix": "Mulai dari",
+            "price": "Rp39.000",
+            "button_label": "Pilih paket",
+            "button_url": ""
+          }
+        },
+        "testimonial_1": {
           "type": "testimonial",
           "settings": {
-            "name": "Rina W.",
-            "quote": "Beneran plug-and-play, sampai Shanghai langsung nyala. WA & Google jalan tanpa VPN tambahan.",
+            "name": "Naidanymph_00",
+            "quote": "Koneksi stabil & langsung konek. Super terpercaya & admin sangat baik. Dipakai 8 hari di China lancar jaya & pakai buat WA semua lancar. Walau di hotel, di bullet train, lancar semua.",
             "rating": 5
           }
         },
-        "testimonial_BqTbPY": {
+        "testimonial_2": {
           "type": "testimonial",
           "settings": {
-            "name": "Arief S.",
-            "quote": "Sudah 3x ke China pakai Global Komunika. CS-nya cepat balas, sekali kena kendala dibantu sampai kelar.",
+            "name": "f*****5",
+            "quote": "Koneksi cepat dan di China WA, IG, FB tembus koneksinya tanpa harus beli VPN. Jadi sangat terbantu selama trip ke sana.",
             "rating": 5
           }
         },
-        "testimonial_jCf4mM": {
+        "testimonial_3": {
           "type": "testimonial",
           "settings": {
-            "name": "Michelle T.",
-            "quote": "Sebelumnya beli eSIM murahan di marketplace, gagal aktif. Yang ini smooth, worth every rupiah.",
+            "name": "faridanorlita23",
+            "quote": "Lancar jaya, internet cepat, tidak ada gangguan sama sekali selama trip ke Harbin, China. Bisa hotspot ke laptop juga sambil kerja.",
             "rating": 5
           }
         },
-        "testimonial_MXw7QD": {
+        "testimonial_4": {
           "type": "testimonial",
           "settings": {
-            "name": "Bagus P.",
-            "quote": "Nomor Indo tetap aktif buat OTP, data pakai eSIM China. Solusi paling praktis buat business trip.",
+            "name": "h*****9",
+            "quote": "Butuh urgent dan besoknya jam 11 siang langsung dikirim. Di negara tujuan juga berfungsi dengan baik. Dengan eSIM tidak usah repot ganti-ganti kartu.",
             "rating": 5
           }
         },
-        "testimonial_Nbq7Ni": {
+        "testimonial_5": {
           "type": "testimonial",
           "settings": {
-            "name": "Dita R.",
-            "quote": "Instruksinya jelas banget dari email. Scan QR, tunggu 1 menit, langsung online.",
+            "name": "M*****o",
+            "quote": "Signal bagus, mudah connect-nya, dikirim via email. Seller ramah dan adminnya siap membantu. Cek kuota juga bisa lewat admin.",
             "rating": 5
           }
         },
-        "faq_zCxx8M": {
+        "testimonial_6": {
+          "type": "testimonial",
+          "settings": {
+            "name": "e*****s",
+            "quote": "Punya paket data ini selama trip ke China sangat membantu. Ke mana-mana selalu on.",
+            "rating": 5
+          }
+        },
+        "faq_1": {
           "type": "faq",
           "settings": {
-            "question": "Apakah HP saya support eSIM China ini?",
-            "answer": "Ketik *#06#. Jika muncul EID, berarti perangkat Anda mendukung eSIM. Anda juga dapat mengeceknya melalui menu Pengaturan > SIM/Cellular."
+            "question": "Apakah HP saya bisa pakai eSIM China?",
+            "answer": "Gampang banget! Cukup ketik *#06# di HP kamu. Kalau muncul EID, berarti HP kamu mendukung eSIM. Kamu juga bisa cek lewat menu Pengaturan > SIM/Cellular."
           }
         },
-        "faq_7j3Djd": {
+        "faq_2": {
           "type": "faq",
           "settings": {
-            "question": "Berapa lama setelah beli saya bisa aktif?",
-            "answer": "QR code dikirim ke email setelah pembayaran berhasil. Kamu bisa langsung scan dan aktifkan kapan saja."
+            "question": "Apakah perlu VPN untuk buka WhatsApp, Instagram, TikTok atau Google di China?",
+            "answer": "Untuk paket Global Komunika yang mendukung akses aplikasi tersebut, tidak perlu memasang VPN tambahan. Pastikan kamu memilih varian yang sesuai karena dukungan aplikasi dapat berbeda antar paket."
           }
         },
-        "faq_gyHqdc": {
+        "faq_3": {
           "type": "faq",
           "settings": {
-            "question": "Nomor HP asli saya tetap aktif?",
-            "answer": "Ya, kamu tetap bisa terima SMS/telepon di nomor lama untuk OTP atau hal penting lainnya, sambil pakai data dari eSIM China by Global Komunika."
+            "question": "Apakah eSIM China bisa digunakan untuk hotspot?",
+            "answer": "Bisa pada paket yang mendukung tethering atau hotspot. Periksa keterangan varian sebelum membeli, ya!"
           }
         },
-        "faq_BKRedX": {
+        "faq_4": {
           "type": "faq",
           "settings": {
-            "question": "Bagaimana kalau eSIM saya gagal aktif?",
-            "answer": "Tim CS Global Komunika siap bantu via WhatsApp, kamu bisa jelaskan keluhanmu ke no 08986454071."
+            "question": "Kapan QR Code eSIM dikirim setelah beli?",
+            "answer": "Setelah pembayaran berhasil, QR Code akan dikirim ke email kamu. Tinggal scan dan ikuti petunjuk pemasangannya, ya!"
+          }
+        },
+        "faq_5": {
+          "type": "faq",
+          "settings": {
+            "question": "Apakah eSIM saya bisa dipakai saat transit di negara lain?",
+            "answer": "Tergantung paket yang kamu pilih. Beberapa paket bisa digunakan di negara transit tertentu. Cek daftar negara yang termasuk dalam paket sebelum membeli, ya!"
+          }
+        },
+        "faq_6": {
+          "type": "faq",
+          "settings": {
+            "question": "Bagaimana kalau eSIM saya tidak bisa aktif atau internet bermasalah?",
+            "answer": "Tenang, tim CS Global Komunika siap bantu lewat WhatsApp, mulai dari aktivasi sampai kendala koneksi selama perjalanan. Hubungi: 0815-6080-055."
           }
         }
       },
       "block_order": [
-        "feature_ReGrR8",
-        "feature_wWyYiY",
-        "feature_rm3JEA",
-        "feature_HRJrkw",
-        "testimonial_j49JHG",
-        "testimonial_BqTbPY",
-        "testimonial_jCf4mM",
-        "testimonial_MXw7QD",
-        "testimonial_Nbq7Ni",
-        "faq_zCxx8M",
-        "faq_7j3Djd",
-        "faq_gyHqdc",
-        "faq_BKRedX"
+        "feature_1",
+        "feature_2",
+        "feature_3",
+        "feature_4",
+        "feature_5",
+        "feature_6",
+        "product_1",
+        "product_2",
+        "product_3",
+        "product_4",
+        "product_5",
+        "product_6",
+        "product_7",
+        "testimonial_1",
+        "testimonial_2",
+        "testimonial_3",
+        "testimonial_4",
+        "testimonial_5",
+        "testimonial_6",
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6"
       ],
-      "name": "Global Komunika eSIM China",
+      "name": "Landing Page eSIM China",
       "settings": {
-        "background_color": "#ffffff",
-        "ink_color": "#1a1a1a",
-        "brand_blue": "#00adee",
-        "brand_blue_dark": "#005496",
-        "brand_yellow": "#fbb526",
-        "hero_bg_color_start": "#00adee",
-        "hero_bg_color_end": "#005496",
-        "hero_tagline": "100.000+ Traveler Telah Memilih Kami · Pelopor eSIM Travel Sejak 2016",
-        "hero_title": "Internet di China tanpa Drama",
-        "hero_price": "Rp 69.000",
-        "hero_button_text": "Beli Sekarang",
-        "hero_variant_id": "46518790324441",
-        "hero_button_url": "",
-        "hero_mascot": "shopify://shop_images/17_China_Macau.png",
-        "hero_mascot_asset_filename": "mascot_china.png",
-        "hero_mascot_alt": "Mascot Global Komunika",
-        "features_title": "Great Firewall Membatasi Akses Internet di China",
-        "features_subtitle": "Pastikan internet kamu bisa diandalkan begitu kamu tiba.",
-        "testimonials_title": "Lebih dari 100.000 traveler telah memilih Global Komunika sebagai solusi konektivitas perjalanan mereka.",
-        "faq_title": "Pertanyaan yang sering ditanya",
-        "founder_bg_color": "#005496",
-        "founder_image": "shopify://shop_images/pak_andy_hijau.png",
-        "founder_asset_filename": "founder_photo.png",
-        "founder_image_alt": "Foto founder Global Komunika",
-        "founder_quote": "Saya mendirikan Global Komunika pada tahun 2016 untuk membantu para traveler Indonesia mendapatkan pengalaman terbaik ketika menjelajahi Dunia. Berbekal pengalaman pribadi traveling mandiri sejak 2007, saya bisa berbagi banyak hal—mulai dari pilihan transportasi, rekomendasi destinasi menarik, hingga tips perjalanan lainnya. Kecintaan saya terhadap perjalanan mandiri, tanpa paket tur, memacu saya untuk terus mengembangkan Global Komunika agar setiap perjalanan Anda dapat selalu terhubung internet di mana pun Anda berada.",
-        "founder_name": "Andy · Founder & CEO"
+        "brand_blue": "#005496",
+        "brand_sky": "#00ADEE",
+        "meta_pixel_id": "671798165173716",
+        "hero_title": "Sampai China WhatsApp Instagram TikTok Google Langsung Jalan!",
+        "hero_sub": "Beberapa aplikasi favoritmu diblokir di China! Pastikan koneksi sudah siap sebelum berangkat biar liburanmu nggak sibuk ngurusin koneksi.",
+        "hero_price": "Rp29.000",
+        "hero_btn_text": "Lihat paket eSIM China",
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/hero_section.webp?v=1792133645",
+        "mascot_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/faq.webp?v=1792133641",
+        "steps_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/3_langkah_mudah.webp?v=1792209712",
+        "founder_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/pak_andy_hijau.webp?v=1792133640",
+        "stat_1_val": "500.000+",
+        "stat_1_lbl": "Dipercaya Traveler",
+        "stat_2_val": "Sejak 2016",
+        "stat_2_lbl": "Menemani traveler",
+        "stat_3_val": "Customer Support",
+        "stat_3_lbl": "Siap bantu",
+        "packages_title": "Pilih Paket Sesuai Gaya Trip Kamu!",
+        "packages_lead": "Kuota dan masa aktif menyesuaikan varian yang kamu pilih. Cek keterangan varian sebelum membeli.",
+        "founder_name": "Andy Ho",
+        "founder_title": "Founder & CEO, Global Komunika",
+        "founder_quote": "Saya mendirikan Global Komunika pada 2016 untuk membantu traveler Indonesia menjelajahi dunia dengan lebih nyaman. Berbekal pengalaman traveling mandiri sejak 2007, saya ingin memastikan setiap perjalanan jadi lebih mudah, praktis, dan tetap terhubung internet di mana pun berada.",
+        "whatsapp_number": "628156080055",
+        "whatsapp_text": "Halo Global Komunika, saya ingin tanya seputar paket internet China"
       }
     }
   },

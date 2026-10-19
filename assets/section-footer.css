@@ -4,7 +4,7 @@
 }
 .footer-container__wrapper {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   padding: 20px 10%;
   gap: 20px;
 }

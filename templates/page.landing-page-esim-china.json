@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -63,6 +72,8 @@
           "type": "product_card",
           "settings": {
             "category": "esim",
+            "product": "esim-china",
+            "image_url": "",
             "tag": "eSIM",
             "flags": "cn",
             "title": "eSIM China",
@@ -77,6 +88,8 @@
           "type": "product_card",
           "settings": {
             "category": "esim",
+            "product": "esim-china-mainland",
+            "image_url": "",
             "tag": "eSIM",
             "flags": "cn",
             "title": "eSIM China TikTok",
@@ -91,6 +104,8 @@
           "type": "product_card",
           "settings": {
             "category": "esim",
+            "product": "esim-china-datamax",
+            "image_url": "",
             "tag": "eSIM",
             "flags": "cn",
             "title": "eSIM China Data Max",
@@ -105,6 +120,8 @@
           "type": "product_card",
           "settings": {
             "category": "esim",
+            "product": "esim-china-hong-kong-macau",
+            "image_url": "",
             "tag": "eSIM",
             "flags": "cn_hk_mo",
             "title": "eSIM China Hong Kong Macau",
@@ -119,6 +136,8 @@
           "type": "product_card",
           "settings": {
             "category": "sim",
+            "product": "sim-card-china",
+            "image_url": "",
             "tag": "SIM Card",
             "flags": "cn",
             "title": "SIM Card China",
@@ -133,6 +152,8 @@
           "type": "product_card",
           "settings": {
             "category": "sim",
+            "product": "sim-card-china-mainland",
+            "image_url": "",
             "tag": "SIM Card",
             "flags": "cn",
             "title": "SIM Card China TikTok",
@@ -147,6 +168,8 @@
           "type": "product_card",
           "settings": {
             "category": "sim",
+            "product": "sim-card-china-hong-kong-macau",
+            "image_url": "",
             "tag": "SIM Card",
             "flags": "cn_hk_mo",
             "title": "SIM Card China Hong Kong Macau",
@@ -278,27 +301,48 @@
       "name": "Landing Page eSIM China",
       "settings": {
         "brand_blue": "#005496",
-        "brand_sky": "#00ADEE",
+        "brand_sky": "#00adee",
         "meta_pixel_id": "671798165173716",
         "hero_title": "Sampai China WhatsApp Instagram TikTok Google Langsung Jalan!",
+        "show_hero_app_icons": true,
+        "hero_icon_wa_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/whatsapp-tile.webp?v=1792394040",
+        "hero_icon_ig_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/instagram-tile.webp?v=1792394040",
+        "hero_icon_tt_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/tiktok-tile.webp?v=1792394040",
+        "hero_icon_google_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/google-tile.webp?v=1792394039",
         "hero_sub": "Beberapa aplikasi favoritmu diblokir di China! Pastikan koneksi sudah siap sebelum berangkat biar liburanmu nggak sibuk ngurusin koneksi.",
         "hero_price": "Rp29.000",
         "hero_btn_text": "Lihat paket eSIM China",
+        "hero_btn_url": "",
         "hero_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/hero_section.webp?v=1792133645",
         "mascot_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/faq.webp?v=1792133641",
-        "steps_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/3_langkah_mudah.webp?v=1792209712",
-        "founder_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/pak_andy_hijau.webp?v=1792133640",
+        "stats_mark_image_url": "",
+        "stats_mark_opacity": 100,
         "stat_1_val": "500.000+",
         "stat_1_lbl": "Dipercaya Traveler",
         "stat_2_val": "Sejak 2016",
         "stat_2_lbl": "Menemani traveler",
         "stat_3_val": "Customer Support",
         "stat_3_lbl": "Siap bantu",
+        "problem_title": "Di China, Belum Tentu Aplikasi Favoritmu Bisa Dibuka!",
+        "problem_desc_1": "Internet di China beda dari Indonesia. Kalau salah pilih koneksi, aplikasi yang biasa kamu pakai bisa saja tidak bisa diakses.",
+        "problem_desc_2": "Makanya, pilih paket internet yang sudah disiapkan untuk kebutuhan traveling di China.",
+        "benefits_title": "Internet di China Tanpa Ribet: Scan QR, Langsung Jalan",
+        "steps_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/3_langkah_mudah.webp?v=1792209712",
+        "steps_title": "3 Langkah Mudah, Siap Online di China!",
+        "testimonials_title": "Udah Jadi Teman Traveling 500.000+ Orang!",
+        "testimonials_lead": "Dari liburan singkat sampai perjalanan panjang, banyak traveler memilih Global Komunika untuk tetap terhubung selama di luar negeri.",
         "packages_title": "Pilih Paket Sesuai Gaya Trip Kamu!",
         "packages_lead": "Kuota dan masa aktif menyesuaikan varian yang kamu pilih. Cek keterangan varian sebelum membeli.",
+        "faq_title": "Masih Bingung?",
+        "founder_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/pak_andy_hijau.webp?v=1792133640",
         "founder_name": "Andy Ho",
         "founder_title": "Founder & CEO, Global Komunika",
         "founder_quote": "Saya mendirikan Global Komunika pada 2016 untuk membantu traveler Indonesia menjelajahi dunia dengan lebih nyaman. Berbekal pengalaman traveling mandiri sejak 2007, saya ingin memastikan setiap perjalanan jadi lebih mudah, praktis, dan tetap terhubung internet di mana pun berada.",
+        "final_title": "Trip ke China Udah Siap? Internetnya Juga Harus Siap!",
+        "final_lead": "Nggak perlu repot cari SIM lokal setelah sampai. Pilih eSIM atau SIM Card China dari sekarang, supaya kamu bisa langsung fokus menikmati perjalanan!",
+        "final_price": "Rp29.000",
+        "final_btn_text": "Lihat paket China",
+        "final_btn_url": "",
         "whatsapp_number": "628156080055",
         "whatsapp_text": "Halo Global Komunika, saya ingin tanya seputar paket internet China"
       }

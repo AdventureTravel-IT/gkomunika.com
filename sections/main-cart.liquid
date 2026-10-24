@@ -300,30 +300,30 @@
                   <!-- MOBILE INFO ORDER -->
                   <div class="md:hidden">
                     {% if days_value != blank %}
-                      <div class="mt-2 text-sm text-primary"><span>Days:</span> {{ days_value }}</div>
+                      <div class="mt-2 text-sm text-primary"><span>Days:</span> <strong class="font-bold">{{ days_value }}</strong></div>
                     {% endif %}
 
                     {% if data_plan_value != blank %}
-                      <div class="text-sm text-primary"><span>Data Plan:</span> {{ data_plan_value }}</div>
+                      <div class="text-sm text-primary"><span>Data Plan:</span> <strong class="font-bold">{{ data_plan_value }}</strong></div>
                     {% endif %}
 
                     {% if category_value != blank %}
-                      <div class="text-sm text-primary"><span>Category:</span> {{ cat_label_display }}</div>
+                      <div class="text-sm text-primary"><span>Category:</span> <strong class="font-bold">{{ cat_label_display }}</strong></div>
                     {% endif %}
                   </div>
 
                   <!-- DESKTOP INFO ORDER -->
                   <div class="hidden md:block">
                     {% if category_value != blank %}
-                      <div class="text-sm text-primary"><span>Category:</span> {{ cat_label_display }}</div>
+                      <div class="text-sm text-primary"><span>Category:</span> <strong class="font-bold">{{ cat_label_display }}</strong></div>
                     {% endif %}
 
                     {% if days_value != blank %}
-                      <div class="mt-2 text-sm text-primary"><span>Days:</span> {{ days_value }}</div>
+                      <div class="mt-2 text-sm text-primary"><span>Days:</span> <strong class="font-bold">{{ days_value }}</strong></div>
                     {% endif %}
 
                     {% if data_plan_value != blank %}
-                      <div class="text-sm text-primary"><span>Data Plan:</span> {{ data_plan_value }}</div>
+                      <div class="text-sm text-primary"><span>Data Plan:</span> <strong class="font-bold">{{ data_plan_value }}</strong></div>
                     {% endif %}
                   </div>
 

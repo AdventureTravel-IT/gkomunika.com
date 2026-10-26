@@ -11,6 +11,12 @@
       <meta name="robots" content="noindex, follow">
     {%- endif -%}
     <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}">
+    {%- if template.name == 'index' or template.name == 'collection' or template.suffix == 'all-destination' -%}
+      <link rel="stylesheet" href="{{ 'homepage-gkh.css' | asset_url }}">
+    {%- endif -%}
+    {%- if template.suffix == 'gsim' -%}
+      <link rel="stylesheet" href="{{ 'gsim-lp.css' | asset_url }}">
+    {%- endif -%}
 
     <!-- Google Tag Manager -->
     <script>
@@ -160,7 +166,7 @@
 
   <main
     id="MainContent"
-    class="container bg-background"
+    class="container bg-background{% if template.name == 'index' %} gkh-root{% endif %}"
     role="main"
     tabindex="-1">
     {{ content_for_layout }}

@@ -533,6 +533,65 @@
 {
   "name": "News Section",
   "settings": [],
+  "blocks": [
+    {
+      "type": "news_block",
+      "name": "News Block",
+      "settings": [
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Kategori tombol Readmore",
+          "options": [
+            { "value": "news", "label": "News" },
+            { "value": "event", "label": "Event" },
+            { "value": "travel-tips", "label": "Travel Tips" },
+            { "value": "travel-guide", "label": "Travel Guide" },
+            { "value": "tech-guide", "label": "Tech Guide" }
+          ],
+          "default": "news"
+        },
+        {
+          "type": "text",
+          "id": "hero-title",
+          "label": "Hero Title",
+          "default": "Featured News"
+        },
+        {
+          "type": "richtext",
+          "id": "hero-description",
+          "label": "Hero Description",
+          "default": "<p>Read our most highlighted content here.</p>"
+        },
+        {
+          "type": "page",
+          "id": "first-page",
+          "label": "First Page"
+        },
+        {
+          "type": "page",
+          "id": "second-page",
+          "label": "Second Page"
+        },
+        {
+          "type": "page",
+          "id": "thrid-page",
+          "label": "Third Page"
+        },
+        {
+          "type": "checkbox",
+          "id": "show-button",
+          "label": "Tampilkan tombol Readmore",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "hero-background",
+          "label": "Hero Background Image"
+        }
+      ]
+    }
+  ],
   "presets": [
     {
       "name": "News Section",

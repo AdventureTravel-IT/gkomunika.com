@@ -1,254 +1,413 @@
-{% style %}
-  .htu__container {
-    max-width: 1920px;
-    margin: 0 auto;
-  }
-
-  .htu__wrapper {
-    padding: 0 10%;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-  }
-
-  .htu__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  .htu__title {
-    font-weight: bold;
-    margin: 10px 0;
-    line-height: 1.5;
-    font-size: 30px;
-    color: var(--color-primary);
-  }
-
-  .htu__card-title {
-    font-weight: bold;
-    font-size: var(--font-supper-large);
-    color: var(--color-primary);
-    line-height: 1.3;
-    margin: 0;
-  }
-
-  .htu__card-paragraph {
-    font-size: var(--font-large);
-    color: var(--color-primary);
-    line-height: 1.3;
-    margin: 0;
-  }
-
-  .htu__htu-card,
-  .htu__wgk-card,
-  .htu__benefits-card {
-    background-color: var(--color-neutral);
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .htu__htu-number {
-    font-size: var(--font-large);
-    background: var(--color-neutral);
-    color: var(--color-primary);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .htu__customer-wrapper {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    min-height: 500px;
-    gap: 2.5rem;
-  }
-
-  /* SESUDAH */
-  .htu__customer-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    justify-content: flex-start; /* semua mulai dari atas */
-  }
-
-  .htu__cutomer-content.wrapper {
-    background-color: var(--color-neutral);
-    border: 2px solid var(--color-primary);
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  }
-
-  .htu__customer-profile {
-    font-size: var(--font-supper-large);
-    font-weight: bold;
-    color: var(--color-secondary);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .htu__customer-comment {
-    font-size: var(--font-large);
-    color: var(--color-primary);
-    text-align: left;
-  }
-
-  .htu__benefits {
-    margin-bottom: 100px;
-  }
-
-  @media (max-width: 1024px) {
-    .htu__customer-wrapper {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .htu__grid {
-      grid-template-columns: repeat(1, 1fr);
-      gap: 15px;
-    }
-
-    .htu__title {
-      font-size: 28px;
-    }
-
-    .htu__wrapper {
-      padding: 0 24px;
-    }
-
-    .htu__customer-wrapper {
-      grid-template-columns: repeat(1, 1fr);
-    }
-  }
-{% endstyle %}
-
 {% assign htu_blocks = section.blocks | where: 'type', 'htu_card' %}
 {% assign wgk_blocks = section.blocks | where: 'type', 'wgk_card' %}
 {% assign benefits_blocks = section.blocks | where: 'type', 'benefits_card' %}
+{% assign review_blocks = section.blocks | where: 'type', 'review' %}
 {% assign review_top_blocks = section.blocks | where: 'type', 'review_top' %}
 {% assign review_bottom_blocks = section.blocks | where: 'type', 'review_bottom' %}
 
-{% capture rating_svg %}{{- 'ratting.svg' | inline_asset_content -}}{% endcapture %}
-{% capture arrow_svg %}{{- 'icon-arrow-back.svg' | inline_asset_content -}}{% endcapture %}
-
-<div class="htu__container">
-  <div class="htu__wrapper">
-    {% if htu_blocks.size > 0 %}
-      <section class="htu__htu">
-        <h2 class="htu__title">{{ section.settings.htu_title }}</h2>
-        <div class="htu__htu-wrapper htu__grid">
-          {% for block in htu_blocks %}
-            <section class="htu__htu-card">
+<!-- HOW TO USE -->
+<section class="gkh-sec">
+  <div class="gkh-wrap">
+    <h2 class="gkh-title">{{ section.settings.htu_title | default: 'How to use' }}</h2>
+    <div class="gkh-cards">
+      {% if htu_blocks.size > 0 %}
+        {% for block in htu_blocks %}
+          <div class="gkh-card" {{ block.shopify_attributes }}>
+            <div class="gkh-card__ic">
               {% if block.settings.icon != blank %}
                 {% assign icon_name = block.settings.icon | append: '.svg' %}
-                <div class="htu__card-icon">{{ icon_name | inline_asset_content }}</div>
+                {{ icon_name | inline_asset_content }}
+              {% else %}
+                {% case forloop.index %}
+                  {% when 1 %}{{ 'htu-phone.svg' | inline_asset_content }}
+                  {% when 2 %}{{ 'htu-mail.svg' | inline_asset_content }}
+                  {% when 3 %}{{ 'htu-activate.svg' | inline_asset_content }}
+                  {% else %}{{ 'htu-phone.svg' | inline_asset_content }}
+                {% endcase %}
               {% endif %}
-              <div class="htu__card-title">
-                <span>{{ block.settings.title }}</span>
-              </div>
-              <div class="htu__card-paragraph">{{ block.settings.paragraph }}</div>
-            </section>
-          {% endfor %}
-        </div>
-      </section>
-    {% endif %}
-
-    {% if wgk_blocks.size > 0 %}
-      <section class="htu__wgk">
-        <h2 class="htu__title">{{ section.settings.wgk_title }}</h2>
-        <div class="htu__wgk-wrapper htu__grid">
-          {% for block in wgk_blocks %}
-            <section class="htu__wgk-card">
-              {% if block.settings.icon != blank %}
-                {% assign icon_name = block.settings.icon | append: '.svg' %}
-                <div class="htu__card-icon">{{ icon_name | inline_asset_content }}</div>
-              {% endif %}
-              <div class="htu__card-title">
-                <span>{{ block.settings.title }}</span>
-              </div>
-              <div class="htu__card-paragraph">{{ block.settings.paragraph }}</div>
-            </section>
-          {% endfor %}
-        </div>
-      </section>
-    {% endif %}
-
-    {% if review_top_blocks.size > 0 or review_bottom_blocks.size > 0 %}
-      <section class="htu__customer-review">
-        <h2 class="htu__title">{{ section.settings.review_title }}</h2>
-        <div class="htu__customer-wrapper">
-          {% for block in review_top_blocks %}
-            <div class="htu__customer-content top">
-              <section class="htu__cutomer-content wrapper">
-                <div class="htu__customer-profile">
-                  {{ block.settings['profile-top'] }}
-                  <div>{{ rating_svg }}</div>
-                </div>
-                <div class="htu__customer-comment">{{ block.settings['comment-top'] }}</div>
-              </section>
-              <section class="htu__cutomer-content wrapper">
-                <div class="htu__customer-profile">
-                  {{ block.settings['profile-top1'] }}
-                  <div>{{ rating_svg }}</div>
-                </div>
-                <div class="htu__customer-comment">{{ block.settings['comment-top1'] }}</div>
-              </section>
             </div>
+            <h3 class="gkh-card__t">{{ block.settings.title }}</h3>
+            <p class="gkh-card__p">{{ block.settings.paragraph }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="gkh-card">
+          <div class="gkh-card__ic">{{ 'htu-phone.svg' | inline_asset_content }}</div>
+          <h3 class="gkh-card__t">Choose</h3>
+          <p class="gkh-card__p">Select your destination and find the best data plan for your trip.</p>
+        </div>
+        <div class="gkh-card">
+          <div class="gkh-card__ic">{{ 'htu-mail.svg' | inline_asset_content }}</div>
+          <h3 class="gkh-card__t">Scan</h3>
+          <p class="gkh-card__p">Receive your QR code via email after purchase. Scan it to install your eSIM in just a few steps.</p>
+        </div>
+        <div class="gkh-card">
+          <div class="gkh-card__ic">{{ 'htu-activate.svg' | inline_asset_content }}</div>
+          <h3 class="gkh-card__t">Connect</h3>
+          <p class="gkh-card__p">Activate your eSIM at your destination and enjoy seamless connectivity throughout your trip.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- WHY GLOBAL KOMUNIKA? -->
+<section class="gkh-sec">
+  <div class="gkh-wrap">
+    <h2 class="gkh-title">{{ section.settings.wgk_title | default: 'Why Global Komunika?' }}</h2>
+    <div class="gkh-cards">
+      {% if wgk_blocks.size > 0 %}
+        {% for block in wgk_blocks %}
+          <div class="gkh-card" {{ block.shopify_attributes }}>
+            <div class="gkh-card__ic">
+              {% if block.settings.icon != blank %}
+                {% assign icon_name = block.settings.icon | append: '.svg' %}
+                {{ icon_name | inline_asset_content }}
+              {% else %}
+                {% case forloop.index %}
+                  {% when 1 %}{{ 'htu-verified.svg' | inline_asset_content }}
+                  {% when 2 %}{{ 'htu-user.svg' | inline_asset_content }}
+                  {% when 3 %}{{ 'htu-secure.svg' | inline_asset_content }}
+                  {% else %}{{ 'htu-verified.svg' | inline_asset_content }}
+                {% endcase %}
+              {% endif %}
+            </div>
+            <h3 class="gkh-card__t">{{ block.settings.title }}</h3>
+            <p class="gkh-card__p">{{ block.settings.paragraph }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="gkh-card">
+          <div class="gkh-card__ic">{{ 'htu-verified.svg' | inline_asset_content }}</div>
+          <h3 class="gkh-card__t">Pioneering eSIM Since 2016</h3>
+          <p class="gkh-card__p">Reliable connectivity across 150+ countries, backed by nearly a decade of experience.</p>
+        </div>
+        <div class="gkh-card">
+          <div class="gkh-card__ic">{{ 'htu-user.svg' | inline_asset_content }}</div>
+          <h3 class="gkh-card__t">Over 500,000 eSIMs Sold</h3>
+          <p class="gkh-card__p">Trusted by travelers to stay connected wherever their journeys take them.</p>
+        </div>
+        <div class="gkh-card">
+          <div class="gkh-card__ic">{{ 'htu-secure.svg' | inline_asset_content }}</div>
+          <h3 class="gkh-card__t">100% Activation Guarantee &amp; Great Value</h3>
+          <p class="gkh-card__p">Seamless activation, reliable connectivity and competitive pricing for worry-free travel.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- WHAT OUR CUSTOMERS SAY (SLIDER) -->
+<section class="gkh-sec">
+  <div class="gkh-wrap">
+    <h2 class="gkh-title">{{ section.settings.review_title | default: 'What Our Customers Say' }}</h2>
+    <div class="gkh-rslider" aria-roledescription="carousel" aria-label="Customer reviews" data-gkh-rslider>
+      <button class="gkh-rnav gkh-rnav--prev" type="button" aria-label="Previous reviews">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+
+      <div class="gkh-rtrack" tabindex="0">
+        {% assign has_custom_reviews = false %}
+        {% if review_blocks.size > 0 or review_top_blocks.size > 0 or review_bottom_blocks.size > 0 %}
+          {% assign has_custom_reviews = true %}
+        {% endif %}
+
+        {% if has_custom_reviews %}
+          {% for block in review_blocks %}
+            <article class="gkh-rcard" {{ block.shopify_attributes }}>
+              <div class="gkh-rcard__top">
+                <h3 class="gkh-rcard__name">{{ block.settings.author }}</h3>
+                <div class="gkh-stars" aria-label="5 out of 5 stars">
+                  {% for i in (1..5) %}
+                    <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                  {% endfor %}
+                </div>
+              </div>
+              <p class="gkh-rcard__text">{{ block.settings.comment }}</p>
+            </article>
+          {% endfor %}
+
+          {% for block in review_top_blocks %}
+            {% if block.settings['profile-top'] != blank %}
+              <article class="gkh-rcard" {{ block.shopify_attributes }}>
+                <div class="gkh-rcard__top">
+                  <h3 class="gkh-rcard__name">{{ block.settings['profile-top'] }}</h3>
+                  <div class="gkh-stars" aria-label="5 out of 5 stars">
+                    {% for i in (1..5) %}
+                      <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                    {% endfor %}
+                  </div>
+                </div>
+                <p class="gkh-rcard__text">{{ block.settings['comment-top'] }}</p>
+              </article>
+            {% endif %}
+            {% if block.settings['profile-top1'] != blank %}
+              <article class="gkh-rcard" {{ block.shopify_attributes }}>
+                <div class="gkh-rcard__top">
+                  <h3 class="gkh-rcard__name">{{ block.settings['profile-top1'] }}</h3>
+                  <div class="gkh-stars" aria-label="5 out of 5 stars">
+                    {% for i in (1..5) %}
+                      <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                    {% endfor %}
+                  </div>
+                </div>
+                <p class="gkh-rcard__text">{{ block.settings['comment-top1'] }}</p>
+              </article>
+            {% endif %}
           {% endfor %}
 
           {% for block in review_bottom_blocks %}
-            <div class="htu__customer-content">
-              <section class="htu__cutomer-content wrapper bg-neutral text-primary">
-                <div class="htu__customer-profile">
-                  {{ block.settings['profile-bottom'] }}
-                  <div>{{ rating_svg }}</div>
+            {% if block.settings['profile-bottom'] != blank %}
+              <article class="gkh-rcard" {{ block.shopify_attributes }}>
+                <div class="gkh-rcard__top">
+                  <h3 class="gkh-rcard__name">{{ block.settings['profile-bottom'] }}</h3>
+                  <div class="gkh-stars" aria-label="5 out of 5 stars">
+                    {% for i in (1..5) %}
+                      <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                    {% endfor %}
+                  </div>
                 </div>
-                <div class="htu__customer-comment">{{ block.settings['comment-bottom'] }}</div>
-              </section>
-              <section class="htu__cutomer-content wrapper">
-                <div class="htu__customer-profile">
-                  {{ block.settings['profile-bottom1'] }}
-                  <div>{{ rating_svg }}</div>
+                <p class="gkh-rcard__text">{{ block.settings['comment-bottom'] }}</p>
+              </article>
+            {% endif %}
+            {% if block.settings['profile-bottom1'] != blank %}
+              <article class="gkh-rcard" {{ block.shopify_attributes }}>
+                <div class="gkh-rcard__top">
+                  <h3 class="gkh-rcard__name">{{ block.settings['profile-bottom1'] }}</h3>
+                  <div class="gkh-stars" aria-label="5 out of 5 stars">
+                    {% for i in (1..5) %}
+                      <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                    {% endfor %}
+                  </div>
                 </div>
-                <div class="htu__customer-comment">{{ block.settings['comment-bottom1'] }}</div>
-              </section>
-            </div>
+                <p class="gkh-rcard__text">{{ block.settings['comment-bottom1'] }}</p>
+              </article>
+            {% endif %}
           {% endfor %}
-        </div>
-      </section>
-    {% endif %}
 
-    {% if benefits_blocks.size > 0 %}
-      <section class="htu__benefits">
-        <h2 class="htu__title">{{ section.settings.benefits_title }}</h2>
-        <div class="htu__benefits-wrapper htu__grid">
-          {% for block in benefits_blocks %}
-            <section class="htu__benefits-card">
+        {% else %}
+          <!-- DEFAULT FALLBACK REVIEWS -->
+          <article class="gkh-rcard">
+            <div class="gkh-rcard__top">
+              <h3 class="gkh-rcard__name">Yoelia</h3>
+              <div class="gkh-stars" aria-label="5 out of 5 stars">
+                {% for i in (1..5) %}
+                  <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                {% endfor %}
+              </div>
+            </div>
+            <p class="gkh-rcard__text">I’ve used this eSIM multiple times across different countries—always works perfectly. Setup is super simple, and the signal is strong and stable. Highly recommend!</p>
+          </article>
+
+          <article class="gkh-rcard">
+            <div class="gkh-rcard__top">
+              <h3 class="gkh-rcard__name">Albert</h3>
+              <div class="gkh-stars" aria-label="5 out of 5 stars">
+                {% for i in (1..5) %}
+                  <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                {% endfor %}
+              </div>
+            </div>
+            <p class="gkh-rcard__text">Customer service is amazing! They replied fast and clearly answered all my questions. Even helped me troubleshoot when I had a small issue. Great experience!</p>
+          </article>
+
+          <article class="gkh-rcard">
+            <div class="gkh-rcard__top">
+              <h3 class="gkh-rcard__name">Rama</h3>
+              <div class="gkh-stars" aria-label="5 out of 5 stars">
+                {% for i in (1..5) %}
+                  <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                {% endfor %}
+              </div>
+            </div>
+            <p class="gkh-rcard__text">Affordable pricing and the eSIM arrived in my email almost instantly after payment. The signal was stable during my entire trip. Will definitely use again.</p>
+          </article>
+
+          <article class="gkh-rcard">
+            <div class="gkh-rcard__top">
+              <h3 class="gkh-rcard__name">Eva</h3>
+              <div class="gkh-stars" aria-label="5 out of 5 stars">
+                {% for i in (1..5) %}
+                  <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                {% endfor %}
+              </div>
+            </div>
+            <p class="gkh-rcard__text">Used this eSIM for a multi-country trip and it switched networks automatically without any issues. Very convenient and stress-free.</p>
+          </article>
+
+          <article class="gkh-rcard">
+            <div class="gkh-rcard__top">
+              <h3 class="gkh-rcard__name">Lia</h3>
+              <div class="gkh-stars" aria-label="5 out of 5 stars">
+                {% for i in (1..5) %}
+                  <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                {% endfor %}
+              </div>
+            </div>
+            <p class="gkh-rcard__text">Tried this eSIM in Japan, Korea, and China—it worked like a charm in all places. The internet was fast, even in rural areas. This is a must-have for any traveler.</p>
+          </article>
+
+          <article class="gkh-rcard">
+            <div class="gkh-rcard__top">
+              <h3 class="gkh-rcard__name">Vino</h3>
+              <div class="gkh-stars" aria-label="5 out of 5 stars">
+                {% for i in (1..5) %}
+                  <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                {% endfor %}
+              </div>
+            </div>
+            <p class="gkh-rcard__text">Setup was quick, instructions were clear, and I had full signal during my entire trip. Super happy with the service. Would recommend to anyone!</p>
+          </article>
+
+          <article class="gkh-rcard">
+            <div class="gkh-rcard__top">
+              <h3 class="gkh-rcard__name">Audria</h3>
+              <div class="gkh-stars" aria-label="5 out of 5 stars">
+                {% for i in (1..5) %}
+                  <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                {% endfor %}
+              </div>
+            </div>
+            <p class="gkh-rcard__text">I was nervous trying an eSIM for the first time, but the process was super easy. Just scan and go. The seller even gave tips on when to activate. Very helpful!</p>
+          </article>
+
+          <article class="gkh-rcard">
+            <div class="gkh-rcard__top">
+              <h3 class="gkh-rcard__name">Tiani</h3>
+              <div class="gkh-stars" aria-label="5 out of 5 stars">
+                {% for i in (1..5) %}
+                  <svg class="gkh-star" viewBox="0 0 24 24" width="20" height="20" fill="#FFD45F" aria-hidden="true"><path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 2.38 0 0 0 .57-2.44Z"></path></svg>
+                {% endfor %}
+              </div>
+            </div>
+            <p class="gkh-rcard__text">Scanned the QR code right after landing, and it worked immediately. No need to change settings. The instructions are super clear too.</p>
+          </article>
+        {% endif %}
+      </div>
+
+      <button class="gkh-rnav gkh-rnav--next" type="button" aria-label="Next reviews">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS OF USING ESIM -->
+<section class="gkh-sec">
+  <div class="gkh-wrap">
+    <h2 class="gkh-title">{{ section.settings.benefits_title | default: 'Benefits of Using eSIM' }}</h2>
+    <div class="gkh-cards">
+      {% if benefits_blocks.size > 0 %}
+        {% for block in benefits_blocks %}
+          <div class="gkh-card" {{ block.shopify_attributes }}>
+            <div class="gkh-card__ic">
               {% if block.settings.icon != blank %}
                 {% assign icon_name = block.settings.icon | append: '.svg' %}
-                <div class="htu__card-icon">{{ icon_name | inline_asset_content }}</div>
+                {{ icon_name | inline_asset_content }}
+              {% else %}
+                {% case forloop.index %}
+                  {% when 1 %}{{ 'htu-simcard.svg' | inline_asset_content }}
+                  {% when 2 %}{{ 'htu-qrcode.svg' | inline_asset_content }}
+                  {% when 3 %}{{ 'htu-secure.svg' | inline_asset_content }}
+                  {% else %}{{ 'htu-simcard.svg' | inline_asset_content }}
+                {% endcase %}
               {% endif %}
-              <div class="htu__card-title">
-                <span>{{ block.settings.title }}</span>
-              </div>
-              <div class="htu__card-paragraph">{{ block.settings.paragraph }}</div>
-            </section>
-          {% endfor %}
+            </div>
+            <h3 class="gkh-card__t">{{ block.settings.title }}</h3>
+            <p class="gkh-card__p">{{ block.settings.paragraph }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="gkh-card">
+          <div class="gkh-card__ic">{{ 'htu-simcard.svg' | inline_asset_content }}</div>
+          <h3 class="gkh-card__t">Keep Your Number Active</h3>
+          <p class="gkh-card__p">Stay reachable on your primary number for calls, SMS and OTPs while using eSIM abroad.</p>
         </div>
-      </section>
-    {% endif %}
+        <div class="gkh-card">
+          <div class="gkh-card__ic">{{ 'htu-qrcode.svg' | inline_asset_content }}</div>
+          <h3 class="gkh-card__t">Quick &amp; Easy Setup</h3>
+          <p class="gkh-card__p">No physical SIM card or store visit needed. Simply scan the QR code to install your eSIM.</p>
+        </div>
+        <div class="gkh-card">
+          <div class="gkh-card__ic">{{ 'htu-secure.svg' | inline_asset_content }}</div>
+          <h3 class="gkh-card__t">Secure &amp; Reliable Connection</h3>
+          <p class="gkh-card__p">Enjoy secure mobile connectivity wherever your travels take you.</p>
+        </div>
+      {% endif %}
+    </div>
   </div>
-</div>
+</section>
+
+<script>
+  (function () {
+    var r = document.querySelector('[data-gkh-rslider]');
+    if (!r) return;
+    var tr = r.querySelector('.gkh-rtrack');
+    var nx = r.querySelector('.gkh-rnav--next');
+    var pv = r.querySelector('.gkh-rnav--prev');
+    if (!tr || !nx || !pv) return;
+
+    var timer = null;
+    var paused = false;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function step() {
+      var c = tr.querySelector('.gkh-rcard');
+      return c ? c.offsetWidth + 16 : tr.clientWidth;
+    }
+
+    function atEnd() {
+      return tr.scrollLeft + tr.clientWidth >= tr.scrollWidth - 4;
+    }
+
+    function next() {
+      if (atEnd()) {
+        tr.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        tr.scrollBy({ left: step(), behavior: 'smooth' });
+      }
+    }
+
+    function prev() {
+      if (tr.scrollLeft <= 4) {
+        tr.scrollTo({ left: tr.scrollWidth, behavior: 'smooth' });
+      } else {
+        tr.scrollBy({ left: -step(), behavior: 'smooth' });
+      }
+    }
+
+    function start() {
+      if (reduce || timer) return;
+      timer = setInterval(function () {
+        if (!paused && !document.hidden) next();
+      }, 2000);
+    }
+
+    function hold() {
+      paused = true;
+    }
+
+    function free() {
+      paused = false;
+    }
+
+    nx.addEventListener('click', next);
+    pv.addEventListener('click', prev);
+
+    var box = tr.parentNode;
+    ['mouseenter', 'focusin', 'touchstart', 'pointerdown'].forEach(function (e) {
+      box.addEventListener(e, hold, { passive: true });
+    });
+
+    ['mouseleave', 'focusout', 'touchend', 'pointerup', 'touchcancel'].forEach(function (e) {
+      box.addEventListener(e, function () {
+        setTimeout(free, 1500);
+      }, { passive: true });
+    });
+
+    start();
+  })();
+</script>
 
 {% schema %}
 {
@@ -258,7 +417,7 @@
       "type": "text",
       "id": "htu_title",
       "label": "HTU Section Title",
-      "default": "How To Use?"
+      "default": "How to use"
     },
     {
       "type": "text",
@@ -281,10 +440,74 @@
       "type": "text",
       "id": "benefits_title",
       "label": "Benefits Section Title",
-      "default": "Benefits"
+      "default": "Benefits of Using eSIM"
     }
   ],
   "blocks": [
+    {
+      "type": "htu_card",
+      "name": "How To Use Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon Name (e.g. htu-phone)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "Choose"
+        },
+        {
+          "type": "textarea",
+          "id": "paragraph",
+          "label": "Card Paragraph",
+          "default": "Select your destination and find the best data plan for your trip."
+        }
+      ]
+    },
+    {
+      "type": "wgk_card",
+      "name": "Why GK Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon Name (e.g. htu-verified)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "Pioneering eSIM Since 2016"
+        },
+        {
+          "type": "textarea",
+          "id": "paragraph",
+          "label": "Card Paragraph",
+          "default": "Reliable connectivity across 150+ countries, backed by nearly a decade of experience."
+        }
+      ]
+    },
+    {
+      "type": "review",
+      "name": "Customer Review",
+      "settings": [
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Reviewer Name",
+          "default": "Customer"
+        },
+        {
+          "type": "textarea",
+          "id": "comment",
+          "label": "Customer Review",
+          "default": "Great service and seamless eSIM activation!"
+        }
+      ]
+    },
     {
       "type": "review_top",
       "name": "Customer Review (Top)",
@@ -292,22 +515,22 @@
         {
           "type": "text",
           "id": "profile-top",
-          "label": "Customer Profile (HTML/SVG/text)"
+          "label": "Reviewer 1 Name"
         },
         {
           "type": "textarea",
           "id": "comment-top",
-          "label": "Customer Comment"
+          "label": "Reviewer 1 Comment"
         },
         {
           "type": "text",
           "id": "profile-top1",
-          "label": "Customer Profile (HTML/SVG/text)"
+          "label": "Reviewer 2 Name"
         },
         {
           "type": "textarea",
           "id": "comment-top1",
-          "label": "Customer Comment"
+          "label": "Reviewer 2 Comment"
         }
       ]
     },
@@ -318,64 +541,22 @@
         {
           "type": "text",
           "id": "profile-bottom",
-          "label": "Customer Profile (HTML/SVG/text)"
+          "label": "Reviewer 1 Name"
         },
         {
           "type": "textarea",
           "id": "comment-bottom",
-          "label": "Customer Comment"
+          "label": "Reviewer 1 Comment"
         },
         {
           "type": "text",
           "id": "profile-bottom1",
-          "label": "Customer Profile (HTML/SVG/text)"
+          "label": "Reviewer 2 Name"
         },
         {
           "type": "textarea",
           "id": "comment-bottom1",
-          "label": "Customer Comment"
-        }
-      ]
-    },
-    {
-      "type": "htu_card",
-      "name": "HTU Card",
-      "settings": [
-        {
-          "type": "text",
-          "id": "icon",
-          "label": "Icon (optional HTML/SVG or text)"
-        },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Card Title"
-        },
-        {
-          "type": "textarea",
-          "id": "paragraph",
-          "label": "Card Description"
-        }
-      ]
-    },
-    {
-      "type": "wgk_card",
-      "name": "WGK Card",
-      "settings": [
-        {
-          "type": "text",
-          "id": "icon",
-          "label": "Icon (optional HTML/SVG or text)"
-        },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Card Title"
-        },
-        {
-          "type": "textarea",
-          "id": "paragraph",
-          "label": "Card Description"
+          "label": "Reviewer 2 Comment"
         }
       ]
     },
@@ -386,26 +567,27 @@
         {
           "type": "text",
           "id": "icon",
-          "label": "Icon (optional HTML/SVG or text)"
+          "label": "Icon Name (e.g. htu-simcard)"
         },
         {
           "type": "text",
           "id": "title",
-          "label": "Card Title"
+          "label": "Card Title",
+          "default": "Keep Your Number Active"
         },
         {
           "type": "textarea",
           "id": "paragraph",
-          "label": "Card Description"
+          "label": "Card Paragraph",
+          "default": "Stay reachable on your primary number for calls, SMS and OTPs while using eSIM abroad."
         }
       ]
     }
   ],
-  "max_blocks": 30,
   "presets": [
     {
       "name": "How To Use Section",
-      "category": "Custom"
+      "category": "Custom Sections"
     }
   ]
 }

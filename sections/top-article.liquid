@@ -1,61 +1,129 @@
-<section class="wrapper md:wrapper-base space-y-6">
-    <div class="flex items-center justify-between">
-        <h1 class="text-primary text-[33px] font-bold">Blog Posts</h1>
-        <a href="/pages/news" aria-label="See more news articles" class="rounded-full border border-primary px-[24px] py-2 text-primary font-semibold text-[15px] hover:bg-primary hover:text-neutral transition whitespace-nowrap">
-            See More
-        </a>
+<section class="gkh-sec">
+  <div class="gkh-wrap">
+    <div class="gkh-bhead">
+      <h2 class="gkh-title">{{ section.settings.title | default: 'Blog Posts' }}</h2>
+      <a class="gkh-btn-o" href="{{ section.settings.see_more_url | default: '/pages/news' }}">
+        {{ section.settings.see_more_text | default: 'See More' }}
+      </a>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[15px] items-start">
+    <div class="gkh-blog">
+      {% if section.blocks.size > 0 %}
         {% for block in section.blocks %}
-            {% assign pages = block.settings.page %}
+          {% assign page_item = block.settings.page %}
 
-            {% if pages != blank %}
-                {% assign first_img = '' %}
-                {% assign parts = pages.content | split: 'src="' %}
-                {% if parts.size > 1 %}
-                    {% assign first_img = parts[1] | split: '"' | first %}
-                {% endif %}
-
-                <a href="{{ pages.url }}" class="rounded-[15px] bg-neutral overflow-hidden shadow-md hover:shadow-lg transition-all hover:-translate-y-[5px] flex flex-col">
-                    <!-- 2/3 aspect ratio, capped at 280px height -->
-                    <div class="w-full flex-shrink-0" style="aspect-ratio: 2/3; max-height: 150px; height: min(calc(100vw / 3 * 3 / 2), 280px); overflow: hidden;">
-                        <img
-                            class="w-full h-full object-cover bg-slate-300"
-                            {% if first_img != blank %}src="{{ first_img }}"{% endif %}
-                            alt="{{ pages.title | escape }}"
-                            loading="lazy"
-                            width="auto"
-                            height="auto"
-                        >
-                    </div>
-
-                    <!-- Card content -->
-                    <div class="p-[15px] flex flex-col gap-2 flex-1">
-                        <h2 class="text-primary text-[18px] line-clamp-2 font-semibold leading-tight">
-                            {{ pages.title }}
-                        </h2>
-                        <p class="line-clamp-3 text-primary text-[14px] leading-snug flex-1">
-                            {{ pages.content | strip_html | truncate: 160 }}
-                        </p>
-                        <span class="flex items-center gap-1 text-primary text-[14px] font-semibold mt-2">
-                            Read article
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
-                        </span>
-                    </div>
-                </a>
+          {% if page_item != blank %}
+            {% assign first_img = '' %}
+            {% assign parts = page_item.content | split: 'src="' %}
+            {% if parts.size > 1 %}
+              {% assign first_img = parts[1] | split: '"' | first %}
             {% endif %}
 
+            {% if first_img == blank %}
+              {% case page_item.handle %}
+                {% when 'how-to-get-free-domestic-flight-tickets-in-thailand-for-tourists' %}
+                  {% assign first_img = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/thai_4a559a09-e2e9-4c5b-a212-5d641002ff08.jpg?v=1756893975' %}
+                {% when 'blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how' %}
+                  {% assign first_img = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/DALL_E_2025-02-24_17.07.28_-_A_conceptual_illustration_of_a_smartphone_surrounded_by_a_digital_barrier_symbolizing_an_IMEI-blocked_device._The_phone_screen_shows_a_subtle_IMEI_B.webp?v=1744270627' %}
+                {% when 'can-a-passport-be-rejected-here-are-examples-of-damaged-passports-you-need-to-know' %}
+                  {% assign first_img = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/indonesia_passport_12b51a93-31a3-4d4e-bf5d-6b42e2118339.jpg?v=1754637061' %}
+                {% when 'bca-poket-valas-a-convenient-solution-for-foreign-currency-transactions-abroad' %}
+                  {% assign first_img = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/poket_valas.jpg?v=1745298601' %}
+              {% endcase %}
+            {% endif %}
+
+            <a class="gkh-post" href="{{ page_item.url }}" {{ block.shopify_attributes }}>
+              <div class="gkh-post__img">
+                {% if first_img != blank %}
+                  <img src="{{ first_img }}" alt="{{ page_item.title | escape }}" loading="lazy">
+                {% else %}
+                  <div style="width:100%;height:100%;background:#cbd5e1;"></div>
+                {% endif %}
+              </div>
+              <div class="gkh-post__body">
+                <h3 class="gkh-post__t">{{ page_item.title }}</h3>
+                <p class="gkh-post__p">{{ page_item.content | strip_html | truncate: 160 }}</p>
+                <span class="gkh-post__more">
+                  Read article
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </span>
+              </div>
+            </a>
+          {% endif %}
         {% endfor %}
+
+      {% else %}
+        <!-- DEFAULT FALLBACK POSTS -->
+        <a class="gkh-post" href="/pages/how-to-get-free-domestic-flight-tickets-in-thailand-for-tourists">
+          <div class="gkh-post__img">
+            <img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/thai_4a559a09-e2e9-4c5b-a212-5d641002ff08.jpg?v=1756893975" alt="How to Get Free Domestic Flight Tickets in Thailand for Tourists" loading="lazy">
+          </div>
+          <div class="gkh-post__body">
+            <h3 class="gkh-post__t">How to Get Free Domestic Flight Tickets in Thailand for Tourists</h3>
+            <p class="gkh-post__p">Good news for tourists planning to travel to Thailand! Starting this September, the Thai government is launching a new program that allows international tourists...</p>
+            <span class="gkh-post__more">Read article <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </div>
+        </a>
+
+        <a class="gkh-post" href="/pages/blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how">
+          <div class="gkh-post__img">
+            <img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/DALL_E_2025-02-24_17.07.28_-_A_conceptual_illustration_of_a_smartphone_surrounded_by_a_digital_barrier_symbolizing_an_IMEI-blocked_device._The_phone_screen_shows_a_subtle_IMEI_B.webp?v=1744270627" alt="Blocked IMEI Phones Can Use eSIM Without Customs Registration: Here’s How" loading="lazy">
+          </div>
+          <div class="gkh-post__body">
+            <h3 class="gkh-post__t">Blocked IMEI Phones Can Use eSIM Without Customs Registration: Here’s How</h3>
+            <p class="gkh-post__p">IMEI (International Mobile Equipment Identity) is a unique identification number found on every mobile phone, whether it&#x27;s an Android or iPhone. This number...</p>
+            <span class="gkh-post__more">Read article <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </div>
+        </a>
+
+        <a class="gkh-post" href="/pages/can-a-passport-be-rejected-here-are-examples-of-damaged-passports-you-need-to-know">
+          <div class="gkh-post__img">
+            <img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/indonesia_passport_12b51a93-31a3-4d4e-bf5d-6b42e2118339.jpg?v=1754637061" alt="Can a Passport Be Rejected? Here Are Examples of Damaged Passports You Need to Know" loading="lazy">
+          </div>
+          <div class="gkh-post__body">
+            <h3 class="gkh-post__t">Can a Passport Be Rejected? Here Are Examples of Damaged Passports You Need to Know</h3>
+            <p class="gkh-post__p">Recently, the French Embassy announced that they no longer accept passports with staple holes, as these are considered defective or damaged passports. This...</p>
+            <span class="gkh-post__more">Read article <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </div>
+        </a>
+
+        <a class="gkh-post" href="/pages/bca-poket-valas-a-convenient-solution-for-foreign-currency-transactions-abroad">
+          <div class="gkh-post__img">
+            <img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/poket_valas.jpg?v=1745298601" alt="BCA Poket Valas: A Convenient Solution for Foreign Currency Transactions Abroad" loading="lazy">
+          </div>
+          <div class="gkh-post__body">
+            <h3 class="gkh-post__t">BCA Poket Valas: A Convenient Solution for Foreign Currency Transactions Abroad</h3>
+            <p class="gkh-post__p">Poket Valas is a smart and practical solution for travelers looking to make foreign currency transactions abroad! Managing multiple currencies with ease is...</p>
+            <span class="gkh-post__more">Read article <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </div>
+        </a>
+      {% endif %}
     </div>
+  </div>
 </section>
 
 {% schema %}
 {
   "name": "Top Article",
-  "settings": [],
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Blog Posts"
+    },
+    {
+      "type": "text",
+      "id": "see_more_text",
+      "label": "Button Label",
+      "default": "See More"
+    },
+    {
+      "type": "url",
+      "id": "see_more_url",
+      "label": "Button Link"
+    }
+  ],
   "blocks": [
     {
       "type": "post",

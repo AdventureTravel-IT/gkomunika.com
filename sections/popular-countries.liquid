@@ -417,72 +417,71 @@
           {%- endfor -%}
 
           <div class="gkh-grid-c">
-            {%- assign region_display_pairs = region_display_map | split: '||' | sort -%}
-
-            {%- assign fallback_regions_data = 'Africa:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Afrika.png?v=1792734174:::Rp 29.000|Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asia.png?v=1792734174:::Rp 19.000|Central America:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Amerika_Tengah.png?v=1792734170:::Rp 109.000|Central Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asia_Tengah.png?v=1792734174:::Rp 19.000|East Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asia_Timur.png?v=1792734174:::Rp 19.000|Eastern Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/eastern_asia.png?v=1792734174:::Rp 79.000|Europe:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Europe.png?v=1792734175:::Rp 19.000|Middle East:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Timur_Tengah.png?v=1792734175:::Rp 19.000|North Africa:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Afrika_utara.png?v=1792734173:::Rp 20.000|North America:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Amerika_Utara.png?v=1792734174:::Rp 19.000|Oceania:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Osenia.png?v=1792734169:::Rp 19.000|South America:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Amerika_Selatan.png?v=1792734169:::Rp 20.000|South Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asia_Selatan.png?v=1792734171:::Rp 19.000|Southeast Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asia_Tenggara.png?v=1792734174:::Rp 19.000|West Africa:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Afrika_Barat.png?v=1792734173:::Rp 20.000' | split: '|' -%}
+            {%- assign fallback_regions_data = 'Middle East:::Timur Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Timur_Tengah.png?v=1792734175:::Rp 19.000|Asia:::Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asia.png?v=1792734174:::Rp 19.000|Europe:::Europe:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Europe.png?v=1792734175:::Rp 19.000|Africa:::Afrika:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Afrika.png?v=1792734174:::Rp 29.000|Central Asia:::Asia Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asia_Tengah.png?v=1792734174:::Rp 19.000|Eastern Asia:::Eastern Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/eastern_asia.png?v=1792734174:::Rp 79.000|East Asia:::Asia Timur:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asia_Timur.png?v=1792734174:::Rp 19.000|North America:::Amerika Utara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Amerika_Utara.png?v=1792734174:::Rp 19.000|Southeast Asia:::Asia Tenggara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asia_Tenggara.png?v=1792734174:::Rp 19.000|North Africa:::Afrika Utara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Afrika_utara.png?v=1792734173:::Rp 20.000|West Africa:::Afrika Barat:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Afrika_Barat.png?v=1792734173:::Rp 20.000|South Asia:::Asia Selatan:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asia_Selatan.png?v=1792734171:::Rp 19.000|Central America:::Amerika Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Amerika_Tengah.png?v=1792734170:::Rp 109.000|Oceania:::Osenia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Osenia.png?v=1792734169:::Rp 19.000|South America:::Amerika Selatan:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Amerika_Selatan.png?v=1792734169:::Rp 20.000' | split: '|' -%}
 
             {%- for r_item in fallback_regions_data -%}
               {%- assign r_fields = r_item | split: ':::' -%}
-              {%- assign r_name = r_fields[0] -%}
-              {%- assign r_flag_fallback = r_fields[1] -%}
-              {%- assign r_price_fallback = r_fields[2] -%}
+              {%- assign r_en_name = r_fields[0] | strip -%}
+              {%- assign r_id_name = r_fields[1] | strip -%}
+              {%- assign r_flag_fallback = r_fields[2] | strip -%}
+              {%- assign r_price_fallback = r_fields[3] | strip -%}
 
-              {%- assign r_key = r_name | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
+              {%- assign r_name = r_id_name -%}
+              {%- if is_en -%}
+                {%- assign r_name = r_en_name -%}
+              {%- endif -%}
+
+              {%- assign r_key_en = r_en_name | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
+              {%- assign r_key_id = r_id_name | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
               {%- assign r_dyn_price = 0 -%}
-              {%- assign r_dyn_flag = '' -%}
-              {%- assign r_found = false -%}
 
-              {%- for item in region_display_pairs -%}
-                {%- if item != blank and r_found == false -%}
-                  {%- assign parts = item | split: '::' -%}
-                  {%- assign item_rname = parts[0] | strip -%}
-                  {%- assign item_rprice = parts[1] | plus: 0 -%}
-                  {%- assign item_rflag = parts[2] | strip -%}
+              {%- for r_pair in r_pairs -%}
+                {%- if r_pair != blank -%}
+                  {%- assign r_parts = r_pair | split: '::' -%}
+                  {%- assign cand_en = r_parts[0] | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
+                  {%- assign cand_id = r_parts[1] | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
+                  {%- assign cand_price = r_parts[2] | plus: 0 -%}
 
-                  {%- assign item_rcompact = item_rname | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
-                  {%- if item_rcompact == r_key -%}
-                    {%- assign r_found = true -%}
-                    {%- assign r_dyn_price = item_rprice -%}
-                    {%- if item_rflag != blank -%}
-                      {%- assign r_dyn_flag = item_rflag | split: '/' | last | file_url -%}
+                  {%- if cand_en == r_key_en or cand_id == r_key_id or cand_en == r_key_id or cand_id == r_key_en or cand_id == 'eropa' and r_key_en == 'europe' -%}
+                    {%- if cand_price > 0 -%}
+                      {%- if r_dyn_price == 0 or cand_price < r_dyn_price -%}
+                        {%- assign r_dyn_price = cand_price -%}
+                      {%- endif -%}
                     {%- endif -%}
                   {%- endif -%}
-                  {%- endif -%}
-                {%- endfor -%}
-
-                {%- assign flag_src = r_flag_fallback -%}
-                {%- if r_dyn_flag != blank -%}
-                  {%- assign flag_src = r_dyn_flag -%}
                 {%- endif -%}
+              {%- endfor -%}
 
-                {%- assign price_display = r_price_fallback -%}
-                {%- if r_dyn_price > 0 -%}
-                  {%- assign price_display = r_dyn_price | money_with_currency -%}
-                  {%- if is_au -%}{%- assign price_display = price_display | append: ' AUD' -%}{%- endif -%}
-                {%- endif -%}
+              {%- assign flag_src = r_flag_fallback -%}
 
-                <a
-                  href="{{ routes.search_url }}?q={{ r_name | replace: '_', ' ' | url_encode }}"
-                  class="gkh-country"
-                >
-                  <div class="gkh-country__l">
-                    <div class="gkh-country__flag">
-                      <img
-                        src="{{ flag_src }}"
-                        width="50"
-                        height="50"
-                        alt="{{ r_name }}"
-                        loading="lazy"
-                      >
-                    </div>
-                    <div>
-                      <span class="gkh-country__name">{{ r_name }}</span>
-                      <p class="gkh-country__price">Start From {{ price_display }}</p>
-                    </div>
+              {%- assign price_display = r_price_fallback -%}
+              {%- if r_dyn_price > 0 -%}
+                {%- assign price_display = r_dyn_price | money_with_currency -%}
+                {%- if is_au -%}{%- assign price_display = price_display | append: ' AUD' -%}{%- endif -%}
+              {%- endif -%}
+
+              <a
+                href="{{ routes.search_url }}?q={{ r_name | replace: '_', ' ' | url_encode }}"
+                class="gkh-country"
+              >
+                <div class="gkh-country__l">
+                  <div class="gkh-country__flag">
+                    <img
+                      src="{{ flag_src }}"
+                      width="50"
+                      height="50"
+                      alt="{{ r_name }}"
+                      loading="lazy"
+                    >
                   </div>
+                  <div>
+                    <span class="gkh-country__name">{{ r_name }}</span>
+                    <p class="gkh-country__price">Start From {{ price_display }}</p>
+                  </div>
+                </div>
 
-                  <svg class="gkh-country__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-                </a>
+                <svg class="gkh-country__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
             {%- endfor -%}
           </div>
         </div>

@@ -1,6 +1,7 @@
 .footer {
   max-width: 1920px;
   margin: 0 auto;
+  background-color: var(--color-neutral);
 }
 .footer-container__wrapper {
   display: grid;
@@ -32,6 +33,7 @@
 .footer__heading-title {
   color: var(--color-primary);
   font-weight: bold;
+  font-size: var(--font-large);
   margin: 5px 0;
 }
 .footer__heading-title.address {
@@ -46,6 +48,7 @@
 .footer a {
   text-decoration: none;
   color: var(--color-primary);
+  transition: color 0.15s ease;
 }
 
 .footer a:active {
@@ -61,6 +64,18 @@
 }
 .footer__contact--label {
   color: var(--color-gray);
+}
+.footer__logo {
+  display: block;
+  max-width: 200px;
+  height: auto;
+}
+.footer__heading-desc,
+.footer__heading-desc p {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--font-large);
+  line-height: 1.5;
 }
 @media (max-width: 768px) {
   .footer-container__wrapper {

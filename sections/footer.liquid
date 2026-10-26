@@ -17,9 +17,13 @@
 
         <div class="footer__address-text">
           <h2 class="footer__heading-title address">{{ section.settings.heading }}</h2>
-          <a href="{{ section.settings.short_link }}" target="_blank" rel="noopener noreferrer">
-            <p class="footer__heading-desc">{{ section.settings.address }}</p>
-          </a>
+          {% if section.settings.short_link != blank %}
+            <a href="{{ section.settings.short_link }}" target="_blank" rel="noopener noreferrer">
+              <div class="footer__heading-desc">{{ section.settings.address }}</div>
+            </a>
+          {% else %}
+            <div class="footer__heading-desc">{{ section.settings.address }}</div>
+          {% endif %}
         </div>
       {% endif %}
     </section>
@@ -105,39 +109,63 @@
     </section>
 
     <section class="footer__about">
-      <h2 class="footer__heading-title">{{ section.settings.about_heading }}</h2>
+      <h2 class="footer__heading-title">{{ section.settings.about_heading | default: 'Company' }}</h2>
       <ul class="footer__wrapper">
+        {% assign has_company_links = false %}
         {% for block in section.blocks %}
           {% if block.type == 'link' %}
+            {% assign has_company_links = true %}
+            {% if block.settings.link_label1 != blank %}
+              <li>
+                <a href="{{ block.settings.link_url1 | default: '/pages/about-us' }}">{{ block.settings.link_label1 }}</a>
+              </li>
+            {% endif %}
+            {% if block.settings.link_label2 != blank %}
+              <li>
+                <a href="{{ block.settings.link_url2 | default: '/pages/business' }}">{{ block.settings.link_label2 }}</a>
+              </li>
+            {% endif %}
+            {% if block.settings.link_label3 != blank %}
+              <li>
+                <a href="{{ block.settings.link_url3 | default: '/pages/faq' }}">{{ block.settings.link_label3 }}</a>
+              </li>
+            {% endif %}
+            {% if block.settings.link_label4 != blank %}
+              <li>
+                <a href="{{ block.settings.link_url4 | default: '/pages/news' }}">{{ block.settings.link_label4 }}</a>
+              </li>
+            {% endif %}
+            {% if block.settings.link_label5 != blank %}
+              <li>
+                <a href="{{ block.settings.link_url5 | default: '#' }}">{{ block.settings.link_label5 }}</a>
+              </li>
+            {% endif %}
+            {% if block.settings.link_label6 != blank %}
+              <li>
+                <a href="{{ block.settings.link_url6 | default: '#' }}">{{ block.settings.link_label6 }}</a>
+              </li>
+            {% endif %}
+          {% elsif block.type == 'company_link' %}
+            {% assign has_company_links = true %}
             <li>
-              <a href="{{ block.settings.link_url1 }}">{{ block.settings.link_label1 }}</a>
+              <a href="{{ block.settings.url | default: '#' }}">{{ block.settings.label }}</a>
             </li>
-            <li>
-              <a href="{{ block.settings.link_url2 }}">{{ block.settings.link_label2 }}</a>
-            </li>
-            <li>
-              <a href="{{ block.settings.link_url3 }}">{{ block.settings.link_label3 }}</a>
-            </li>
-            <li>
-              <a href="{{ block.settings.link_url4 }}">{{ block.settings.link_label4 }}</a>
-            </li>
-            <li>
-              <a href="{{ block.settings.link_url5 }}">{{ block.settings.link_label5 }}</a>
-            </li>
-            <li>
-              <a href="https://s.id/PEbR2" target="_blank">Reseller</a>
-            </li>
-            <li>
-              <a href="https://s.id/iiwjn " target="_blank">Affiliasi</a>
-            </li>
-            <li>
-              <a href="{{ block.settings.link_url6 }}">{{ block.settings.link_label6 }}</a>
-            </li>
-            <li>
-              <a href="/pages/news">News</a>
-            </li>
+          {% elsif block.type == 'menu' %}
+            {% assign has_company_links = true %}
+            {% for link in block.settings.menu.links %}
+              <li>
+                <a href="{{ link.url }}">{{ link.title }}</a>
+              </li>
+            {% endfor %}
           {% endif %}
         {% endfor %}
+
+        {% unless has_company_links %}
+          <li><a href="/pages/about-us">About Us</a></li>
+          <li><a href="/pages/business">Business</a></li>
+          <li><a href="/pages/faq">FAQ</a></li>
+          <li><a href="/pages/news">News</a></li>
+        {% endunless %}
       </ul>
     </section>
   </div>
@@ -162,7 +190,7 @@
       "type": "richtext",
       "id": "address",
       "label": "Input Address",
-      "default": "<p>Jl Jend Sudirman No. 346 Ciroyom, Andir Bandung, Jawa Barat<p>"
+      "default": "<p>Jl Jend Sudirman No. 346 Ciroyom, Andir Bandung, Jawa Barat</p>"
     },
     {
       "type": "text",
@@ -179,8 +207,8 @@
     {
       "type": "text",
       "id": "about_heading",
-      "label": "About Heading",
-      "default": "About"
+      "label": "Company Heading",
+      "default": "Company"
     },
     {
       "type": "text",
@@ -270,73 +298,99 @@
     },
     {
       "type": "link",
-      "name": "Footer Link",
+      "name": "Footer Links",
       "settings": [
         {
           "type": "text",
           "id": "link_label1",
-          "label": "Link Label",
+          "label": "Link 1 Label",
           "default": "About Us"
         },
         {
           "type": "url",
           "id": "link_url1",
-          "label": "Link URL"
+          "label": "Link 1 URL"
         },
         {
           "type": "text",
           "id": "link_label2",
-          "label": "Link Label",
-          "default": "Privacy Policy"
+          "label": "Link 2 Label",
+          "default": "Business"
         },
         {
           "type": "url",
           "id": "link_url2",
-          "label": "Link URL"
+          "label": "Link 2 URL"
         },
         {
           "type": "text",
           "id": "link_label3",
-          "label": "Link Label",
-          "default": "Refund Policy"
-        },
-        {
-          "type": "url",
-          "id": "link_url3",
-          "label": "Link URL"
-        },
-        {
-          "type": "text",
-          "id": "link_label4",
-          "label": "Link Label",
-          "default": "Terms of Use"
-        },
-        {
-          "type": "url",
-          "id": "link_url4",
-          "label": "Link URL"
-        },
-        {
-          "type": "text",
-          "id": "link_label5",
-          "label": "Link Label",
-          "default": "Shipment Policy"
-        },
-        {
-          "type": "url",
-          "id": "link_url5",
-          "label": "Link URL"
-        },
-        {
-          "type": "text",
-          "id": "link_label6",
-          "label": "Link Label",
+          "label": "Link 3 Label",
           "default": "FAQ"
         },
         {
           "type": "url",
+          "id": "link_url3",
+          "label": "Link 3 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_label4",
+          "label": "Link 4 Label",
+          "default": "News"
+        },
+        {
+          "type": "url",
+          "id": "link_url4",
+          "label": "Link 4 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_label5",
+          "label": "Link 5 Label"
+        },
+        {
+          "type": "url",
+          "id": "link_url5",
+          "label": "Link 5 URL"
+        },
+        {
+          "type": "text",
+          "id": "link_label6",
+          "label": "Link 6 Label"
+        },
+        {
+          "type": "url",
           "id": "link_url6",
+          "label": "Link 6 URL"
+        }
+      ]
+    },
+    {
+      "type": "company_link",
+      "name": "Single Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Link Label",
+          "default": "Link"
+        },
+        {
+          "type": "url",
+          "id": "url",
           "label": "Link URL"
+        }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Navigation Menu",
+      "settings": [
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
         }
       ]
     }

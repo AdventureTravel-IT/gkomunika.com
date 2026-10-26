@@ -1,0 +1,1347 @@
+{% comment %}
+  Section: Landing Page Kerja Sama Bisnis (B2B, Reseller, Affiliate)
+  File: sections/lp-collab-business.liquid
+{% endcomment %}
+
+{%- assign hero_image = section.settings.hero_image_url | default: 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/hero_business.jpg?v=1792668692' -%}
+{%- if section.settings.hero_image != blank -%}
+  {%- assign hero_image = section.settings.hero_image | image_url: width: 2576 -%}
+{%- endif -%}
+
+{%- assign card1_icon = section.settings.card1_icon_url | default: 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-icon-jabat-tangan.png?v=1792731382' -%}
+{%- if section.settings.card1_icon != blank -%}
+  {%- assign card1_icon = section.settings.card1_icon | image_url: width: 160 -%}
+{%- endif -%}
+
+<style>
+.gkmitra-page {
+  --gkmitra-blue: #005496;
+  --gkmitra-sky: #00ADEE;
+  --gkmitra-sky-tint: #CCEFFC;
+  --gkmitra-yellow-tint: #FEF0D4;
+  --gkmitra-teal-tint: #E0F2F0;
+  --gkmitra-orange: #EA5A1B;
+  --gkmitra-green: #2E884A;
+  --gkmitra-ink: #222222;
+  --gkmitra-text: #4E4E4E;
+  --gkmitra-line: #DEDEDE;
+  --gkmitra-soft: #F5F5F5;
+  font-family: "Gotham", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--gkmitra-ink);
+  background: #ffffff;
+  -webkit-text-size-adjust: 100%;
+}
+.gkmitra-page *, .gkmitra-page *::before, .gkmitra-page *::after {
+  box-sizing: border-box;
+}
+:where(.gkmitra-page) :where(h1, h2, h3, p) {
+  margin: 0;
+}
+:where(.gkmitra-page) :where(img) {
+  display: block;
+  max-width: 100%;
+}
+:where(.gkmitra-page) :where(a) {
+  text-decoration: none;
+}
+
+.gkmitra-wrap {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.gkmitra-sec {
+  padding: 56px 0;
+}
+.gkmitra-sec-soft {
+  background: var(--gkmitra-soft);
+}
+
+.gkmitra-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+.gkmitra-btn-white {
+  background: #ffffff;
+  color: var(--gkmitra-blue);
+}
+.gkmitra-btn-white:hover {
+  background: var(--gkmitra-sky-tint);
+}
+.gkmitra-btn-solid {
+  background: var(--gkmitra-blue);
+  color: #ffffff;
+}
+.gkmitra-btn-solid:hover {
+  background: #003f73;
+}
+.gkmitra-btn-line {
+  background: #ffffff;
+  color: var(--gkmitra-blue);
+  border-color: var(--gkmitra-blue);
+}
+.gkmitra-btn-line:hover {
+  background: var(--gkmitra-sky-tint);
+}
+.gkmitra-btn-ghost {
+  background: transparent;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+.gkmitra-btn-ghost:hover {
+  background: rgba(255, 255, 255, .16);
+}
+.gkmitra-page a:focus-visible, .gkmitra-page [tabindex]:focus-visible {
+  outline: 3px solid var(--gkmitra-sky);
+  outline-offset: 3px;
+}
+
+.gkmitra-hero {
+  position: relative;
+  background: #005496;
+  color: #ffffff;
+  overflow: hidden;
+}
+.gkmitra-hero-media {
+  position: relative;
+  aspect-ratio: 375/284;
+  overflow: hidden;
+  background: #005496;
+}
+.gkmitra-page .gkmitra-hero-img {
+  position: absolute;
+  top: -13.16%;
+  left: -83.35%;
+  width: 183.34%;
+  height: auto;
+  max-width: none;
+}
+.gkmitra-hero-media::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 20%;
+  background: linear-gradient(to bottom, rgba(0,84,149,0) 0%, rgba(0,84,149,.22) 25%, rgba(0,84,149,.47) 50%, rgba(0,84,149,.73) 75%, #005496 100%);
+}
+.gkmitra-hero-inner {
+  position: relative;
+  z-index: 1;
+  margin-top: -12px;
+  padding: 0 20px 32px;
+}
+.gkmitra-hero-title {
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #ffffff;
+}
+.gkmitra-hero-sub {
+  margin-top: 12px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: #ffffff;
+}
+.gkmitra-hero-cta {
+  margin-top: 22px;
+}
+.gkmitra-hero-cta .gkmitra-btn {
+  display: flex;
+  width: 100%;
+  min-height: 52px;
+}
+
+.gkmitra-stats {
+  background: var(--gkmitra-soft);
+  border-bottom: 1px solid var(--gkmitra-line);
+  padding: 20px 0;
+}
+.gkmitra-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  text-align: center;
+}
+.gkmitra-stat-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gkmitra-blue);
+  line-height: 1.25;
+}
+.gkmitra-stat-lbl {
+  margin-top: 2px;
+  font-size: 14px;
+  color: var(--gkmitra-text);
+  line-height: 1.4;
+}
+
+#gkmitra-program {
+  scroll-margin-top: 80px;
+}
+.gkmitra-h2 {
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--gkmitra-ink);
+  text-align: center;
+}
+.gkmitra-lead {
+  margin: 12px auto 0;
+  font-size: 16px;
+  color: var(--gkmitra-text);
+  max-width: 960px;
+  text-align: justify;
+  text-align-last: center;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+.gkmitra-cards {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.gkmitra-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 2px solid var(--gkmitra-line);
+  border-radius: 16px;
+  padding: 24px;
+  cursor: pointer;
+  transition: border-color .2s ease;
+}
+.gkmitra-card:hover {
+  border-color: var(--gkmitra-sky);
+}
+.gkmitra-card-active, .gkmitra-card-active:hover {
+  border-color: var(--gkmitra-blue);
+}
+.gkmitra-badge {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gkmitra-blue);
+  background: var(--gkmitra-sky-tint);
+  padding: 4px 12px;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+.gkmitra-ico {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gkmitra-page .gkmitra-ico-img {
+  width: 40px;
+  height: 40px;
+  max-width: none;
+  object-fit: contain;
+}
+.gkmitra-ico svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.gkmitra-ico-a {
+  background: var(--gkmitra-sky-tint);
+  color: var(--gkmitra-blue);
+}
+.gkmitra-ico-b {
+  background: var(--gkmitra-yellow-tint);
+  color: var(--gkmitra-orange);
+}
+.gkmitra-ico-c {
+  background: var(--gkmitra-teal-tint);
+  color: var(--gkmitra-green);
+}
+.gkmitra-h3 {
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--gkmitra-ink);
+  text-align: center;
+}
+.gkmitra-card-text {
+  width: 100%;
+  font-size: 16px;
+  color: var(--gkmitra-text);
+  flex: 1;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+.gkmitra-card .gkmitra-btn {
+  margin-top: 6px;
+  width: 100%;
+}
+
+.gkmitra-slider {
+  margin: 28px -6px 0;
+  overflow: hidden;
+}
+.gkmitra-track {
+  display: flex;
+  will-change: transform;
+}
+.gkmitra-slide {
+  flex: 0 0 50%;
+  padding: 0 6px;
+}
+.gkmitra-logo-box {
+  background: #ffffff;
+  border: 1px solid var(--gkmitra-line);
+  border-radius: 12px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 18px;
+  overflow: hidden;
+}
+.gkmitra-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.gkmitra-slider-static {
+  overflow-x: auto;
+}
+.gkmitra-slider-static .gkmitra-track {
+  width: max-content;
+}
+.gkmitra-slider-static .gkmitra-slide {
+  flex: 0 0 200px;
+}
+
+.gkmitra-why {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+.gkmitra-why-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.gkmitra-why-ico {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--gkmitra-sky-tint);
+  color: var(--gkmitra-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gkmitra-why-ico svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.gkmitra-why-text {
+  width: 100%;
+  font-size: 16px;
+  color: var(--gkmitra-text);
+  text-align: justify;
+  text-align-last: center;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+.gkmitra-why-item .gkmitra-h3 {
+  width: 100%;
+}
+
+.gkmitra-final {
+  background: var(--gkmitra-blue);
+  color: #ffffff;
+  text-align: center;
+  padding: 56px 0;
+}
+.gkmitra-final-title {
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+}
+.gkmitra-final-text {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #EAF4FB;
+  text-align: center;
+}
+.gkmitra-final-actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.gkmitra-final-actions .gkmitra-btn {
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .gkmitra-wrap {
+    padding: 0 32px;
+  }
+  .gkmitra-sec {
+    padding: 80px 0;
+  }
+  .gkmitra-hero {
+    height: clamp(480px, 41.67vw, 600px);
+  }
+  .gkmitra-hero-media {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: auto;
+    height: 100%;
+    aspect-ratio: 2576/1438;
+  }
+  .gkmitra-page .gkmitra-hero-img {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .gkmitra-hero-media::after {
+    top: 0;
+    height: auto;
+    background: linear-gradient(90deg, #005496 0%, #005496 12%, rgba(0,84,149,.78) 22%, rgba(0,84,149,.59) 32%, rgba(0,84,149,.39) 42%, rgba(0,84,149,.2) 52%, rgba(0,84,149,0) 62%);
+  }
+  .gkmitra-hero-inner {
+    height: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 clamp(32px, 6.1vw, 88px);
+    display: flex;
+    align-items: center;
+  }
+  .gkmitra-hero-copy {
+    max-width: 460px;
+  }
+  .gkmitra-hero-title {
+    font-size: 44px;
+  }
+  .gkmitra-hero-sub {
+    margin-top: 20px;
+    font-size: 20px;
+    line-height: 1.5;
+    max-width: 540px;
+  }
+  .gkmitra-hero-cta {
+    margin-top: 28px;
+  }
+  .gkmitra-hero-cta .gkmitra-btn {
+    display: inline-flex;
+    width: auto;
+    min-height: 52px;
+  }
+  .gkmitra-btn {
+    font-size: 16px;
+    padding: 12px 28px;
+  }
+  .gkmitra-stat-num {
+    font-size: 32px;
+  }
+  .gkmitra-stat-lbl {
+    font-size: 16px;
+  }
+  .gkmitra-h2, .gkmitra-final-title {
+    font-size: 32px;
+  }
+  .gkmitra-h3 {
+    font-size: 22px;
+  }
+  .gkmitra-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .gkmitra-card .gkmitra-btn {
+    padding: 12px 12px;
+    font-size: 14px;
+  }
+  .gkmitra-slider {
+    margin: 28px -8px 0;
+  }
+  .gkmitra-slide {
+    flex-basis: 33.3333%;
+    padding: 0 8px;
+  }
+  .gkmitra-logo-box {
+    height: 104px;
+    padding: 16px 24px;
+  }
+  .gkmitra-why {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto 1fr;
+    column-gap: 32px;
+    row-gap: 10px;
+  }
+  .gkmitra-why-item {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    justify-items: center;
+    align-items: start;
+    row-gap: 10px;
+  }
+  .gkmitra-final {
+    padding: 80px 0;
+  }
+  .gkmitra-final-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: none;
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gkmitra-slide {
+    flex-basis: 25%;
+  }
+  .gkmitra-hero-copy {
+    max-width: 600px;
+  }
+  .gkmitra-hero-title {
+    font-size: 56px;
+    line-height: 1.15;
+  }
+  .gkmitra-hero-sub {
+    font-size: 24px;
+  }
+  .gkmitra-hero-cta .gkmitra-btn {
+    font-size: 18px;
+    min-height: 60px;
+    padding: 12px 36px;
+    border-radius: 12px;
+  }
+  .gkmitra-card .gkmitra-btn {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .gkmitra-hero-title {
+    font-size: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gkmitra-page * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+
+<div class="gkmitra-page" id="gkmitra-page-{{ section.id }}">
+
+  <!-- HERO SECTION -->
+  <section class="gkmitra-hero" aria-labelledby="gkmitra-hero-title-{{ section.id }}">
+    <div class="gkmitra-hero-media">
+      <img class="gkmitra-hero-img" 
+           src="{{ hero_image }}" 
+           alt="{{ section.settings.hero_title | escape }}" 
+           width="2576" 
+           height="1438"
+           loading="eager">
+    </div>
+    <div class="gkmitra-hero-inner">
+      <div class="gkmitra-hero-copy">
+        <h1 class="gkmitra-hero-title" id="gkmitra-hero-title-{{ section.id }}">
+          {{ section.settings.hero_title | default: 'Tumbuh Bersama Global Komunika' }}
+        </h1>
+        <p class="gkmitra-hero-sub">
+          {{ section.settings.hero_sub | default: 'Buka peluang pendapatan baru melalui kerja sama strategis, program reseller, dan kolaborasi afiliasi.' }}
+        </p>
+        <div class="gkmitra-hero-cta">
+          <a class="gkmitra-btn gkmitra-btn-white" 
+             href="{{ section.settings.hero_btn_url | default: '#gkmitra-program' }}" 
+             data-gkmitra-scroll>
+            {{ section.settings.hero_btn_text | default: 'Pilih Program Kerja Sama' }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS SECTION -->
+  <section class="gkmitra-stats" aria-label="Pencapaian Global Komunika">
+    <div class="gkmitra-wrap">
+      <div class="gkmitra-stats-grid">
+        <div>
+          <p class="gkmitra-stat-num">{{ section.settings.stat_num_1 | default: 'Sejak 2016' }}</p>
+          <p class="gkmitra-stat-lbl">{{ section.settings.stat_lbl_1 | default: 'Menemani traveler Indonesia' }}</p>
+        </div>
+        <div>
+          <p class="gkmitra-stat-num">{{ section.settings.stat_num_2 | default: '500.000+' }}</p>
+          <p class="gkmitra-stat-lbl">{{ section.settings.stat_lbl_2 | default: 'Produk Terjual' }}</p>
+        </div>
+        <div>
+          <p class="gkmitra-stat-num">{{ section.settings.stat_num_3 | default: '150+' }}</p>
+          <p class="gkmitra-stat-lbl">{{ section.settings.stat_lbl_3 | default: 'Jangkauan Negara' }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAM CARDS SECTION -->
+  <section class="gkmitra-sec" id="gkmitra-program" aria-labelledby="gkmitra-program-title-{{ section.id }}">
+    <div class="gkmitra-wrap">
+      <h2 class="gkmitra-h2" id="gkmitra-program-title-{{ section.id }}">
+        {{ section.settings.program_title | default: 'Pilih Program Kerja Sama yang Tepat' }}
+      </h2>
+      <div class="gkmitra-cards" id="gkmitra-cards-{{ section.id }}">
+
+        <!-- Card 1: Kerja Sama Strategis -->
+        <article class="gkmitra-card" data-gkmitra-card tabindex="0" aria-current="false">
+          <span class="gkmitra-badge">{{ section.settings.card1_badge | default: 'Untuk bisnis' }}</span>
+          <div class="gkmitra-ico gkmitra-ico-a" aria-hidden="true">
+            <img class="gkmitra-ico-img" 
+                 src="{{ card1_icon }}" 
+                 alt="" 
+                 width="160" 
+                 height="160" 
+                 loading="lazy">
+          </div>
+          <h3 class="gkmitra-h3">{{ section.settings.card1_title | default: 'Kerja Sama Strategis' }}</h3>
+          <p class="gkmitra-card-text">
+            {{ section.settings.card1_text | default: 'Kembangkan peluang bisnis melalui kerja sama komersial, program benefit pelanggan, dan kolaborasi marketing yang disesuaikan dengan kebutuhan bisnis.' }}
+          </p>
+          <a class="gkmitra-btn gkmitra-btn-solid" 
+             href="{{ section.settings.card1_btn_url | default: 'https://mail.google.com/mail/?view=cm&fs=1&to=evan@gkomunika.com&su=Kerja%20Sama%20Strategis%20Global%20Komunika' }}"
+             target="_blank"
+             rel="noopener">
+            {{ section.settings.card1_btn_text | default: 'Mari Berkolaborasi' }}
+          </a>
+        </article>
+
+        <!-- Card 2: Jadi Reseller -->
+        <article class="gkmitra-card gkmitra-card-active" data-gkmitra-card tabindex="0" aria-current="true">
+          <span class="gkmitra-badge">{{ section.settings.card2_badge | default: 'Untuk travel agent' }}</span>
+          <div class="gkmitra-ico gkmitra-ico-b" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 9l1-5h14l1 5"/><path d="M4 9a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 6 0 2.5 2.5 0 0 0 5 0"/><path d="M5 12v8h14v-8"/><path d="M10 20v-4h4v4"/></svg>
+          </div>
+          <h3 class="gkmitra-h3">{{ section.settings.card2_title | default: 'Jadi Reseller' }}</h3>
+          <p class="gkmitra-card-text">
+            {{ section.settings.card2_text | default: 'Tawarkan produk GK kepada pelanggan dan tingkatkan pendapatan dari setiap penjualan. Cocok untuk travel agent, tour operator, dan tour leader.' }}
+          </p>
+          <a class="gkmitra-btn gkmitra-btn-solid" 
+             href="{{ section.settings.card2_btn_url | default: 'https://docs.google.com/forms/u/0/d/1mhONvb4v5j3Q4fspJz3FKf1EiHKMwnMj-XbBLcBCbfg/viewform?edit_requested=true#settings' }}" 
+             target="_blank" 
+             rel="noopener">
+            {{ section.settings.card2_btn_text | default: 'Daftar Reseller' }}
+          </a>
+        </article>
+
+        <!-- Card 3: Jadi Affiliate -->
+        <article class="gkmitra-card" data-gkmitra-card tabindex="0" aria-current="false">
+          <span class="gkmitra-badge">{{ section.settings.card3_badge | default: 'Untuk kreator' }}</span>
+          <div class="gkmitra-ico gkmitra-ico-c" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg>
+          </div>
+          <h3 class="gkmitra-h3">{{ section.settings.card3_title | default: 'Jadi Affiliate' }}</h3>
+          <p class="gkmitra-card-text">
+            {{ section.settings.card3_text | default: 'Ubah konten dan audiens kamu menjadi peluang penghasilan dengan mempromosikan produk GK melalui media sosial dan platform digital.' }}
+          </p>
+          <a class="gkmitra-btn gkmitra-btn-solid" 
+             href="{{ section.settings.card3_btn_url | default: 'https://docs.google.com/forms/d/e/1FAIpQLSft7bblxZLVsXNb_9B_3v_Bkvom7-DJrak7oS_nrymaLDcK2w/viewform' }}" 
+             target="_blank" 
+             rel="noopener">
+            {{ section.settings.card3_btn_text | default: 'Daftar Affiliate' }}
+          </a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- MITRA / PARTNERS LOGO SLIDER -->
+  <section class="gkmitra-sec gkmitra-sec-soft" aria-labelledby="gkmitra-mitra-title-{{ section.id }}">
+    <div class="gkmitra-wrap">
+      <h2 class="gkmitra-h2" id="gkmitra-mitra-title-{{ section.id }}">
+        {{ section.settings.mitra_title | default: 'Jaringan Mitra Kami Terus Berkembang' }}
+      </h2>
+      <p class="gkmitra-lead">
+        {{ section.settings.mitra_lead | default: 'Berkolaborasi dengan berbagai bisnis travel dan lifestyle untuk menghadirkan konektivitas bagi lebih banyak traveler.' }}
+      </p>
+      
+      <div class="gkmitra-slider" id="gkmitra-slider-{{ section.id }}" role="region" aria-roledescription="carousel" aria-label="Logo mitra Global Komunika">
+        <div class="gkmitra-track" id="gkmitra-track-{{ section.id }}">
+          {%- if section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              <div class="gkmitra-slide" {{ block.shopify_attributes }}>
+                <div class="gkmitra-logo-box">
+                  {%- if block.settings.logo != blank -%}
+                    <img class="gkmitra-logo-img" 
+                         src="{{ block.settings.logo | image_url: width: 320 }}" 
+                         alt="{{ block.settings.title | default: 'Logo Mitra' | escape }}" 
+                         loading="lazy">
+                  {%- elsif block.settings.logo_url != blank -%}
+                    <img class="gkmitra-logo-img" 
+                         src="{{ block.settings.logo_url }}" 
+                         alt="{{ block.settings.title | default: 'Logo Mitra' | escape }}" 
+                         loading="lazy">
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <!-- Default 6 Mitra Logos -->
+            <div class="gkmitra-slide">
+              <div class="gkmitra-logo-box">
+                <img class="gkmitra-logo-img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-01-sight-seeing.png?v=1792668445" alt="Logo Sight-Seeing Tour & Travel" loading="lazy">
+              </div>
+            </div>
+            <div class="gkmitra-slide">
+              <div class="gkmitra-logo-box">
+                <img class="gkmitra-logo-img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-02-antar-semesta.png?v=1792668445" alt="Logo Antar Semesta Tour and Travel" loading="lazy">
+              </div>
+            </div>
+            <div class="gkmitra-slide">
+              <div class="gkmitra-logo-box">
+                <img class="gkmitra-logo-img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-03-tx-travel.png?v=1792668446" alt="Logo TX Travel" loading="lazy">
+              </div>
+            </div>
+            <div class="gkmitra-slide">
+              <div class="gkmitra-logo-box">
+                <img class="gkmitra-logo-img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-04-agoda.png?v=1792668445" alt="Logo Agoda" loading="lazy">
+              </div>
+            </div>
+            <div class="gkmitra-slide">
+              <div class="gkmitra-logo-box">
+                <img class="gkmitra-logo-img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-05-globaltix.png?v=1792668445" alt="Logo GlobalTix" loading="lazy">
+              </div>
+            </div>
+            <div class="gkmitra-slide">
+              <div class="gkmitra-logo-box">
+                <img class="gkmitra-logo-img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-06-traveloka.png?v=1792668445" alt="Logo Traveloka" loading="lazy">
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US SECTION -->
+  <section class="gkmitra-sec" aria-labelledby="gkmitra-why-title-{{ section.id }}">
+    <div class="gkmitra-wrap">
+      <h2 class="gkmitra-h2" id="gkmitra-why-title-{{ section.id }}">
+        {{ section.settings.why_title | default: 'Mengapa Bermitra dengan Global Komunika?' }}
+      </h2>
+      <div class="gkmitra-why">
+
+        <div class="gkmitra-why-item">
+          <div class="gkmitra-why-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+          </div>
+          <h3 class="gkmitra-h3">{{ section.settings.why_1_title | default: 'Tingkatkan Pendapatan' }}</h3>
+          <p class="gkmitra-why-text">
+            {{ section.settings.why_1_text | default: 'Harga kompetitif dan model kerja sama yang fleksibel untuk meningkatkan pendapatan mitra.' }}
+          </p>
+        </div>
+
+        <div class="gkmitra-why-item">
+          <div class="gkmitra-why-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          </div>
+          <h3 class="gkmitra-h3">{{ section.settings.why_2_title | default: 'Nilai Lebih untuk Pelanggan' }}</h3>
+          <p class="gkmitra-why-text">
+            {{ section.settings.why_2_text | default: 'Koneksi andal di 150+ negara dan kemudahan top-up.' }}
+          </p>
+        </div>
+
+        <div class="gkmitra-why-item">
+          <div class="gkmitra-why-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+          </div>
+          <h3 class="gkmitra-h3">{{ section.settings.why_3_title | default: 'Mitra Berpengalaman' }}</h3>
+          <p class="gkmitra-why-text">
+            {{ section.settings.why_3_text | default: 'Pengalaman sejak 2016 dan teknologi untuk mengembangkan bisnis kamu.' }}
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA SECTION -->
+  <section class="gkmitra-final" aria-labelledby="gkmitra-final-title-{{ section.id }}">
+    <div class="gkmitra-wrap">
+      <h2 class="gkmitra-final-title" id="gkmitra-final-title-{{ section.id }}">
+        {{ section.settings.final_title | default: 'Siap Tumbuh Bersama Kami?' }}
+      </h2>
+      <p class="gkmitra-final-text">
+        {{ section.settings.final_text | default: 'Pilih program yang paling cocok, tim kami siap membantu.' }}
+      </p>
+      <div class="gkmitra-final-actions">
+        <a class="gkmitra-btn gkmitra-btn-white" 
+           href="{{ section.settings.final_btn1_url | default: 'https://mail.google.com/mail/?view=cm&fs=1&to=evan@gkomunika.com&su=Kerja%20Sama%20Strategis%20Global%20Komunika' }}"
+           target="_blank"
+           rel="noopener">
+          {{ section.settings.final_btn1_text | default: 'Mari Berkolaborasi' }}
+        </a>
+        <a class="gkmitra-btn gkmitra-btn-white" 
+           href="{{ section.settings.final_btn2_url | default: 'https://docs.google.com/forms/u/0/d/1mhONvb4v5j3Q4fspJz3FKf1EiHKMwnMj-XbBLcBCbfg/viewform?edit_requested=true#settings' }}" 
+           target="_blank" 
+           rel="noopener">
+          {{ section.settings.final_btn2_text | default: 'Daftar Reseller' }}
+        </a>
+        <a class="gkmitra-btn gkmitra-btn-white" 
+           href="{{ section.settings.final_btn3_url | default: 'https://docs.google.com/forms/d/e/1FAIpQLSft7bblxZLVsXNb_9B_3v_Bkvom7-DJrak7oS_nrymaLDcK2w/viewform' }}" 
+           target="_blank" 
+           rel="noopener">
+          {{ section.settings.final_btn3_text | default: 'Daftar Affiliate' }}
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('gkmitra-page-{{ section.id }}');
+  if (!root) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Smooth scroll for anchor links
+  var scrollLinks = root.querySelectorAll('[data-gkmitra-scroll]');
+  Array.prototype.forEach.call(scrollLinks, function (link) {
+    link.addEventListener('click', function (e) {
+      var id = link.getAttribute('href');
+      var target = id ? document.querySelector(id) : null;
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+
+  // Mitra logo slider
+  var slider = document.getElementById('gkmitra-slider-{{ section.id }}');
+  var track = document.getElementById('gkmitra-track-{{ section.id }}');
+  if (slider && track) {
+    if (reduce) {
+      slider.classList.add('gkmitra-slider-static');
+    } else {
+      var slides = Array.prototype.slice.call(track.children);
+      var total = slides.length;
+      if (total > 0) {
+        var idx = 0;
+        var vis = 0;
+        var paused = false;
+        var getVis = function () {
+          return window.innerWidth >= 1024 ? 4 : (window.innerWidth >= 768 ? 3 : 2);
+        };
+        var build = function () {
+          Array.prototype.slice.call(track.querySelectorAll('[data-gkmitra-clone]')).forEach(function (c) {
+            track.removeChild(c);
+          });
+          vis = getVis();
+          for (var k = 0; k < vis; k++) {
+            var c = slides[k % total].cloneNode(true);
+            c.setAttribute('aria-hidden', 'true');
+            c.setAttribute('data-gkmitra-clone', '');
+            track.appendChild(c);
+          }
+          idx = 0;
+          track.style.transition = 'none';
+          track.style.transform = 'translateX(0)';
+        };
+        var step = function () {
+          if (paused || document.hidden) return;
+          idx++;
+          track.style.transition = 'transform .6s ease';
+          track.style.transform = 'translateX(-' + (idx * 100 / vis) + '%)';
+        };
+        track.addEventListener('transitionend', function () {
+          if (idx >= total) {
+            track.style.transition = 'none';
+            idx = 0;
+            track.style.transform = 'translateX(0)';
+          }
+        });
+        slider.addEventListener('mouseenter', function () { paused = true; });
+        slider.addEventListener('mouseleave', function () { paused = false; });
+        slider.addEventListener('focusin', function () { paused = true; });
+        slider.addEventListener('focusout', function () { paused = false; });
+        var resizeTimer = null;
+        window.addEventListener('resize', function () {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function () {
+            if (getVis() !== vis) build();
+          }, 200);
+        });
+        build();
+        setInterval(step, 2000);
+      }
+    }
+  }
+
+  // Cards interactive active border
+  var cards = root.querySelectorAll('[data-gkmitra-card]');
+  function selectCard(active) {
+    Array.prototype.forEach.call(cards, function (card) {
+      var on = card === active;
+      card.classList.toggle('gkmitra-card-active', on);
+      card.setAttribute('aria-current', on ? 'true' : 'false');
+    });
+  }
+  Array.prototype.forEach.call(cards, function (card) {
+    card.addEventListener('click', function (e) {
+      if (e.target.closest('a')) return;
+      selectCard(card);
+    });
+    card.addEventListener('keydown', function (e) {
+      if (e.target !== card) return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectCard(card);
+      }
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "LP Collab Business",
+  "tag": "section",
+  "class": "section-lp-collab-business",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero Section"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Image (Desktop & Mobile)"
+    },
+    {
+      "type": "text",
+      "id": "hero_image_url",
+      "label": "Hero Image URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/hero_business.jpg?v=1792668692"
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Hero Title",
+      "default": "Tumbuh Bersama Global Komunika"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_sub",
+      "label": "Hero Subtitle",
+      "default": "Buka peluang pendapatan baru melalui kerja sama strategis, program reseller, dan kolaborasi afiliasi."
+    },
+    {
+      "type": "text",
+      "id": "hero_btn_text",
+      "label": "Hero Button Text",
+      "default": "Pilih Program Kerja Sama"
+    },
+    {
+      "type": "text",
+      "id": "hero_btn_url",
+      "label": "Hero Button URL",
+      "default": "#gkmitra-program"
+    },
+    {
+      "type": "header",
+      "content": "Stats Section"
+    },
+    {
+      "type": "text",
+      "id": "stat_num_1",
+      "label": "Stat 1 Number / Highlight",
+      "default": "Sejak 2016"
+    },
+    {
+      "type": "text",
+      "id": "stat_lbl_1",
+      "label": "Stat 1 Label",
+      "default": "Menemani traveler Indonesia"
+    },
+    {
+      "type": "text",
+      "id": "stat_num_2",
+      "label": "Stat 2 Number / Highlight",
+      "default": "500.000+"
+    },
+    {
+      "type": "text",
+      "id": "stat_lbl_2",
+      "label": "Stat 2 Label",
+      "default": "Produk Terjual"
+    },
+    {
+      "type": "text",
+      "id": "stat_num_3",
+      "label": "Stat 3 Number / Highlight",
+      "default": "150+"
+    },
+    {
+      "type": "text",
+      "id": "stat_lbl_3",
+      "label": "Stat 3 Label",
+      "default": "Jangkauan Negara"
+    },
+    {
+      "type": "header",
+      "content": "Program Kerja Sama Section"
+    },
+    {
+      "type": "text",
+      "id": "program_title",
+      "label": "Section Title",
+      "default": "Pilih Program Kerja Sama yang Tepat"
+    },
+    {
+      "type": "paragraph",
+      "content": "Card 1: Kerja Sama Strategis"
+    },
+    {
+      "type": "text",
+      "id": "card1_badge",
+      "label": "Card 1 Badge",
+      "default": "Untuk bisnis"
+    },
+    {
+      "type": "image_picker",
+      "id": "card1_icon",
+      "label": "Card 1 Icon Image"
+    },
+    {
+      "type": "text",
+      "id": "card1_icon_url",
+      "label": "Card 1 Icon URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-icon-jabat-tangan.png?v=1792731382"
+    },
+    {
+      "type": "text",
+      "id": "card1_title",
+      "label": "Card 1 Title",
+      "default": "Kerja Sama Strategis"
+    },
+    {
+      "type": "textarea",
+      "id": "card1_text",
+      "label": "Card 1 Description",
+      "default": "Kembangkan peluang bisnis melalui kerja sama komersial, program benefit pelanggan, dan kolaborasi marketing yang disesuaikan dengan kebutuhan bisnis."
+    },
+    {
+      "type": "text",
+      "id": "card1_btn_text",
+      "label": "Card 1 Button Text",
+      "default": "Mari Berkolaborasi"
+    },
+    {
+      "type": "text",
+      "id": "card1_btn_url",
+      "label": "Card 1 Button URL",
+      "default": "https://mail.google.com/mail/?view=cm&fs=1&to=evan@gkomunika.com&su=Kerja%20Sama%20Strategis%20Global%20Komunika"
+    },
+    {
+      "type": "paragraph",
+      "content": "Card 2: Jadi Reseller"
+    },
+    {
+      "type": "text",
+      "id": "card2_badge",
+      "label": "Card 2 Badge",
+      "default": "Untuk travel agent"
+    },
+    {
+      "type": "text",
+      "id": "card2_title",
+      "label": "Card 2 Title",
+      "default": "Jadi Reseller"
+    },
+    {
+      "type": "textarea",
+      "id": "card2_text",
+      "label": "Card 2 Description",
+      "default": "Tawarkan produk GK kepada pelanggan dan tingkatkan pendapatan dari setiap penjualan. Cocok untuk travel agent, tour operator, dan tour leader."
+    },
+    {
+      "type": "text",
+      "id": "card2_btn_text",
+      "label": "Card 2 Button Text",
+      "default": "Daftar Reseller"
+    },
+    {
+      "type": "text",
+      "id": "card2_btn_url",
+      "label": "Card 2 Button URL",
+      "default": "https://docs.google.com/forms/u/0/d/1mhONvb4v5j3Q4fspJz3FKf1EiHKMwnMj-XbBLcBCbfg/viewform?edit_requested=true#settings"
+    },
+    {
+      "type": "paragraph",
+      "content": "Card 3: Jadi Affiliate"
+    },
+    {
+      "type": "text",
+      "id": "card3_badge",
+      "label": "Card 3 Badge",
+      "default": "Untuk kreator"
+    },
+    {
+      "type": "text",
+      "id": "card3_title",
+      "label": "Card 3 Title",
+      "default": "Jadi Affiliate"
+    },
+    {
+      "type": "textarea",
+      "id": "card3_text",
+      "label": "Card 3 Description",
+      "default": "Ubah konten dan audiens kamu menjadi peluang penghasilan dengan mempromosikan produk GK melalui media sosial dan platform digital."
+    },
+    {
+      "type": "text",
+      "id": "card3_btn_text",
+      "label": "Card 3 Button Text",
+      "default": "Daftar Affiliate"
+    },
+    {
+      "type": "text",
+      "id": "card3_btn_url",
+      "label": "Card 3 Button URL",
+      "default": "https://docs.google.com/forms/d/e/1FAIpQLSft7bblxZLVsXNb_9B_3v_Bkvom7-DJrak7oS_nrymaLDcK2w/viewform"
+    },
+    {
+      "type": "header",
+      "content": "Jaringan Mitra Section"
+    },
+    {
+      "type": "text",
+      "id": "mitra_title",
+      "label": "Mitra Section Title",
+      "default": "Jaringan Mitra Kami Terus Berkembang"
+    },
+    {
+      "type": "textarea",
+      "id": "mitra_lead",
+      "label": "Mitra Section Lead Text",
+      "default": "Berkolaborasi dengan berbagai bisnis travel dan lifestyle untuk menghadirkan konektivitas bagi lebih banyak traveler."
+    },
+    {
+      "type": "header",
+      "content": "Mengapa Bermitra Section"
+    },
+    {
+      "type": "text",
+      "id": "why_title",
+      "label": "Section Title",
+      "default": "Mengapa Bermitra dengan Global Komunika?"
+    },
+    {
+      "type": "text",
+      "id": "why_1_title",
+      "label": "Item 1 Title",
+      "default": "Tingkatkan Pendapatan"
+    },
+    {
+      "type": "textarea",
+      "id": "why_1_text",
+      "label": "Item 1 Text",
+      "default": "Harga kompetitif dan model kerja sama yang fleksibel untuk meningkatkan pendapatan mitra."
+    },
+    {
+      "type": "text",
+      "id": "why_2_title",
+      "label": "Item 2 Title",
+      "default": "Nilai Lebih untuk Pelanggan"
+    },
+    {
+      "type": "textarea",
+      "id": "why_2_text",
+      "label": "Item 2 Text",
+      "default": "Koneksi andal di 150+ negara dan kemudahan top-up."
+    },
+    {
+      "type": "text",
+      "id": "why_3_title",
+      "label": "Item 3 Title",
+      "default": "Mitra Berpengalaman"
+    },
+    {
+      "type": "textarea",
+      "id": "why_3_text",
+      "label": "Item 3 Text",
+      "default": "Pengalaman sejak 2016 dan teknologi untuk mengembangkan bisnis kamu."
+    },
+    {
+      "type": "header",
+      "content": "Final CTA Section"
+    },
+    {
+      "type": "text",
+      "id": "final_title",
+      "label": "Final Title",
+      "default": "Siap Tumbuh Bersama Kami?"
+    },
+    {
+      "type": "textarea",
+      "id": "final_text",
+      "label": "Final Subtitle",
+      "default": "Pilih program yang paling cocok, tim kami siap membantu."
+    },
+    {
+      "type": "text",
+      "id": "final_btn1_text",
+      "label": "Button 1 Text",
+      "default": "Mari Berkolaborasi"
+    },
+    {
+      "type": "text",
+      "id": "final_btn1_url",
+      "label": "Button 1 URL",
+      "default": "https://mail.google.com/mail/?view=cm&fs=1&to=evan@gkomunika.com&su=Kerja%20Sama%20Strategis%20Global%20Komunika"
+    },
+    {
+      "type": "text",
+      "id": "final_btn2_text",
+      "label": "Button 2 Text",
+      "default": "Daftar Reseller"
+    },
+    {
+      "type": "text",
+      "id": "final_btn2_url",
+      "label": "Button 2 URL",
+      "default": "https://docs.google.com/forms/u/0/d/1mhONvb4v5j3Q4fspJz3FKf1EiHKMwnMj-XbBLcBCbfg/viewform?edit_requested=true#settings"
+    },
+    {
+      "type": "text",
+      "id": "final_btn3_text",
+      "label": "Button 3 Text",
+      "default": "Daftar Affiliate"
+    },
+    {
+      "type": "text",
+      "id": "final_btn3_url",
+      "label": "Button 3 URL",
+      "default": "https://docs.google.com/forms/d/e/1FAIpQLSft7bblxZLVsXNb_9B_3v_Bkvom7-DJrak7oS_nrymaLDcK2w/viewform"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "partner",
+      "name": "Mitra / Partner Logo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Nama Mitra",
+          "default": "Mitra Global Komunika"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo Mitra"
+        },
+        {
+          "type": "text",
+          "id": "logo_url",
+          "label": "Logo URL (Fallback / External)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LP Collab Business",
+      "category": "Landing Pages",
+      "blocks": [
+        {
+          "type": "partner",
+          "settings": {
+            "title": "Sight-Seeing Tour & Travel",
+            "logo_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-01-sight-seeing.png?v=1792668445"
+          }
+        },
+        {
+          "type": "partner",
+          "settings": {
+            "title": "Antar Semesta Tour and Travel",
+            "logo_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-02-antar-semesta.png?v=1792668445"
+          }
+        },
+        {
+          "type": "partner",
+          "settings": {
+            "title": "TX Travel",
+            "logo_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-03-tx-travel.png?v=1792668446"
+          }
+        },
+        {
+          "type": "partner",
+          "settings": {
+            "title": "Agoda",
+            "logo_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-04-agoda.png?v=1792668445"
+          }
+        },
+        {
+          "type": "partner",
+          "settings": {
+            "title": "GlobalTix",
+            "logo_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-05-globaltix.png?v=1792668445"
+          }
+        },
+        {
+          "type": "partner",
+          "settings": {
+            "title": "Traveloka",
+            "logo_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/gk-mitra-06-traveloka.png?v=1792668445"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

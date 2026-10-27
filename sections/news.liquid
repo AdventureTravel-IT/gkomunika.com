@@ -305,8 +305,6 @@
     const img      = item.image || 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/placeholder.jpg';
     const dateObj  = getItemDate(item);
     const catLabel = getCategoryLabel(item._cat || '');
-    const author   = item.author || 'Nadhif Aldenaf';
-
     return `
       <a
         href="${url}"
@@ -326,11 +324,6 @@
           </div>
           <h2 class="text-[18px] font-bold text-primary leading-snug line-clamp-2 m-0">${title}</h2>
           <p class="text-[14px] text-primary leading-relaxed line-clamp-3 m-0">${excerpt}</p>
-          ${author ? `
-          <div class="flex items-center gap-1.5 text-sm text-primary mt-auto pt-1">
-            {% render 'icon-profile', class: 'text-primary w-[20px] h-[20px]' %}
-            ${author}
-          </div>` : ''}
         </div>
       </a>
     `;

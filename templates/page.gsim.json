@@ -18,27 +18,7 @@
             "product": "gsim-asia",
             "track": "esim",
             "title": "gSim! Asia",
-            "hook": "Kulineran keliling Asia?",
-            "button_label": "Lihat Paket"
-          }
-        },
-        "product_cQXVi6": {
-          "type": "product",
-          "settings": {
-            "product": "gsim-europe",
-            "track": "esim",
-            "title": "gSim! Europe",
-            "hook": "City hopping keliling Eropa?",
-            "button_label": "Lihat Paket"
-          }
-        },
-        "product_jkJD3g": {
-          "type": "product",
-          "settings": {
-            "product": "gsim-middle-east",
-            "track": "esim",
-            "title": "gSim! Middle East",
-            "hook": "Desert adventure di Timur Tengah?",
+            "hook": "Kulineran Keliling Asia?",
             "button_label": "Lihat Paket"
           }
         },
@@ -48,7 +28,27 @@
             "product": "gsim-amerika",
             "track": "esim",
             "title": "gSim! Amerika",
-            "hook": "Roadtrip keliling Amerika",
+            "hook": "Roadtrip Keliling Amerika?",
+            "button_label": "Lihat Paket"
+          }
+        },
+        "product_jkJD3g": {
+          "type": "product",
+          "settings": {
+            "product": "gsim-middle-east",
+            "track": "esim",
+            "title": "gSim! Middle East",
+            "hook": "Desert Adventure di Timur Tengah?",
+            "button_label": "Lihat Paket"
+          }
+        },
+        "product_cQXVi6": {
+          "type": "product",
+          "settings": {
+            "product": "gsim-europe",
+            "track": "esim",
+            "title": "gSim! Europe",
+            "hook": "City Hopping Keliling Eropa?",
             "button_label": "Lihat Paket"
           }
         },
@@ -57,7 +57,7 @@
           "settings": {
             "product": "gsim-australia-new-zealand",
             "track": "esim",
-            "title": "",
+            "title": "gSim! Australia New Zealand",
             "hook": "Campervan trip di Australia & New Zealand?",
             "button_label": "Lihat Paket"
           }
@@ -67,17 +67,7 @@
           "settings": {
             "product": "gsim-indonesia",
             "track": "esim",
-            "title": "",
-            "hook": "Liburan tropis di Indonesia?",
-            "button_label": "Lihat Paket"
-          }
-        },
-        "product_HgMKL8": {
-          "type": "product",
-          "settings": {
-            "product": "",
-            "track": "esim",
-            "title": "",
+            "title": "gSim! Indonesia",
             "hook": "Liburan Tropis di Indonesia?",
             "button_label": "Lihat Paket"
           }
@@ -87,7 +77,7 @@
           "settings": {
             "product": "sim-card-asia-10-countries",
             "track": "sim",
-            "title": "",
+            "title": "gSimCard! ASIA",
             "hook": "Kulineran Keliling Asia?",
             "button_label": "Lihat Paket"
           }
@@ -97,7 +87,7 @@
           "settings": {
             "product": "gsim-card-europe",
             "track": "sim",
-            "title": "",
+            "title": "gSimCard! Europe",
             "hook": "City Hopping Keliling Eropa?",
             "button_label": "Lihat Paket"
           }
@@ -107,7 +97,7 @@
           "settings": {
             "product": "sim-card-indonesia",
             "track": "sim",
-            "title": "",
+            "title": "gSimCard! Indonesia",
             "hook": "Liburan Tropis di Indonesia?",
             "button_label": "Lihat Paket"
           }
@@ -115,18 +105,41 @@
       },
       "block_order": [
         "product_HJaiLb",
-        "product_cQXVi6",
-        "product_jkJD3g",
         "product_87EJyL",
+        "product_jkJD3g",
+        "product_cQXVi6",
         "product_WB7UCU",
         "product_wPHJ34",
-        "product_HgMKL8",
         "product_9ipBwY",
         "product_ECi8Fm",
         "product_NWetfw"
       ],
       "name": "Landing Page gSIM",
-      "settings": {}
+      "settings": {
+        "hero_title": "Satu gSim! Banyak Destinasi",
+        "hero_text": "Tak perlu ganti eSIM setiap traveling. Aktivasi sekali dan top up mudah kapan pun sesuai kebutuhan.",
+        "hero_button_label": "Beli gSim!",
+        "hero_button_tab": "esim",
+        "solution_title": "Destinasi yang Diganti, Bukan eSIM-nya",
+        "solution_1_title": "Aktivasi Sekali, Pakai Berkali-kali",
+        "solution_1_desc": "Cukup pasang dan aktivasi sekali. Gunakan kembali untuk perjalanan berikutnya tanpa perlu setup ulang.",
+        "solution_2_title": "Top Up Mudah",
+        "solution_2_desc": "Butuh kuota atau pergi ke negara lain? Tinggal pilih dan isi ulang paket sesuai kebutuhan.",
+        "solution_3_title": "Dibuat untuk Traveler",
+        "solution_3_desc": "Praktis untuk frequent travelers, perjalanan multi-negara, maupun transit.",
+        "solution_4_title": "Lifetime Validity*",
+        "solution_4_desc": "Satu profil eSIM dapat digunakan kembali untuk berbagai perjalanan, tanpa harus menggantinya setiap trip.",
+        "compare_title": "gSim! vs eSIM Sekali Pakai",
+        "compare_header_gsim": "gSim! / gSimCard!",
+        "compare_header_other": "eSIM Sekali Pakai",
+        "compare_note": "*Masa Berlaku Lifetime otomatis diperpanjang selama 360 hari setiap kali berhasil melakukan top up, sesuai S&K berlaku.",
+        "review_title": "Sudah Dibawa Jalan ke Mana-Mana",
+        "product_title": "Mau Mulai dari Mana?",
+        "product_text": "Pilih paket gSim! sesuai destinasi perjalanan kamu sekarang. Saat trip berikutnya tiba, tinggal pilih paket yang sesuai tanpa perlu ganti gSim!",
+        "product_tab_esim": "gSim!",
+        "product_tab_sim": "gSimCard!",
+        "faq_title": "Masih Bingung?"
+      }
     }
   },
   "order": [

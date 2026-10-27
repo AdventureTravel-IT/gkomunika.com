@@ -39,7 +39,6 @@
             {%- assign c_id = entry.country_id.value | strip -%}
             {%- assign c_flag = entry.flag.value | strip -%}
 
-            {%- comment -%} Key untuk cek duplicate {%- endcomment -%}
             {%- assign c_key_compare = c_en -%}
             {%- if c_key_compare == blank -%}
               {%- assign c_key_compare = c_id -%}
@@ -220,361 +219,316 @@
         </div>
       {% endif %}
 
-      {% if template.name == 'index' %}
-        <h1 class="text-primary font-bold text-[26px] mb-6">{{ 'homepage.popular_country.heading' | t }}</h1>
-      {% else %}
-        <h1 class="text-primary font-bold text-[26px] mb-6">{{ 'homepage.popular_country.heading_all' | t }}</h1>
-      {% endif %}
+      <div class="gkh-wrap" data-popular-countries>
+        {% if template.name == 'index' %}
+          <h2 class="gkh-title">{{ 'homepage.popular_country.heading' | t }}</h2>
+        {% else %}
+          <h1 class="gkh-title">{{ 'homepage.popular_country.heading_all' | t }}</h1>
+        {% endif %}
 
-      <div class="tabs flex gap-2 mb-4">
-        <button type="button" class="tab-btn is-active" data-tab="land">
-          {{ 'homepage.popular_country.details.button_land' | t }}
-        </button>
-        <button type="button" class="tab-btn" data-tab="region">
-          {{ 'homepage.popular_country.details.button_region' | t }}
-        </button>
-      </div>
+        <div class="gkh-tabs" role="tablist">
+          <button type="button" class="gkh-tab gkh-is-active" role="tab" aria-selected="true" data-gkh-tab="land">
+            {{ 'homepage.popular_country.details.button_land' | t }}
+          </button>
+          <button type="button" class="gkh-tab" role="tab" aria-selected="false" data-gkh-tab="region">
+            {{ 'homepage.popular_country.details.button_region' | t }}
+          </button>
+        </div>
 
-      {%- comment -%}
-        ==========================
-          PANEL: LAND
-        ===========================
-      {%- endcomment -%}
-      <div class="tab-panel" data-panel="land">
-        {%- assign display_map = '' -%}
-        {%- assign pairs = country_map | split: '||' -%}
+        {%- comment -%}
+          ==========================
+            PANEL: LAND
+          ===========================
+        {%- endcomment -%}
+        <div class="gkh-panel" data-gkh-panel="land">
+          {%- assign display_map = '' -%}
+          {%- assign pairs = country_map | split: '||' -%}
 
-        {%- for pair in pairs -%}
-          {%- if pair != blank -%}
-            {%- assign parts = pair | split: '::' -%}
-            {%- assign country_en_out = parts[0] | strip -%}
-            {%- assign country_id_out = parts[1] | strip -%}
-            {%- assign min_price = parts[2] | plus: 0 -%}
-            {%- assign flag_out = parts[3] | strip -%}
+          {%- for pair in pairs -%}
+            {%- if pair != blank -%}
+              {%- assign parts = pair | split: '::' -%}
+              {%- assign country_en_out = parts[0] | strip -%}
+              {%- assign country_id_out = parts[1] | strip -%}
+              {%- assign min_price = parts[2] | plus: 0 -%}
+              {%- assign flag_out = parts[3] | strip -%}
 
-            {%- assign display_name = country_id_out -%}
-            {%- if is_en -%}{%- assign display_name = country_en_out -%}{%- endif -%}
+              {%- assign display_name = country_id_out -%}
+              {%- if is_en -%}{%- assign display_name = country_en_out -%}{%- endif -%}
 
-            {%- if display_name == blank -%}{%- assign display_name = country_en_out -%}{%- endif -%}
-            {%- if display_name == blank -%}{%- assign display_name = country_id_out -%}{%- endif -%}
+              {%- if display_name == blank -%}{%- assign display_name = country_en_out -%}{%- endif -%}
+              {%- if display_name == blank -%}{%- assign display_name = country_id_out -%}{%- endif -%}
 
-            {%- assign display_map = display_map
-              | append: display_name
-              | append: '::'
-              | append: min_price
-              | append: '::'
-              | append: flag_out
-              | append: '||'
-            -%}
-          {%- endif -%}
-        {%- endfor -%}
-
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[10px]">
-          {%- assign display_pairs = display_map | split: '||' | sort -%}
-
-          {%- if display_mode == 'top' -%}
-            {%- if is_en -%}
-              {%- assign top_countries = 'Singapore|Malaysia|Thailand|China|Japan|South Korea|USA|Europe|Saudi Arabia|Hong Kong|Vietnam|Taiwan'
-                | split: '|'
-              -%}
-            {%- else -%}
-              {%- assign top_countries = 'Singapura|Malaysia|Thailand|Cina|Jepang|Korea Selatan|Amerika Serikat|Eropa|Arab Saudi|Hong Kong|Vietnam|Taiwan'
-                | split: '|'
+              {%- assign display_map = display_map
+                | append: display_name
+                | append: '::'
+                | append: min_price
+                | append: '::'
+                | append: flag_out
+                | append: '||'
               -%}
             {%- endif -%}
+          {%- endfor -%}
 
-            {%- assign shown_top = 0 -%}
+          <div class="gkh-grid-c">
+            {%- assign display_pairs = display_map | split: '||' | sort -%}
 
-            {%- for top_name in top_countries -%}
-              {%- assign top_key = top_name | strip | downcase -%}
-              {%- assign top_key = top_key | replace: '_', ' ' | replace: '-', ' ' -%}
-              {%- assign top_compact = top_key | replace: ' ', '' -%}
+            {%- if display_mode == 'top' -%}
+              {%- assign top_countries_data = 'Singapore:::https://gkomunika.com/cdn/shop/files/Singapore.svg?v=5285233666947339274:::Rp 20.000|Malaysia:::https://gkomunika.com/cdn/shop/files/Malaysia.svg?v=12842823618677623280:::Rp 20.000|Thailand:::https://gkomunika.com/cdn/shop/files/Thailand.svg?v=16773415897375716824:::Rp 29.000|China:::https://gkomunika.com/cdn/shop/files/China.svg?v=5412872211976829782:::Rp 20.000|Japan:::https://gkomunika.com/cdn/shop/files/Japan.svg?v=9947011595981139404:::Rp 19.000|South Korea:::https://gkomunika.com/cdn/shop/files/South_Korea.svg?v=13655143242951941689:::Rp 29.000|Australia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Flag_of_Australia.jpg?v=1792734139:::Rp 19.000|Europe:::https://gkomunika.com/cdn/shop/files/Europe_Top.svg?v=1482087602594110665:::Rp 79.000|Saudi Arabia:::https://gkomunika.com/cdn/shop/files/Saudi_Arabia.svg?v=14176695740459012418:::Rp 29.000|Hong Kong:::https://gkomunika.com/cdn/shop/files/Hong_Kong.svg?v=5890400936816029061:::Rp 19.000|Vietnam:::https://gkomunika.com/cdn/shop/files/Vietnam.svg?v=12664013080022461533:::Rp 20.000|Taiwan:::https://gkomunika.com/cdn/shop/files/Taiwan.svg?v=6301535944797681651:::Rp 19.000' | split: '|' -%}
 
-              {%- assign found_item = false -%}
+              {%- for top_item in top_countries_data -%}
+                {%- assign top_fields = top_item | split: ':::' -%}
+                {%- assign top_name = top_fields[0] -%}
+                {%- assign fallback_flag = top_fields[1] -%}
+                {%- assign fallback_price = top_fields[2] -%}
 
+                {%- assign top_key = top_name | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
+
+                {%- assign dynamic_price = 0 -%}
+                {%- assign dynamic_flag = '' -%}
+                {%- assign found_item = false -%}
+
+                {%- for item in display_pairs -%}
+                  {%- if item != blank and found_item == false -%}
+                    {%- assign parts = item | split: '::' -%}
+                    {%- assign item_name = parts[0] | strip -%}
+                    {%- assign item_price = parts[1] | plus: 0 -%}
+                    {%- assign item_flag = parts[2] | strip -%}
+
+                    {%- assign item_compact = item_name | strip | downcase | replace: 'taiwam', 'taiwan' | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
+
+                    {%- if item_compact == top_key -%}
+                      {%- assign found_item = true -%}
+                      {%- assign dynamic_price = item_price -%}
+                      {%- if item_flag != blank -%}
+                        {%- assign dynamic_flag = item_flag | split: '/' | last | file_url -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+
+                {%- assign flag_src = fallback_flag -%}
+                {%- if dynamic_flag != blank -%}
+                  {%- assign flag_src = dynamic_flag -%}
+                {%- endif -%}
+
+                {%- assign price_display = fallback_price -%}
+                {%- if dynamic_price > 0 -%}
+                  {%- assign price_display = dynamic_price | money_with_currency -%}
+                  {%- if is_au -%}{%- assign price_display = price_display | append: ' AUD' -%}{%- endif -%}
+                {%- endif -%}
+
+                <a
+                  href="{{ routes.search_url }}?q={{ top_name | replace: '_', ' ' | url_encode }}"
+                  class="gkh-country"
+                >
+                  <div class="gkh-country__l">
+                    <div class="gkh-country__flag">
+                      <img
+                        src="{{ flag_src }}"
+                        width="50"
+                        height="50"
+                        alt="{{ top_name }}"
+                        loading="lazy"
+                      >
+                    </div>
+                    <div>
+                      <span class="gkh-country__name">{{ top_name }}</span>
+                      <p class="gkh-country__price">Start From {{ price_display }}</p>
+                    </div>
+                  </div>
+
+                  <svg class="gkh-country__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+                </a>
+              {%- endfor -%}
+
+            {%- else -%}
               {%- for item in display_pairs -%}
-                {%- if item != blank and found_item == false -%}
+                {%- if item != blank -%}
                   {%- assign parts = item | split: '::' -%}
                   {%- assign country_name = parts[0] | strip -%}
                   {%- assign min_price = parts[1] | plus: 0 -%}
                   {%- assign flag_out = parts[2] | strip -%}
 
-                  {%- assign item_key = country_name | strip | downcase -%}
-
-                  {%- comment -%}
-                    Normalisasi hardcore:
-                    - taiwam => taiwan
-                    - _ dan - => spasi
-                    - remove spasi semua (compact)
-                  {%- endcomment -%}
-                  {%- if item_key == 'taiwam' -%}
-                    {%- assign item_key = 'taiwan' -%}
-                  {%- endif -%}
-
-                  {%- assign item_key = item_key | replace: '_', ' ' | replace: '-', ' ' -%}
-                  {%- assign item_compact = item_key | replace: ' ', '' -%}
-
-                  {%- if item_compact == top_compact -%}
-                    {%- assign found_item = true -%}
-
-                    {%- if flag_out != blank -%}
-                      {%- assign shown_top = shown_top | plus: 1 -%}
-
-                      <a
-                        href="{{ routes.search_url }}?q={{ country_name | replace: '_', ' ' | url_encode }}"
-                        class="flex items-center justify-between bg-neutral rounded-[15px] py-[8px] px-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all{% if shown_top > 5 %} top-hidden{% endif %}"
-                      >
-                        {%- assign flag_filename = flag_out | split: '/' | last -%}
-                        <div class="flex items-center gap-[10px]">
-                          <div class="w-[50px] h-[50px] shrink-0 rounded-[15px] bg-slate-500 overflow-hidden border border-slate-300">
-                            <img
-                              src="{{ flag_filename | file_url }}"
-                              width="50"
-                              height="50"
-                              class="w-full h-full object-cover"
-                              alt="{{ country_name }}"
-                              loading="lazy"
-                            >
-                          </div>
-                          <div class="flex-1">
-                            <span class="text-primary text-[18px] font-bold line-clamp-1">
-                              {{- country_name | replace: '_', ' ' -}}
-                            </span>
-                            <p class="text-primary text-[14px] line-clamp-1"><span>Start From </span>{{ min_price | money_with_currency }}{% if is_au %} AUD{% endif %}</p>
-                          </div>
+                  {%- if flag_out != blank -%}
+                    <a
+                      href="{{ routes.search_url }}?q={{ country_name | replace: '_', ' ' | url_encode }}"
+                      class="gkh-country"
+                    >
+                      {%- assign flag_filename = flag_out | split: '/' | last -%}
+                      <div class="gkh-country__l">
+                        <div class="gkh-country__flag">
+                          <img
+                            src="{{ flag_filename | file_url }}"
+                            width="50"
+                            height="50"
+                            alt="{{ country_name }}"
+                            loading="lazy"
+                          >
                         </div>
+                        <div>
+                          <span class="gkh-country__name">
+                            {{- country_name | replace: '_', ' ' -}}
+                          </span>
+                          <p class="gkh-country__price">Start From {{ min_price | money_with_currency }}{% if is_au %} AUD{% endif %}</p>
+                        </div>
+                      </div>
 
-                        {% render 'icon-arrow-right', class: 'text-primary w-[35px] h-[35px]' %}
-                      </a>
+                      <svg class="gkh-country__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+                    </a>
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        </div>
+
+        {%- comment -%}
+          ==========================
+            PANEL: REGION
+          ===========================
+        {%- endcomment -%}
+        <div class="gkh-panel" data-gkh-panel="region" hidden>
+          {%- assign region_display_map = '' -%}
+          {%- assign r_pairs = region_map | split: '||' -%}
+
+          {%- for r_pair in r_pairs -%}
+            {%- if r_pair != blank -%}
+              {%- assign r_parts = r_pair | split: '::' -%}
+              {%- assign region_en_out = r_parts[0] | strip -%}
+              {%- assign region_id_out = r_parts[1] | strip -%}
+              {%- assign min_price = r_parts[2] | plus: 0 -%}
+              {%- assign reg_flag_out = r_parts[3] | strip -%}
+
+              {%- assign region_name = region_id_out -%}
+              {%- if is_en -%}{%- assign region_name = region_en_out -%}{%- endif -%}
+
+              {%- if region_name == blank -%}{%- assign region_name = region_en_out -%}{%- endif -%}
+              {%- if region_name == blank -%}{%- assign region_name = region_id_out -%}{%- endif -%}
+
+              {%- assign region_display_map = region_display_map
+                | append: region_name
+                | append: '::'
+                | append: min_price
+                | append: '::'
+                | append: reg_flag_out
+                | append: '||'
+              -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          <div class="gkh-grid-c">
+            {%- assign fallback_regions_data = 'Middle East:::Timur Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_timur_tengah.png?v=1793001222:::Rp 19.000|Asia:::Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia.png?v=1793001223:::Rp 19.000|Europe:::Europe:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_europe.png?v=1793001223:::Rp 19.000|Africa:::Afrika:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_afrika.png?v=1793001222:::Rp 29.000|Central Asia:::Asia Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_tengah.png?v=1793001222:::Rp 19.000|Eastern Asia:::Eastern Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_eastern_asia.png?v=1793001222:::Rp 79.000|East Asia:::Asia Timur:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_timur.png?v=1793001222:::Rp 19.000|North America:::Amerika Utara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_amerika_utara.png?v=1793001222:::Rp 19.000|Southeast Asia:::Asia Tenggara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_tenggara.png?v=1793001222:::Rp 19.000|North Africa:::Afrika Utara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_afrika_utara.png?v=1793001222:::Rp 20.000|West Africa:::Afrika Barat:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_afrika_barat.png?v=1793001222:::Rp 20.000|South Asia:::Asia Selatan:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_selatan.png?v=1793001221:::Rp 19.000|Central America:::Amerika Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_amerika_tengah.png?v=1793001220:::Rp 109.000|Oceania:::Osenia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_osenia.png?v=1793001220:::Rp 19.000|South America:::Amerika Selatan:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_amerika_selatan.png?v=1793001220:::Rp 20.000' | split: '|' -%}
+
+            {%- for r_item in fallback_regions_data -%}
+              {%- assign r_fields = r_item | split: ':::' -%}
+              {%- assign r_en_name = r_fields[0] | strip -%}
+              {%- assign r_id_name = r_fields[1] | strip -%}
+              {%- assign r_flag_fallback = r_fields[2] | strip -%}
+              {%- assign r_price_fallback = r_fields[3] | strip -%}
+
+              {%- assign r_name = r_id_name -%}
+              {%- if is_en -%}
+                {%- assign r_name = r_en_name -%}
+              {%- endif -%}
+
+              {%- assign r_key_en = r_en_name | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
+              {%- assign r_key_id = r_id_name | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
+              {%- assign r_dyn_price = 0 -%}
+
+              {%- for r_pair in r_pairs -%}
+                {%- if r_pair != blank -%}
+                  {%- assign r_parts = r_pair | split: '::' -%}
+                  {%- assign cand_en = r_parts[0] | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
+                  {%- assign cand_id = r_parts[1] | strip | downcase | replace: '_', ' ' | replace: '-', ' ' | replace: ' ', '' -%}
+                  {%- assign cand_price = r_parts[2] | plus: 0 -%}
+
+                  {%- if cand_en == r_key_en or cand_id == r_key_id or cand_en == r_key_id or cand_id == r_key_en or cand_id == 'eropa' and r_key_en == 'europe' -%}
+                    {%- if cand_price > 0 -%}
+                      {%- if r_dyn_price == 0 or cand_price < r_dyn_price -%}
+                        {%- assign r_dyn_price = cand_price -%}
+                      {%- endif -%}
                     {%- endif -%}
                   {%- endif -%}
                 {%- endif -%}
               {%- endfor -%}
-            {%- endfor -%}
 
-          {%- else -%}
-            {%- for item in display_pairs -%}
-              {%- if item != blank -%}
-                {%- assign parts = item | split: '::' -%}
-                {%- assign country_name = parts[0] | strip -%}
-                {%- assign min_price = parts[1] | plus: 0 -%}
-                {%- assign flag_out = parts[2] | strip -%}
+              {%- assign flag_src = r_flag_fallback -%}
 
-                {%- if flag_out != blank -%}
-                  <a
-                    href="{{ routes.search_url }}?q={{ country_name | replace: '_', ' ' | url_encode }}"
-                    class="flex items-center justify-between bg-neutral rounded-[15px] py-[8px] px-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all"
-                  >
-                    {%- assign flag_filename = flag_out | split: '/' | last -%}
-                    <div class="flex items-center gap-[10px]">
-                      <div class="w-[50px] h-[50px] shrink-0 rounded-[15px] bg-slate-500 overflow-hidden border border-slate-300">
-                        <img
-                          src="{{ flag_filename | file_url }}"
-                          width="50"
-                          height="50"
-                          class="w-full h-full object-cover"
-                          alt="{{ country_name }}"
-                          loading="lazy"
-                        >
-                      </div>
-                      <div class="flex-1">
-                        <span class="text-primary text-[18px] font-bold line-clamp-1">
-                          {{- country_name | replace: '_', ' ' -}}
-                        </span>
-                        <p class="text-primary text-[14px] line-clamp-1"><span>Start From </span>{{ min_price | money_with_currency }}{% if is_au %} AUD{% endif %}</p>
-                      </div>
-                    </div>
-
-                    {% render 'icon-arrow-right', class: 'text-primary w-[35px] h-[35px]' %}
-                  </a>
-                {%- endif -%}
+              {%- assign price_display = r_price_fallback -%}
+              {%- if r_dyn_price > 0 -%}
+                {%- assign price_display = r_dyn_price | money_with_currency -%}
+                {%- if is_au -%}{%- assign price_display = price_display | append: ' AUD' -%}{%- endif -%}
               {%- endif -%}
-            {%- endfor -%}
-          {%- endif -%}
-        </section>
-      </div>
 
-      {%- comment -%}
-        ==========================
-          PANEL: REGION
-        ===========================
-      {%- endcomment -%}
-      <div class="tab-panel is-hidden" data-panel="region">
-        {%- assign region_display_map = '' -%}
-        {%- assign r_pairs = region_map | split: '||' -%}
-
-        {%- for r_pair in r_pairs -%}
-          {%- if r_pair != blank -%}
-            {%- assign r_parts = r_pair | split: '::' -%}
-            {%- assign region_en_out = r_parts[0] | strip -%}
-            {%- assign region_id_out = r_parts[1] | strip -%}
-            {%- assign min_price = r_parts[2] | plus: 0 -%}
-            {%- assign reg_flag_out = r_parts[3] | strip -%}
-
-            {%- assign region_name = region_id_out -%}
-            {%- if is_en -%}{%- assign region_name = region_en_out -%}{%- endif -%}
-
-            {%- if region_name == blank -%}{%- assign region_name = region_en_out -%}{%- endif -%}
-            {%- if region_name == blank -%}{%- assign region_name = region_id_out -%}{%- endif -%}
-
-            {%- assign region_display_map = region_display_map
-              | append: region_name
-              | append: '::'
-              | append: min_price
-              | append: '::'
-              | append: reg_flag_out
-              | append: '||'
-            -%}
-          {%- endif -%}
-        {%- endfor -%}
-
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[10px]">
-          {%- assign region_display_pairs = region_display_map | split: '||' | sort -%}
-
-          {%- if display_mode == 'top' -%}
-            {%- assign shown_region = 0 -%}
-            {%- for item in region_display_pairs limit: 12 -%}
-              {%- if item != blank -%}
-                {%- assign parts = item | split: '::' -%}
-                {%- assign region_name = parts[0] | strip -%}
-                {%- assign min_price = parts[1] | plus: 0 -%}
-                {%- assign reg_flag_out = parts[2] | strip -%}
-
-                {%- assign shown_region = shown_region | plus: 1 -%}
-
-                <a
-                  href="{{ routes.search_url }}?q={{ region_name | replace: '_', ' ' | url_encode }}"
-                  class="flex items-center justify-between bg-neutral rounded-[15px] py-[8px] px-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all"
-                >
-                  <div class="flex items-center gap-[10px]">
-                    {%- if reg_flag_out != blank -%}
-                      {%- assign reg_flag_filename = reg_flag_out | split: '/' | last -%}
-                      <div class="w-[50px] h-[50px] shrink-0 rounded-[15px] overflow-hidden">
-                        <img
-                          src="{{ reg_flag_filename | file_url }}"
-                          width="50"
-                          height="50"
-                          class="w-full h-full object-cover"
-                          alt="{{ region_name }}"
-                          loading="lazy"
-                        >
-                      </div>
-                    {%- endif -%}
-
-                    <div class="flex-1">
-                      <span class="text-primary text-[18px] font-bold line-clamp-1">
-                        {{- region_name | replace: '_', ' ' -}}
-                      </span>
-                      <p class="text-primary text-[14px] line-clamp-1"><span>Start From </span>{{ min_price | money_with_currency }}{% if is_au %} AUD{% endif %}</p>
-                    </div>
+              <a
+                href="{{ routes.search_url }}?q={{ r_name | replace: '_', ' ' | url_encode }}"
+                class="gkh-country"
+              >
+                <div class="gkh-country__l">
+                  <div class="gkh-country__flag">
+                    <img
+                      src="{{ flag_src }}"
+                      width="50"
+                      height="50"
+                      alt="{{ r_name }}"
+                      loading="lazy"
+                    >
                   </div>
-
-                  {% render 'icon-arrow-right', class: 'text-primary w-[35px] h-[35px]' %}
-                </a>
-              {%- endif -%}
-            {%- endfor -%}
-          {%- else -%}
-            {%- for item in region_display_pairs -%}
-              {%- if item != blank -%}
-                {%- assign parts = item | split: '::' -%}
-                {%- assign region_name = parts[0] | strip -%}
-                {%- assign min_price = parts[1] | plus: 0 -%}
-                {%- assign reg_flag_out = parts[2] | strip -%}
-
-                <a
-                  href="{{ routes.search_url }}?q={{ region_name | replace: '_', ' ' | url_encode }}"
-                  class="flex items-center justify-between bg-neutral rounded-[15px] py-[8px] px-[10px] hover:shadow-lg hover:-translate-x-[5px] transition-all"
-                >
-                  <div class="flex items-center gap-[10px]">
-                    {%- if reg_flag_out != blank -%}
-                      {%- assign reg_flag_filename = reg_flag_out | split: '/' | last -%}
-                      <div class="w-[50px] h-[50px] shrink-0 rounded-[15px] overflow-hidden">
-                        <img
-                          src="{{ reg_flag_filename | file_url }}"
-                          width="50"
-                          height="50"
-                          class="w-full h-full object-cover"
-                          alt="{{ region_name }}"
-                          loading="lazy"
-                        >
-                      </div>
-                    {%- endif -%}
-
-                    <div class="flex-1">
-                      <span class="text-primary text-[18px] font-bold line-clamp-1">
-                        {{- region_name | replace: '_', ' ' -}}
-                      </span>
-                      <p class="text-primary text-[14px] line-clamp-1"><span>Start From </span>{{ min_price | money_with_currency }}{% if is_au %} AUD{% endif %}</p>
-                    </div>
+                  <div>
+                    <span class="gkh-country__name">{{ r_name }}</span>
+                    <p class="gkh-country__price">Start From {{ price_display }}</p>
                   </div>
+                </div>
 
-                  {% render 'icon-arrow-right', class: 'text-primary w-[35px] h-[35px]' %}
-                </a>
-              {%- endif -%}
+                <svg class="gkh-country__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
             {%- endfor -%}
-          {%- endif -%}
-        </section>
-      </div>
-
-      {%- if section.settings.show_cta -%}
-        <div class="w-full flex justify-center items-center mt-8">
-          <a
-            href="{{ pages['all-destination'].url }}"
-            class="py-[15px] w-full max-w-[320px] text-center rounded-[15px] leading-relaxed bg-primary text-neutral font-semibold text-[16px]"
-          >
-            {{ 'homepage.popular_country.details.cta' | t }}
-          </a>
+          </div>
         </div>
-      {%- endif -%}
+
+        {%- if section.settings.show_cta -%}
+          <div class="gkh-more">
+            <a
+              href="{{ pages['all-destination'].url | default: '/pages/all-destination' }}"
+              class="gkh-btn-o"
+            >
+              {{ 'homepage.popular_country.details.cta' | t }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
 
       {{ paginate | default_pagination }}
     {%- endpaginate -%}
 
-    <style>
-      .tab-btn {
-        padding: 5px 30px;
-        border-radius: 15px;
-        background: transparent;
-        cursor: pointer;
-        color: var(--color-primary);
-        font-weight: bold;
-      }
-      .tab-btn.is-active {
-        background-color: var(--color-primary);
-        font-weight: bold;
-        color: var(--color-neutral);
-      }
-
-      /* ✅ hanya untuk panel */
-      .is-hidden {
-        display: none;
-      }
-
-      /* ✅ khusus Top Mode: hide item ke-6 dst hanya di mobile */
-      @media (max-width: 767px) {
-        .top-hidden {
-          display: none !important;
-        }
-      }
-    </style>
-
     <script>
       (function () {
-        const btns = document.querySelectorAll('.tab-btn');
-        const panels = document.querySelectorAll('.tab-panel');
+        const root = document.querySelector('[data-popular-countries]') || document;
+        const btns = root.querySelectorAll('.gkh-tab');
+        const panels = root.querySelectorAll('.gkh-panel');
 
         function setActive(tab) {
-          btns.forEach((b) => b.classList.toggle('is-active', b.dataset.tab === tab));
-          panels.forEach((p) => p.classList.toggle('is-hidden', p.dataset.panel !== tab));
-          localStorage.setItem('activeTabSearch', tab);
+          btns.forEach((b) => {
+            const active = b.dataset.gkhTab === tab;
+            b.classList.toggle('gkh-is-active', active);
+            b.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+          panels.forEach((p) => {
+            p.hidden = p.dataset.gkhPanel !== tab;
+          });
+          try { localStorage.setItem('activeTabSearch', tab); } catch(e){}
         }
 
         btns.forEach((btn) => {
-          btn.addEventListener('click', () => setActive(btn.dataset.tab));
+          btn.addEventListener('click', () => {
+            if (btn.dataset.gkhTab) setActive(btn.dataset.gkhTab);
+          });
         });
 
-        const saved = localStorage.getItem('activeTabSearch');
-        if (saved) setActive(saved);
+        try {
+          const saved = localStorage.getItem('activeTabSearch');
+          if (saved) setActive(saved);
+        } catch(e){}
       })();
     </script>
   </div>

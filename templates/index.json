@@ -21,7 +21,7 @@
         "heading_hE3VGr": {
           "type": "heading",
           "settings": {
-            "heading": "eSIM Instant by Global Komunika",
+            "heading": "Instant eSIM by Global Komunika",
             "heading_size": "h1"
           }
         },
@@ -43,14 +43,15 @@
         "search_ggQFNn"
       ],
       "settings": {
-        "image": "shopify://shop_images/Untitled_design_7_1.png",
-        "image_mobile": "shopify://shop_images/phone_ver.jpg"
+        "image": "shopify://shop_images/hero_homepage_banner.jpg",
+        "search_placeholder": "Search Your Destination",
+        "show_gcard": true,
+        "gcard_eyebrow": "DISCOVER gSim!",
+        "gcard_title": "One gSim!<sup>TM</sup> Endless Destinations.",
+        "gcard_text": "Activate once, top up anytime, and stay connected across multiple trips. No need to switch eSIMs.",
+        "gcard_cta_text": "Explore gSim! →",
+        "gcard_cta_url": "/pages/gsim"
       }
-    },
-    "product_category_button_UVfQzJ": {
-      "type": "product-category-button",
-      "name": "Product Category Button",
-      "settings": {}
     },
     "popular_countries_AmdMjK": {
       "type": "popular-countries",
@@ -67,24 +68,48 @@
           "type": "htu_card",
           "settings": {
             "icon": "htu-phone",
-            "title": "Choose the eSIM Plan that Fits Your Trip",
-            "paragraph": "Select a data plan based on your destination, duration, and data needs from our available options."
+            "title": "Choose",
+            "paragraph": "Select your destination and find the best data plan for your trip."
           }
         },
         "htu_card_UFf7hP": {
           "type": "htu_card",
           "settings": {
             "icon": "htu-mail",
-            "title": "Scan the QR Code Sent to Your Email.",
-            "paragraph": "After purchase, you will receive a QR Code via email. Simply scan it with your phone for installation."
+            "title": "Scan",
+            "paragraph": "Receive your QR code via email after purchase. Scan it to install your eSIM in just a few steps."
           }
         },
         "htu_card_caei9d": {
           "type": "htu_card",
           "settings": {
             "icon": "htu-activate",
-            "title": "Activate and You are Ready to Go",
-            "paragraph": "Once activated, your eSIM connects instantly, allowing you to go online without swapping physical eSIM."
+            "title": "Connect",
+            "paragraph": "Activate your eSIM at your destination and enjoy seamless connectivity throughout your trip."
+          }
+        },
+        "wgk_card_aYrG6L": {
+          "type": "wgk_card",
+          "settings": {
+            "icon": "htu-verified",
+            "title": "Pioneering eSIM Since 2016",
+            "paragraph": "Reliable connectivity across 150+ countries, backed by nearly a decade of experience."
+          }
+        },
+        "wgk_card_RdTXpt": {
+          "type": "wgk_card",
+          "settings": {
+            "icon": "htu-user",
+            "title": "Over 500,000 eSIMs Sold",
+            "paragraph": "Trusted by travelers to stay connected wherever their journeys take them."
+          }
+        },
+        "wgk_card_iNVbUP": {
+          "type": "wgk_card",
+          "settings": {
+            "icon": "htu-secure",
+            "title": "100% Activation Guarantee & Great Value",
+            "paragraph": "Seamless activation, reliable connectivity and competitive pricing for worry-free travel."
           }
         },
         "review_top_Ci4m9t": {
@@ -96,15 +121,6 @@
             "comment-top1": "Customer service is amazing! They replied fast and clearly answered all my questions. Even helped me troubleshoot when I had a small issue. Great experience!"
           }
         },
-        "review_bottom_h6NDw7": {
-          "type": "review_bottom",
-          "settings": {
-            "profile-bottom": "Lia",
-            "comment-bottom": "Tried this eSIM in Japan, Korea, and China—it worked like a charm in all places. The internet was fast, even in rural areas. This is a must-have for any traveler.",
-            "profile-bottom1": "Tiani",
-            "comment-bottom1": "Scanned the QR code right after landing, and it worked immediately. No need to change settings. The instructions are super clear too."
-          }
-        },
         "review_top_NFGAnr": {
           "type": "review_top",
           "settings": {
@@ -112,6 +128,15 @@
             "comment-top": "Affordable pricing and the eSIM arrived in my email almost instantly after payment. The signal was stable during my entire trip. Will definitely use again.",
             "profile-top1": "Eva",
             "comment-top1": "Used this eSIM for a multi-country trip and it switched networks automatically without any issues. Very convenient and stress-free."
+          }
+        },
+        "review_bottom_h6NDw7": {
+          "type": "review_bottom",
+          "settings": {
+            "profile-bottom": "Lia",
+            "comment-bottom": "Tried this eSIM in Japan, Korea, and China—it worked like a charm in all places. The internet was fast, even in rural areas. This is a must-have for any traveler.",
+            "profile-bottom1": "Tiani",
+            "comment-bottom1": "Scanned the QR code right after landing, and it worked immediately. No need to change settings. The instructions are super clear too."
           }
         },
         "review_bottom_aEQhWE": {
@@ -123,60 +148,28 @@
             "comment-bottom1": "I was nervous trying an eSIM for the first time, but the process was super easy. Just scan and go. The seller even gave tips on when to activate. Very helpful!"
           }
         },
-        "wgk_card_RdTXpt": {
-          "type": "wgk_card",
-          "settings": {
-            "icon": "htu-user",
-            "title": "Over 500.000 eSIMs Sold",
-            "paragraph": "Trusted by thousands of travelers around the world."
-          }
-        },
-        "wgk_card_iNVbUP": {
-          "type": "wgk_card",
-          "settings": {
-            "icon": "htu-secure",
-            "title": "100% SIM Activation & Value for Money Guarantee",
-            "paragraph": "Get what you pay for; fast activation and dependable service."
-          }
-        },
-        "wgk_card_aYrG6L": {
-          "type": "wgk_card",
-          "settings": {
-            "icon": "htu-verified",
-            "title": "Trusted Pioneer of Travel eSIM Since 2016",
-            "paragraph": "Years of experience ensuring seamless connectivity for global travelers."
-          }
-        },
-        "wgk_card_9ErqeH": {
-          "type": "wgk_card",
-          "settings": {
-            "icon": "htu-network",
-            "title": "Coverage in 150+ Countries Worldwide",
-            "paragraph": "Stay connected across continents with one reliable provider."
-          }
-        },
         "benefits_card_MzkGRQ": {
           "type": "benefits_card",
           "settings": {
             "icon": "htu-simcard",
-            "title": "You Can Keep Your SIM Card for OTP",
-            "paragraph": "You can still receive important messages and calls on your regular number while using eSIM."
+            "title": "Keep Your Number Active",
+            "paragraph": "Stay reachable on your primary number for calls, SMS and OTPs while using eSIM abroad."
           }
         },
         "benefits_card_4W8FKR": {
           "type": "benefits_card",
           "settings": {
             "icon": "htu-qrcode",
-            "title": "Easy to Set Up",
-            "paragraph": "No need to visit a store or insert a card, simply scan the QR Code and you are online."
+            "title": "Quick & Easy Setup",
+            "paragraph": "No physical SIM card or store visit needed. Simply scan the QR code to install your eSIM."
           }
         },
         "benefits_card_WYL8qw": {
           "type": "benefits_card",
           "settings": {
             "icon": "htu-secure",
-            "title": "Encrypted Connection",
-            "paragraph": "Your data is protected with secure network encryption while browsing abroad."
+            "title": "Secure & Reliable Connection",
+            "paragraph": "Enjoy secure mobile connectivity wherever your travels take you."
           }
         }
       },
@@ -184,24 +177,23 @@
         "htu_card_8xe3C6",
         "htu_card_UFf7hP",
         "htu_card_caei9d",
-        "review_top_Ci4m9t",
-        "review_bottom_h6NDw7",
-        "review_top_NFGAnr",
-        "review_bottom_aEQhWE",
+        "wgk_card_aYrG6L",
         "wgk_card_RdTXpt",
         "wgk_card_iNVbUP",
-        "wgk_card_aYrG6L",
-        "wgk_card_9ErqeH",
+        "review_top_Ci4m9t",
+        "review_top_NFGAnr",
+        "review_bottom_h6NDw7",
+        "review_bottom_aEQhWE",
         "benefits_card_MzkGRQ",
         "benefits_card_4W8FKR",
         "benefits_card_WYL8qw"
       ],
       "settings": {
-        "htu_title": "How To Use?",
+        "htu_title": "How to use",
         "wgk_title": "Why Global Komunika?",
         "review_title": "What Our Customers Say",
         "review_paragraph": "",
-        "benefits_title": "Benefits"
+        "benefits_title": "Benefits of Using eSIM"
       }
     },
     "top_article_ertF6F": {
@@ -239,12 +231,15 @@
         "post_UtePQw"
       ],
       "name": "Top Article",
-      "settings": {}
+      "settings": {
+        "title": "Blog Posts",
+        "see_more_text": "See More",
+        "see_more_url": "/pages/news"
+      }
     }
   },
   "order": [
     "image_banner_9QEdGw",
-    "product_category_button_UVfQzJ",
     "popular_countries_AmdMjK",
     "how_to_use_qA8rPU",
     "top_article_ertF6F"

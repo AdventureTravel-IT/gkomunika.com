@@ -128,6 +128,30 @@
   /* =========================
      SPACING FIX (Y spacing)
      ========================= */
+  .pages-article__author {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-primary);
+    margin-top: 10px;
+    margin-bottom: 2px;
+  }
+
+  .pages-article__author-icon,
+  .pages-article__author svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--color-primary);
+  }
+
+  .pages-article__author + .pages-article__date {
+    margin-top: 4px;
+    margin-bottom: 15px;
+  }
+
   .pages-content__wrapper .pages-article__date {
     margin: 15px 0;
   }
@@ -645,6 +669,18 @@
     <section class="pages-content">
       <div class="pages-content__wrapper">
         <h1 class="page-content__title">{{ page.title | escape }}</h1>
+        {%- assign article_author = page.metafields.custom.author.value
+          | default: page.metafields.pages.author.value
+          | default: page.metafields.custom.author
+          | default: page.metafields.pages.author
+          | strip
+        -%}
+        {%- if article_author != blank -%}
+          <div class="pages-article__author">
+            {% render 'icon-profile', class: 'pages-article__author-icon' %}
+            <span>{{ article_author }}</span>
+          </div>
+        {%- endif -%}
         <h2 class="pages-article__date">{{ page.published_at | date: '%d %B %Y' }}</h2>
         <div class="page-content__wrapper">{{ page.content }}</div>
       </div>

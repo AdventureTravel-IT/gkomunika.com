@@ -1,364 +1,541 @@
 {% style %}
-  .about-product h2,
-  .about-target h2,
-  .about-team h2,
-  .about-owner h2,
-  .about__review-text h2 {
-    color: var(--color-primary);
-    font-weight: bold;
-    font-size: 1.25rem; /* xl */
-    margin: 0 0 10px 0;
+  .gkab {
+    --gkab-blue: #005496;
+    --gkab-sky: #00adee;
+    --gkab-sky-60: #66cef5;
+    --gkab-tint: #f3fbfe;
+    --gkab-tint-2: #dbf5ff;
+    --gkab-ink: #222222;
+    --gkab-muted: #4a5560;
+    --gkab-line: #d9e6ee;
+    --gkab-white: #ffffff;
+    --gkab-font-head: "Gotham Rounded", "Gotham", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --gkab-font-body: "Gotham", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+    font-family: var(--gkab-font-body);
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--gkab-ink);
+    background: var(--gkab-white);
+    -webkit-text-size-adjust: 100%;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .gkab *,
+  .gkab *::before,
+  .gkab *::after { box-sizing: border-box; }
+  :where(.gkab) :where(h1, h2, h3, p, dl, dd, ul, ol, figure, blockquote) { margin: 0; padding: 0; }
+  :where(.gkab) :where(ul, ol) { list-style: none; }
+  :where(.gkab) img { display: block; max-width: 100%; }
+  :where(.gkab) a { color: inherit; text-decoration: none; }
+  .gkab :focus-visible { outline: 3px solid var(--gkab-sky); outline-offset: 3px; border-radius: 8px; }
+
+  .gkab-wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* Skala huruf: H1 30/48, H2 24/32, H3 18/22, body 16 */
+  .gkab h1, .gkab h2, .gkab h3, .gkab-ticket-value { font-family: var(--gkab-font-head); font-weight: 700; }
+  .gkab h1 { font-size: 30px; line-height: 1.15; letter-spacing: -0.01em; }
+  .gkab h2 { font-size: 24px; line-height: 1.2; color: var(--gkab-blue); letter-spacing: -0.005em; }
+  .gkab h3 { font-size: 18px; line-height: 1.3; }
+
+  /* ---------- Foto (placeholder sampai src diisi) ---------- */
+  .gkab-photo {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(45deg, var(--gkab-tint-2), var(--gkab-sky-60));
+    border-radius: 24px;
+  }
+  .gkab-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .gkab-photo img[src=""],
+  .gkab-photo img:not([src]) { display: none; }
+  .gkab-photo-label {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 24px; font-size: 16px; line-height: 1.5; color: var(--gkab-blue);
   }
 
-  .about-container {
-    width: 100%;
-    height: 100%;
-    padding: 20px 20%;
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
+  /* ---------- HERO (foto di atas, judul + paragraf di atas fade biru) ---------- */
+  .gkab-hero {
+    position: relative; overflow: hidden; color: var(--gkab-white);
+    display: flex; flex-direction: column; padding-bottom: 72px;
+    background: linear-gradient(45deg, var(--gkab-blue) 0%, var(--gkab-blue) 55%, #0a86c8 100%);
+    border-radius: 0 0 32px 32px;
   }
-  .about-wrapper {
-    display: flex;
-    gap: 20px;
-    align-items: top;
+  .gkab-hero-media { position: relative; order: 1; margin: 0; min-height: 220px; }
+  .gkab-hero-img {
+    display: block; width: 100%; height: auto; aspect-ratio: 5 / 4; object-fit: cover; object-position: 78% 40%;
+    -webkit-mask-image: linear-gradient(to bottom, #000 52%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 52%, transparent 100%);
   }
-  .about-logo {
-    display: flex;
-    text-align: justify;
-    align-items: center;
-    margin: 0 10%;
-    gap: 20px;
-  }
-  .about-logo h2 {
-    margin: 0;
-    font-size: var(--font-supper-large);
-    color: var(--color-primary);
-  }
-  .about-image {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .about-image img {
-    width: 80%;
-    height: auto;
+  .gkab-hero-img[src=""], .gkab-hero-img:not([src]) { display: none; }
+  .gkab-hero-title { position: relative; z-index: 2; order: 2; margin-top: -86px; }
+  .gkab-hero h1 { max-width: 12ch; }
+  .gkab-hero-copy p { margin-top: 16px; color: #eaf6fd; max-width: 56ch; }
+  .gkab-hero-copy h1 + p,
+  .gkab-hero-copy p:first-of-type { margin-top: 20px; }
+
+  /* ---------- TIKET STATISTIK ---------- */
+  .gkab-ticket-zone { position: relative; z-index: 2; margin-top: -40px; }
+  .gkab-ticket {
+    display: grid;
+    background: var(--gkab-white);
     border-radius: 20px;
+    box-shadow: 0 16px 40px rgba(0, 84, 150, 0.18);
+    overflow: hidden;
   }
-  .about__product-wrapper {
-    display: flex;
-    gap: 10px;
+  .gkab-ticket-item { padding: 24px; display: flex; flex-direction: column; gap: 4px; }
+  .gkab-ticket-item + .gkab-ticket-item { border-top: 2px dashed var(--gkab-line); }
+  .gkab-ticket-label { font-size: 16px; color: var(--gkab-muted); order: -1; }
+  .gkab-ticket-value { font-size: 36px; line-height: 1.1; color: var(--gkab-blue); font-variant-numeric: tabular-nums; }
+
+  /* ---------- CERITA ---------- */
+  .gkab-story { padding: 72px 0; }
+  .gkab-story-grid { display: grid; gap: 40px; align-items: center; }
+  .gkab-story-media { position: relative; width: 100%; max-width: 440px; margin: 0 auto; }
+  .gkab-story-photo { position: relative; aspect-ratio: 4 / 5; width: 100%; background: transparent; }
+  .gkab-story-photo img { object-position: 35% 85%; }
+  .gkab-badge {
+    position: absolute; z-index: 2; left: 16px; bottom: -16px; display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 18px; border-radius: 999px; background: var(--gkab-white); color: var(--gkab-blue);
+    font-family: var(--gkab-font-head); font-weight: 700; font-size: 16px; line-height: 1.3; box-shadow: 0 8px 24px rgba(0, 84, 150, 0.2);
   }
-  .about__product-image {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  .gkab-badge::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--gkab-sky); flex: none; }
+  .gkab-story-body { margin-top: 24px; display: grid; gap: 16px; max-width: 56ch; }
+  .gkab-principle {
+    margin-top: 32px; padding: 4px 0 4px 20px; border-left: 4px solid var(--gkab-sky);
+    font-family: var(--gkab-font-head); font-weight: 700; font-size: 18px; line-height: 1.45; color: var(--gkab-blue); max-width: 40ch;
   }
 
-  .about__product-img-main {
-    max-width: 310px;
-    max-height: 310px;
-    border-radius: 15px;
+  /* ---------- KOMITMEN ---------- */
+  .gkab-commit {
+    position: relative; overflow: hidden; isolation: isolate; color: var(--gkab-white);
+    background: linear-gradient(45deg, var(--gkab-blue) 0%, var(--gkab-blue) 60%, #0a86c8 100%);
+    padding: 72px 0;
   }
-  .about__product-img {
-    max-width: 150px;
-    max-height: 150px;
-    border-radius: 15px;
+  .gkab-commit::before {
+    content: ""; position: absolute; z-index: -1; width: 560px; height: 560px; right: -200px; top: -200px; border-radius: 50%;
+    background: repeating-radial-gradient(circle at center, transparent 0 46px, rgba(255, 255, 255, 0.1) 46px 48px);
+    -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 72%);
+            mask-image: radial-gradient(circle, #000 30%, transparent 72%);
   }
-  .about__product-deskripsi {
-    margin-bottom: auto;
+  .gkab-commit::after {
+    content: ""; position: absolute; z-index: -1; width: 420px; height: 420px; left: -180px; bottom: -220px; border-radius: 50%;
+    background: repeating-radial-gradient(circle at center, transparent 0 46px, rgba(255, 255, 255, 0.08) 46px 48px);
+    -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 72%);
+            mask-image: radial-gradient(circle, #000 30%, transparent 72%);
   }
-  .about__product-deskripsi,
-  .about__target-wrapper {
-    flex: 1;
-    background-color: var(--color-neutral);
-    padding: 30px;
-    border-radius: 15px;
-    text-align: justify;
-    color: var(--color-primary);
+  .gkab-commit h2 { color: var(--gkab-white); }
+  .gkab-commit-list { margin: 40px auto 0; display: grid; gap: 16px; max-width: 640px; }
+  .gkab-commit-item {
+    position: relative; overflow: hidden; background: var(--gkab-white); color: var(--gkab-ink);
+    border-radius: 24px; padding: 32px 24px 36px; box-shadow: 0 16px 40px rgba(0, 40, 80, 0.22);
   }
-  .about-team {
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
+  .gkab-commit-item::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(45deg, var(--gkab-blue), var(--gkab-sky)); }
+  .gkab-icon {
+    width: 64px; height: 64px; margin: 0 auto; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: var(--gkab-white);
+    background: linear-gradient(45deg, var(--gkab-blue), var(--gkab-sky));
   }
-  .about__team-image {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .about__team-text,
-  .about__review-text {
-    background-color: var(--color-neutral);
-    padding: 30px;
-    border-radius: 15px;
-    text-align: justify;
-    color: var(--color-primary);
-  }
-  .about__team-text h2 {
-    text-align: center;
-  }
-  .about__team-image img {
-    aspect-ratio: 3 / 2;
-    width: 100%;
-    object-fit: cover;
-    border-radius: 15px;
-  }
-  .about-owner {
-    display: flex;
-    gap: 20px;
-    align-items: stretch;
-    height: auto;
-  }
-  .about__owner-image {
-    width: 50%;
-    height: 50%;
-  }
-  .about__owner-image img {
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    aspect-ratio: 1 / 1;
-  }
+  .gkab-icon svg { width: 32px; height: 32px; }
+  .gkab-icon img { width: 32px; height: 32px; object-fit: contain; }
+  .gkab-commit-item h3 { margin-top: 24px; text-align: center; color: var(--gkab-blue); }
+  .gkab-commit-item p { margin-top: 12px; text-align: justify; text-justify: inter-word; text-align-last: left; hyphens: auto; }
 
-  .about__owner-text {
-    width: 100%;
-    border-radius: 15px;
-    background-color: var(--color-neutral);
-    padding: 10px 30px;
-    margin-bottom: 10px;
-    color: var(--color-primary);
-    display: flex;
-    align-items: top;
-    flex-direction: column;
-    justify-content: center;
+  /* ---------- KEBIJAKAN ---------- */
+  .gkab-policy { padding: 72px 0 88px; }
+  .gkab-policy-panel { background: var(--gkab-tint); border-radius: 32px; padding: 32px 12px; }
+  .gkab-policy-grid { display: grid; gap: 32px; }
+  .gkab-policy-intro { margin-top: 16px; max-width: 44ch; }
+  .gkab-policy-links { display: grid; gap: 12px; }
+  .gkab-policy-link {
+    display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: center;
+    min-height: 44px; padding: 16px; border-radius: 16px; background: var(--gkab-white);
+    border: 1px solid var(--gkab-tint-2); transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
-  .about__owner-text h2 {
-    margin: 0;
-  }
-  .about__owner-text h2,
-  .about__review-text h2 {
-    text-align: center;
-  }
-  .about-product h2,
-  .about-target h2,
-  .about-team h2,
-  .about-owner h2,
-  .about__review-text h2 {
-    color: var(--color-primary);
-    font-weight: bold;
-    margin: 0;
-  }
-  .about_review,
-  .about__product-deskripsi,
-  .about__target-wrapper,
-  .about__team-text,
-  .about__owner-text {
-    box-shadow: var(--box-shadow);
-  }
+  .gkab-policy-link:hover { border-color: var(--gkab-sky); box-shadow: 0 8px 24px rgba(0, 84, 150, 0.12); }
+  .gkab-policy-ico { width: 48px; height: 48px; border-radius: 14px; background: var(--gkab-tint-2); color: var(--gkab-blue); display: flex; align-items: center; justify-content: center; }
+  .gkab-policy-ico svg { width: 24px; height: 24px; }
+  .gkab-policy-ico img { width: 24px; height: 24px; object-fit: contain; }
+  .gkab-policy-title { display: block; font-family: var(--gkab-font-head); font-weight: 700; font-size: 18px; line-height: 1.35; color: var(--gkab-blue); }
+  .gkab-policy-desc { display: block; margin-top: 4px; font-size: 16px; line-height: 1.55; color: var(--gkab-muted); }
+  .gkab-chev { display: none; width: 24px; height: 24px; color: var(--gkab-sky); transition: transform 0.2s ease; }
+  .gkab-policy-link:hover .gkab-chev { transform: translateX(4px); }
 
-  @media (min-width: 769px) {
-    .product-flex-override {
-      flex-direction: column;
-    }
+  /* ---------- TABLET & DESKTOP ---------- */
+  @media (min-width: 768px) {
+    .gkab h1 { font-size: 48px; }
+    .gkab h2 { font-size: 32px; }
+    .gkab h3 { font-size: 22px; }
+    .gkab-wrap { padding: 0 40px; }
 
-    .about__product-wrapper {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
+    /* Tablet: tetap layout foto-dulu seperti mobile, foto dibuat lebih lebar */
+    .gkab-hero-img { aspect-ratio: 16 / 10; object-position: 72% 40%; }
+    .gkab-hero-title { margin-top: -110px; }
+    .gkab-ticket { grid-template-columns: repeat(3, 1fr); }
+    .gkab-ticket-item { padding: 32px clamp(20px, 3.5vw, 40px); }
+    .gkab-ticket-item + .gkab-ticket-item { border-top: 0; border-left: 2px dashed var(--gkab-line); }
+    .gkab-ticket-value { font-size: clamp(32px, 4vw, 48px); }
 
-    .about__product-image {
-      flex-direction: column;
-      align-items: center;
-    }
+    .gkab-story { padding: 104px 0 96px; }
+    .gkab-story-grid { grid-template-columns: 0.85fr 1.15fr; gap: clamp(32px, 6vw, 72px); }
+    .gkab-story-media { margin: 0; }
+    .gkab-principle { font-size: 22px; }
+
+    .gkab-commit { padding: 104px 0; }
+    .gkab-commit-list { margin-top: 56px; }
+    .gkab-commit-item { padding: 36px 24px 40px; }
+
+    .gkab-policy { padding: 104px 0 120px; }
+    .gkab-policy-panel { padding: 56px; }
+    .gkab-policy-title { font-size: 20px; }
+    .gkab-policy-link { grid-template-columns: 48px 1fr 24px; }
+    .gkab-chev { display: block; }
+    .gkab-policy-grid { grid-template-columns: 0.8fr 1.2fr; gap: 56px; align-items: start; }
   }
-
-  @media (max-width: 768px) {
-    .about-container {
-      padding: 20px 24px;
-      gap: 20px;
+  @media (min-width: 1024px) {
+    .gkab-hero { display: block; padding-bottom: 0; border-radius: 0 0 48px 48px; }
+    .gkab-hero-media { width: 100%; min-height: 0; aspect-ratio: auto; height: clamp(600px, 48.75vw, 720px); }
+    /* Foto di kanan; sisi kirinya memudar ke biru supaya teks tidak menimpa wajah */
+    .gkab-hero-img {
+      position: absolute; top: 0; right: 0; width: auto; max-width: none; height: 100%; aspect-ratio: auto; object-position: 50% 40%;
+      -webkit-mask-image: linear-gradient(to right, transparent 0, rgba(0, 0, 0, 0.2) 10%, rgba(0, 0, 0, 0.55) 22%, #000 40%);
+              mask-image: linear-gradient(to right, transparent 0, rgba(0, 0, 0, 0.2) 10%, rgba(0, 0, 0, 0.55) 22%, #000 40%);
     }
-    .about-logo {
-      display: flex;
-      flex-direction: column;
+    .gkab-hero-media::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(90deg, rgba(0, 84, 150, 0.9) 0%, rgba(0, 84, 150, 0.62) 34%, rgba(0, 84, 150, 0) 56%);
     }
-    .about-product {
-      display: flex;
-      flex-direction: column;
-    }
-    .about__product-wrapper {
-      display: flex;
-      justify-content: center;
-    }
-    .about-target {
-      display: flex;
-      flex-direction: column;
-    }
-    .about-owner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+    .gkab-hero-title { position: absolute; top: 56px; left: 0; right: 0; margin-top: 0; }
+    .gkab-hero-copy { max-width: 470px; }
+    .gkab-hero-copy p { margin-top: 20px; }
+    .gkab-ticket-zone { margin-top: -64px; }
+    .gkab-commit-list { max-width: none; grid-template-columns: repeat(3, 1fr); gap: 24px; }
   }
 {% endstyle %}
 
-{% if template.name == 'page' and template.suffix == 'about-us' %}
-  <div class="about-container">
-    {% if section.settings.logo != blank %}
-      <section class="about-logo">
-        <div class="about_wrapper">
-          <img
-            src="{{ section.settings.logo | img_url: 'medium' }}"
-            alt=""
-            width="1350px"
-            height="auto"
-            loading="lazy"
-            class="shrink-0"
-          >
-        </div>
-        <div class="about__logo-text">
-          <h2>{{ section.settings['logo-text'] }}</h2>
-        </div>
-      </section>
-    {% endif %}
-    {% if section.settings['about-image'] != blank %}
-      <div class="about-image">
+<div class="gkab" lang="id">
+  <!-- HERO -->
+  <section class="gkab-hero" aria-labelledby="gkab-h1">
+    <figure class="gkab-hero-media">
+      {%- if section.settings.hero_image != blank -%}
+        {%- assign hero_alt = section.settings.hero_image.alt | default: section.settings.hero_title | escape -%}
+        {{
+          section.settings.hero_image
+          | image_url: width: 1920
+          | image_tag:
+            class: 'gkab-hero-img',
+            alt: hero_alt,
+            loading: 'eager',
+            widths: '540, 720, 1080, 1440, 1920'
+        }}
+      {%- else -%}
         <img
-          src="{{ section.settings.about-image | img_url: 'master' }}"
-          alt=""
-          width="350px"
-          height="auto"
-          loading="lazy"
+          class="gkab-hero-img"
+          src="{{ section.settings.hero_image_url | default: 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Hero_banner_about_us.jpg?v=1792663594' }}"
+          alt="{{ section.settings.hero_title | escape }}"
+          width="1920"
+          height="1072"
+          loading="eager"
         >
+      {%- endif -%}
+    </figure>
+    <div class="gkab-hero-title">
+      <div class="gkab-wrap">
+        <div class="gkab-hero-copy">
+          <h1 id="gkab-h1">{{ section.settings.hero_title | default: 'Menghubungkan Traveler Sejak 2016' }}</h1>
+          {%- if section.settings.hero_text != blank -%}
+            {{ section.settings.hero_text }}
+          {%- else -%}
+            <p>Global Komunika merupakan salah satu pelopor penyedia konektivitas perjalanan di Indonesia, yang menghadirkan solusi eSIM dan SIM Card internasional sejak 2016.</p>
+            <p>Dengan jangkauan lebih dari 150 negara, kami membantu traveler tetap terhubung melalui koneksi andal, harga kompetitif dan solusi praktis untuk berbagai kebutuhan perjalanan.</p>
+          {%- endif -%}
+        </div>
       </div>
-    {% endif %}
+    </div>
+  </section>
 
-    {% for block in section.blocks %}
-      {% if block.type == 'about-product' %}
-        <section class="about-product about-wrapper product-flex-override">
-          <div class="about__product-deskripsi">
-            <h2>{{ block.settings['product-heading'] }}</h2>
-            <p>{{ block.settings.product_paragraph }}</p>
-            <ul>
-              {% if block.settings.product_list_1 != blank %}
-                <li>{{ block.settings.product_list_1 }}</li>
-              {% endif %}
-              {% if block.settings.product_list_2 != blank %}
-                <li>{{ block.settings.product_list_2 }}</li>
-              {% endif %}
-              {% if block.settings.product_list_3 != blank %}
-                <li>{{ block.settings.product_list_3 }}</li>
-              {% endif %}
-              {% if block.settings.product_list_4 != blank %}
-                <li>{{ block.settings.product_list_4 }}</li>
-              {% endif %}
-              {% if block.settings.product_list_5 != blank %}
-                <li>{{ block.settings.product_list_5 }}</li>
-              {% endif %}
-            </ul>
-          </div>
-          <div class="about__product-wrapper">
-            <div>
-              <img
-                src="{{ block.settings.product-image1 | image_url }}"
-                alt=""
-                width="100%"
-                height="100%"
-                class="about__product-img-main"
-              >
+  <!-- STATISTIK -->
+  {%- assign stat_blocks = section.blocks | where: 'type', 'stat' -%}
+  <div class="gkab-ticket-zone">
+    <div class="gkab-wrap">
+      <dl class="gkab-ticket">
+        {%- if stat_blocks.size > 0 -%}
+          {%- for block in stat_blocks -%}
+            <div class="gkab-ticket-item" {{ block.shopify_attributes }}>
+              <dt class="gkab-ticket-label">{{ block.settings.label }}</dt>
+              <dd class="gkab-ticket-value">
+                {%- if block.settings.count_number > 0 -%}
+                  <span data-gkab-count="{{ block.settings.count_number }}">{{ block.settings.value }}</span>{{ block.settings.suffix }}
+                {%- else -%}
+                  {{ block.settings.value }}{{ block.settings.suffix }}
+                {%- endif -%}
+              </dd>
             </div>
-            <div class="about__product-image">
-              <img
-                src="{{ block.settings.product-image2 | image_url }}"
-                alt=""
-                width="100%"
-                height="100%"
-                class="about__product-img"
-              >
-
-              <img
-                src="{{ block.settings.product-image3 | image_url }}"
-                alt=""
-                width="100%"
-                height="100%"
-                class="about__product-img"
-              >
-            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="gkab-ticket-item">
+            <dt class="gkab-ticket-label">Tahun Berdiri</dt>
+            <dd class="gkab-ticket-value">2016</dd>
           </div>
-        </section>
-      {% endif %}
-
-      {% if block.type == 'about-target' %}
-        <section class="about-target about-wrapper">
-          <div class="about__target-wrapper">
-            <h2>{{ block.settings['visi-heading'] }}</h2>
-            <p>{{ block.settings['visi-paragraph'] }}</p>
+          <div class="gkab-ticket-item">
+            <dt class="gkab-ticket-label">Jangkauan Negara</dt>
+            <dd class="gkab-ticket-value"><span data-gkab-count="150">150</span>+</dd>
           </div>
-          <div class="about__target-wrapper">
-            <h2>{{ block.settings['misi-heading'] }}</h2>
-            <p>{{ block.settings['misi-paragraph'] }}</p>
+          <div class="gkab-ticket-item">
+            <dt class="gkab-ticket-label">Produk Terjual</dt>
+            <dd class="gkab-ticket-value"><span data-gkab-count="500000">500.000</span>+</dd>
           </div>
-        </section>
-      {% endif %}
-
-      {% if block.type == 'about-team' %}
-        <section class="about-team">
-          <div class="about__team-text">
-            <h2>{{ block.settings['team-heading'] }}</h2>
-            <p>{{ block.settings['team-paragraph'] }}</p>
-          </div>
-          <div class="about__team-image about-wrapper">
-            <div>
-              <img
-                src="{{ block.settings.team-image1 | image_url }}"
-                alt=""
-                width="auto"
-                height="auto"
-              >
-            </div>
-            <div>
-              <img
-                src="{{ block.settings.team-image2 | image_url }}"
-                alt=""
-                width="auto"
-                height="auto"
-              >
-            </div>
-          </div>
-        </section>
-      {% endif %}
-
-      {% if block.type == 'about-owner' %}
-        <section class="about-owner">
-          <div class="about__owner-image">
-            <img
-              src="{{ block.settings.owner-image | image_url }}"
-              alt=""
-              loading="lazy"
-            >
-          </div>
-          <div class="about__owner-text">
-            <h2>{{ block.settings['owner-heading'] }}</h2>
-            <p>{{ block.settings['owner-paragraph'] }}</p>
-          </div>
-        </section>
-      {% endif %}
-
-      {% if block.type == 'about-review' %}
-        <section class="about_review">
-          <div class="about__review-text">
-            <h2>{{ block.settings['review-heading'] }}</h2>
-            <p>{{ block.settings['review-paragraph'] }}</p>
-          </div>
-        </section>
-      {% endif %}
-    {% endfor %}
+        {%- endif -%}
+      </dl>
+    </div>
   </div>
-{% endif %}
+
+  <!-- CERITA -->
+  <section class="gkab-story" aria-labelledby="gkab-h-story">
+    <div class="gkab-wrap">
+      <div class="gkab-story-grid">
+        <div class="gkab-story-media">
+          <figure class="gkab-photo gkab-story-photo">
+            <span class="gkab-photo-label">FOTO FOUNDER (4:5, potret)</span>
+            {%- if section.settings.founder_image != blank -%}
+              {%- assign founder_alt = section.settings.founder_image.alt | default: 'Founder Global Komunika' | escape -%}
+              {{
+                section.settings.founder_image
+                | image_url: width: 1000
+                | image_tag:
+                  alt: founder_alt,
+                  loading: 'lazy',
+                  widths: '400, 600, 800, 1000'
+              }}
+            {%- else -%}
+              <img
+                src="{{ section.settings.founder_image_url | default: 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/pak_andy_bu_jess.jpg?v=1792663519' }}"
+                alt="Founder Global Komunika"
+                width="512"
+                height="640"
+                loading="lazy"
+              >
+            {%- endif -%}
+          </figure>
+          {%- if section.settings.founder_badge != blank -%}
+            <p class="gkab-badge">{{ section.settings.founder_badge }}</p>
+          {%- endif -%}
+        </div>
+        <div>
+          <h2 id="gkab-h-story">{{ section.settings.story_title | default: 'Dari Traveler, untuk Traveler' }}</h2>
+          <div class="gkab-story-body">
+            {%- if section.settings.story_body != blank -%}
+              {{ section.settings.story_body }}
+            {%- else -%}
+              <p>Global Komunika didirikan pada 2016, berawal dari kecintaan founder kami terhadap perjalanan mandiri sejak 2007.</p>
+              <p>Berangkat dari keinginan untuk membuat konektivitas internasional lebih mudah dan terjangkau, Global Komunika terus berkembang menjadi penyedia layanan konektivitas perjalanan yang dipercaya oleh para traveler.</p>
+            {%- endif -%}
+          </div>
+          {%- if section.settings.story_principle != blank -%}
+            <blockquote class="gkab-principle">{{ section.settings.story_principle }}</blockquote>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KOMITMEN -->
+  {%- assign commit_blocks = section.blocks | where: 'type', 'commitment' -%}
+  <section class="gkab-commit" aria-labelledby="gkab-h-commit">
+    <div class="gkab-wrap">
+      <h2 id="gkab-h-commit">{{ section.settings.commit_heading | default: 'Komitmen Kami' }}</h2>
+      <ul class="gkab-commit-list">
+        {%- if commit_blocks.size > 0 -%}
+          {%- for block in commit_blocks -%}
+            <li class="gkab-commit-item" {{ block.shopify_attributes }}>
+              <span class="gkab-icon" aria-hidden="true">
+                {%- case block.settings.icon -%}
+                  {%- when 'signal' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/><path d="M9.2 10.6a4 4 0 0 1 5.6 0"/><path d="M7.4 8.4a6.6 6.6 0 0 1 9.2 0"/><path d="M12 13h.01"/></svg>
+                  {%- when 'price' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><text x="12" y="15.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor" stroke="none" style="font-family:inherit">Rp</text></svg>
+                  {%- when 'support' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8.5 10.2l2.4 2.4 4.6-4.6"/></svg>
+                  {%- when 'custom_image' -%}
+                    {%- if block.settings.custom_icon != blank -%}
+                      {{ block.settings.custom_icon | image_url: width: 64 | image_tag: loading: 'lazy', alt: block.settings.title }}
+                    {%- else -%}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/><path d="M9.2 10.6a4 4 0 0 1 5.6 0"/><path d="M7.4 8.4a6.6 6.6 0 0 1 9.2 0"/><path d="M12 13h.01"/></svg>
+                    {%- endif -%}
+                  {%- else -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/><path d="M9.2 10.6a4 4 0 0 1 5.6 0"/><path d="M7.4 8.4a6.6 6.6 0 0 1 9.2 0"/><path d="M12 13h.01"/></svg>
+                {%- endcase -%}
+              </span>
+              <h3>{{ block.settings.title }}</h3>
+              <p>{{ block.settings.text }}</p>
+            </li>
+          {%- endfor -%}
+        {%- else -%}
+          <li class="gkab-commit-item">
+            <span class="gkab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/><path d="M9.2 10.6a4 4 0 0 1 5.6 0"/><path d="M7.4 8.4a6.6 6.6 0 0 1 9.2 0"/><path d="M12 13h.01"/></svg>
+            </span>
+            <h3>Koneksi Andal</h3>
+            <p>Membantu traveler tetap terhubung di berbagai destinasi melalui solusi konektivitas internasional yang dapat diandalkan.</p>
+          </li>
+          <li class="gkab-commit-item">
+            <span class="gkab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><text x="12" y="15.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor" stroke="none" style="font-family:inherit">Rp</text></svg>
+            </span>
+            <h3>Harga Kompetitif</h3>
+            <p>Menawarkan pilihan konektivitas dengan harga bersaing dan fleksibel sesuai kebutuhan perjalanan.</p>
+          </li>
+          <li class="gkab-commit-item">
+            <span class="gkab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8.5 10.2l2.4 2.4 4.6-4.6"/></svg>
+            </span>
+            <h3>Layanan Pelanggan</h3>
+            <p>Memberikan bantuan dan layanan responsif untuk pengalaman perjalanan yang lebih nyaman.</p>
+          </li>
+        {%- endif -%}
+      </ul>
+    </div>
+  </section>
+
+  <!-- KEBIJAKAN & INFORMASI -->
+  {%- assign policy_blocks = section.blocks | where: 'type', 'policy' -%}
+  <section class="gkab-policy" aria-labelledby="gkab-h-policy">
+    <div class="gkab-wrap">
+      <div class="gkab-policy-panel">
+        <div class="gkab-policy-grid">
+          <div>
+            <h2 id="gkab-h-policy">{{ section.settings.policy_heading | default: 'Kebijakan & Informasi' }}</h2>
+            <p class="gkab-policy-intro">{{ section.settings.policy_intro | default: 'Temukan informasi penting mengenai layanan, pembelian, serta hak Anda sebagai pelanggan Global Komunika.' }}</p>
+          </div>
+          <nav class="gkab-policy-links" aria-label="Kebijakan dan informasi">
+            {%- if policy_blocks.size > 0 -%}
+              {%- for block in policy_blocks -%}
+                <a class="gkab-policy-link" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+                  <span class="gkab-policy-ico" aria-hidden="true">
+                    {%- case block.settings.icon -%}
+                      {%- when 'privacy' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                      {%- when 'refund' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+                      {%- when 'terms' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8"/></svg>
+                      {%- when 'shipping' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg>
+                      {%- when 'custom_image' -%}
+                        {%- if block.settings.custom_icon != blank -%}
+                          {{ block.settings.custom_icon | image_url: width: 48 | image_tag: loading: 'lazy', alt: block.settings.title }}
+                        {%- else -%}
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                        {%- endif -%}
+                      {%- else -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                    {%- endcase -%}
+                  </span>
+                  <span>
+                    <span class="gkab-policy-title">{{ block.settings.title }}</span>
+                    {%- if block.settings.description != blank -%}
+                      <span class="gkab-policy-desc">{{ block.settings.description }}</span>
+                    {%- endif -%}
+                  </span>
+                  <svg class="gkab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+                </a>
+              {%- endfor -%}
+            {%- else -%}
+              <a class="gkab-policy-link" href="https://gkomunika.com/pages/privacy-policy">
+                <span class="gkab-policy-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
+                <span>
+                  <span class="gkab-policy-title">Kebijakan Privasi</span>
+                  <span class="gkab-policy-desc">Informasi mengenai pengumpulan, penggunaan dan perlindungan data pribadi Anda.</span>
+                </span>
+                <svg class="gkab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
+              <a class="gkab-policy-link" href="https://gkomunika.com/pages/refund-policy">
+                <span class="gkab-policy-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></span>
+                <span>
+                  <span class="gkab-policy-title">Kebijakan Pengembalian Dana</span>
+                  <span class="gkab-policy-desc">Ketentuan, persyaratan, dan prosedur pengajuan pengembalian dana.</span>
+                </span>
+                <svg class="gkab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
+              <a class="gkab-policy-link" href="https://gkomunika.com/pages/terms-of-use">
+                <span class="gkab-policy-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8"/></svg></span>
+                <span>
+                  <span class="gkab-policy-title">Syarat &amp; Ketentuan Penggunaan</span>
+                  <span class="gkab-policy-desc">Ketentuan yang berlaku dalam penggunaan produk dan layanan kami.</span>
+                </span>
+                <svg class="gkab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
+              <a class="gkab-policy-link" href="https://gkomunika.com/pages/shipment-policy">
+                <span class="gkab-policy-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg></span>
+                <span>
+                  <span class="gkab-policy-title">Kebijakan Pengiriman</span>
+                  <span class="gkab-policy-desc">Informasi mengenai proses pengiriman dan penerimaan produk.</span>
+                </span>
+                <svg class="gkab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
+            {%- endif -%}
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  (function () {
+    function initCounters(container) {
+      var root = container || document.querySelector('.gkab');
+      if (!root) return;
+      var counters = root.querySelectorAll('[data-gkab-count]');
+      if (!counters.length) return;
+
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      function format(n) {
+        return Math.round(n).toLocaleString('id-ID');
+      }
+
+      function run(el) {
+        var target = parseInt(el.getAttribute('data-gkab-count'), 10);
+        if (isNaN(target)) return;
+        var duration = 1600;
+        var start = null;
+        function step(ts) {
+          if (start === null) start = ts;
+          var p = Math.min((ts - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = format(target * eased);
+          if (p < 1) requestAnimationFrame(step);
+        }
+        el.textContent = '0';
+        requestAnimationFrame(step);
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            run(entry.target);
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      counters.forEach(function (el) { io.observe(el); });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { initCounters(); });
+    } else {
+      initCounters();
+    }
+
+    document.addEventListener('shopify:section:load', function (e) {
+      if (e.target && e.target.querySelector('.gkab')) {
+        initCounters(e.target);
+      }
+    });
+  })();
+</script>
 
 <script type="application/ld+json">
   {{ page | structured_data }}
@@ -367,186 +544,232 @@
 {% schema %}
 {
   "name": "About us",
+  "tag": "section",
+  "class": "section-about-us",
   "settings": [
     {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo"
+      "type": "header",
+      "content": "Hero Section"
     },
     {
       "type": "image_picker",
-      "id": "about-image",
-      "label": "About Image"
+      "id": "hero_image",
+      "label": "Hero Banner Image"
+    },
+    {
+      "type": "text",
+      "id": "hero_image_url",
+      "label": "Hero Banner URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Hero_banner_about_us.jpg?v=1792663594"
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Judul Hero",
+      "default": "Menghubungkan Traveler Sejak 2016"
     },
     {
       "type": "richtext",
-      "id": "logo-text",
-      "label": "Deskripsi"
+      "id": "hero_text",
+      "label": "Deskripsi Hero",
+      "default": "<p>Global Komunika merupakan salah satu pelopor penyedia konektivitas perjalanan di Indonesia, yang menghadirkan solusi eSIM dan SIM Card internasional sejak 2016.</p><p>Dengan jangkauan lebih dari 150 negara, kami membantu traveler tetap terhubung melalui koneksi andal, harga kompetitif dan solusi praktis untuk berbagai kebutuhan perjalanan.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Cerita (Story) Section"
+    },
+    {
+      "type": "image_picker",
+      "id": "founder_image",
+      "label": "Foto Founder"
+    },
+    {
+      "type": "text",
+      "id": "founder_image_url",
+      "label": "Foto Founder URL (Fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/pak_andy_bu_jess.jpg?v=1792663519"
+    },
+    {
+      "type": "text",
+      "id": "founder_badge",
+      "label": "Badge Teks",
+      "default": "Traveling mandiri sejak 2007"
+    },
+    {
+      "type": "text",
+      "id": "story_title",
+      "label": "Judul Cerita",
+      "default": "Dari Traveler, untuk Traveler"
+    },
+    {
+      "type": "richtext",
+      "id": "story_body",
+      "label": "Paragraf Cerita",
+      "default": "<p>Global Komunika didirikan pada 2016, berawal dari kecintaan founder kami terhadap perjalanan mandiri sejak 2007.</p><p>Berangkat dari keinginan untuk membuat konektivitas internasional lebih mudah dan terjangkau, Global Komunika terus berkembang menjadi penyedia layanan konektivitas perjalanan yang dipercaya oleh para traveler.</p>"
+    },
+    {
+      "type": "textarea",
+      "id": "story_principle",
+      "label": "Prinsip / Kutipan (Quote)",
+      "default": "Prinsip kami sederhana: memastikan urusan koneksi internet bukan lagi hal yang perlu dikhawatirkan selama perjalanan."
+    },
+    {
+      "type": "header",
+      "content": "Komitmen Section"
+    },
+    {
+      "type": "text",
+      "id": "commit_heading",
+      "label": "Judul Komitmen",
+      "default": "Komitmen Kami"
+    },
+    {
+      "type": "header",
+      "content": "Kebijakan & Informasi Section"
+    },
+    {
+      "type": "text",
+      "id": "policy_heading",
+      "label": "Judul Kebijakan",
+      "default": "Kebijakan & Informasi"
+    },
+    {
+      "type": "textarea",
+      "id": "policy_intro",
+      "label": "Deskripsi Pengantar Kebijakan",
+      "default": "Temukan informasi penting mengenai layanan, pembelian, serta hak Anda sebagai pelanggan Global Komunika."
     }
   ],
   "blocks": [
     {
-      "type": "about-product",
-      "name": "About Product",
-      "limit": 1,
+      "type": "stat",
+      "name": "Statistik Counter",
       "settings": [
         {
           "type": "text",
-          "id": "product-heading",
-          "label": "Title"
-        },
-        {
-          "type": "richtext",
-          "id": "product_paragraph",
-          "label": "Deskripsi"
+          "id": "label",
+          "label": "Label",
+          "default": "Tahun Berdiri"
         },
         {
           "type": "text",
-          "id": "product_list_1",
-          "label": "Product List"
+          "id": "value",
+          "label": "Nilai Angka / Teks",
+          "default": "2016"
+        },
+        {
+          "type": "number",
+          "id": "count_number",
+          "label": "Target Angka Animasi (0 jika tanpa animasi)",
+          "default": 0
         },
         {
           "type": "text",
-          "id": "product_list_2",
-          "label": "Product List"
-        },
-        {
-          "type": "text",
-          "id": "product_list_3",
-          "label": "Product List"
-        },
-        {
-          "type": "text",
-          "id": "product_list_4",
-          "label": "Product List"
-        },
-        {
-          "type": "text",
-          "id": "product_list_5",
-          "label": "Product List"
-        },
-        {
-          "type": "image_picker",
-          "id": "product-image1",
-          "label": "Product Image"
-        },
-        {
-          "type": "image_picker",
-          "id": "product-image2",
-          "label": "Product Image"
-        },
-        {
-          "type": "image_picker",
-          "id": "product-image3",
-          "label": "Product Image"
-        },
-        {
-          "type": "image_picker",
-          "id": "product-image4",
-          "label": "Product Image"
-        },
-        {
-          "type": "image_picker",
-          "id": "product-image5",
-          "label": "Product Image"
-        },
-        {
-          "type": "image_picker",
-          "id": "product-image6",
-          "label": "Product Image"
+          "id": "suffix",
+          "label": "Akhiran (misal +)"
         }
       ]
     },
     {
-      "type": "about-target",
-      "name": "About Visi & Misi",
-      "limit": 1,
+      "type": "commitment",
+      "name": "Komitmen",
       "settings": [
         {
+          "type": "select",
+          "id": "icon",
+          "label": "Ikon",
+          "options": [
+            {
+              "value": "signal",
+              "label": "Koneksi / Sinyal"
+            },
+            {
+              "value": "price",
+              "label": "Harga (Rp)"
+            },
+            {
+              "value": "support",
+              "label": "Layanan Pelanggan"
+            },
+            {
+              "value": "custom_image",
+              "label": "Upload Gambar Custom"
+            }
+          ],
+          "default": "signal"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Gambar Ikon Custom"
+        },
+        {
           "type": "text",
-          "id": "visi-heading",
-          "label": "Title"
+          "id": "title",
+          "label": "Judul Komitmen",
+          "default": "Koneksi Andal"
         },
         {
-          "type": "richtext",
-          "id": "visi-paragraph",
-          "label": "Visi Deskripsi"
-        },
-        {
-          "type": "text",
-          "id": "misi-heading",
-          "label": "Title"
-        },
-        {
-          "type": "richtext",
-          "id": "misi-paragraph",
-          "label": "Misi Deskripsi"
+          "type": "textarea",
+          "id": "text",
+          "label": "Deskripsi Komitmen",
+          "default": "Membantu traveler tetap terhubung di berbagai destinasi melalui solusi konektivitas internasional yang dapat diandalkan."
         }
       ]
     },
     {
-      "type": "about-team",
-      "name": "About Team",
-      "limit": 1,
+      "type": "policy",
+      "name": "Kebijakan / Tautan",
       "settings": [
         {
-          "type": "text",
-          "id": "team-heading",
-          "label": "Title"
-        },
-        {
-          "type": "richtext",
-          "id": "team-paragraph",
-          "label": "Deskripsi"
+          "type": "select",
+          "id": "icon",
+          "label": "Ikon",
+          "options": [
+            {
+              "value": "privacy",
+              "label": "Perisai (Privasi)"
+            },
+            {
+              "value": "refund",
+              "label": "Pengembalian Dana (Refund)"
+            },
+            {
+              "value": "terms",
+              "label": "Dokumen (Syarat & Ketentuan)"
+            },
+            {
+              "value": "shipping",
+              "label": "Paket / Kotak (Pengiriman)"
+            },
+            {
+              "value": "custom_image",
+              "label": "Upload Gambar Custom"
+            }
+          ],
+          "default": "privacy"
         },
         {
           "type": "image_picker",
-          "id": "team-image1",
-          "label": "Team Image"
-        },
-        {
-          "type": "image_picker",
-          "id": "team-image2",
-          "label": "Team Image"
-        }
-      ]
-    },
-    {
-      "type": "about-owner",
-      "name": "About Owner",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "image_picker",
-          "id": "owner-image",
-          "label": "Owner Image"
+          "id": "custom_icon",
+          "label": "Gambar Ikon Custom"
         },
         {
           "type": "text",
-          "id": "owner-heading",
-          "label": "Title"
+          "id": "title",
+          "label": "Judul",
+          "default": "Kebijakan Privasi"
         },
         {
-          "type": "richtext",
-          "id": "owner-paragraph",
-          "label": "Deskripsi"
-        }
-      ]
-    },
-    {
-      "type": "about-review",
-      "name": "About Review",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "text",
-          "id": "review-heading",
-          "label": "Review Heading"
+          "type": "textarea",
+          "id": "description",
+          "label": "Keterangan",
+          "default": "Informasi mengenai pengumpulan, penggunaan dan perlindungan data pribadi Anda."
         },
         {
-          "type": "richtext",
-          "id": "review-paragraph",
-          "label": "Review Paragraph"
+          "type": "url",
+          "id": "link",
+          "label": "Tautan Halaman"
         }
       ]
     }
@@ -554,7 +777,95 @@
   "presets": [
     {
       "name": "About us",
-      "category": "Custom"
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "label": "Tahun Berdiri",
+            "value": "2016",
+            "count_number": 0
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "label": "Jangkauan Negara",
+            "value": "150",
+            "count_number": 150,
+            "suffix": "+"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "label": "Produk Terjual",
+            "value": "500.000",
+            "count_number": 500000,
+            "suffix": "+"
+          }
+        },
+        {
+          "type": "commitment",
+          "settings": {
+            "icon": "signal",
+            "title": "Koneksi Andal",
+            "text": "Membantu traveler tetap terhubung di berbagai destinasi melalui solusi konektivitas internasional yang dapat diandalkan."
+          }
+        },
+        {
+          "type": "commitment",
+          "settings": {
+            "icon": "price",
+            "title": "Harga Kompetitif",
+            "text": "Menawarkan pilihan konektivitas dengan harga bersaing dan fleksibel sesuai kebutuhan perjalanan."
+          }
+        },
+        {
+          "type": "commitment",
+          "settings": {
+            "icon": "support",
+            "title": "Layanan Pelanggan",
+            "text": "Memberikan bantuan dan layanan responsif untuk pengalaman perjalanan yang lebih nyaman."
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "icon": "privacy",
+            "title": "Kebijakan Privasi",
+            "description": "Informasi mengenai pengumpulan, penggunaan dan perlindungan data pribadi Anda.",
+            "link": "/pages/privacy-policy"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "icon": "refund",
+            "title": "Kebijakan Pengembalian Dana",
+            "description": "Ketentuan, persyaratan, dan prosedur pengajuan pengembalian dana.",
+            "link": "/pages/refund-policy"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "icon": "terms",
+            "title": "Syarat & Ketentuan Penggunaan",
+            "description": "Ketentuan yang berlaku dalam penggunaan produk dan layanan kami.",
+            "link": "/pages/terms-of-use"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "icon": "shipping",
+            "title": "Kebijakan Pengiriman",
+            "description": "Informasi mengenai proses pengiriman dan penerimaan produk.",
+            "link": "/pages/shipment-policy"
+          }
+        }
+      ]
     }
   ]
 }

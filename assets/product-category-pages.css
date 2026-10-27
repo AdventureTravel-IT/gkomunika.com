@@ -87,6 +87,12 @@
   text-overflow: ellipsis;
 }
 
+.product-card-container.sim-type-insurance .product-card-country h1 {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
 .product-card-icon-single-flag {
   border-radius: 15px;
   border: 1px solid var(--color-border);

@@ -2618,13 +2618,18 @@ async function updateTotalPriceDisplayIfInsurance() {
         headers: { Accept: 'application/json' },
       });
 
-      if (!res.ok) return null;
+      if (!res.ok && res.status !== 404) return null;
 
       const json = await res.json();
 
       console.log('[checkUsage] response:', JSON.stringify(json, null, 2))
 
-      if (!json?.success) return null;
+      const isEligibleNoPackage =
+        json?.reason === 'NO_PACKAGE_HISTORY' ||
+        json?.info?.can_purchase === true ||
+        json?.data?.can_topup === true;
+
+      if (!json?.success && !isEligibleNoPackage) return null;
 
       const vendor = json?.vendor || null;
       const source = json?.source || null;

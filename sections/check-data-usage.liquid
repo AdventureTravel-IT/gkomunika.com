@@ -634,7 +634,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'https://v2.gkomunika.id/api/v1/check-usage';
+    const API_URL = 'https://dev.gkomunika.id/api/v1/check-usage';
 
     const iccidInput = document.getElementById('iccid');
     const checkBtn = document.getElementById('check-iccid');
@@ -832,6 +832,25 @@
     }
 
     /* ==============================
+       RENDER: No Active Package (Ready to Top Up)
+    ============================== */
+    function renderNoPackageAvailable(iccid, vendor, message, source) {
+      return `
+      <div class="check-data-usage__esim-information">
+        <h3>SIM Card Information</h3>
+        <div class="esim-information__wrapper"><p>Status</p><span>Ready to Top Up</span></div>
+        <div class="esim-information__wrapper"><p>ICCID</p><span>${iccid || '-'}</span></div>
+      </div>
+      <div class="check-data-usage__usage-content">
+        <div style="text-align:center;">
+          <h2>No Active Package</h2>
+          <p style="margin: 10px 0; color: var(--color-primary);">${message || 'This ICCID has no active package, but is ready for top up.'}</p>
+        </div>
+        ${source !== 'fallback' ? renderTopUpButton() : renderTopUpUnavailable()}
+      </div>`;
+    }
+
+    /* ==============================
        RENDER: Buy eSIM buttons (fallback)
     ============================== */
     function renderBuyEsimButtons() {
@@ -893,22 +912,39 @@
 
         console.log(data);
 
-        // Jika response gagal
-        if (!data.success) {
+        // Simpan vendor untuk keperluan Top Up routing
+        const vendor = data.vendor || null;
+        window.lastDetectedVendor = vendor;
+        const source = data.source || null;
+
+        // Cek jika kartu eligible untuk top up meski tidak memiliki riwayat paket aktif
+        const isEligibleNoPackage =
+          data.reason === 'NO_PACKAGE_HISTORY' ||
+          data.info?.can_purchase === true ||
+          data.data?.can_topup === true;
+
+        // Jika response gagal (kecuali kasus eligible no package)
+        if (!data.success && !isEligibleNoPackage) {
           showInvalidPopup();
           return;
         }
 
         const plans = data.data?.plans || [];
         if (plans.length === 0) {
+          if (isEligibleNoPackage) {
+            const message = data.message || 'This ICCID has no active package, but is ready for top up.';
+            resultEl.innerHTML = renderNoPackageAvailable(
+              data.data?.iccid || data.info?.iccid || iccid,
+              vendor,
+              message,
+              source
+            );
+            attachTopUpButtonListeners();
+            return;
+          }
           showInvalidPopup();
           return;
         }
-
-        // Simpan vendor untuk keperluan Top Up routing
-        const vendor = data.vendor || null;
-        window.lastDetectedVendor = vendor;
-        const source = data.source || null;
 
         // Render semua plans
         let html = '';

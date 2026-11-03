@@ -43,7 +43,7 @@
       {%- case block.type -%}
         {%- when 'text' -%}
           {%- assign rendered_tag = true -%}
-          <span class="gkh-hero__tag" {{ block.shopify_attributes }}>{% if is_en %}{{ block.settings.text }}{% else %}{{ 'homepage.hero_tag' | t: default: '#Alwaysconnected' }}{% endif %}</span>
+          <span class="gkh-hero__tag" {{ block.shopify_attributes }}>{% if is_en %}{{ block.settings.text }}{% else %}{{ 'homepage.hero_tag' | t: default: '#ALWAYSCONNECTED' }}{% endif %}</span>
         {%- when 'heading' -%}
           {%- assign rendered_heading = true -%}
           <h1 class="gkh-hero__title" {{ block.shopify_attributes }}>{% if is_en %}{{ block.settings.heading }}{% else %}{{ 'homepage.hero_heading' | t: default: 'eSIM Instan dari Global Komunika' }}{% endif %}</h1>
@@ -67,7 +67,7 @@
     {%- endfor -%}
 
     {%- unless rendered_tag -%}
-      <span class="gkh-hero__tag">{% if is_en %}{{ section.settings.tag | default: '#ALWAYSCONNECTED' }}{% else %}{{ 'homepage.hero_tag' | t: default: '#Alwaysconnected' }}{% endif %}</span>
+      <span class="gkh-hero__tag">{% if is_en %}{{ section.settings.tag | default: '#ALWAYSCONNECTED' }}{% else %}{{ 'homepage.hero_tag' | t: default: '#ALWAYSCONNECTED' }}{% endif %}</span>
     {%- endunless -%}
     {%- unless rendered_heading -%}
       <h1 class="gkh-hero__title">{% if is_en %}{{ section.settings.title | default: 'Instant eSIM by Global Komunika' }}{% else %}{{ 'homepage.hero_heading' | t: default: 'eSIM Instan dari Global Komunika' }}{% endif %}</h1>

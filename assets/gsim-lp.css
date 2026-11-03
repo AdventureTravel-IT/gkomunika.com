@@ -168,10 +168,12 @@
 .gsim-compare__check{flex:0 0 16px;width:16px;height:16px;fill:none;stroke:#005496;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .gsim-compare__no{color:#666666}
 .gsim-compare__sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.gsim-compare__note{margin:0;font-size:14px;line-height:1.6;color:#666666}
+.gsim-compare__table-wrap{width:100%}
+.gsim-compare__note{margin:14px 0 0;padding:0 10px;font-size:14px;line-height:1.6;color:#666666}
 @media (min-width:768px){
   .gsim-compare{padding:96px 40px}
   .gsim-compare__inner{gap:48px}
+  .gsim-compare__note{margin-top:16px;padding:0 28px}
   .gsim-compare__table{font-size:var(--gsim-body)}
   .gsim-compare__table th,.gsim-compare__table td{padding:22px 28px}
   .gsim-compare__val{gap:10px}

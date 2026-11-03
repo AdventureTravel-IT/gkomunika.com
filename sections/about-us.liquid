@@ -212,7 +212,13 @@
   }
 {% endstyle %}
 
-<div class="gkab" lang="id">
+{%- assign current_lang = localization.language.iso_code | default: request.locale.iso_code | downcase -%}
+{%- assign is_en = true -%}
+{%- if current_lang contains 'id' or request.locale.root_url contains '/id' or routes.root_url contains '/id' or request.path contains '/id' -%}
+  {%- assign is_en = false -%}
+{%- endif -%}
+
+<div class="gkab" lang="{% if is_en %}en{% else %}id{% endif %}">
   <!-- HERO -->
   <section class="gkab-hero" aria-labelledby="gkab-h1">
     <figure class="gkab-hero-media">
@@ -241,8 +247,17 @@
     <div class="gkab-hero-title">
       <div class="gkab-wrap">
         <div class="gkab-hero-copy">
-          <h1 id="gkab-h1">{{ section.settings.hero_title | default: 'Menghubungkan Traveler Sejak 2016' }}</h1>
-          {%- if section.settings.hero_text != blank -%}
+          <h1 id="gkab-h1">
+            {%- if is_en -%}
+              {{ 'about_us.hero_title' | t: default: 'Connecting Travelers Since 2016' }}
+            {%- else -%}
+              {{ section.settings.hero_title | default: 'Menghubungkan Traveler Sejak 2016' }}
+            {%- endif -%}
+          </h1>
+          {%- if is_en -%}
+            <p>{{ 'about_us.hero_p1' | t: default: "Global Komunika is one of Indonesia's pioneering travel connectivity providers, offering international eSIM and SIM card solutions since 2016." }}</p>
+            <p>{{ 'about_us.hero_p2' | t: default: "With coverage in 150+ countries, we help travelers stay connected through reliable connectivity, competitive pricing and convenient solutions wherever their journeys take them." }}</p>
+          {%- elsif section.settings.hero_text != blank -%}
             {{ section.settings.hero_text }}
           {%- else -%}
             <p>Global Komunika merupakan salah satu pelopor penyedia konektivitas perjalanan di Indonesia, yang menghadirkan solusi eSIM dan SIM Card internasional sejak 2016.</p>
@@ -260,8 +275,19 @@
       <dl class="gkab-ticket">
         {%- if stat_blocks.size > 0 -%}
           {%- for block in stat_blocks -%}
+            {%- assign stat_lbl = block.settings.label -%}
+            {%- if is_en -%}
+              {%- case forloop.index -%}
+                {%- when 1 -%}
+                  {%- assign stat_lbl = 'about_us.stat_year_label' | t: default: 'Established' -%}
+                {%- when 2 -%}
+                  {%- assign stat_lbl = 'about_us.stat_country_label' | t: default: 'Countries Covered' -%}
+                {%- when 3 -%}
+                  {%- assign stat_lbl = 'about_us.stat_sales_label' | t: default: 'eSIMs Sold' -%}
+              {%- endcase -%}
+            {%- endif -%}
             <div class="gkab-ticket-item" {{ block.shopify_attributes }}>
-              <dt class="gkab-ticket-label">{{ block.settings.label }}</dt>
+              <dt class="gkab-ticket-label">{{ stat_lbl }}</dt>
               <dd class="gkab-ticket-value">
                 {%- if block.settings.count_number > 0 -%}
                   <span data-gkab-count="{{ block.settings.count_number }}">{{ block.settings.value }}</span>{{ block.settings.suffix }}
@@ -273,15 +299,15 @@
           {%- endfor -%}
         {%- else -%}
           <div class="gkab-ticket-item">
-            <dt class="gkab-ticket-label">Tahun Berdiri</dt>
+            <dt class="gkab-ticket-label">{% if is_en %}{{ 'about_us.stat_year_label' | t: default: 'Established' }}{% else %}Tahun Berdiri{% endif %}</dt>
             <dd class="gkab-ticket-value">2016</dd>
           </div>
           <div class="gkab-ticket-item">
-            <dt class="gkab-ticket-label">Jangkauan Negara</dt>
+            <dt class="gkab-ticket-label">{% if is_en %}{{ 'about_us.stat_country_label' | t: default: 'Countries Covered' }}{% else %}Jangkauan Negara{% endif %}</dt>
             <dd class="gkab-ticket-value"><span data-gkab-count="150">150</span>+</dd>
           </div>
           <div class="gkab-ticket-item">
-            <dt class="gkab-ticket-label">Produk Terjual</dt>
+            <dt class="gkab-ticket-label">{% if is_en %}{{ 'about_us.stat_sales_label' | t: default: 'eSIMs Sold' }}{% else %}Produk Terjual{% endif %}</dt>
             <dd class="gkab-ticket-value"><span data-gkab-count="500000">500.000</span>+</dd>
           </div>
         {%- endif -%}
@@ -316,21 +342,34 @@
               >
             {%- endif -%}
           </figure>
-          {%- if section.settings.founder_badge != blank -%}
+          {%- if is_en -%}
+            <p class="gkab-badge">{{ 'about_us.founder_badge' | t: default: 'Independent travel since 2007' }}</p>
+          {%- elsif section.settings.founder_badge != blank -%}
             <p class="gkab-badge">{{ section.settings.founder_badge }}</p>
           {%- endif -%}
         </div>
         <div>
-          <h2 id="gkab-h-story">{{ section.settings.story_title | default: 'Dari Traveler, untuk Traveler' }}</h2>
+          <h2 id="gkab-h-story">
+            {%- if is_en -%}
+              {{ 'about_us.story_title' | t: default: 'Built by Travelers, for Travelers' }}
+            {%- else -%}
+              {{ section.settings.story_title | default: 'Dari Traveler, untuk Traveler' }}
+            {%- endif -%}
+          </h2>
           <div class="gkab-story-body">
-            {%- if section.settings.story_body != blank -%}
+            {%- if is_en -%}
+              <p>{{ 'about_us.story_p1' | t: default: "Global Komunika was founded in 2016, inspired by our founder's passion for independent travel since 2007." }}</p>
+              <p>{{ 'about_us.story_p2' | t: default: "What started as a mission to make international connectivity easier and more accessible has grown into a trusted travel connectivity provider, helping travelers stay connected around the world." }}</p>
+            {%- elsif section.settings.story_body != blank -%}
               {{ section.settings.story_body }}
             {%- else -%}
               <p>Global Komunika didirikan pada 2016, berawal dari kecintaan founder kami terhadap perjalanan mandiri sejak 2007.</p>
               <p>Berangkat dari keinginan untuk membuat konektivitas internasional lebih mudah dan terjangkau, Global Komunika terus berkembang menjadi penyedia layanan konektivitas perjalanan yang dipercaya oleh para traveler.</p>
             {%- endif -%}
           </div>
-          {%- if section.settings.story_principle != blank -%}
+          {%- if is_en -%}
+            <blockquote class="gkab-principle">{{ 'about_us.story_principle' | t: default: 'Our philosophy remains simple: making connectivity one less thing to worry about when traveling.' }}</blockquote>
+          {%- elsif section.settings.story_principle != blank -%}
             <blockquote class="gkab-principle">{{ section.settings.story_principle }}</blockquote>
           {%- endif -%}
         </div>
@@ -342,10 +381,43 @@
   {%- assign commit_blocks = section.blocks | where: 'type', 'commitment' -%}
   <section class="gkab-commit" aria-labelledby="gkab-h-commit">
     <div class="gkab-wrap">
-      <h2 id="gkab-h-commit">{{ section.settings.commit_heading | default: 'Komitmen Kami' }}</h2>
+      <h2 id="gkab-h-commit">
+        {%- if is_en -%}
+          {{ 'about_us.commit_heading' | t: default: 'What We Stand For' }}
+        {%- else -%}
+          {{ section.settings.commit_heading | default: 'Komitmen Kami' }}
+        {%- endif -%}
+      </h2>
       <ul class="gkab-commit-list">
         {%- if commit_blocks.size > 0 -%}
           {%- for block in commit_blocks -%}
+            {%- assign commit_title = block.settings.title -%}
+            {%- assign commit_text = block.settings.text -%}
+            {%- if is_en -%}
+              {%- case block.settings.icon -%}
+                {%- when 'signal' -%}
+                  {%- assign commit_title = 'about_us.commit_connection_title' | t: default: 'Reliable Connectivity' -%}
+                  {%- assign commit_text = 'about_us.commit_connection_text' | t: default: 'Helping travelers stay connected across destinations with dependable international connectivity solutions.' -%}
+                {%- when 'price' -%}
+                  {%- assign commit_title = 'about_us.commit_price_title' | t: default: 'Great Value' -%}
+                  {%- assign commit_text = 'about_us.commit_price_text' | t: default: 'Offering competitive pricing and flexible connectivity options to suit different travel needs.' -%}
+                {%- when 'support' -%}
+                  {%- assign commit_title = 'about_us.commit_support_title' | t: default: 'Customer Support' -%}
+                  {%- assign commit_text = 'about_us.commit_support_text' | t: default: 'Providing responsive assistance to help customers enjoy a smoother travel experience.' -%}
+                {%- else -%}
+                  {%- case forloop.index -%}
+                    {%- when 1 -%}
+                      {%- assign commit_title = 'about_us.commit_connection_title' | t: default: 'Reliable Connectivity' -%}
+                      {%- assign commit_text = 'about_us.commit_connection_text' | t: default: 'Helping travelers stay connected across destinations with dependable international connectivity solutions.' -%}
+                    {%- when 2 -%}
+                      {%- assign commit_title = 'about_us.commit_price_title' | t: default: 'Great Value' -%}
+                      {%- assign commit_text = 'about_us.commit_price_text' | t: default: 'Offering competitive pricing and flexible connectivity options to suit different travel needs.' -%}
+                    {%- when 3 -%}
+                      {%- assign commit_title = 'about_us.commit_support_title' | t: default: 'Customer Support' -%}
+                      {%- assign commit_text = 'about_us.commit_support_text' | t: default: 'Providing responsive assistance to help customers enjoy a smoother travel experience.' -%}
+                  {%- endcase -%}
+              {%- endcase -%}
+            {%- endif -%}
             <li class="gkab-commit-item" {{ block.shopify_attributes }}>
               <span class="gkab-icon" aria-hidden="true">
                 {%- case block.settings.icon -%}
@@ -365,8 +437,8 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/><path d="M9.2 10.6a4 4 0 0 1 5.6 0"/><path d="M7.4 8.4a6.6 6.6 0 0 1 9.2 0"/><path d="M12 13h.01"/></svg>
                 {%- endcase -%}
               </span>
-              <h3>{{ block.settings.title }}</h3>
-              <p>{{ block.settings.text }}</p>
+              <h3>{{ commit_title }}</h3>
+              <p>{{ commit_text }}</p>
             </li>
           {%- endfor -%}
         {%- else -%}
@@ -374,22 +446,22 @@
             <span class="gkab-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/><path d="M9.2 10.6a4 4 0 0 1 5.6 0"/><path d="M7.4 8.4a6.6 6.6 0 0 1 9.2 0"/><path d="M12 13h.01"/></svg>
             </span>
-            <h3>Koneksi Andal</h3>
-            <p>Membantu traveler tetap terhubung di berbagai destinasi melalui solusi konektivitas internasional yang dapat diandalkan.</p>
+            <h3>{% if is_en %}{{ 'about_us.commit_connection_title' | t: default: 'Reliable Connectivity' }}{% else %}Koneksi Andal{% endif %}</h3>
+            <p>{% if is_en %}{{ 'about_us.commit_connection_text' | t: default: 'Helping travelers stay connected across destinations with dependable international connectivity solutions.' }}{% else %}Membantu traveler tetap terhubung di berbagai destinasi melalui solusi konektivitas internasional yang dapat diandalkan.{% endif %}</p>
           </li>
           <li class="gkab-commit-item">
             <span class="gkab-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><text x="12" y="15.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor" stroke="none" style="font-family:inherit">Rp</text></svg>
             </span>
-            <h3>Harga Kompetitif</h3>
-            <p>Menawarkan pilihan konektivitas dengan harga bersaing dan fleksibel sesuai kebutuhan perjalanan.</p>
+            <h3>{% if is_en %}{{ 'about_us.commit_price_title' | t: default: 'Great Value' }}{% else %}Harga Kompetitif{% endif %}</h3>
+            <p>{% if is_en %}{{ 'about_us.commit_price_text' | t: default: 'Offering competitive pricing and flexible connectivity options to suit different travel needs.' }}{% else %}Menawarkan pilihan konektivitas dengan harga bersaing dan fleksibel sesuai kebutuhan perjalanan.{% endif %}</p>
           </li>
           <li class="gkab-commit-item">
             <span class="gkab-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8.5 10.2l2.4 2.4 4.6-4.6"/></svg>
             </span>
-            <h3>Layanan Pelanggan</h3>
-            <p>Memberikan bantuan dan layanan responsif untuk pengalaman perjalanan yang lebih nyaman.</p>
+            <h3>{% if is_en %}{{ 'about_us.commit_support_title' | t: default: 'Customer Support' }}{% else %}Layanan Pelanggan{% endif %}</h3>
+            <p>{% if is_en %}{{ 'about_us.commit_support_text' | t: default: 'Providing responsive assistance to help customers enjoy a smoother travel experience.' }}{% else %}Memberikan bantuan dan layanan responsif untuk pengalaman perjalanan yang lebih nyaman.{% endif %}</p>
           </li>
         {%- endif -%}
       </ul>
@@ -403,12 +475,57 @@
       <div class="gkab-policy-panel">
         <div class="gkab-policy-grid">
           <div>
-            <h2 id="gkab-h-policy">{{ section.settings.policy_heading | default: 'Kebijakan & Informasi' }}</h2>
-            <p class="gkab-policy-intro">{{ section.settings.policy_intro | default: 'Temukan informasi penting mengenai layanan, pembelian, serta hak Anda sebagai pelanggan Global Komunika.' }}</p>
+            <h2 id="gkab-h-policy">
+              {%- if is_en -%}
+                {{ 'about_us.policy_heading' | t: default: 'Policies & Information' }}
+              {%- else -%}
+                {{ section.settings.policy_heading | default: 'Kebijakan & Informasi' }}
+              {%- endif -%}
+            </h2>
+            <p class="gkab-policy-intro">
+              {%- if is_en -%}
+                {{ 'about_us.policy_intro' | t: default: 'Find important information about our services, purchases, and your rights as a customer.' }}
+              {%- else -%}
+                {{ section.settings.policy_intro | default: 'Temukan informasi penting mengenai layanan, pembelian, serta hak Anda sebagai pelanggan Global Komunika.' }}
+              {%- endif -%}
+            </p>
           </div>
-          <nav class="gkab-policy-links" aria-label="Kebijakan dan informasi">
+          <nav class="gkab-policy-links" aria-label="{% if is_en %}Policies and information{% else %}Kebijakan dan informasi{% endif %}">
             {%- if policy_blocks.size > 0 -%}
               {%- for block in policy_blocks -%}
+                {%- assign pol_title = block.settings.title -%}
+                {%- assign pol_desc = block.settings.description -%}
+                {%- if is_en -%}
+                  {%- case block.settings.icon -%}
+                    {%- when 'privacy' -%}
+                      {%- assign pol_title = 'about_us.policy_privacy_title' | t: default: 'Privacy Policy' -%}
+                      {%- assign pol_desc = 'about_us.policy_privacy_desc' | t: default: 'Learn how we collect, use and protect your personal information.' -%}
+                    {%- when 'refund' -%}
+                      {%- assign pol_title = 'about_us.policy_refund_title' | t: default: 'Refund Policy' -%}
+                      {%- assign pol_desc = 'about_us.policy_refund_desc' | t: default: 'Understand our refund eligibility, conditions and procedures.' -%}
+                    {%- when 'terms' -%}
+                      {%- assign pol_title = 'about_us.policy_terms_title' | t: default: 'Terms of Use' -%}
+                      {%- assign pol_desc = 'about_us.policy_terms_desc' | t: default: 'Review the terms and conditions governing our products and services.' -%}
+                    {%- when 'shipping' -%}
+                      {%- assign pol_title = 'about_us.policy_shipping_title' | t: default: 'Shipment Policy' -%}
+                      {%- assign pol_desc = 'about_us.policy_shipping_desc' | t: default: 'Find information about product delivery, shipping and fulfillment.' -%}
+                    {%- else -%}
+                      {%- case forloop.index -%}
+                        {%- when 1 -%}
+                          {%- assign pol_title = 'about_us.policy_privacy_title' | t: default: 'Privacy Policy' -%}
+                          {%- assign pol_desc = 'about_us.policy_privacy_desc' | t: default: 'Learn how we collect, use and protect your personal information.' -%}
+                        {%- when 2 -%}
+                          {%- assign pol_title = 'about_us.policy_refund_title' | t: default: 'Refund Policy' -%}
+                          {%- assign pol_desc = 'about_us.policy_refund_desc' | t: default: 'Understand our refund eligibility, conditions and procedures.' -%}
+                        {%- when 3 -%}
+                          {%- assign pol_title = 'about_us.policy_terms_title' | t: default: 'Terms of Use' -%}
+                          {%- assign pol_desc = 'about_us.policy_terms_desc' | t: default: 'Review the terms and conditions governing our products and services.' -%}
+                        {%- when 4 -%}
+                          {%- assign pol_title = 'about_us.policy_shipping_title' | t: default: 'Shipment Policy' -%}
+                          {%- assign pol_desc = 'about_us.policy_shipping_desc' | t: default: 'Find information about product delivery, shipping and fulfillment.' -%}
+                      {%- endcase -%}
+                  {%- endcase -%}
+                {%- endif -%}
                 <a class="gkab-policy-link" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
                   <span class="gkab-policy-ico" aria-hidden="true">
                     {%- case block.settings.icon -%}
@@ -431,9 +548,9 @@
                     {%- endcase -%}
                   </span>
                   <span>
-                    <span class="gkab-policy-title">{{ block.settings.title }}</span>
+                    <span class="gkab-policy-title">{{ pol_title }}</span>
                     {%- if block.settings.description != blank -%}
-                      <span class="gkab-policy-desc">{{ block.settings.description }}</span>
+                      <span class="gkab-policy-desc">{{ pol_desc }}</span>
                     {%- endif -%}
                   </span>
                   <svg class="gkab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
@@ -443,32 +560,32 @@
               <a class="gkab-policy-link" href="https://gkomunika.com/pages/privacy-policy">
                 <span class="gkab-policy-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
                 <span>
-                  <span class="gkab-policy-title">Kebijakan Privasi</span>
-                  <span class="gkab-policy-desc">Informasi mengenai pengumpulan, penggunaan dan perlindungan data pribadi Anda.</span>
+                  <span class="gkab-policy-title">{% if is_en %}{{ 'about_us.policy_privacy_title' | t: default: 'Privacy Policy' }}{% else %}Kebijakan Privasi{% endif %}</span>
+                  <span class="gkab-policy-desc">{% if is_en %}{{ 'about_us.policy_privacy_desc' | t: default: 'Learn how we collect, use and protect your personal information.' }}{% else %}Informasi mengenai pengumpulan, penggunaan dan perlindungan data pribadi Anda.{% endif %}</span>
                 </span>
                 <svg class="gkab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
               </a>
               <a class="gkab-policy-link" href="https://gkomunika.com/pages/refund-policy">
                 <span class="gkab-policy-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></span>
                 <span>
-                  <span class="gkab-policy-title">Kebijakan Pengembalian Dana</span>
-                  <span class="gkab-policy-desc">Ketentuan, persyaratan, dan prosedur pengajuan pengembalian dana.</span>
+                  <span class="gkab-policy-title">{% if is_en %}{{ 'about_us.policy_refund_title' | t: default: 'Refund Policy' }}{% else %}Kebijakan Pengembalian Dana{% endif %}</span>
+                  <span class="gkab-policy-desc">{% if is_en %}{{ 'about_us.policy_refund_desc' | t: default: 'Understand our refund eligibility, conditions and procedures.' }}{% else %}Ketentuan, persyaratan, dan prosedur pengajuan pengembalian dana.{% endif %}</span>
                 </span>
                 <svg class="gkab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
               </a>
               <a class="gkab-policy-link" href="https://gkomunika.com/pages/terms-of-use">
                 <span class="gkab-policy-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8"/></svg></span>
                 <span>
-                  <span class="gkab-policy-title">Syarat &amp; Ketentuan Penggunaan</span>
-                  <span class="gkab-policy-desc">Ketentuan yang berlaku dalam penggunaan produk dan layanan kami.</span>
+                  <span class="gkab-policy-title">{% if is_en %}{{ 'about_us.policy_terms_title' | t: default: 'Terms of Use' }}{% else %}Syarat &amp; Ketentuan Penggunaan{% endif %}</span>
+                  <span class="gkab-policy-desc">{% if is_en %}{{ 'about_us.policy_terms_desc' | t: default: 'Review the terms and conditions governing our products and services.' }}{% else %}Ketentuan yang berlaku dalam penggunaan produk dan layanan kami.{% endif %}</span>
                 </span>
                 <svg class="gkab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
               </a>
               <a class="gkab-policy-link" href="https://gkomunika.com/pages/shipment-policy">
                 <span class="gkab-policy-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg></span>
                 <span>
-                  <span class="gkab-policy-title">Kebijakan Pengiriman</span>
-                  <span class="gkab-policy-desc">Informasi mengenai proses pengiriman dan penerimaan produk.</span>
+                  <span class="gkab-policy-title">{% if is_en %}{{ 'about_us.policy_shipping_title' | t: default: 'Shipment Policy' }}{% else %}Kebijakan Pengiriman{% endif %}</span>
+                  <span class="gkab-policy-desc">{% if is_en %}{{ 'about_us.policy_shipping_desc' | t: default: 'Find information about product delivery, shipping and fulfillment.' }}{% else %}Informasi mengenai proses pengiriman dan penerimaan produk.{% endif %}</span>
                 </span>
                 <svg class="gkab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
               </a>

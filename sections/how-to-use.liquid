@@ -1,3 +1,9 @@
+{%- assign current_lang = localization.language.iso_code | default: request.locale.iso_code | downcase -%}
+{%- assign is_en = true -%}
+{%- if current_lang contains 'id' or request.locale.root_url contains '/id' or routes.root_url contains '/id' or request.path contains '/id' -%}
+  {%- assign is_en = false -%}
+{%- endif -%}
+
 {% assign htu_blocks = section.blocks | where: 'type', 'htu_card' %}
 {% assign wgk_blocks = section.blocks | where: 'type', 'wgk_card' %}
 {% assign benefits_blocks = section.blocks | where: 'type', 'benefits_card' %}
@@ -8,10 +14,31 @@
 <!-- HOW TO USE -->
 <section class="gkh-sec">
   <div class="gkh-wrap">
-    <h2 class="gkh-title">{{ section.settings.htu_title | default: 'How to use' }}</h2>
+    <h2 class="gkh-title">
+      {%- if is_en -%}
+        {{ section.settings.htu_title | default: 'How to use' }}
+      {%- else -%}
+        {{ 'homepage.htu_title' | t: default: 'Cara Menggunakan eSIM' }}
+      {%- endif -%}
+    </h2>
     <div class="gkh-cards">
       {% if htu_blocks.size > 0 %}
         {% for block in htu_blocks %}
+          {%- assign card_title = block.settings.title -%}
+          {%- assign card_desc = block.settings.paragraph -%}
+          {%- unless is_en -%}
+            {%- case forloop.index -%}
+              {%- when 1 -%}
+                {%- assign card_title = 'homepage.htu_choose_title' | t: default: 'Pilih' -%}
+                {%- assign card_desc = 'homepage.htu_choose_desc' | t: default: 'Pilih negara tujuan dan temukan paket data yang sesuai dengan kebutuhan perjalananmu.' -%}
+              {%- when 2 -%}
+                {%- assign card_title = 'homepage.htu_scan_title' | t: default: 'Pindai' -%}
+                {%- assign card_desc = 'homepage.htu_scan_desc' | t: default: 'Terima QR code melalui email setelah pembelian. Scan untuk memasang eSIM di HP-mu dengan mudah.' -%}
+              {%- when 3 -%}
+                {%- assign card_title = 'homepage.htu_connect_title' | t: default: 'Terhubung' -%}
+                {%- assign card_desc = 'homepage.htu_connect_desc' | t: default: 'Aktifkan eSIM saat tiba di negara tujuan dan nikmati koneksi internet sepanjang perjalanan.' -%}
+            {%- endcase -%}
+          {%- endunless -%}
           <div class="gkh-card" {{ block.shopify_attributes }}>
             <div class="gkh-card__ic">
               {% if block.settings.icon != blank %}
@@ -26,25 +53,25 @@
                 {% endcase %}
               {% endif %}
             </div>
-            <h3 class="gkh-card__t">{{ block.settings.title }}</h3>
-            <p class="gkh-card__p">{{ block.settings.paragraph }}</p>
+            <h3 class="gkh-card__t">{{ card_title }}</h3>
+            <p class="gkh-card__p">{{ card_desc }}</p>
           </div>
         {% endfor %}
       {% else %}
         <div class="gkh-card">
           <div class="gkh-card__ic">{{ 'htu-phone.svg' | inline_asset_content }}</div>
-          <h3 class="gkh-card__t">Choose</h3>
-          <p class="gkh-card__p">Select your destination and find the best data plan for your trip.</p>
+          <h3 class="gkh-card__t">{% if is_en %}Choose{% else %}{{ 'homepage.htu_choose_title' | t: default: 'Pilih' }}{% endif %}</h3>
+          <p class="gkh-card__p">{% if is_en %}Select your destination and find the best data plan for your trip.{% else %}{{ 'homepage.htu_choose_desc' | t: default: 'Pilih negara tujuan dan temukan paket data yang sesuai dengan kebutuhan perjalananmu.' }}{% endif %}</p>
         </div>
         <div class="gkh-card">
           <div class="gkh-card__ic">{{ 'htu-mail.svg' | inline_asset_content }}</div>
-          <h3 class="gkh-card__t">Scan</h3>
-          <p class="gkh-card__p">Receive your QR code via email after purchase. Scan it to install your eSIM in just a few steps.</p>
+          <h3 class="gkh-card__t">{% if is_en %}Scan{% else %}{{ 'homepage.htu_scan_title' | t: default: 'Pindai' }}{% endif %}</h3>
+          <p class="gkh-card__p">{% if is_en %}Receive your QR code via email after purchase. Scan it to install your eSIM in just a few steps.{% else %}{{ 'homepage.htu_scan_desc' | t: default: 'Terima QR code melalui email setelah pembelian. Scan untuk memasang eSIM di HP-mu dengan mudah.' }}{% endif %}</p>
         </div>
         <div class="gkh-card">
           <div class="gkh-card__ic">{{ 'htu-activate.svg' | inline_asset_content }}</div>
-          <h3 class="gkh-card__t">Connect</h3>
-          <p class="gkh-card__p">Activate your eSIM at your destination and enjoy seamless connectivity throughout your trip.</p>
+          <h3 class="gkh-card__t">{% if is_en %}Connect{% else %}{{ 'homepage.htu_connect_title' | t: default: 'Terhubung' }}{% endif %}</h3>
+          <p class="gkh-card__p">{% if is_en %}Activate your eSIM at your destination and enjoy seamless connectivity throughout your trip.{% else %}{{ 'homepage.htu_connect_desc' | t: default: 'Aktifkan eSIM saat tiba di negara tujuan dan nikmati koneksi internet sepanjang perjalanan.' }}{% endif %}</p>
         </div>
       {% endif %}
     </div>
@@ -54,10 +81,31 @@
 <!-- WHY GLOBAL KOMUNIKA? -->
 <section class="gkh-sec">
   <div class="gkh-wrap">
-    <h2 class="gkh-title">{{ section.settings.wgk_title | default: 'Why Global Komunika?' }}</h2>
+    <h2 class="gkh-title">
+      {%- if is_en -%}
+        {{ section.settings.wgk_title | default: 'Why Global Komunika?' }}
+      {%- else -%}
+        {{ 'homepage.wgk_title' | t: default: 'Mengapa Global Komunika?' }}
+      {%- endif -%}
+    </h2>
     <div class="gkh-cards">
       {% if wgk_blocks.size > 0 %}
         {% for block in wgk_blocks %}
+          {%- assign wgk_title = block.settings.title -%}
+          {%- assign wgk_desc = block.settings.paragraph -%}
+          {%- unless is_en -%}
+            {%- case forloop.index -%}
+              {%- when 1 -%}
+                {%- assign wgk_title = 'homepage.wgk_pioneer_title' | t: default: 'Pelopor eSIM Sejak 2016' -%}
+                {%- assign wgk_desc = 'homepage.wgk_pioneer_desc' | t: default: 'Koneksi andal di 150+ negara, didukung pengalaman satu dekade lebih' -%}
+              {%- when 2 -%}
+                {%- assign wgk_title = 'homepage.wgk_sales_title' | t: default: 'Lebih dari 500.000 eSIM Terjual' -%}
+                {%- assign wgk_desc = 'homepage.wgk_sales_desc' | t: default: 'Dipercaya oleh para traveler untuk tetap terhubung ke mana pun perjalanan membawa mereka.' -%}
+              {%- when 3 -%}
+                {%- assign wgk_title = 'homepage.wgk_guarantee_title' | t: default: 'Garansi Aktivasi 100% & Harga Kompetitif' -%}
+                {%- assign wgk_desc = 'homepage.wgk_guarantee_desc' | t: default: 'Aktivasi mudah, koneksi andal, dan harga bersaing untuk perjalanan tanpa khawatir.' -%}
+            {%- endcase -%}
+          {%- endunless -%}
           <div class="gkh-card" {{ block.shopify_attributes }}>
             <div class="gkh-card__ic">
               {% if block.settings.icon != blank %}
@@ -72,25 +120,25 @@
                 {% endcase %}
               {% endif %}
             </div>
-            <h3 class="gkh-card__t">{{ block.settings.title }}</h3>
-            <p class="gkh-card__p">{{ block.settings.paragraph }}</p>
+            <h3 class="gkh-card__t">{{ wgk_title }}</h3>
+            <p class="gkh-card__p">{{ wgk_desc }}</p>
           </div>
         {% endfor %}
       {% else %}
         <div class="gkh-card">
           <div class="gkh-card__ic">{{ 'htu-verified.svg' | inline_asset_content }}</div>
-          <h3 class="gkh-card__t">Pioneering eSIM Since 2016</h3>
-          <p class="gkh-card__p">Reliable connectivity across 150+ countries, backed by nearly a decade of experience.</p>
+          <h3 class="gkh-card__t">{% if is_en %}Pioneering eSIM Since 2016{% else %}{{ 'homepage.wgk_pioneer_title' | t: default: 'Pelopor eSIM Sejak 2016' }}{% endif %}</h3>
+          <p class="gkh-card__p">{% if is_en %}Reliable connectivity across 150+ countries, backed by nearly a decade of experience.{% else %}{{ 'homepage.wgk_pioneer_desc' | t: default: 'Koneksi andal di 150+ negara, didukung pengalaman satu dekade lebih' }}{% endif %}</p>
         </div>
         <div class="gkh-card">
           <div class="gkh-card__ic">{{ 'htu-user.svg' | inline_asset_content }}</div>
-          <h3 class="gkh-card__t">Over 500,000 eSIMs Sold</h3>
-          <p class="gkh-card__p">Trusted by travelers to stay connected wherever their journeys take them.</p>
+          <h3 class="gkh-card__t">{% if is_en %}Over 500,000 eSIMs Sold{% else %}{{ 'homepage.wgk_sales_title' | t: default: 'Lebih dari 500.000 eSIM Terjual' }}{% endif %}</h3>
+          <p class="gkh-card__p">{% if is_en %}Trusted by travelers to stay connected wherever their journeys take them.{% else %}{{ 'homepage.wgk_sales_desc' | t: default: 'Dipercaya oleh para traveler untuk tetap terhubung ke mana pun perjalanan membawa mereka.' }}{% endif %}</p>
         </div>
         <div class="gkh-card">
           <div class="gkh-card__ic">{{ 'htu-secure.svg' | inline_asset_content }}</div>
-          <h3 class="gkh-card__t">100% Activation Guarantee &amp; Great Value</h3>
-          <p class="gkh-card__p">Seamless activation, reliable connectivity and competitive pricing for worry-free travel.</p>
+          <h3 class="gkh-card__t">{% if is_en %}100% Activation Guarantee &amp; Great Value{% else %}{{ 'homepage.wgk_guarantee_title' | t: default: 'Garansi Aktivasi 100% & Harga Kompetitif' }}{% endif %}</h3>
+          <p class="gkh-card__p">{% if is_en %}Seamless activation, reliable connectivity and competitive pricing for worry-free travel.{% else %}{{ 'homepage.wgk_guarantee_desc' | t: default: 'Aktivasi mudah, koneksi andal, dan harga bersaing untuk perjalanan tanpa khawatir.' }}{% endif %}</p>
         </div>
       {% endif %}
     </div>
@@ -100,7 +148,13 @@
 <!-- WHAT OUR CUSTOMERS SAY (SLIDER) -->
 <section class="gkh-sec">
   <div class="gkh-wrap">
-    <h2 class="gkh-title">{{ section.settings.review_title | default: 'What Our Customers Say' }}</h2>
+    <h2 class="gkh-title">
+      {%- if is_en -%}
+        {{ section.settings.review_title | default: 'What Our Customers Say' }}
+      {%- else -%}
+        {{ 'homepage.review_title' | t: default: 'Cerita dari Pelanggan Kami' }}
+      {%- endif -%}
+    </h2>
     <div class="gkh-rslider" aria-roledescription="carousel" aria-label="Customer reviews" data-gkh-rslider>
       <button class="gkh-rnav gkh-rnav--prev" type="button" aria-label="Previous reviews">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
@@ -129,6 +183,20 @@
 
           {% for block in review_top_blocks %}
             {% if block.settings['profile-top'] != blank %}
+              {%- assign r_comment = block.settings['comment-top'] -%}
+              {%- unless is_en -%}
+                {%- assign a_name = block.settings['profile-top'] | downcase | strip -%}
+                {%- case a_name -%}
+                  {%- when 'yoelia' -%}{%- assign r_comment = 'homepage.review_yoelia' | t: default: r_comment -%}
+                  {%- when 'albert' -%}{%- assign r_comment = 'homepage.review_albert' | t: default: r_comment -%}
+                  {%- when 'rama' -%}{%- assign r_comment = 'homepage.review_rama' | t: default: r_comment -%}
+                  {%- when 'eva' -%}{%- assign r_comment = 'homepage.review_eva' | t: default: r_comment -%}
+                  {%- when 'lia' -%}{%- assign r_comment = 'homepage.review_lia' | t: default: r_comment -%}
+                  {%- when 'tiani' -%}{%- assign r_comment = 'homepage.review_tiani' | t: default: r_comment -%}
+                  {%- when 'vino' -%}{%- assign r_comment = 'homepage.review_vino' | t: default: r_comment -%}
+                  {%- when 'audria' -%}{%- assign r_comment = 'homepage.review_audria' | t: default: r_comment -%}
+                {%- endcase -%}
+              {%- endunless -%}
               <article class="gkh-rcard" {{ block.shopify_attributes }}>
                 <div class="gkh-rcard__top">
                   <h3 class="gkh-rcard__name">{{ block.settings['profile-top'] }}</h3>
@@ -138,10 +206,24 @@
                     {% endfor %}
                   </div>
                 </div>
-                <p class="gkh-rcard__text">{{ block.settings['comment-top'] }}</p>
+                <p class="gkh-rcard__text">{{ r_comment }}</p>
               </article>
             {% endif %}
             {% if block.settings['profile-top1'] != blank %}
+              {%- assign r_comment1 = block.settings['comment-top1'] -%}
+              {%- unless is_en -%}
+                {%- assign a_name1 = block.settings['profile-top1'] | downcase | strip -%}
+                {%- case a_name1 -%}
+                  {%- when 'yoelia' -%}{%- assign r_comment1 = 'homepage.review_yoelia' | t: default: r_comment1 -%}
+                  {%- when 'albert' -%}{%- assign r_comment1 = 'homepage.review_albert' | t: default: r_comment1 -%}
+                  {%- when 'rama' -%}{%- assign r_comment1 = 'homepage.review_rama' | t: default: r_comment1 -%}
+                  {%- when 'eva' -%}{%- assign r_comment1 = 'homepage.review_eva' | t: default: r_comment1 -%}
+                  {%- when 'lia' -%}{%- assign r_comment1 = 'homepage.review_lia' | t: default: r_comment1 -%}
+                  {%- when 'tiani' -%}{%- assign r_comment1 = 'homepage.review_tiani' | t: default: r_comment1 -%}
+                  {%- when 'vino' -%}{%- assign r_comment1 = 'homepage.review_vino' | t: default: r_comment1 -%}
+                  {%- when 'audria' -%}{%- assign r_comment1 = 'homepage.review_audria' | t: default: r_comment1 -%}
+                {%- endcase -%}
+              {%- endunless -%}
               <article class="gkh-rcard" {{ block.shopify_attributes }}>
                 <div class="gkh-rcard__top">
                   <h3 class="gkh-rcard__name">{{ block.settings['profile-top1'] }}</h3>
@@ -151,13 +233,27 @@
                     {% endfor %}
                   </div>
                 </div>
-                <p class="gkh-rcard__text">{{ block.settings['comment-top1'] }}</p>
+                <p class="gkh-rcard__text">{{ r_comment1 }}</p>
               </article>
             {% endif %}
           {% endfor %}
 
           {% for block in review_bottom_blocks %}
             {% if block.settings['profile-bottom'] != blank %}
+              {%- assign r_comment_b = block.settings['comment-bottom'] -%}
+              {%- unless is_en -%}
+                {%- assign a_name_b = block.settings['profile-bottom'] | downcase | strip -%}
+                {%- case a_name_b -%}
+                  {%- when 'yoelia' -%}{%- assign r_comment_b = 'homepage.review_yoelia' | t: default: r_comment_b -%}
+                  {%- when 'albert' -%}{%- assign r_comment_b = 'homepage.review_albert' | t: default: r_comment_b -%}
+                  {%- when 'rama' -%}{%- assign r_comment_b = 'homepage.review_rama' | t: default: r_comment_b -%}
+                  {%- when 'eva' -%}{%- assign r_comment_b = 'homepage.review_eva' | t: default: r_comment_b -%}
+                  {%- when 'lia' -%}{%- assign r_comment_b = 'homepage.review_lia' | t: default: r_comment_b -%}
+                  {%- when 'tiani' -%}{%- assign r_comment_b = 'homepage.review_tiani' | t: default: r_comment_b -%}
+                  {%- when 'vino' -%}{%- assign r_comment_b = 'homepage.review_vino' | t: default: r_comment_b -%}
+                  {%- when 'audria' -%}{%- assign r_comment_b = 'homepage.review_audria' | t: default: r_comment_b -%}
+                {%- endcase -%}
+              {%- endunless -%}
               <article class="gkh-rcard" {{ block.shopify_attributes }}>
                 <div class="gkh-rcard__top">
                   <h3 class="gkh-rcard__name">{{ block.settings['profile-bottom'] }}</h3>
@@ -167,10 +263,24 @@
                     {% endfor %}
                   </div>
                 </div>
-                <p class="gkh-rcard__text">{{ block.settings['comment-bottom'] }}</p>
+                <p class="gkh-rcard__text">{{ r_comment_b }}</p>
               </article>
             {% endif %}
             {% if block.settings['profile-bottom1'] != blank %}
+              {%- assign r_comment_b1 = block.settings['comment-bottom1'] -%}
+              {%- unless is_en -%}
+                {%- assign a_name_b1 = block.settings['profile-bottom1'] | downcase | strip -%}
+                {%- case a_name_b1 -%}
+                  {%- when 'yoelia' -%}{%- assign r_comment_b1 = 'homepage.review_yoelia' | t: default: r_comment_b1 -%}
+                  {%- when 'albert' -%}{%- assign r_comment_b1 = 'homepage.review_albert' | t: default: r_comment_b1 -%}
+                  {%- when 'rama' -%}{%- assign r_comment_b1 = 'homepage.review_rama' | t: default: r_comment_b1 -%}
+                  {%- when 'eva' -%}{%- assign r_comment_b1 = 'homepage.review_eva' | t: default: r_comment_b1 -%}
+                  {%- when 'lia' -%}{%- assign r_comment_b1 = 'homepage.review_lia' | t: default: r_comment_b1 -%}
+                  {%- when 'tiani' -%}{%- assign r_comment_b1 = 'homepage.review_tiani' | t: default: r_comment_b1 -%}
+                  {%- when 'vino' -%}{%- assign r_comment_b1 = 'homepage.review_vino' | t: default: r_comment_b1 -%}
+                  {%- when 'audria' -%}{%- assign r_comment_b1 = 'homepage.review_audria' | t: default: r_comment_b1 -%}
+                {%- endcase -%}
+              {%- endunless -%}
               <article class="gkh-rcard" {{ block.shopify_attributes }}>
                 <div class="gkh-rcard__top">
                   <h3 class="gkh-rcard__name">{{ block.settings['profile-bottom1'] }}</h3>
@@ -180,7 +290,7 @@
                     {% endfor %}
                   </div>
                 </div>
-                <p class="gkh-rcard__text">{{ block.settings['comment-bottom1'] }}</p>
+                <p class="gkh-rcard__text">{{ r_comment_b1 }}</p>
               </article>
             {% endif %}
           {% endfor %}
@@ -196,7 +306,7 @@
                 {% endfor %}
               </div>
             </div>
-            <p class="gkh-rcard__text">I’ve used this eSIM multiple times across different countries—always works perfectly. Setup is super simple, and the signal is strong and stable. Highly recommend!</p>
+            <p class="gkh-rcard__text">{% if is_en %}I’ve used this eSIM multiple times across different countries—always works perfectly. Setup is super simple, and the signal is strong and stable. Highly recommend!{% else %}{{ 'homepage.review_yoelia' | t }}{% endif %}</p>
           </article>
 
           <article class="gkh-rcard">
@@ -208,7 +318,7 @@
                 {% endfor %}
               </div>
             </div>
-            <p class="gkh-rcard__text">Customer service is amazing! They replied fast and clearly answered all my questions. Even helped me troubleshoot when I had a small issue. Great experience!</p>
+            <p class="gkh-rcard__text">{% if is_en %}Customer service is amazing! They replied fast and clearly answered all my questions. Even helped me troubleshoot when I had a small issue. Great experience!{% else %}{{ 'homepage.review_albert' | t }}{% endif %}</p>
           </article>
 
           <article class="gkh-rcard">
@@ -220,7 +330,7 @@
                 {% endfor %}
               </div>
             </div>
-            <p class="gkh-rcard__text">Affordable pricing and the eSIM arrived in my email almost instantly after payment. The signal was stable during my entire trip. Will definitely use again.</p>
+            <p class="gkh-rcard__text">{% if is_en %}Affordable pricing and the eSIM arrived in my email almost instantly after payment. The signal was stable during my entire trip. Will definitely use again.{% else %}{{ 'homepage.review_rama' | t }}{% endif %}</p>
           </article>
 
           <article class="gkh-rcard">
@@ -232,7 +342,7 @@
                 {% endfor %}
               </div>
             </div>
-            <p class="gkh-rcard__text">Used this eSIM for a multi-country trip and it switched networks automatically without any issues. Very convenient and stress-free.</p>
+            <p class="gkh-rcard__text">{% if is_en %}Used this eSIM for a multi-country trip and it switched networks automatically without any issues. Very convenient and stress-free.{% else %}{{ 'homepage.review_eva' | t }}{% endif %}</p>
           </article>
 
           <article class="gkh-rcard">
@@ -244,7 +354,7 @@
                 {% endfor %}
               </div>
             </div>
-            <p class="gkh-rcard__text">Tried this eSIM in Japan, Korea, and China—it worked like a charm in all places. The internet was fast, even in rural areas. This is a must-have for any traveler.</p>
+            <p class="gkh-rcard__text">{% if is_en %}Tried this eSIM in Japan, Korea, and China—it worked like a charm in all places. The internet was fast, even in rural areas. This is a must-have for any traveler.{% else %}{{ 'homepage.review_lia' | t }}{% endif %}</p>
           </article>
 
           <article class="gkh-rcard">
@@ -256,7 +366,7 @@
                 {% endfor %}
               </div>
             </div>
-            <p class="gkh-rcard__text">Setup was quick, instructions were clear, and I had full signal during my entire trip. Super happy with the service. Would recommend to anyone!</p>
+            <p class="gkh-rcard__text">{% if is_en %}Setup was quick, instructions were clear, and I had full signal during my entire trip. Super happy with the service. Would recommend to anyone!{% else %}{{ 'homepage.review_vino' | t }}{% endif %}</p>
           </article>
 
           <article class="gkh-rcard">
@@ -268,7 +378,7 @@
                 {% endfor %}
               </div>
             </div>
-            <p class="gkh-rcard__text">I was nervous trying an eSIM for the first time, but the process was super easy. Just scan and go. The seller even gave tips on when to activate. Very helpful!</p>
+            <p class="gkh-rcard__text">{% if is_en %}I was nervous trying an eSIM for the first time, but the process was super easy. Just scan and go. The seller even gave tips on when to activate. Very helpful!{% else %}{{ 'homepage.review_audria' | t }}{% endif %}</p>
           </article>
 
           <article class="gkh-rcard">
@@ -280,7 +390,7 @@
                 {% endfor %}
               </div>
             </div>
-            <p class="gkh-rcard__text">Scanned the QR code right after landing, and it worked immediately. No need to change settings. The instructions are super clear too.</p>
+            <p class="gkh-rcard__text">{% if is_en %}Scanned the QR code right after landing, and it worked immediately. No need to change settings. The instructions are super clear too.{% else %}{{ 'homepage.review_tiani' | t }}{% endif %}</p>
           </article>
         {% endif %}
       </div>
@@ -295,10 +405,31 @@
 <!-- BENEFITS OF USING ESIM -->
 <section class="gkh-sec">
   <div class="gkh-wrap">
-    <h2 class="gkh-title">{{ section.settings.benefits_title | default: 'Benefits of Using eSIM' }}</h2>
+    <h2 class="gkh-title">
+      {%- if is_en -%}
+        {{ section.settings.benefits_title | default: 'Benefits of Using eSIM' }}
+      {%- else -%}
+        {{ 'homepage.benefits_title' | t: default: 'Keuntungan Menggunakan eSIM' }}
+      {%- endif -%}
+    </h2>
     <div class="gkh-cards">
       {% if benefits_blocks.size > 0 %}
         {% for block in benefits_blocks %}
+          {%- assign b_title = block.settings.title -%}
+          {%- assign b_desc = block.settings.paragraph -%}
+          {%- unless is_en -%}
+            {%- case forloop.index -%}
+              {%- when 1 -%}
+                {%- assign b_title = 'homepage.benefit_number_title' | t: default: 'Nomor Utama Tetap Aktif' -%}
+                {%- assign b_desc = 'homepage.benefit_number_desc' | t: default: 'Tetap terima telepon, SMS dan OTP di nomor utamamu sambil menggunakan eSIM di luar negeri.' -%}
+              {%- when 2 -%}
+                {%- assign b_title = 'homepage.benefit_setup_title' | t: default: 'Aktivasi Cepat & Mudah' -%}
+                {%- assign b_desc = 'homepage.benefit_setup_desc' | t: default: 'Tanpa perlu ganti kartu SIM atau datang ke toko. Cukup scan QR code untuk memasang eSIM.' -%}
+              {%- when 3 -%}
+                {%- assign b_title = 'homepage.benefit_security_title' | t: default: 'Koneksi Aman & Andal' -%}
+                {%- assign b_desc = 'homepage.benefit_security_desc' | t: default: 'Nikmati koneksi internet yang aman dan andal selama perjalanan ke luar negeri.' -%}
+            {%- endcase -%}
+          {%- endunless -%}
           <div class="gkh-card" {{ block.shopify_attributes }}>
             <div class="gkh-card__ic">
               {% if block.settings.icon != blank %}
@@ -313,25 +444,25 @@
                 {% endcase %}
               {% endif %}
             </div>
-            <h3 class="gkh-card__t">{{ block.settings.title }}</h3>
-            <p class="gkh-card__p">{{ block.settings.paragraph }}</p>
+            <h3 class="gkh-card__t">{{ b_title }}</h3>
+            <p class="gkh-card__p">{{ b_desc }}</p>
           </div>
         {% endfor %}
       {% else %}
         <div class="gkh-card">
           <div class="gkh-card__ic">{{ 'htu-simcard.svg' | inline_asset_content }}</div>
-          <h3 class="gkh-card__t">Keep Your Number Active</h3>
-          <p class="gkh-card__p">Stay reachable on your primary number for calls, SMS and OTPs while using eSIM abroad.</p>
+          <h3 class="gkh-card__t">{% if is_en %}Keep Your Number Active{% else %}{{ 'homepage.benefit_number_title' | t: default: 'Nomor Utama Tetap Aktif' }}{% endif %}</h3>
+          <p class="gkh-card__p">{% if is_en %}Stay reachable on your primary number for calls, SMS and OTPs while using eSIM abroad.{% else %}{{ 'homepage.benefit_number_desc' | t: default: 'Tetap terima telepon, SMS dan OTP di nomor utamamu sambil menggunakan eSIM di luar negeri.' }}{% endif %}</p>
         </div>
         <div class="gkh-card">
           <div class="gkh-card__ic">{{ 'htu-qrcode.svg' | inline_asset_content }}</div>
-          <h3 class="gkh-card__t">Quick &amp; Easy Setup</h3>
-          <p class="gkh-card__p">No physical SIM card or store visit needed. Simply scan the QR code to install your eSIM.</p>
+          <h3 class="gkh-card__t">{% if is_en %}Quick &amp; Easy Setup{% else %}{{ 'homepage.benefit_setup_title' | t: default: 'Aktivasi Cepat & Mudah' }}{% endif %}</h3>
+          <p class="gkh-card__p">{% if is_en %}No physical SIM card or store visit needed. Simply scan the QR code to install your eSIM.{% else %}{{ 'homepage.benefit_setup_desc' | t: default: 'Tanpa perlu ganti kartu SIM atau datang ke toko. Cukup scan QR code untuk memasang eSIM.' }}{% endif %}</p>
         </div>
         <div class="gkh-card">
           <div class="gkh-card__ic">{{ 'htu-secure.svg' | inline_asset_content }}</div>
-          <h3 class="gkh-card__t">Secure &amp; Reliable Connection</h3>
-          <p class="gkh-card__p">Enjoy secure mobile connectivity wherever your travels take you.</p>
+          <h3 class="gkh-card__t">{% if is_en %}Secure &amp; Reliable Connection{% else %}{{ 'homepage.benefit_security_title' | t: default: 'Koneksi Aman & Andal' }}{% endif %}</h3>
+          <p class="gkh-card__p">{% if is_en %}Enjoy secure mobile connectivity wherever your travels take you.{% else %}{{ 'homepage.benefit_security_desc' | t: default: 'Nikmati koneksi internet yang aman dan andal selama perjalanan ke luar negeri.' }}{% endif %}</p>
         </div>
       {% endif %}
     </div>

@@ -3,6 +3,12 @@
   File: sections/lp-collab-business.liquid
 {% endcomment %}
 
+{%- assign current_lang = localization.language.iso_code | default: request.locale.iso_code | downcase -%}
+{%- assign is_en = true -%}
+{%- if current_lang contains 'id' or request.locale.root_url contains '/id' or routes.root_url contains '/id' or request.path contains '/id' -%}
+  {%- assign is_en = false -%}
+{%- endif -%}
+
 {%- assign hero_image = section.settings.hero_image_url | default: 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/hero_business.jpg?v=1792668692' -%}
 {%- if section.settings.hero_image != blank -%}
   {%- assign hero_image = section.settings.hero_image | image_url: width: 2576 -%}
@@ -591,16 +597,28 @@
     <div class="gkmitra-hero-inner">
       <div class="gkmitra-hero-copy">
         <h1 class="gkmitra-hero-title" id="gkmitra-hero-title-{{ section.id }}">
-          {{ section.settings.hero_title | default: 'Tumbuh Bersama Global Komunika' }}
+          {%- if is_en -%}
+            {{ 'business.hero_title' | t: default: 'Grow with Global Komunika' }}
+          {%- else -%}
+            {{ section.settings.hero_title | default: 'Tumbuh Bersama Global Komunika' }}
+          {%- endif -%}
         </h1>
         <p class="gkmitra-hero-sub">
-          {{ section.settings.hero_sub | default: 'Buka peluang pendapatan baru melalui kerja sama strategis, program reseller, dan kolaborasi afiliasi.' }}
+          {%- if is_en -%}
+            {{ 'business.hero_sub' | t: default: 'Unlock new revenue opportunities through strategic partnerships, reseller programs and affiliate collaborations.' }}
+          {%- else -%}
+            {{ section.settings.hero_sub | default: 'Buka peluang pendapatan baru melalui kerja sama strategis, program reseller, dan kolaborasi afiliasi.' }}
+          {%- endif -%}
         </p>
         <div class="gkmitra-hero-cta">
           <a class="gkmitra-btn gkmitra-btn-white" 
              href="{{ section.settings.hero_btn_url | default: '#gkmitra-program' }}" 
              data-gkmitra-scroll>
-            {{ section.settings.hero_btn_text | default: 'Pilih Program Kerja Sama' }}
+            {%- if is_en -%}
+              {{ 'business.hero_btn' | t: default: 'Explore Partnership Programs' }}
+            {%- else -%}
+              {{ section.settings.hero_btn_text | default: 'Pilih Program Kerja Sama' }}
+            {%- endif -%}
           </a>
         </div>
       </div>
@@ -612,16 +630,16 @@
     <div class="gkmitra-wrap">
       <div class="gkmitra-stats-grid">
         <div>
-          <p class="gkmitra-stat-num">{{ section.settings.stat_num_1 | default: 'Sejak 2016' }}</p>
-          <p class="gkmitra-stat-lbl">{{ section.settings.stat_lbl_1 | default: 'Menemani traveler Indonesia' }}</p>
+          <p class="gkmitra-stat-num">{% if is_en %}{{ 'business.stat_1_num' | t: default: 'Since 2016' }}{% else %}{{ section.settings.stat_num_1 | default: 'Sejak 2016' }}{% endif %}</p>
+          <p class="gkmitra-stat-lbl">{% if is_en %}{{ 'business.stat_1_lbl' | t: default: 'Serving Indonesian travelers' }}{% else %}{{ section.settings.stat_lbl_1 | default: 'Menemani traveler Indonesia' }}{% endif %}</p>
         </div>
         <div>
-          <p class="gkmitra-stat-num">{{ section.settings.stat_num_2 | default: '500.000+' }}</p>
-          <p class="gkmitra-stat-lbl">{{ section.settings.stat_lbl_2 | default: 'Produk Terjual' }}</p>
+          <p class="gkmitra-stat-num">{% if is_en %}{{ 'business.stat_2_num' | t: default: '500,000+' }}{% else %}{{ section.settings.stat_num_2 | default: '500.000+' }}{% endif %}</p>
+          <p class="gkmitra-stat-lbl">{% if is_en %}{{ 'business.stat_2_lbl' | t: default: 'eSIMs Sold' }}{% else %}{{ section.settings.stat_lbl_2 | default: 'Produk Terjual' }}{% endif %}</p>
         </div>
         <div>
-          <p class="gkmitra-stat-num">{{ section.settings.stat_num_3 | default: '150+' }}</p>
-          <p class="gkmitra-stat-lbl">{{ section.settings.stat_lbl_3 | default: 'Jangkauan Negara' }}</p>
+          <p class="gkmitra-stat-num">{% if is_en %}{{ 'business.stat_3_num' | t: default: '150+' }}{% else %}{{ section.settings.stat_num_3 | default: '150+' }}{% endif %}</p>
+          <p class="gkmitra-stat-lbl">{% if is_en %}{{ 'business.stat_3_lbl' | t: default: 'Countries Covered' }}{% else %}{{ section.settings.stat_lbl_3 | default: 'Jangkauan Negara' }}{% endif %}</p>
         </div>
       </div>
     </div>
@@ -631,13 +649,17 @@
   <section class="gkmitra-sec" id="gkmitra-program" aria-labelledby="gkmitra-program-title-{{ section.id }}">
     <div class="gkmitra-wrap">
       <h2 class="gkmitra-h2" id="gkmitra-program-title-{{ section.id }}">
-        {{ section.settings.program_title | default: 'Pilih Program Kerja Sama yang Tepat' }}
+        {%- if is_en -%}
+          {{ 'business.program_title' | t: default: 'Find the Right Partnership for You' }}
+        {%- else -%}
+          {{ section.settings.program_title | default: 'Pilih Program Kerja Sama yang Tepat' }}
+        {%- endif -%}
       </h2>
       <div class="gkmitra-cards" id="gkmitra-cards-{{ section.id }}">
 
         <!-- Card 1: Kerja Sama Strategis -->
         <article class="gkmitra-card" data-gkmitra-card tabindex="0" aria-current="false">
-          <span class="gkmitra-badge">{{ section.settings.card1_badge | default: 'Untuk bisnis' }}</span>
+          <span class="gkmitra-badge">{% if is_en %}{{ 'business.card1_badge' | t: default: 'For Business' }}{% else %}{{ section.settings.card1_badge | default: 'Untuk bisnis' }}{% endif %}</span>
           <div class="gkmitra-ico gkmitra-ico-a" aria-hidden="true">
             <img class="gkmitra-ico-img" 
                  src="{{ card1_icon }}" 
@@ -646,51 +668,51 @@
                  height="160" 
                  loading="lazy">
           </div>
-          <h3 class="gkmitra-h3">{{ section.settings.card1_title | default: 'Kerja Sama Strategis' }}</h3>
+          <h3 class="gkmitra-h3">{% if is_en %}{{ 'business.card1_title' | t: default: 'Strategic Partnership' }}{% else %}{{ section.settings.card1_title | default: 'Kerja Sama Strategis' }}{% endif %}</h3>
           <p class="gkmitra-card-text">
-            {{ section.settings.card1_text | default: 'Kembangkan peluang bisnis melalui kerja sama komersial, program benefit pelanggan, dan kolaborasi marketing yang disesuaikan dengan kebutuhan bisnis.' }}
+            {% if is_en %}{{ 'business.card1_text' | t: default: 'Create new opportunities through tailored commercial collaborations, customer benefits and joint marketing initiatives.' }}{% else %}{{ section.settings.card1_text | default: 'Kembangkan peluang bisnis melalui kerja sama komersial, program benefit pelanggan, dan kolaborasi marketing yang disesuaikan dengan kebutuhan bisnis.' }}{% endif %}
           </p>
           <a class="gkmitra-btn gkmitra-btn-solid" 
              href="{{ section.settings.card1_btn_url | default: 'https://mail.google.com/mail/?view=cm&fs=1&to=evan@gkomunika.com&su=Kerja%20Sama%20Strategis%20Global%20Komunika' }}"
              target="_blank"
              rel="noopener">
-            {{ section.settings.card1_btn_text | default: 'Mari Berkolaborasi' }}
+            {% if is_en %}{{ 'business.card1_btn' | t: default: "Let's Collaborate" }}{% else %}{{ section.settings.card1_btn_text | default: 'Mari Berkolaborasi' }}{% endif %}
           </a>
         </article>
 
         <!-- Card 2: Jadi Reseller -->
         <article class="gkmitra-card gkmitra-card-active" data-gkmitra-card tabindex="0" aria-current="true">
-          <span class="gkmitra-badge">{{ section.settings.card2_badge | default: 'Untuk travel agent' }}</span>
+          <span class="gkmitra-badge">{% if is_en %}{{ 'business.card2_badge' | t: default: 'For Travel Agents' }}{% else %}{{ section.settings.card2_badge | default: 'Untuk travel agent' }}{% endif %}</span>
           <div class="gkmitra-ico gkmitra-ico-b" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M4 9l1-5h14l1 5"/><path d="M4 9a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 6 0 2.5 2.5 0 0 0 5 0"/><path d="M5 12v8h14v-8"/><path d="M10 20v-4h4v4"/></svg>
           </div>
-          <h3 class="gkmitra-h3">{{ section.settings.card2_title | default: 'Jadi Reseller' }}</h3>
+          <h3 class="gkmitra-h3">{% if is_en %}{{ 'business.card2_title' | t: default: 'Become a Reseller' }}{% else %}{{ section.settings.card2_title | default: 'Jadi Reseller' }}{% endif %}</h3>
           <p class="gkmitra-card-text">
-            {{ section.settings.card2_text | default: 'Tawarkan produk GK kepada pelanggan dan tingkatkan pendapatan dari setiap penjualan. Cocok untuk travel agent, tour operator, dan tour leader.' }}
+            {% if is_en %}{{ 'business.card2_text' | t: default: 'Offer GK products to your customers and grow your travel business with every sale. Ideal for travel agents, tour operators and tour leaders.' }}{% else %}{{ section.settings.card2_text | default: 'Tawarkan produk GK kepada pelanggan dan tingkatkan pendapatan dari setiap penjualan. Cocok untuk travel agent, tour operator, dan tour leader.' }}{% endif %}
           </p>
           <a class="gkmitra-btn gkmitra-btn-solid" 
              href="{{ section.settings.card2_btn_url | default: 'https://docs.google.com/forms/u/0/d/1mhONvb4v5j3Q4fspJz3FKf1EiHKMwnMj-XbBLcBCbfg/viewform?edit_requested=true#settings' }}" 
              target="_blank" 
              rel="noopener">
-            {{ section.settings.card2_btn_text | default: 'Daftar Reseller' }}
+            {% if is_en %}{{ 'business.card2_btn' | t: default: 'Register as Reseller' }}{% else %}{{ section.settings.card2_btn_text | default: 'Daftar Reseller' }}{% endif %}
           </a>
         </article>
 
         <!-- Card 3: Jadi Affiliate -->
         <article class="gkmitra-card" data-gkmitra-card tabindex="0" aria-current="false">
-          <span class="gkmitra-badge">{{ section.settings.card3_badge | default: 'Untuk kreator' }}</span>
+          <span class="gkmitra-badge">{% if is_en %}{{ 'business.card3_badge' | t: default: 'For Creators' }}{% else %}{{ section.settings.card3_badge | default: 'Untuk kreator' }}{% endif %}</span>
           <div class="gkmitra-ico gkmitra-ico-c" aria-hidden="true">
             <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg>
           </div>
-          <h3 class="gkmitra-h3">{{ section.settings.card3_title | default: 'Jadi Affiliate' }}</h3>
+          <h3 class="gkmitra-h3">{% if is_en %}{{ 'business.card3_title' | t: default: 'Become an Affiliate' }}{% else %}{{ section.settings.card3_title | default: 'Jadi Affiliate' }}{% endif %}</h3>
           <p class="gkmitra-card-text">
-            {{ section.settings.card3_text | default: 'Ubah konten dan audiens kamu menjadi peluang penghasilan dengan mempromosikan produk GK melalui media sosial dan platform digital.' }}
+            {% if is_en %}{{ 'business.card3_text' | t: default: 'Turn your content and audience into earning opportunities by promoting GK products through social media and digital platforms.' }}{% else %}{{ section.settings.card3_text | default: 'Ubah konten dan audiens kamu menjadi peluang penghasilan dengan mempromosikan produk GK melalui media sosial dan platform digital.' }}{% endif %}
           </p>
           <a class="gkmitra-btn gkmitra-btn-solid" 
              href="{{ section.settings.card3_btn_url | default: 'https://docs.google.com/forms/d/e/1FAIpQLSft7bblxZLVsXNb_9B_3v_Bkvom7-DJrak7oS_nrymaLDcK2w/viewform' }}" 
              target="_blank" 
              rel="noopener">
-            {{ section.settings.card3_btn_text | default: 'Daftar Affiliate' }}
+            {% if is_en %}{{ 'business.card3_btn' | t: default: 'Join Affiliate Program' }}{% else %}{{ section.settings.card3_btn_text | default: 'Daftar Affiliate' }}{% endif %}
           </a>
         </article>
 
@@ -702,10 +724,18 @@
   <section class="gkmitra-sec gkmitra-sec-soft" aria-labelledby="gkmitra-mitra-title-{{ section.id }}">
     <div class="gkmitra-wrap">
       <h2 class="gkmitra-h2" id="gkmitra-mitra-title-{{ section.id }}">
-        {{ section.settings.mitra_title | default: 'Jaringan Mitra Kami Terus Berkembang' }}
+        {%- if is_en -%}
+          {{ 'business.mitra_title' | t: default: 'Our Growing Partner Network' }}
+        {%- else -%}
+          {{ section.settings.mitra_title | default: 'Jaringan Mitra Kami Terus Berkembang' }}
+        {%- endif -%}
       </h2>
       <p class="gkmitra-lead">
-        {{ section.settings.mitra_lead | default: 'Berkolaborasi dengan berbagai bisnis travel dan lifestyle untuk menghadirkan konektivitas bagi lebih banyak traveler.' }}
+        {%- if is_en -%}
+          {{ 'business.mitra_lead' | t: default: 'Trusted collaborations with travel and lifestyle businesses to bring seamless connectivity to more travelers.' }}
+        {%- else -%}
+          {{ section.settings.mitra_lead | default: 'Berkolaborasi dengan berbagai bisnis travel dan lifestyle untuk menghadirkan konektivitas bagi lebih banyak traveler.' }}
+        {%- endif -%}
       </p>
       
       <div class="gkmitra-slider" id="gkmitra-slider-{{ section.id }}" role="region" aria-roledescription="carousel" aria-label="Logo mitra Global Komunika">
@@ -770,7 +800,11 @@
   <section class="gkmitra-sec" aria-labelledby="gkmitra-why-title-{{ section.id }}">
     <div class="gkmitra-wrap">
       <h2 class="gkmitra-h2" id="gkmitra-why-title-{{ section.id }}">
-        {{ section.settings.why_title | default: 'Mengapa Bermitra dengan Global Komunika?' }}
+        {%- if is_en -%}
+          {{ 'business.why_title' | t: default: 'Why Partner with Global Komunika?' }}
+        {%- else -%}
+          {{ section.settings.why_title | default: 'Mengapa Bermitra dengan Global Komunika?' }}
+        {%- endif -%}
       </h2>
       <div class="gkmitra-why">
 
@@ -778,9 +812,9 @@
           <div class="gkmitra-why-ico" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
           </div>
-          <h3 class="gkmitra-h3">{{ section.settings.why_1_title | default: 'Tingkatkan Pendapatan' }}</h3>
+          <h3 class="gkmitra-h3">{% if is_en %}{{ 'business.why_1_title' | t: default: 'Grow Your Revenue' }}{% else %}{{ section.settings.why_1_title | default: 'Tingkatkan Pendapatan' }}{% endif %}</h3>
           <p class="gkmitra-why-text">
-            {{ section.settings.why_1_text | default: 'Harga kompetitif dan model kerja sama yang fleksibel untuk meningkatkan pendapatan mitra.' }}
+            {% if is_en %}{{ 'business.why_1_text' | t: default: 'Attractive pricing and flexible commercial models to help grow partners revenue.' }}{% else %}{{ section.settings.why_1_text | default: 'Harga kompetitif dan model kerja sama yang fleksibel untuk meningkatkan pendapatan mitra.' }}{% endif %}
           </p>
         </div>
 
@@ -788,9 +822,9 @@
           <div class="gkmitra-why-ico" aria-hidden="true">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
           </div>
-          <h3 class="gkmitra-h3">{{ section.settings.why_2_title | default: 'Nilai Lebih untuk Pelanggan' }}</h3>
+          <h3 class="gkmitra-h3">{% if is_en %}{{ 'business.why_2_title' | t: default: 'Better Value for Customers' }}{% else %}{{ section.settings.why_2_title | default: 'Nilai Lebih untuk Pelanggan' }}{% endif %}</h3>
           <p class="gkmitra-why-text">
-            {{ section.settings.why_2_text | default: 'Koneksi andal di 150+ negara dan kemudahan top-up.' }}
+            {% if is_en %}{{ 'business.why_2_text' | t: default: 'Reliable connectivity in 150+ countries and easy top-ups.' }}{% else %}{{ section.settings.why_2_text | default: 'Koneksi andal di 150+ negara dan kemudahan top-up.' }}{% endif %}
           </p>
         </div>
 
@@ -798,9 +832,9 @@
           <div class="gkmitra-why-ico" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
           </div>
-          <h3 class="gkmitra-h3">{{ section.settings.why_3_title | default: 'Mitra Berpengalaman' }}</h3>
+          <h3 class="gkmitra-h3">{% if is_en %}{{ 'business.why_3_title' | t: default: 'Trusted & Experienced Partner' }}{% else %}{{ section.settings.why_3_title | default: 'Mitra Berpengalaman' }}{% endif %}</h3>
           <p class="gkmitra-why-text">
-            {{ section.settings.why_3_text | default: 'Pengalaman sejak 2016 dan teknologi untuk mengembangkan bisnis kamu.' }}
+            {% if is_en %}{{ 'business.why_3_text' | t: default: 'Years of experience and technology to support and scale your business.' }}{% else %}{{ section.settings.why_3_text | default: 'Pengalaman sejak 2016 dan teknologi untuk mengembangkan bisnis kamu.' }}{% endif %}
           </p>
         </div>
 
@@ -812,29 +846,37 @@
   <section class="gkmitra-final" aria-labelledby="gkmitra-final-title-{{ section.id }}">
     <div class="gkmitra-wrap">
       <h2 class="gkmitra-final-title" id="gkmitra-final-title-{{ section.id }}">
-        {{ section.settings.final_title | default: 'Siap Tumbuh Bersama Kami?' }}
+        {%- if is_en -%}
+          {{ 'business.final_title' | t: default: 'Ready to Grow with Us?' }}
+        {%- else -%}
+          {{ section.settings.final_title | default: 'Siap Tumbuh Bersama Kami?' }}
+        {%- endif -%}
       </h2>
       <p class="gkmitra-final-text">
-        {{ section.settings.final_text | default: 'Pilih program yang paling cocok, tim kami siap membantu.' }}
+        {%- if is_en -%}
+          {{ 'business.final_text' | t: default: 'Choose the program that fits you best, our team is ready to assist.' }}
+        {%- else -%}
+          {{ section.settings.final_text | default: 'Pilih program yang paling cocok, tim kami siap membantu.' }}
+        {%- endif -%}
       </p>
       <div class="gkmitra-final-actions">
         <a class="gkmitra-btn gkmitra-btn-white" 
            href="{{ section.settings.final_btn1_url | default: 'https://mail.google.com/mail/?view=cm&fs=1&to=evan@gkomunika.com&su=Kerja%20Sama%20Strategis%20Global%20Komunika' }}"
            target="_blank"
            rel="noopener">
-          {{ section.settings.final_btn1_text | default: 'Mari Berkolaborasi' }}
+          {% if is_en %}{{ 'business.final_btn1' | t: default: "Let's Collaborate" }}{% else %}{{ section.settings.final_btn1_text | default: 'Mari Berkolaborasi' }}{% endif %}
         </a>
         <a class="gkmitra-btn gkmitra-btn-white" 
            href="{{ section.settings.final_btn2_url | default: 'https://docs.google.com/forms/u/0/d/1mhONvb4v5j3Q4fspJz3FKf1EiHKMwnMj-XbBLcBCbfg/viewform?edit_requested=true#settings' }}" 
            target="_blank" 
            rel="noopener">
-          {{ section.settings.final_btn2_text | default: 'Daftar Reseller' }}
+          {% if is_en %}{{ 'business.final_btn2' | t: default: 'Register as Reseller' }}{% else %}{{ section.settings.final_btn2_text | default: 'Daftar Reseller' }}{% endif %}
         </a>
         <a class="gkmitra-btn gkmitra-btn-white" 
            href="{{ section.settings.final_btn3_url | default: 'https://docs.google.com/forms/d/e/1FAIpQLSft7bblxZLVsXNb_9B_3v_Bkvom7-DJrak7oS_nrymaLDcK2w/viewform' }}" 
            target="_blank" 
            rel="noopener">
-          {{ section.settings.final_btn3_text | default: 'Daftar Affiliate' }}
+          {% if is_en %}{{ 'business.final_btn3' | t: default: 'Join Affiliate Program' }}{% else %}{{ section.settings.final_btn3_text | default: 'Daftar Affiliate' }}{% endif %}
         </a>
       </div>
     </div>

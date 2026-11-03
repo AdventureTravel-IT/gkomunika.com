@@ -1,3 +1,9 @@
+{%- assign current_lang = localization.language.iso_code | default: request.locale.iso_code | downcase -%}
+{%- assign is_en = true -%}
+{%- if current_lang contains 'id' or request.locale.root_url contains '/id' or routes.root_url contains '/id' or request.path contains '/id' -%}
+  {%- assign is_en = false -%}
+{%- endif -%}
+
 <section class="gkh-hero" aria-label="Global Komunika eSIM">
   <div class="gkh-hero__media">
     {%- assign desktop_image = section.settings.image -%}
@@ -37,18 +43,18 @@
       {%- case block.type -%}
         {%- when 'text' -%}
           {%- assign rendered_tag = true -%}
-          <span class="gkh-hero__tag" {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+          <span class="gkh-hero__tag" {{ block.shopify_attributes }}>{% if is_en %}{{ block.settings.text }}{% else %}{{ 'homepage.hero_tag' | t: default: '#Alwaysconnected' }}{% endif %}</span>
         {%- when 'heading' -%}
           {%- assign rendered_heading = true -%}
-          <h1 class="gkh-hero__title" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h1>
+          <h1 class="gkh-hero__title" {{ block.shopify_attributes }}>{% if is_en %}{{ block.settings.heading }}{% else %}{{ 'homepage.hero_heading' | t: default: 'eSIM Instan dari Global Komunika' }}{% endif %}</h1>
         {%- when 'desc' -%}
           {%- assign rendered_desc = true -%}
-          <p class="gkh-hero__desc" {{ block.shopify_attributes }}>{{ block.settings.desc }}</p>
+          <p class="gkh-hero__desc" {{ block.shopify_attributes }}>{% if is_en %}{{ block.settings.desc }}{% else %}{{ 'homepage.hero_desc' | t: default: 'Dapatkan QR Code eSIM kamu dalam waktu kurang dari 5 menit setelah pesanan selesai!' }}{% endif %}</p>
         {%- when 'search' -%}
           {%- assign rendered_search = true -%}
           <div {{ block.shopify_attributes }} style="width: 100%; max-width: 480px;">
             <form class="gkh-search" action="/search" method="get" role="search" data-country-autocomplete>
-              <input class="gkh-search__input" type="search" name="q" placeholder="{{ section.settings.search_placeholder | default: 'Search Your Destination' }}" aria-label="{{ section.settings.search_placeholder | default: 'Search Your Destination' }}" autocomplete="off" data-country-input>
+              <input class="gkh-search__input" type="search" name="q" placeholder="{% if is_en %}{{ section.settings.search_placeholder | default: 'Search Your Destination' }}{% else %}{{ 'homepage.search_placeholder' | t: default: 'Cari Destinasi Anda' }}{% endif %}" aria-label="{% if is_en %}{{ section.settings.search_placeholder | default: 'Search Your Destination' }}{% else %}{{ 'homepage.search_placeholder' | t: default: 'Cari Destinasi Anda' }}{% endif %}" autocomplete="off" data-country-input>
               <div data-country-suggestions class="max-h-[250px] overflow-auto bg-white rounded-[15px] p-[10px] shadow-lg" style="display:none;">
                 <ul data-country-list class="flex flex-col"></ul>
               </div>
@@ -61,18 +67,18 @@
     {%- endfor -%}
 
     {%- unless rendered_tag -%}
-      <span class="gkh-hero__tag">{{ section.settings.tag | default: '#ALWAYSCONNECTED' }}</span>
+      <span class="gkh-hero__tag">{% if is_en %}{{ section.settings.tag | default: '#ALWAYSCONNECTED' }}{% else %}{{ 'homepage.hero_tag' | t: default: '#Alwaysconnected' }}{% endif %}</span>
     {%- endunless -%}
     {%- unless rendered_heading -%}
-      <h1 class="gkh-hero__title">{{ section.settings.title | default: 'Instant eSIM by Global Komunika' }}</h1>
+      <h1 class="gkh-hero__title">{% if is_en %}{{ section.settings.title | default: 'Instant eSIM by Global Komunika' }}{% else %}{{ 'homepage.hero_heading' | t: default: 'eSIM Instan dari Global Komunika' }}{% endif %}</h1>
     {%- endunless -%}
     {%- unless rendered_desc -%}
-      <p class="gkh-hero__desc">{{ section.settings.desc | default: 'Get your QR Code under 5 minutes right after you completed your order.' }}</p>
+      <p class="gkh-hero__desc">{% if is_en %}{{ section.settings.desc | default: 'Get your QR Code under 5 minutes right after you completed your order.' }}{% else %}{{ 'homepage.hero_desc' | t: default: 'Dapatkan QR Code eSIM kamu dalam waktu kurang dari 5 menit setelah pesanan selesai!' }}{% endif %}</p>
     {%- endunless -%}
     {%- unless rendered_search -%}
       <div style="width: 100%; max-width: 480px;">
         <form class="gkh-search" action="/search" method="get" role="search" data-country-autocomplete>
-          <input class="gkh-search__input" type="search" name="q" placeholder="{{ section.settings.search_placeholder | default: 'Search Your Destination' }}" aria-label="{{ section.settings.search_placeholder | default: 'Search Your Destination' }}" autocomplete="off" data-country-input>
+          <input class="gkh-search__input" type="search" name="q" placeholder="{% if is_en %}{{ section.settings.search_placeholder | default: 'Search Your Destination' }}{% else %}{{ 'homepage.search_placeholder' | t: default: 'Cari Destinasi Anda' }}{% endif %}" aria-label="{% if is_en %}{{ section.settings.search_placeholder | default: 'Search Your Destination' }}{% else %}{{ 'homepage.search_placeholder' | t: default: 'Cari Destinasi Anda' }}{% endif %}" autocomplete="off" data-country-input>
           <div data-country-suggestions class="max-h-[250px] overflow-auto bg-white rounded-[15px] p-[10px] shadow-lg" style="display:none;">
             <ul data-country-list class="flex flex-col"></ul>
           </div>
@@ -87,12 +93,51 @@
   {%- if section.settings.show_gcard != false -%}
     <div class="gkh-gcard">
       <div class="gkh-gcard__body">
-        <p class="gkh-gcard__eyebrow">{{ section.settings.gcard_eyebrow | default: 'DISCOVER gSim!' }}</p>
-        <h2 class="gkh-gcard__title">{{ section.settings.gcard_title | default: 'One gSim!<sup>TM</sup> Endless Destinations.' }}</h2>
-        <p class="gkh-gcard__text">{{ section.settings.gcard_text | default: 'Activate once, top up anytime, and stay connected across multiple trips. No need to switch eSIMs.' }}</p>
+        <p class="gkh-gcard__eyebrow">
+          {%- if is_en -%}
+            {{ section.settings.gcard_eyebrow | default: 'DISCOVER gSim!' }}
+          {%- else -%}
+            {{ 'homepage.gcard_eyebrow' | t: default: 'KENALI gSim!' }}
+          {%- endif -%}
+        </p>
+        <h2 class="gkh-gcard__title">
+          {%- if is_en -%}
+            {%- assign gcard_title_en = section.settings.gcard_title | default: 'One gSim!<sup>TM</sup> Endless Destinations.' -%}
+            {%- unless gcard_title_en contains '<sup>TM</sup>' or gcard_title_en contains '™' or gcard_title_en contains '&trade;' -%}
+              {%- assign gcard_title_en = gcard_title_en | replace: 'One gSim!.', 'One gSim!<sup>TM</sup>' | replace: 'One gSim!', 'One gSim!<sup>TM</sup>' | replace: 'One gSim', 'One gSim<sup>TM</sup>' -%}
+            {%- endunless -%}
+            {{ gcard_title_en }}
+          {%- else -%}
+            {%- assign gcard_title_id = 'homepage.gcard_title_html' | t: default: 'Satu gSim!<sup>TM</sup> Banyak Destinasi.' -%}
+            {%- if gcard_title_id contains 'homepage.gcard_title_html' or gcard_title_id == blank -%}
+              {%- assign gcard_title_id = 'homepage.gcard_title' | t: default: 'Satu gSim!<sup>TM</sup> Banyak Destinasi.' -%}
+            {%- endif -%}
+            {%- unless gcard_title_id contains '<sup>TM</sup>' or gcard_title_id contains '™' or gcard_title_id contains '&trade;' -%}
+              {%- assign gcard_title_id = gcard_title_id | replace: 'Satu gSim!.', 'Satu gSim!<sup>TM</sup>' | replace: 'Satu gSim!', 'Satu gSim!<sup>TM</sup>' | replace: 'Satu gSim', 'Satu gSim<sup>TM</sup>' -%}
+            {%- endunless -%}
+            {{ gcard_title_id }}
+          {%- endif -%}
+        </h2>
+        <p class="gkh-gcard__text">
+          {%- if is_en -%}
+            {{ section.settings.gcard_text | default: 'Activate once, top up anytime, and stay connected across multiple trips. No need to switch eSIMs.' }}
+          {%- else -%}
+            {{ 'homepage.gcard_text' | t: default: 'Cukup aktivasi sekali dan top up kapan pun sesuai kebutuhan. Tanpa perlu ganti eSIM setiap perjalanan.' }}
+          {%- endif -%}
+        </p>
       </div>
-      <a class="gkh-gcard__cta" href="{{ section.settings.gcard_cta_url | default: '/pages/gsim' }}">
-        {{ section.settings.gcard_cta_text | default: 'Explore gSim! &rarr;' }}
+      {%- assign gcard_url = section.settings.gcard_cta_url | default: '/pages/gsim' -%}
+      {%- if is_en == false and gcard_url contains '/pages/' -%}
+        {%- unless gcard_url contains '/id' -%}
+          {%- assign gcard_url = '/id' | append: gcard_url -%}
+        {%- endunless -%}
+      {%- endif -%}
+      <a class="gkh-gcard__cta" href="{{ gcard_url }}">
+        {%- if is_en -%}
+          {{ section.settings.gcard_cta_text | default: 'Explore gSim! &rarr;' }}
+        {%- else -%}
+          {{ 'homepage.gcard_cta' | t: default: 'Kenali gSIM! &rarr;' }}
+        {%- endif -%}
       </a>
     </div>
   {%- endif -%}

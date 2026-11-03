@@ -15,10 +15,10 @@
       - English => use entry.country & reg.region
       - Indonesian => use entry.country_id & reg.region_id
     {%- endcomment -%}
-    {%- assign current_lang = request.locale.iso_code | default: localization.language.iso_code | downcase -%}
-    {%- assign is_en = false -%}
-    {%- if current_lang contains 'en' -%}
-      {%- assign is_en = true -%}
+    {%- assign current_lang = localization.language.iso_code | default: request.locale.iso_code | downcase -%}
+    {%- assign is_en = true -%}
+    {%- if current_lang contains 'id' or request.locale.root_url contains '/id' or routes.root_url contains '/id' or request.path contains '/id' -%}
+      {%- assign is_en = false -%}
     {%- endif -%}
 
     {%- assign display_mode = section.settings.country_mode | default: 'all' -%}
@@ -209,9 +209,13 @@
       {% if template.name != 'index' %}
         <div class="w-full lg:max-w-[50%] mt-[20px] mb-[50px] md:mt-[100px] md:mb-[100px] space-y-5">
           <div class="mb-5 space-y-5">
-            <h2 class="text-[36px] font-bold text-primary">All Destinations</h2>
+            <h2 class="text-[36px] font-bold text-primary">{% if is_en %}All Destinations{% else %}Semua Destinasi{% endif %}</h2>
             <p class="text-primary text-[18px] tracking-wider leading-normal">
-              Find the perfect Internet Data for your travel and enjoy internet connection for more than 150 Countries
+              {% if is_en %}
+                Find the perfect Internet Data for your travel and enjoy internet connection for more than 150 Countries
+              {% else %}
+                Temukan Paket Internet yang Tepat untuk Perjalanan Anda dan Nikmati Koneksi Internet di Lebih dari 150 Negara
+              {% endif %}
             </p>
           </div>
 
@@ -332,8 +336,19 @@
                       >
                     </div>
                     <div>
-                      <span class="gkh-country__name">{{ top_name }}</span>
-                      <p class="gkh-country__price">Start From {{ price_display }}</p>
+                      {%- assign top_display_name = top_name -%}
+                      {%- unless is_en -%}
+                        {%- case top_name -%}
+                          {%- when 'Singapore' -%}{%- assign top_display_name = 'Singapura' -%}
+                          {%- when 'Japan' -%}{%- assign top_display_name = 'Jepang' -%}
+                          {%- when 'South Korea' -%}{%- assign top_display_name = 'Korea Selatan' -%}
+                          {%- when 'Europe' -%}{%- assign top_display_name = 'Eropa' -%}
+                          {%- when 'Saudi Arabia' -%}{%- assign top_display_name = 'Arab Saudi' -%}
+                          {%- when 'Hong Kong' -%}{%- assign top_display_name = 'Hongkong' -%}
+                        {%- endcase -%}
+                      {%- endunless -%}
+                      <span class="gkh-country__name">{{ top_display_name }}</span>
+                      <p class="gkh-country__price">{% if is_en %}Start From{% else %}Mulai dari{% endif %} {{ price_display }}</p>
                     </div>
                   </div>
 
@@ -369,7 +384,7 @@
                           <span class="gkh-country__name">
                             {{- country_name | replace: '_', ' ' -}}
                           </span>
-                          <p class="gkh-country__price">Start From {{ min_price | money_with_currency }}{% if is_au %} AUD{% endif %}</p>
+                          <p class="gkh-country__price">{% if is_en %}Start From{% else %}Mulai dari{% endif %} {{ min_price | money_with_currency }}{% if is_au %} AUD{% endif %}</p>
                         </div>
                       </div>
 
@@ -417,7 +432,7 @@
           {%- endfor -%}
 
           <div class="gkh-grid-c">
-            {%- assign fallback_regions_data = 'Middle East:::Timur Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_timur_tengah.png?v=1793001222:::Rp 19.000|Asia:::Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia.png?v=1793001223:::Rp 19.000|Europe:::Europe:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_europe.png?v=1793001223:::Rp 19.000|Africa:::Afrika:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_afrika.png?v=1793001222:::Rp 29.000|Central Asia:::Asia Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_tengah.png?v=1793001222:::Rp 19.000|Eastern Asia:::Eastern Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_eastern_asia.png?v=1793001222:::Rp 79.000|East Asia:::Asia Timur:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_timur.png?v=1793001222:::Rp 19.000|North America:::Amerika Utara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_amerika_utara.png?v=1793001222:::Rp 19.000|Southeast Asia:::Asia Tenggara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_tenggara.png?v=1793001222:::Rp 19.000|North Africa:::Afrika Utara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_afrika_utara.png?v=1793001222:::Rp 20.000|West Africa:::Afrika Barat:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_afrika_barat.png?v=1793001222:::Rp 20.000|South Asia:::Asia Selatan:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_selatan.png?v=1793001221:::Rp 19.000|Central America:::Amerika Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_amerika_tengah.png?v=1793001220:::Rp 109.000|Oceania:::Osenia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_osenia.png?v=1793001220:::Rp 19.000|South America:::Amerika Selatan:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_amerika_selatan.png?v=1793001220:::Rp 20.000' | split: '|' -%}
+            {%- assign fallback_regions_data = 'Middle East:::Timur Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_timur_tengah.png?v=1793001222:::Rp 19.000|Asia:::Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia.png?v=1793001223:::Rp 19.000|Europe:::Eropa:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_europe.png?v=1793001223:::Rp 19.000|Africa:::Afrika:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_afrika.png?v=1793001222:::Rp 29.000|Central Asia:::Asia Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_tengah.png?v=1793001222:::Rp 19.000|Eastern Asia:::Eastern Asia:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_eastern_asia.png?v=1793001222:::Rp 79.000|East Asia:::Asia Timur:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_timur.png?v=1793001222:::Rp 19.000|North America:::Amerika Utara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_amerika_utara.png?v=1793001222:::Rp 19.000|Southeast Asia:::Asia Tenggara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_tenggara.png?v=1793001222:::Rp 19.000|North Africa:::Afrika Utara:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_afrika_utara.png?v=1793001222:::Rp 20.000|West Africa:::Afrika Barat:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_afrika_barat.png?v=1793001222:::Rp 20.000|South Asia:::Asia Selatan:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_asia_selatan.png?v=1793001221:::Rp 19.000|Central America:::Amerika Tengah:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_amerika_tengah.png?v=1793001220:::Rp 109.000|Oceania:::Oseania:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_osenia.png?v=1793001220:::Rp 19.000|South America:::Amerika Selatan:::https://cdn.shopify.com/s/files/1/0735/4204/1817/files/transparent_amerika_selatan.png?v=1793001220:::Rp 20.000' | split: '|' -%}
 
             {%- for r_item in fallback_regions_data -%}
               {%- assign r_fields = r_item | split: ':::' -%}
@@ -476,7 +491,7 @@
                   </div>
                   <div>
                     <span class="gkh-country__name">{{ r_name }}</span>
-                    <p class="gkh-country__price">Start From {{ price_display }}</p>
+                    <p class="gkh-country__price">{% if is_en %}Start From{% else %}Mulai dari{% endif %} {{ price_display }}</p>
                   </div>
                 </div>
 

@@ -15,24 +15,44 @@
   {%- endcase -%}
 {%- endfor -%}
 
-<div class="gsim-lp" id="gsim-lp">
+{%- assign current_lang = localization.language.iso_code | default: request.locale.iso_code | downcase -%}
+{%- assign is_en = true -%}
+{%- if current_lang contains 'id' or request.locale.root_url contains '/id' or routes.root_url contains '/id' or request.path contains '/id' -%}
+  {%- assign is_en = false -%}
+{%- endif -%}
+
+<div class="gsim-lp" id="gsim-lp" lang="{% if is_en %}en{% else %}id{% endif %}">
 
   <!-- Hero Section -->
   <section class="gsim-hero">
     <div class="gsim-hero__inner">
       <div class="gsim-hero__copy">
         <h1 class="gsim-hero__title">
-          {%- if section.settings.hero_title == blank or section.settings.hero_title == 'Satu gSim! Banyak Destinasi' -%}
+          {%- if is_en -%}
+            gSim!<span class="gsim-hero__tm">&trade;</span> Activate Once, Travel Again and Again
+          {%- elsif section.settings.hero_title == blank or section.settings.hero_title == 'Satu gSim! Banyak Destinasi' -%}
             Satu gSim!<span class="gsim-hero__tm">&trade;</span><br>Banyak Destinasi
           {%- else -%}
-            {{ section.settings.hero_title }}
+            {%- assign h_title = section.settings.hero_title -%}
+            {%- unless h_title contains '&trade;' or h_title contains '™' or h_title contains 'gsim-hero__tm' -%}
+              {%- assign h_title = h_title | replace: 'Satu gSim!', 'Satu gSim!<span class="gsim-hero__tm">&trade;</span>' | replace: 'gSim!', 'gSim!<span class="gsim-hero__tm">&trade;</span>' -%}
+            {%- endunless -%}
+            {{ h_title }}
           {%- endif -%}
         </h1>
         <p class="gsim-hero__text">
-          {{ section.settings.hero_text | default: 'Tak perlu ganti eSIM setiap traveling. Aktivasi sekali dan top up mudah kapan pun sesuai kebutuhan.' }}
+          {%- if is_en -%}
+            {{ 'gsim.hero_text' | t: default: 'With gSim! one activation is all you need for multiple trips, including transits, with easy top-ups whenever you need them' }}
+          {%- else -%}
+            {{ section.settings.hero_text | default: 'Tak perlu ganti eSIM setiap traveling. Aktivasi sekali dan top up mudah kapan pun sesuai kebutuhan.' }}
+          {%- endif -%}
         </p>
         <button type="button" class="gsim-hero__btn" data-gsim-goto="{{ section.settings.hero_button_tab | default: 'esim' }}">
-          {{ section.settings.hero_button_label | default: 'Beli gSim!' | escape }}
+          {%- if is_en -%}
+            {{ 'gsim.hero_btn' | t: default: 'Buy gSIM!' }}
+          {%- else -%}
+            {{ section.settings.hero_button_label | default: 'Beli gSim!' | escape }}
+          {%- endif -%}
         </button>
       </div>
 
@@ -49,14 +69,14 @@
                 <span class="gsim-hero__ph-batt"></span>
               </span>
             </div>
-            <div class="gsim-hero__ph-title">{{ section.settings.phone_dest_title | default: 'Destinasi' }}</div>
-            <div class="gsim-hero__ph-sub">{{ section.settings.phone_dest_sub | default: 'Satu gSim! untuk semua perjalananmu' }}</div>
+            <div class="gsim-hero__ph-title">{% if is_en %}{{ 'gsim.phone_dest_title' | t: default: 'Destinations' }}{% else %}{{ section.settings.phone_dest_title | default: 'Destinasi' }}{% endif %}</div>
+            <div class="gsim-hero__ph-sub">{% if is_en %}{{ 'gsim.phone_dest_sub' | t: default: 'One gSim! for all your journeys' }}{% else %}{{ section.settings.phone_dest_sub | default: 'Satu gSim! untuk semua perjalananmu' }}{% endif %}</div>
             <div class="gsim-hero__ph-list">
               <div class="gsim-hero__ph-region gsim-hero__ph-region--as"><span class="gsim-hero__ph-code">AS</span><span class="gsim-hero__ph-rname">Asia</span></div>
-              <div class="gsim-hero__ph-region gsim-hero__ph-region--eu"><span class="gsim-hero__ph-code">EU</span><span class="gsim-hero__ph-rname">Eropa</span></div>
+              <div class="gsim-hero__ph-region gsim-hero__ph-region--eu"><span class="gsim-hero__ph-code">EU</span><span class="gsim-hero__ph-rname">{% if is_en %}Europe{% else %}Eropa{% endif %}</span></div>
               <div class="gsim-hero__ph-region gsim-hero__ph-region--au"><span class="gsim-hero__ph-code">AU</span><span class="gsim-hero__ph-rname">Australia</span></div>
-              <div class="gsim-hero__ph-region gsim-hero__ph-region--us"><span class="gsim-hero__ph-code">US</span><span class="gsim-hero__ph-rname">Amerika</span></div>
-              <div class="gsim-hero__ph-region gsim-hero__ph-region--me"><span class="gsim-hero__ph-code">ME</span><span class="gsim-hero__ph-rname">Timur Tengah</span></div>
+              <div class="gsim-hero__ph-region gsim-hero__ph-region--us"><span class="gsim-hero__ph-code">US</span><span class="gsim-hero__ph-rname">{% if is_en %}America{% else %}Amerika{% endif %}</span></div>
+              <div class="gsim-hero__ph-region gsim-hero__ph-region--me"><span class="gsim-hero__ph-code">ME</span><span class="gsim-hero__ph-rname">{% if is_en %}Middle East{% else %}Timur Tengah{% endif %}</span></div>
             </div>
           </div>
 
@@ -76,21 +96,21 @@
               <div class="gsim-hero__ph-by">{{ section.settings.phone_brand_sub | default: 'by Global Komunika' }}</div>
             </div>
             <div class="gsim-hero__ph-row">
-              <span class="gsim-hero__ph-pill"><span class="gsim-hero__ph-pilldot"></span>Terhubung</span>
+              <span class="gsim-hero__ph-pill"><span class="gsim-hero__ph-pilldot"></span>{% if is_en %}{{ 'gsim.phone_status_connected' | t: default: 'Connected' }}{% else %}Terhubung{% endif %}</span>
               <span class="gsim-hero__ph-signal"><span></span><span></span><span></span><span></span></span>
             </div>
             <div class="gsim-hero__ph-card">
               <svg class="gsim-hero__ph-icon" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2M5 6l11-3v3"/></svg>
               <div class="gsim-hero__ph-ctext">
-                <div class="gsim-hero__ph-clabel">Top Up Data</div>
-                <div class="gsim-hero__ph-csub">Mudah, cepat, dan fleksibel</div>
+                <div class="gsim-hero__ph-clabel">{% if is_en %}{{ 'gsim.phone_topup_label' | t: default: 'Data Top Up' }}{% else %}Top Up Data{% endif %}</div>
+                <div class="gsim-hero__ph-csub">{% if is_en %}{{ 'gsim.phone_topup_sub' | t: default: 'Easy, fast, and flexible' }}{% else %}Mudah, cepat, dan fleksibel{% endif %}</div>
               </div>
               <svg class="gsim-hero__ph-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
             </div>
             <div class="gsim-hero__ph-data">
               <svg class="gsim-hero__ph-dataicon" viewBox="0 0 32 36" aria-hidden="true"><ellipse cx="16" cy="7" rx="11" ry="5"/><path d="M5 7v19c0 3 5 5 11 5s11-2 11-5V7M5 14c0 3 5 5 11 5s11-2 11-5M5 21c0 3 5 5 11 5s11-2 11-5"/></svg>
               <div class="gsim-hero__ph-databody">
-                <div class="gsim-hero__ph-datalabel">Sisa Data</div>
+                <div class="gsim-hero__ph-datalabel">{% if is_en %}{{ 'gsim.phone_data_label' | t: default: 'Remaining Data' }}{% else %}Sisa Data{% endif %}</div>
                 <div class="gsim-hero__ph-datavalue">{{ section.settings.phone_data_value | default: '4 GB' }}</div>
                 <div class="gsim-hero__ph-progress"><span></span></div>
               </div>
@@ -130,42 +150,42 @@
             {%- else -%}
               <div class="gsim-hero__pair" data-gsim-pair="0">
                 <figure class="gsim-hero__photo">
-                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Japan-gsim.jpg?v=1792736762" data-gsim-photo="jepang" fetchpriority="high" style="--gsim-pm:52% 50%" alt="Bunga sakura dan Gunung Fuji dengan pagoda merah di Jepang">
-                  <figcaption class="gsim-hero__cap">Jepang</figcaption>
+                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Japan-gsim.jpg?v=1792736762" data-gsim-photo="jepang" fetchpriority="high" style="--gsim-pm:52% 50%" alt="{% if is_en %}Cherry blossoms and Mt. Fuji with a red pagoda in Japan{% else %}Bunga sakura dan Gunung Fuji dengan pagoda merah di Jepang{% endif %}">
+                  <figcaption class="gsim-hero__cap">{% if is_en %}Japan{% else %}Jepang{% endif %}</figcaption>
                 </figure>
                 <figure class="gsim-hero__photo">
-                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/china-gsim.jpg?v=1792736762" data-gsim-photo="china" fetchpriority="high" style="--gsim-pm:40% 50%" alt="Gerbang merah Kota Terlarang di Beijing, China">
+                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/china-gsim.jpg?v=1792736762" data-gsim-photo="china" fetchpriority="high" style="--gsim-pm:40% 50%" alt="{% if is_en %}Red gate of the Forbidden City in Beijing, China{% else %}Gerbang merah Kota Terlarang di Beijing, China{% endif %}">
                   <figcaption class="gsim-hero__cap">China</figcaption>
                 </figure>
               </div>
               <div class="gsim-hero__pair" data-gsim-pair="1" aria-hidden="true">
                 <figure class="gsim-hero__photo">
-                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Inggris-gsim.jpg?v=1792736762" data-gsim-photo="inggris" loading="lazy" style="--gsim-pm:55% 50%" alt="Big Ben, bus merah, dan kotak telepon merah di London, Inggris">
-                  <figcaption class="gsim-hero__cap">Inggris</figcaption>
+                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Inggris-gsim.jpg?v=1792736762" data-gsim-photo="inggris" loading="lazy" style="--gsim-pm:55% 50%" alt="{% if is_en %}Big Ben, red bus, and telephone box in London, United Kingdom{% else %}Big Ben, bus merah, dan kotak telepon merah di London, Inggris{% endif %}">
+                  <figcaption class="gsim-hero__cap">{% if is_en %}United Kingdom{% else %}Inggris{% endif %}</figcaption>
                 </figure>
                 <figure class="gsim-hero__photo">
-                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/australia-gsim.jpg?v=1792736762" data-gsim-photo="australia" loading="lazy" style="--gsim-pm:45% 50%" alt="Sydney Opera House dan kapal feri di pelabuhan Sydney, Australia">
+                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/australia-gsim.jpg?v=1792736762" data-gsim-photo="australia" loading="lazy" style="--gsim-pm:45% 50%" alt="{% if is_en %}Sydney Opera House and ferries in Sydney Harbour, Australia{% else %}Sydney Opera House dan kapal feri di pelabuhan Sydney, Australia{% endif %}">
                   <figcaption class="gsim-hero__cap">Australia</figcaption>
                 </figure>
               </div>
               <div class="gsim-hero__pair" data-gsim-pair="2" aria-hidden="true">
                 <figure class="gsim-hero__photo">
-                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/turkey_gsim.jpg?v=1792736838" data-gsim-photo="turki" loading="lazy" style="--gsim-pm:62% 50%" alt="Balon udara di atas Cappadocia saat matahari terbit, Turki">
-                  <figcaption class="gsim-hero__cap">Turki</figcaption>
+                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/turkey_gsim.jpg?v=1792736838" data-gsim-photo="turki" loading="lazy" style="--gsim-pm:62% 50%" alt="{% if is_en %}Hot air balloons over Cappadocia at sunrise, Turkey{% else %}Balon udara di atas Cappadocia saat matahari terbit, Turki{% endif %}">
+                  <figcaption class="gsim-hero__cap">{% if is_en %}Turkey{% else %}Turki{% endif %}</figcaption>
                 </figure>
                 <figure class="gsim-hero__photo">
-                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/korea-gsim.jpg?v=1792736762" data-gsim-photo="korea" loading="lazy" style="--gsim-pm:55% 50%" alt="Rumah tradisional hanok dengan bendera Korea Selatan dan Menara Seoul">
-                  <figcaption class="gsim-hero__cap">Korea Selatan</figcaption>
+                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/korea-gsim.jpg?v=1792736762" data-gsim-photo="korea" loading="lazy" style="--gsim-pm:55% 50%" alt="{% if is_en %}Traditional hanok village with South Korean flag and Seoul Tower{% else %}Rumah tradisional hanok dengan bendera Korea Selatan dan Menara Seoul{% endif %}">
+                  <figcaption class="gsim-hero__cap">{% if is_en %}South Korea{% else %}Korea Selatan{% endif %}</figcaption>
                 </figure>
               </div>
               <div class="gsim-hero__pair" data-gsim-pair="3" aria-hidden="true">
                 <figure class="gsim-hero__photo">
-                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/singapore-gsim.webp?v=1792736762" data-gsim-photo="singapura" loading="lazy" style="--gsim-pm:85% 50%" alt="Patung Merlion dan Marina Bay Sands di Singapura">
-                  <figcaption class="gsim-hero__cap">Singapura</figcaption>
+                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/singapore-gsim.webp?v=1792736762" data-gsim-photo="singapura" loading="lazy" style="--gsim-pm:85% 50%" alt="{% if is_en %}Merlion statue and Marina Bay Sands in Singapore{% else %}Patung Merlion dan Marina Bay Sands di Singapura{% endif %}">
+                  <figcaption class="gsim-hero__cap">{% if is_en %}Singapore{% else %}Singapura{% endif %}</figcaption>
                 </figure>
                 <figure class="gsim-hero__photo">
-                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/amerika_gsim.jpg?v=1792736841" data-gsim-photo="amerika" loading="lazy" style="--gsim-pm:55% 50%" alt="Jembatan Brooklyn dan gedung pencakar langit New York, Amerika Serikat">
-                  <figcaption class="gsim-hero__cap">Amerika Serikat</figcaption>
+                  <img class="gsim-hero__img" src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/amerika_gsim.jpg?v=1792736841" data-gsim-photo="amerika" loading="lazy" style="--gsim-pm:55% 50%" alt="{% if is_en %}Brooklyn Bridge and New York skyline, United States{% else %}Jembatan Brooklyn dan gedung pencakar langit New York, Amerika Serikat{% endif %}">
+                  <figcaption class="gsim-hero__cap">{% if is_en %}United States{% else %}Amerika Serikat{% endif %}</figcaption>
                 </figure>
               </div>
             {%- endif -%}
@@ -173,10 +193,10 @@
         </div>
 
         <div class="gsim-hero__dots" data-gsim-hdots>
-          <button type="button" class="gsim-hero__dot gsim-hero__dot--active" data-gsim-hdot="0" aria-label="Tampilkan destinasi 1"></button>
-          <button type="button" class="gsim-hero__dot" data-gsim-hdot="1" aria-label="Tampilkan destinasi 2"></button>
-          <button type="button" class="gsim-hero__dot" data-gsim-hdot="2" aria-label="Tampilkan destinasi 3"></button>
-          <button type="button" class="gsim-hero__dot" data-gsim-hdot="3" aria-label="Tampilkan destinasi 4"></button>
+          <button type="button" class="gsim-hero__dot gsim-hero__dot--active" data-gsim-hdot="0" aria-label="{% if is_en %}Show destination 1{% else %}Tampilkan destinasi 1{% endif %}"></button>
+          <button type="button" class="gsim-hero__dot" data-gsim-hdot="1" aria-label="{% if is_en %}Show destination 2{% else %}Tampilkan destinasi 2{% endif %}"></button>
+          <button type="button" class="gsim-hero__dot" data-gsim-hdot="2" aria-label="{% if is_en %}Show destination 3{% else %}Tampilkan destinasi 3{% endif %}"></button>
+          <button type="button" class="gsim-hero__dot" data-gsim-hdot="3" aria-label="{% if is_en %}Show destination 4{% else %}Tampilkan destinasi 4{% endif %}"></button>
         </div>
       </div>
     </div>
@@ -185,34 +205,46 @@
   <!-- Solution Section -->
   <section class="gsim-solution">
     <div class="gsim-solution__inner">
-      <h2 class="gsim-solution__title">{{ section.settings.solution_title | default: 'Destinasi yang Diganti, Bukan eSIM-nya' | escape }}</h2>
+      <h2 class="gsim-solution__title">
+        {%- if is_en -%}
+          {{ 'gsim.solution_title' | t: default: 'New Destinations. Same gSim!' }}
+        {%- else -%}
+          {{ section.settings.solution_title | default: 'Destinasi yang Diganti, Bukan eSIM-nya' | escape }}
+        {%- endif -%}
+      </h2>
+      {%- if is_en -%}
+        <p class="gsim-solution__desc" style="max-width: 820px; margin: 0 auto 24px; text-align: center; font-size: 1.05rem; color: #4E4E4E;">
+          {{ 'gsim.solution_subtitle' | t: default: 'With gSim! activate once and stay connected across multiple trips. Simply top up whenever you need, without buying and installing a new eSIM every time you travel.' }}
+        </p>
+        <h3 class="gsim-solution__subtitle" style="text-align: center; font-size: clamp(20px, 3vw, 26px); font-weight: 700; color: #005496; margin: 0 0 24px;">{{ 'gsim.why_gsim_heading' | t: default: 'Why gSim!?' }}</h3>
+      {%- endif -%}
       <ol class="gsim-solution__grid">
         <li class="gsim-solution__card">
           <span class="gsim-solution__num" aria-hidden="true">1</span>
           <div class="gsim-solution__body">
-            <h3 class="gsim-solution__name">{{ section.settings.solution_1_title | default: 'Aktivasi Sekali, Pakai Berkali-kali' | escape }}</h3>
-            <p class="gsim-solution__desc">{{ section.settings.solution_1_desc | default: 'Cukup pasang dan aktivasi sekali. Gunakan kembali untuk perjalanan berikutnya tanpa perlu setup ulang.' | escape }}</p>
+            <h3 class="gsim-solution__name">{% if is_en %}{{ 'gsim.solution_1_title' | t: default: 'Activate Once, Travel More' }}{% else %}{{ section.settings.solution_1_title | default: 'Aktivasi Sekali, Pakai Berkali-kali' | escape }}{% endif %}</h3>
+            <p class="gsim-solution__desc">{% if is_en %}{{ 'gsim.solution_1_desc' | t: default: 'Set up your gSim! once and reuse it for future trips without repeating the installation process.' }}{% else %}{{ section.settings.solution_1_desc | default: 'Cukup pasang dan aktivasi sekali. Gunakan kembali untuk perjalanan berikutnya tanpa perlu setup ulang.' | escape }}{% endif %}</p>
           </div>
         </li>
         <li class="gsim-solution__card">
           <span class="gsim-solution__num" aria-hidden="true">2</span>
           <div class="gsim-solution__body">
-            <h3 class="gsim-solution__name">{{ section.settings.solution_2_title | default: 'Top Up Mudah' | escape }}</h3>
-            <p class="gsim-solution__desc">{{ section.settings.solution_2_desc | default: 'Butuh kuota atau pergi ke negara lain? Tinggal pilih dan isi ulang paket sesuai kebutuhan.' | escape }}</p>
+            <h3 class="gsim-solution__name">{% if is_en %}{{ 'gsim.solution_2_title' | t: default: 'Easy Top-Up' }}{% else %}{{ section.settings.solution_2_title | default: 'Top Up Mudah' | escape }}{% endif %}</h3>
+            <p class="gsim-solution__desc">{% if is_en %}{{ 'gsim.solution_2_desc' | t: default: 'Need more data or traveling to another country? Simply top up with a plan that fits your needs.' }}{% else %}{{ section.settings.solution_2_desc | default: 'Butuh kuota atau pergi ke negara lain? Tinggal pilih dan isi ulang paket sesuai kebutuhan.' | escape }}{% endif %}</p>
           </div>
         </li>
         <li class="gsim-solution__card">
           <span class="gsim-solution__num" aria-hidden="true">3</span>
           <div class="gsim-solution__body">
-            <h3 class="gsim-solution__name">{{ section.settings.solution_3_title | default: 'Dibuat untuk Traveler' | escape }}</h3>
-            <p class="gsim-solution__desc">{{ section.settings.solution_3_desc | default: 'Praktis untuk frequent travelers, perjalanan multi-negara, maupun transit.' | escape }}</p>
+            <h3 class="gsim-solution__name">{% if is_en %}{{ 'gsim.solution_3_title' | t: default: 'Built for Travelers' }}{% else %}{{ section.settings.solution_3_title | default: 'Dibuat untuk Traveler' | escape }}{% endif %}</h3>
+            <p class="gsim-solution__desc">{% if is_en %}{{ 'gsim.solution_3_desc' | t: default: 'Perfect for frequent travelers, multi-destination trips, and transit journeys.' }}{% else %}{{ section.settings.solution_3_desc | default: 'Praktis untuk frequent travelers, perjalanan multi-negara, maupun transit.' | escape }}{% endif %}</p>
           </div>
         </li>
         <li class="gsim-solution__card">
           <span class="gsim-solution__num" aria-hidden="true">4</span>
           <div class="gsim-solution__body">
-            <h3 class="gsim-solution__name">{{ section.settings.solution_4_title | default: 'Lifetime Validity*' | escape }}</h3>
-            <p class="gsim-solution__desc">{{ section.settings.solution_4_desc | default: 'Satu profil eSIM dapat digunakan kembali untuk berbagai perjalanan, tanpa harus menggantinya setiap trip.' | escape }}</p>
+            <h3 class="gsim-solution__name">{% if is_en %}{{ 'gsim.solution_4_title' | t: default: 'Lifetime Validity*' }}{% else %}{{ section.settings.solution_4_title | default: 'Lifetime Validity*' | escape }}{% endif %}</h3>
+            <p class="gsim-solution__desc">{% if is_en %}{{ 'gsim.solution_4_desc' | t: default: 'One reusable eSIM profile designed to stay with you across multiple journeys.' }}{% else %}{{ section.settings.solution_4_desc | default: 'Satu profil eSIM dapat digunakan kembali untuk berbagai perjalanan, tanpa harus menggantinya setiap trip.' | escape }}{% endif %}</p>
           </div>
         </li>
       </ol>
@@ -222,81 +254,99 @@
   <!-- Comparison Section -->
   <section class="gsim-compare">
     <div class="gsim-compare__inner">
-      <h2 class="gsim-lp__h2 gsim-compare__title">{{ section.settings.compare_title | default: 'gSim! vs eSIM Sekali Pakai' | escape }}</h2>
-      <table class="gsim-compare__table">
+      <h2 class="gsim-lp__h2 gsim-compare__title">
+        {%- if is_en -%}
+          {{ 'gsim.compare_title' | t: default: 'gSIM! Vs Single-Use eSIM' }}
+        {%- else -%}
+          {{ section.settings.compare_title | default: 'gSim! vs eSIM Sekali Pakai' | escape }}
+        {%- endif -%}
+      </h2>
+      <div class="gsim-compare__table-wrap">
+        <table class="gsim-compare__table">
         <colgroup><col style="width:32%"><col style="width:34%"><col style="width:34%"></colgroup>
         <thead>
           <tr>
-            <th scope="col"><span class="gsim-compare__sr">Fitur</span></th>
-            <th scope="col" class="gsim-compare__h gsim-compare__h--gsim">{{ section.settings.compare_header_gsim | default: 'gSim! / gSimCard!' | escape }}</th>
-            <th scope="col" class="gsim-compare__h">{{ section.settings.compare_header_other | default: 'eSIM Sekali Pakai' | escape }}</th>
+            <th scope="col"><span class="gsim-compare__sr">{% if is_en %}Feature{% else %}Fitur{% endif %}</span></th>
+            <th scope="col" class="gsim-compare__h gsim-compare__h--gsim">{% if is_en %}{{ 'gsim.compare_header_gsim' | t: default: 'gSIM! / gSIMCard!' }}{% else %}{{ section.settings.compare_header_gsim | default: 'gSim! / gSimCard!' | escape }}{% endif %}</th>
+            <th scope="col" class="gsim-compare__h">{% if is_en %}{{ 'gsim.compare_header_other' | t: default: 'Single-Use eSIM' }}{% else %}{{ section.settings.compare_header_other | default: 'eSIM Sekali Pakai' | escape }}{% endif %}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">Aktivasi</th>
+            <th scope="row">{% if is_en %}{{ 'gsim.compare_row_activation' | t: default: 'Activation' }}{% else %}Aktivasi{% endif %}</th>
             <td class="gsim-compare__yes">
               <span class="gsim-compare__val">
                 <svg class="gsim-compare__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                Sekali saja
+                {% if is_en %}{{ 'gsim.compare_gsim_activation' | t: default: 'Set up once' }}{% else %}Sekali saja{% endif %}
               </span>
             </td>
-            <td class="gsim-compare__no">Setiap eSIM baru</td>
+            <td class="gsim-compare__no">{% if is_en %}{{ 'gsim.compare_other_activation' | t: default: 'Each new eSIM' }}{% else %}Setiap eSIM baru{% endif %}</td>
           </tr>
           <tr>
-            <th scope="row">Isi Ulang</th>
+            <th scope="row">{% if is_en %}{{ 'gsim.compare_row_topup' | t: default: 'Top-Up' }}{% else %}Isi Ulang{% endif %}</th>
             <td class="gsim-compare__yes">
               <span class="gsim-compare__val">
                 <svg class="gsim-compare__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                Bisa top up
+                {% if is_en %}{{ 'gsim.compare_gsim_topup' | t: default: 'Available' }}{% else %}Bisa top up{% endif %}
               </span>
             </td>
-            <td class="gsim-compare__no">Umumnya tidak</td>
+            <td class="gsim-compare__no">{% if is_en %}{{ 'gsim.compare_other_topup' | t: default: 'Often unavailable' }}{% else %}Umumnya tidak{% endif %}</td>
           </tr>
           <tr>
-            <th scope="row">Penggunaan</th>
+            <th scope="row">{% if is_en %}{{ 'gsim.compare_row_usage' | t: default: 'Usage' }}{% else %}Penggunaan{% endif %}</th>
             <td class="gsim-compare__yes">
               <span class="gsim-compare__val">
                 <svg class="gsim-compare__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                Berbagai perjalanan
+                {% if is_en %}{{ 'gsim.compare_gsim_usage' | t: default: 'Multiple trips' }}{% else %}Berbagai perjalanan{% endif %}
               </span>
             </td>
-            <td class="gsim-compare__no">Satu perjalanan atau paket</td>
+            <td class="gsim-compare__no">{% if is_en %}{{ 'gsim.compare_other_usage' | t: default: 'Single trip or plan' }}{% else %}Satu perjalanan atau paket{% endif %}</td>
           </tr>
           <tr>
-            <th scope="row">Negara Transit</th>
+            <th scope="row">{% if is_en %}{{ 'gsim.compare_row_transit' | t: default: 'Transit Countries' }}{% else %}Negara Transit{% endif %}</th>
             <td class="gsim-compare__yes">
               <span class="gsim-compare__val">
                 <svg class="gsim-compare__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                Termasuk
+                {% if is_en %}{{ 'gsim.compare_gsim_transit' | t: default: 'Included' }}{% else %}Termasuk{% endif %}
               </span>
             </td>
-            <td class="gsim-compare__no">Umumnya tidak</td>
+            <td class="gsim-compare__no">{% if is_en %}{{ 'gsim.compare_other_transit' | t: default: 'Often excluded' }}{% else %}Umumnya tidak{% endif %}</td>
           </tr>
           <tr>
-            <th scope="row">Masa Berlaku</th>
+            <th scope="row">{% if is_en %}{{ 'gsim.compare_row_validity' | t: default: 'Validity' }}{% else %}Masa Berlaku{% endif %}</th>
             <td class="gsim-compare__yes">
               <span class="gsim-compare__val">
                 <svg class="gsim-compare__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
                 Lifetime*
               </span>
             </td>
-            <td class="gsim-compare__no">Terbatas</td>
+            <td class="gsim-compare__no">{% if is_en %}{{ 'gsim.compare_other_validity' | t: default: 'Limited' }}{% else %}Terbatas{% endif %}</td>
           </tr>
         </tbody>
       </table>
-      {%- if section.settings.compare_note != blank -%}
-        <p class="gsim-compare__note">{{ section.settings.compare_note | escape }}</p>
-      {%- endif -%}
+        <p class="gsim-compare__note">
+          {%- if is_en -%}
+            {{ 'gsim.compare_note' | t: default: '*Lifetime validity subject to TnC.' }}
+          {%- else -%}
+            *Masa Berlaku Lifetime diperpanjang sesuai S&K.
+          {%- endif -%}
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- Reviews Section -->
   <section class="gsim-review">
     <div class="gsim-review__inner">
-      <h2 class="gsim-lp__h2 gsim-review__title">{{ section.settings.review_title | default: 'Sudah Dibawa Jalan ke Mana-Mana' | escape }}</h2>
+      <h2 class="gsim-lp__h2 gsim-review__title">
+        {%- if is_en -%}
+          {{ 'gsim.review_title' | t: default: 'Trusted on Every Journey' }}
+        {%- else -%}
+          {{ section.settings.review_title | default: 'Sudah Dibawa Jalan ke Mana-Mana' | escape }}
+        {%- endif -%}
+      </h2>
       <div class="gsim-review__carousel">
-        <button type="button" class="gsim-review__arrow" data-gsim-review-prev aria-label="Review sebelumnya">
+        <button type="button" class="gsim-review__arrow" data-gsim-review-prev aria-label="{% if is_en %}Previous review{% else %}Review sebelumnya{% endif %}">
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
 
@@ -314,33 +364,33 @@
           {%- else -%}
             <div class="gsim-review__card">
               <div class="gsim-review__stars">★★★★★</div>
-              <p class="gsim-review__text">“Best banget, koneksi gampang, lancar dan cepet. Multi negara juga gas aja, ga perlu setting-setting lagi eSIM. Gak pernah ada masalah apapun. Mantep, perjalanan jadi nyaman.”</p>
+              <p class="gsim-review__text">“{% if is_en %}{{ 'gsim.review_farida' | t: default: 'Really great! The connection is easy to use, smooth, and fast. Using it across multiple countries is no problem at all. No need to keep changing eSIM settings. Never had any issues whatsoever. Excellent, it made my trip more comfortable.' }}{% else %}Best banget, koneksi gampang, lancar dan cepet. Multi negara juga gas aja, ga perlu setting-setting lagi eSIM. Gak pernah ada masalah apapun. Mantep, perjalanan jadi nyaman.{% endif %}”</p>
               <div class="gsim-review__name">Farida</div>
             </div>
             <div class="gsim-review__card">
               <div class="gsim-review__stars">★★★★★</div>
-              <p class="gsim-review__text">“gSim! diaktivasi di Soeta, transit Singapore langsung nyala, begitupun saat sampai di Jepang. No problem at all.”</p>
+              <p class="gsim-review__text">“{% if is_en %}{{ 'gsim.review_sinta' | t: default: 'gSim! was activated at Soetta Airport, and it connected right away during my transit in Singapore. The same happened when I arrived in Japan. No problems at all.' }}{% else %}gSim! diaktivasi di Soeta, transit Singapore langsung nyala, begitupun saat sampai di Jepang. No problem at all.{% endif %}”</p>
               <div class="gsim-review__name">Sinta</div>
             </div>
             <div class="gsim-review__card">
               <div class="gsim-review__stars">★★★★★</div>
-              <p class="gsim-review__text">“Pengiriman QR cepat, proses aktivasi mudah. Tidak ada kendala saat di Turki.”</p>
+              <p class="gsim-review__text">“{% if is_en %}{{ 'gsim.review_jesica' | t: default: 'The QR code was delivered quickly, and the activation process was easy. I had no issues during my trip to Turkey.' }}{% else %}Pengiriman QR cepat, proses aktivasi mudah. Tidak ada kendala saat di Turki.{% endif %}”</p>
               <div class="gsim-review__name">Jesica</div>
             </div>
             <div class="gsim-review__card">
               <div class="gsim-review__stars">★★★★★</div>
-              <p class="gsim-review__text">“Mudah instalasinya dan cepat tanggap bagian supportnya. Dan bagus, langsung konek begitu mendarat di negara tujuan.”</p>
+              <p class="gsim-review__text">“{% if is_en %}{{ 'gsim.review_ona' | t: default: 'Easy to install, and the support team was quick to respond. It also connected right away as soon as I landed in my destination country.' }}{% else %}Mudah instalasinya dan cepat tanggap bagian supportnya. Dan bagus, langsung konek begitu mendarat di negara tujuan.{% endif %}”</p>
               <div class="gsim-review__name">Ona</div>
             </div>
             <div class="gsim-review__card">
               <div class="gsim-review__stars">★★★★★</div>
-              <p class="gsim-review__text">“Direkomendasiin temen buat pake gSim! Berguna banget, sama sekali nggak lemot.”</p>
+              <p class="gsim-review__text">“{% if is_en %}{{ 'gsim.review_puteri' | t: default: "A friend recommended gSim! to me. It was really useful, and the connection was not slow at all." }}{% else %}Direkomendasiin temen buat pake gSim! Berguna banget, sama sekali nggak lemot.{% endif %}”</p>
               <div class="gsim-review__name">Puteri</div>
             </div>
           {%- endif -%}
         </div>
 
-        <button type="button" class="gsim-review__arrow" data-gsim-review-next aria-label="Review berikutnya">
+        <button type="button" class="gsim-review__arrow" data-gsim-review-next aria-label="{% if is_en %}Next review{% else %}Review berikutnya{% endif %}">
           <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </div>
@@ -351,8 +401,20 @@
   <section class="gsim-product" id="gsim-produk">
     <div class="gsim-product__inner">
       <div class="gsim-product__head">
-        <h2 class="gsim-lp__h2">{{ section.settings.product_title | default: 'Mau Mulai dari Mana?' | escape }}</h2>
-        <p class="gsim-product__text">{{ section.settings.product_text | default: 'Pilih paket gSim! sesuai destinasi perjalanan kamu sekarang. Saat trip berikutnya tiba, tinggal pilih paket yang sesuai tanpa perlu ganti gSim!' | escape }}</p>
+        <h2 class="gsim-lp__h2">
+          {%- if is_en -%}
+            {{ 'gsim.product_title' | t: default: 'Where Would You Like to Start?' }}
+          {%- else -%}
+            {{ section.settings.product_title | default: 'Mau Mulai dari Mana?' | escape }}
+          {%- endif -%}
+        </h2>
+        <p class="gsim-product__text">
+          {%- if is_en -%}
+            {{ 'gsim.product_text' | t: default: 'Choose a gSim! package that matches your travel destination. Heading to another country on your next trip? Simply select a new package without needing to get a new eSIM!' }}
+          {%- else -%}
+            {{ section.settings.product_text | default: 'Pilih paket gSim! sesuai destinasi perjalanan kamu sekarang. Saat trip berikutnya tiba, tinggal pilih paket yang sesuai tanpa perlu ganti gSim!' | escape }}
+          {%- endif -%}
+        </p>
         <div class="gsim-lp__tabs gsim-product__tabs" data-gsim-tabs="product">
           <button type="button" class="gsim-lp__tab gsim-lp__tab--active" data-gsim-tab="esim">{{ section.settings.product_tab_esim | default: 'gSim!' | escape }}</button>
           <button type="button" class="gsim-lp__tab" data-gsim-tab="sim">{{ section.settings.product_tab_sim | default: 'gSimCard!' | escape }}</button>
@@ -387,6 +449,9 @@
             {%- else -%}{%- assign name = 'Pilih produk' -%}
           {%- endcase -%}
         {%- endif -%}
+        {%- if is_en -%}
+          {%- assign name = name | replace: '10 Negara', '10 Countries' | replace: 'Amerika', 'America' -%}
+        {%- endif -%}
 
         {%- comment -%} URL fallback {%- endcomment -%}
         {%- if block.settings.button_link != blank -%}
@@ -400,7 +465,25 @@
         {%- endif -%}
 
         {%- assign hook = block.settings.hook -%}
+        {%- if is_en -%}
+          {%- if p_handle contains 'asia' -%}
+            {%- assign hook = 'gsim.product_hook_asia' | t: default: 'Exploring the Flavors of Asia?' -%}
+          {%- elsif p_handle contains 'amerika' or p_handle contains 'america' -%}
+            {%- assign hook = 'gsim.product_hook_america' | t: default: 'Road Tripping Across America?' -%}
+          {%- elsif p_handle contains 'middle-east' -%}
+            {%- assign hook = 'gsim.product_hook_middle_east' | t: default: 'Ready for a Desert Adventure in the Middle East?' -%}
+          {%- elsif p_handle contains 'europe' -%}
+            {%- assign hook = 'gsim.product_hook_europe' | t: default: 'City Hopping Across Europe?' -%}
+          {%- elsif p_handle contains 'australia' or p_handle contains 'new-zealand' -%}
+            {%- assign hook = 'gsim.product_hook_auz_nz' | t: default: 'Going on a Campervan Trip Across Australia & New Zealand?' -%}
+          {%- elsif p_handle contains 'indonesia' -%}
+            {%- assign hook = 'gsim.product_hook_indonesia' | t: default: 'Planning a Tropical Getaway in Indonesia?' -%}
+          {%- endif -%}
+        {%- endif -%}
         {%- assign btn_text = block.settings.button_label | default: 'Lihat Paket' -%}
+        {%- if is_en -%}
+          {%- assign btn_text = 'gsim.product_btn_label' | t: default: 'View Plans' -%}
+        {%- endif -%}
 
         {%- comment -%} Fallback image selection {%- endcomment -%}
         {%- assign fallback_img = '' -%}
@@ -470,7 +553,13 @@
   <!-- FAQ Section -->
   <section class="gsim-faq">
     <div class="gsim-faq__inner">
-      <h2 class="gsim-lp__h2">{{ section.settings.faq_title | default: 'Masih Bingung?' | escape }}</h2>
+      <h2 class="gsim-lp__h2">
+        {%- if is_en -%}
+          {{ 'gsim.faq_title' | t: default: 'Still Have Questions?' }}
+        {%- else -%}
+          {{ section.settings.faq_title | default: 'Masih Bingung?' | escape }}
+        {%- endif -%}
+      </h2>
       <div class="gsim-faq__list">
         {%- if has_custom_faqs -%}
           {%- assign faq_i = 0 -%}
@@ -494,60 +583,64 @@
         {%- else -%}
           <div class="gsim-faq__item gsim-faq__item--open">
             <button type="button" class="gsim-faq__q" aria-expanded="true">
-              <span>Apakah gSim! bisa digunakan untuk semua jenis HP?</span>
+              <span>{% if is_en %}{{ 'gsim.faq_1_q' | t: default: '1. Is gSim! compatible with all mobile phones?' }}{% else %}Apakah gSim! bisa digunakan untuk semua jenis HP?{% endif %}</span>
               <span class="gsim-faq__icon">+</span>
             </button>
             <div class="gsim-faq__a">
-              <p>gSim! dapat digunakan pada perangkat yang mendukung eSIM. Silakan cek pengaturan ponsel kamu dengan mengikuti panduan di sini.</p>
-              <a class="gsim-faq__link" href="https://gkomunika.com/pages/here-s-how-to-check-if-your-phone-supports-esim">Lihat panduan cek eSIM</a>
+              <p>{% if is_en %}{{ "gsim.faq_1_a" | t: default: "gSim! can be used on devices that support eSIM. You can check your phone's settings by following this guide." }}{% else %}gSim! dapat digunakan pada perangkat yang mendukung eSIM. Silakan cek pengaturan ponsel kamu dengan mengikuti panduan di sini.{% endif %}</p>
+              <a class="gsim-faq__link" href="https://gkomunika.com/pages/here-s-how-to-check-if-your-phone-supports-esim">{% if is_en %}{{ 'gsim.faq_1_link' | t: default: 'View eSIM check guide' }}{% else %}Lihat panduan cek eSIM{% endif %}</a>
             </div>
           </div>
           <div class="gsim-faq__item">
             <button type="button" class="gsim-faq__q" aria-expanded="false">
-              <span>Bagaimana jika HP saya tidak mendukung penggunaan eSIM?</span>
+              <span>{% if is_en %}{{ 'gsim.faq_2_q' | t: default: "2. What if my phone does not support eSIM?" }}{% else %}Bagaimana jika HP saya tidak mendukung penggunaan eSIM?{% endif %}</span>
               <span class="gsim-faq__icon">+</span>
             </button>
             <div class="gsim-faq__a">
-              <p>Tenang, Global Komunika juga menyediakan gSimCard! untuk kamu yang membutuhkan kartu SIM fisik. Jadi, kamu tetap bisa menikmati koneksi saat traveling meskipun perangkatmu belum mendukung eSIM.</p>
+              <p>{% if is_en %}{{ "gsim.faq_2_a" | t: default: "No worries! Global Komunika also offers gSimCard, a physical SIM card option. This means you can still stay connected while traveling, even if your device doesn't support eSIM." }}{% else %}Tenang, Global Komunika juga menyediakan gSimCard! untuk kamu yang membutuhkan kartu SIM fisik. Jadi, kamu tetap bisa menikmati koneksi saat traveling meskipun perangkatmu belum mendukung eSIM.{% endif %}</p>
             </div>
           </div>
           <div class="gsim-faq__item">
             <button type="button" class="gsim-faq__q" aria-expanded="false">
-              <span>Kalau trip berikutnya beda negara atau region, apakah perlu beli gSim! baru?</span>
+              <span>{% if is_en %}{{ 'gsim.faq_3_q' | t: default: '3. Do I need to buy a new gSim! if I travel to a different country or region?' }}{% else %}Kalau trip berikutnya beda negara atau region, apakah perlu beli gSim! baru?{% endif %}</span>
               <span class="gsim-faq__icon">+</span>
             </button>
             <div class="gsim-faq__a">
-              <p>Tidak. Kamu cukup memilih paket data yang sesuai dengan destinasi perjalanan kamu berikutnya dengan gSim! yang sama.</p>
-              <p><strong>Tips:</strong> Disarankan untuk memberi nama eSIM pada perangkat dengan nama “gSim” dan simpan nomor ICCID yang kami kirimkan melalui email untuk proses top up selanjutnya.</p>
+              {% if is_en %}
+                <p>{{ 'gsim.faq_3_a' | t: default: 'No! You can simply choose a data package that matches your next travel destination and use it with the same gSim! eSIM. We recommend naming your eSIM "gSim" in your device settings and keeping the ICCID number sent to your email for future top-ups.' }}</p>
+              {% else %}
+                <p>Tidak. Kamu cukup memilih paket data yang sesuai dengan destinasi perjalanan kamu berikutnya dengan gSim! yang sama.</p>
+                <p><strong>Tips:</strong> Disarankan untuk memberi nama eSIM pada perangkat dengan nama “gSim” dan simpan nomor ICCID yang kami kirimkan melalui email untuk proses top up selanjutnya.</p>
+              {% endif %}
             </div>
           </div>
           <div class="gsim-faq__item">
             <button type="button" class="gsim-faq__q" aria-expanded="false">
-              <span>Bagaimana cara top up gSim!?</span>
+              <span>{% if is_en %}{{ 'gsim.faq_4_q' | t: default: '4. How can I top up my gSim!?' }}{% else %}Bagaimana cara top up gSim!?{% endif %}</span>
               <span class="gsim-faq__icon">+</span>
             </button>
             <div class="gsim-faq__a">
-              <p>Kamu bisa melakukan top up gSim! dengan mudah melalui website Global Komunika.</p>
-              <a class="gsim-faq__link" href="https://gkomunika.com/pages/check-data-usage-topup">Top up sekarang</a>
+              <p>{% if is_en %}{{ 'gsim.faq_4_a' | t: default: 'You can easily top up your gSim! through the Global Komunika website.' }}{% else %}Kamu bisa melakukan top up gSim! dengan mudah melalui website Global Komunika.{% endif %}</p>
+              <a class="gsim-faq__link" href="https://gkomunika.com/pages/check-data-usage-topup">{% if is_en %}{{ 'gsim.faq_4_link' | t: default: 'Top up now' }}{% else %}Top up sekarang{% endif %}</a>
             </div>
           </div>
           <div class="gsim-faq__item">
             <button type="button" class="gsim-faq__q" aria-expanded="false">
-              <span>Bagaimana jika gSim! tidak sengaja terhapus dari HP?</span>
+              <span>{% if is_en %}{{ 'gsim.faq_5_q' | t: default: '5. What if I accidentally delete my gSim! from my phone?' }}{% else %}Bagaimana jika gSim! tidak sengaja terhapus dari HP?{% endif %}</span>
               <span class="gsim-faq__icon">+</span>
             </button>
             <div class="gsim-faq__a">
-              <p>Tenang, kamu masih bisa scan ulang barcode gSim! di perangkat yang sama saat pertama kali aktivasi. Barcode tidak dapat digunakan di perangkat lain.</p>
+              <p>{% if is_en %}{{ 'gsim.faq_5_a' | t: default: 'No worries! You can scan the gSim! QR code again on the same device where you first activated it. Please note that the QR code cannot be used on another device.' }}{% else %}Tenang, kamu masih bisa scan ulang barcode gSim! di perangkat yang sama saat pertama kali aktivasi. Barcode tidak dapat digunakan di perangkat lain.{% endif %}</p>
             </div>
           </div>
           <div class="gsim-faq__item">
             <button type="button" class="gsim-faq__q" aria-expanded="false">
-              <span>Bagaimana jika gSim! tidak bisa diaktivasi atau digunakan?</span>
+              <span>{% if is_en %}{{ 'gsim.faq_6_q' | t: default: "6. What if my gSim! cannot be activated or does not work?" }}{% else %}Bagaimana jika gSim! tidak bisa diaktivasi atau digunakan?{% endif %}</span>
               <span class="gsim-faq__icon">+</span>
             </button>
             <div class="gsim-faq__a">
-              <p>Jika terjadi kendala saat aktivasi atau penggunaan, tim Global Komunika akan membantu melakukan pengecekan. Apabila memenuhi ketentuan garansi, refund dapat diajukan sesuai syarat yang berlaku.</p>
-              <a class="gsim-faq__link" href="https://wa.me/628156080055">Informasikan kendala kamu di sini</a>
+              <p>{% if is_en %}{{ 'gsim.faq_6_a' | t: default: 'If you experience any issues during activation or use, the Global Komunika support team will help investigate the problem. If the issue meets our warranty requirements, you may be eligible for a refund in accordance with our applicable terms and conditions.' }}{% else %}Jika terjadi kendala saat aktivasi atau penggunaan, tim Global Komunika akan membantu melakukan pengecekan. Apabila memenuhi ketentuan garansi, refund dapat diajukan sesuai syarat yang berlaku.{% endif %}</p>
+              <a class="gsim-faq__link" href="https://wa.me/628156080055">{% if is_en %}{{ 'gsim.faq_6_link' | t: default: 'Need help? Let us know!' }}{% else %}Informasikan kendala kamu di sini{% endif %}</a>
             </div>
           </div>
         {%- endif -%}
@@ -960,7 +1053,7 @@
       "type": "textarea",
       "id": "compare_note",
       "label": "Catatan Bawah",
-      "default": "*Masa Berlaku Lifetime otomatis diperpanjang selama 360 hari setiap kali berhasil melakukan top up, sesuai S&K berlaku."
+      "default": "*Masa Berlaku Lifetime diperpanjang sesuai S&K."
     },
     {
       "type": "header",

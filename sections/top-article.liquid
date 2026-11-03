@@ -1,9 +1,25 @@
+{%- assign current_lang = localization.language.iso_code | default: request.locale.iso_code | downcase -%}
+{%- assign is_en = true -%}
+{%- if current_lang contains 'id' or request.locale.root_url contains '/id' or routes.root_url contains '/id' or request.path contains '/id' -%}
+  {%- assign is_en = false -%}
+{%- endif -%}
+
 <section class="gkh-sec">
   <div class="gkh-wrap">
     <div class="gkh-bhead">
-      <h2 class="gkh-title">{{ section.settings.title | default: 'Blog Posts' }}</h2>
+      <h2 class="gkh-title">
+        {%- if is_en -%}
+          {{ section.settings.title | default: 'Blog Posts' }}
+        {%- else -%}
+          {{ 'homepage.blog_title' | t: default: 'Blog Terbaru' }}
+        {%- endif -%}
+      </h2>
       <a class="gkh-btn-o" href="{{ section.settings.see_more_url | default: '/pages/news' }}">
-        {{ section.settings.see_more_text | default: 'See More' }}
+        {%- if is_en -%}
+          {{ section.settings.see_more_text | default: 'See More' }}
+        {%- else -%}
+          {{ 'homepage.blog_see_more' | t: default: 'Lihat Lainnya' }}
+        {%- endif -%}
       </a>
     </div>
 
@@ -44,7 +60,7 @@
                 <h3 class="gkh-post__t">{{ page_item.title }}</h3>
                 <p class="gkh-post__p">{{ page_item.content | strip_html | truncate: 160 }}</p>
                 <span class="gkh-post__more">
-                  Read article
+                  {% if is_en %}Read article{% else %}{{ 'homepage.blog_read_more' | t: default: 'Baca artikel' }}{% endif %}
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </span>
               </div>
@@ -61,7 +77,7 @@
           <div class="gkh-post__body">
             <h3 class="gkh-post__t">How to Get Free Domestic Flight Tickets in Thailand for Tourists</h3>
             <p class="gkh-post__p">Good news for tourists planning to travel to Thailand! Starting this September, the Thai government is launching a new program that allows international tourists...</p>
-            <span class="gkh-post__more">Read article <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="gkh-post__more">{% if is_en %}Read article{% else %}{{ 'homepage.blog_read_more' | t: default: 'Baca artikel' }}{% endif %} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </a>
 
@@ -72,7 +88,7 @@
           <div class="gkh-post__body">
             <h3 class="gkh-post__t">Blocked IMEI Phones Can Use eSIM Without Customs Registration: Here’s How</h3>
             <p class="gkh-post__p">IMEI (International Mobile Equipment Identity) is a unique identification number found on every mobile phone, whether it&#x27;s an Android or iPhone. This number...</p>
-            <span class="gkh-post__more">Read article <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="gkh-post__more">{% if is_en %}Read article{% else %}{{ 'homepage.blog_read_more' | t: default: 'Baca artikel' }}{% endif %} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </a>
 
@@ -83,7 +99,7 @@
           <div class="gkh-post__body">
             <h3 class="gkh-post__t">Can a Passport Be Rejected? Here Are Examples of Damaged Passports You Need to Know</h3>
             <p class="gkh-post__p">Recently, the French Embassy announced that they no longer accept passports with staple holes, as these are considered defective or damaged passports. This...</p>
-            <span class="gkh-post__more">Read article <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="gkh-post__more">{% if is_en %}Read article{% else %}{{ 'homepage.blog_read_more' | t: default: 'Baca artikel' }}{% endif %} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </a>
 
@@ -94,7 +110,7 @@
           <div class="gkh-post__body">
             <h3 class="gkh-post__t">BCA Poket Valas: A Convenient Solution for Foreign Currency Transactions Abroad</h3>
             <p class="gkh-post__p">Poket Valas is a smart and practical solution for travelers looking to make foreign currency transactions abroad! Managing multiple currencies with ease is...</p>
-            <span class="gkh-post__more">Read article <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <span class="gkh-post__more">{% if is_en %}Read article{% else %}{{ 'homepage.blog_read_more' | t: default: 'Baca artikel' }}{% endif %} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </div>
         </a>
       {% endif %}

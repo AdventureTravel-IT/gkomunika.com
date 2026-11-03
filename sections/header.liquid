@@ -591,9 +591,10 @@
                                 - /en-au → Australia English 
                                 - (kosong) → default English 
                 {%- endcomment -%}
-  {% if request.locale.iso_code == 'id' %}
+  {%- assign lang_iso = localization.language.iso_code | default: request.locale.iso_code | downcase -%}
+  {% if lang_iso contains 'id' or request.locale.root_url contains '/id' or routes.root_url contains '/id' or request.path contains '/id' %}
     {% assign locale_prefix = '/id' %}
-  {% elsif is_au %}
+  {% elsif is_au or request.path contains '/en-au' %}
     {% assign locale_prefix = '/en-au' %}
   {% else %}
     {% assign locale_prefix = '' %}
@@ -780,9 +781,18 @@
                 type="hidden"
                 name="locale_code"
                 id="LangLocaleInput-desktop"
-                value="{{ localization.language.iso_code }}">
+                value="{% if locale_prefix == '/id' %}id{% else %}{{ localization.language.iso_code | default: 'en' }}{% endif %}">
+              <input
+                type="hidden"
+                name="return_to"
+                id="LangReturnTo-desktop"
+                value="{{ request.path }}">
 
-              {% assign current_code = localization.language.iso_code | upcase | slice: 0, 2 %}
+              {%- assign lang_iso = localization.language.iso_code | default: request.locale.iso_code | downcase -%}
+              {% assign current_code = 'EN' %}
+              {% if locale_prefix == '/id' or lang_iso contains 'id' or request.locale.root_url contains '/id' or routes.root_url contains '/id' or request.path contains '/id' %}
+                {% assign current_code = 'ID' %}
+              {% endif %}
 
               <button
                 id="LangTrigger-desktop"
@@ -809,20 +819,52 @@
                 class="dropdown-menu"
                 role="listbox"
                 aria-label="Select language">
-                {% for locale in localization.available_languages %}
-                  {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
-                  <li role="option" aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}">
+                {% if localization.available_languages.size > 1 %}
+                  {% for locale in localization.available_languages %}
+                    {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
+                    {% assign is_active = false %}
+                    {% if code == current_code %}
+                      {% assign is_active = true %}
+                    {% endif %}
+                    <li role="option" aria-selected="{% if is_active %}true{% else %}false{% endif %}">
+                      <button
+                        type="button"
+                        class="dropdown-option{% if is_active %} is-active{% endif %}"
+                        data-locale="{{ locale.iso_code }}"
+                        data-root-url="{{ locale.root_url }}">
+                        <span>{{ code }}</span>
+                        {% if is_active %}
+                          <span class="check" aria-hidden="true">✓</span>
+                        {% endif %}
+                      </button>
+                    </li>
+                  {% endfor %}
+                {% else %}
+                  <li role="option" aria-selected="{% if current_code == 'EN' %}true{% else %}false{% endif %}">
                     <button
                       type="button"
-                      class="dropdown-option{% if locale.iso_code == localization.language.iso_code %} is-active{% endif %}"
-                      data-locale="{{ locale.iso_code }}">
-                      <span>{{ code }}</span>
-                      {% if locale.iso_code == localization.language.iso_code %}
+                      class="dropdown-option{% if current_code == 'EN' %} is-active{% endif %}"
+                      data-locale="en"
+                      data-root-url="/">
+                      <span>EN</span>
+                      {% if current_code == 'EN' %}
                         <span class="check" aria-hidden="true">✓</span>
                       {% endif %}
                     </button>
                   </li>
-                {% endfor %}
+                  <li role="option" aria-selected="{% if current_code == 'ID' %}true{% else %}false{% endif %}">
+                    <button
+                      type="button"
+                      class="dropdown-option{% if current_code == 'ID' %} is-active{% endif %}"
+                      data-locale="id"
+                      data-root-url="/id">
+                      <span>ID</span>
+                      {% if current_code == 'ID' %}
+                        <span class="check" aria-hidden="true">✓</span>
+                      {% endif %}
+                    </button>
+                  </li>
+                {% endif %}
               </ul>
             {% endform %}
           </div>
@@ -1042,9 +1084,14 @@
                   type="hidden"
                   name="locale_code"
                   id="LangLocaleInput-mobile"
-                  value="{{ localization.language.iso_code }}">
+                  value="{% if locale_prefix == '/id' %}id{% else %}{{ localization.language.iso_code | default: 'en' }}{% endif %}">
+                <input
+                  type="hidden"
+                  name="return_to"
+                  id="LangReturnTo-mobile"
+                  value="{{ request.path }}">
 
-                {% assign current_code_m = localization.language.iso_code | upcase | slice: 0, 2 %}
+                {% assign current_code_m = current_code %}
 
                 <button
                   id="LangTrigger-mobile"
@@ -1071,20 +1118,52 @@
                   class="dropdown-menu-up"
                   role="listbox"
                   aria-label="Select language">
-                  {% for locale in localization.available_languages %}
-                    {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
-                    <li role="option" aria-selected="{% if locale.iso_code == localization.language.iso_code %}true{% else %}false{% endif %}">
+                  {% if localization.available_languages.size > 1 %}
+                    {% for locale in localization.available_languages %}
+                      {% assign code = locale.iso_code | upcase | slice: 0, 2 %}
+                      {% assign is_active = false %}
+                      {% if code == current_code_m %}
+                        {% assign is_active = true %}
+                      {% endif %}
+                      <li role="option" aria-selected="{% if is_active %}true{% else %}false{% endif %}">
+                        <button
+                          type="button"
+                          class="dropdown-option{% if is_active %} is-active{% endif %}"
+                          data-locale="{{ locale.iso_code }}"
+                          data-root-url="{{ locale.root_url }}">
+                          <span>{{ code }}</span>
+                          {% if is_active %}
+                            <span class="check" aria-hidden="true">✓</span>
+                          {% endif %}
+                        </button>
+                      </li>
+                    {% endfor %}
+                  {% else %}
+                    <li role="option" aria-selected="{% if current_code_m == 'EN' %}true{% else %}false{% endif %}">
                       <button
                         type="button"
-                        class="dropdown-option{% if locale.iso_code == localization.language.iso_code %} is-active{% endif %}"
-                        data-locale="{{ locale.iso_code }}">
-                        <span>{{ code }}</span>
-                        {% if locale.iso_code == localization.language.iso_code %}
+                        class="dropdown-option{% if current_code_m == 'EN' %} is-active{% endif %}"
+                        data-locale="en"
+                        data-root-url="/">
+                        <span>EN</span>
+                        {% if current_code_m == 'EN' %}
                           <span class="check" aria-hidden="true">✓</span>
                         {% endif %}
                       </button>
                     </li>
-                  {% endfor %}
+                    <li role="option" aria-selected="{% if current_code_m == 'ID' %}true{% else %}false{% endif %}">
+                      <button
+                        type="button"
+                        class="dropdown-option{% if current_code_m == 'ID' %} is-active{% endif %}"
+                        data-locale="id"
+                        data-root-url="/id">
+                        <span>ID</span>
+                        {% if current_code_m == 'ID' %}
+                          <span class="check" aria-hidden="true">✓</span>
+                        {% endif %}
+                      </button>
+                    </li>
+                  {% endif %}
                 </ul>
               {% endform %}
             </div>
@@ -1201,8 +1280,77 @@
       menu.querySelectorAll('[data-locale]').forEach((item) => {
         item.addEventListener('click', (e) => {
           e.preventDefault();
-          input.value = item.getAttribute('data-locale');
-          form.submit();
+          const targetLocale = item.getAttribute('data-locale');
+          const targetRoot = item.getAttribute('data-root-url');
+          if (input) input.value = targetLocale;
+
+          const currentPath = window.location.pathname;
+          const search = window.location.search || '';
+          const hash = window.location.hash || '';
+
+          let cleanPath = currentPath.replace(/^\/(id|en)(\/|$)/i, '/');
+          if (!cleanPath.startsWith('/')) {
+            cleanPath = '/' + cleanPath;
+          }
+
+          let newPath = cleanPath;
+          if (targetLocale === 'id' || (targetRoot && targetRoot.includes('id'))) {
+            newPath = (cleanPath === '/' || cleanPath === '') ? '/id' : '/id' + cleanPath;
+          } else {
+            newPath = cleanPath === '' ? '/' : cleanPath;
+          }
+
+          const targetUrl = newPath + search + hash;
+
+          if (targetUrl === (currentPath + search + hash)) {
+            close();
+            return;
+          }
+
+          close();
+
+          const returnToInputs = form.querySelectorAll('input[name="return_to"]');
+          if (returnToInputs.length > 0) {
+            returnToInputs.forEach((rt) => { rt.value = targetUrl; });
+          } else {
+            const rt = document.createElement('input');
+            rt.type = 'hidden';
+            rt.name = 'return_to';
+            rt.value = targetUrl;
+            form.appendChild(rt);
+          }
+
+          let navigated = false;
+          const doNavigate = () => {
+            if (!navigated) {
+              navigated = true;
+              window.location.href = targetUrl;
+            }
+          };
+
+          const safetyTimer = setTimeout(doNavigate, 600);
+
+          try {
+            const formData = new FormData(form);
+            formData.set('locale_code', targetLocale);
+            formData.set('return_to', targetUrl);
+            fetch(form.action || '/localization', {
+              method: 'POST',
+              body: formData,
+              credentials: 'same-origin'
+            })
+            .then(() => {
+              clearTimeout(safetyTimer);
+              doNavigate();
+            })
+            .catch(() => {
+              clearTimeout(safetyTimer);
+              doNavigate();
+            });
+          } catch (err) {
+            clearTimeout(safetyTimer);
+            doNavigate();
+          }
         });
       });
   

@@ -16,16 +16,94 @@
         var expanded = button.getAttribute('aria-expanded') === 'true';
         button.setAttribute('aria-expanded', String(!expanded));
 
-        // Optional: sekalian toggle list-nya
         var wrapper = button.parentElement.querySelector('.disclosure__list-wrapper');
         if (wrapper) {
-          wrapper.hidden = expanded; // kalau tadinya terbuka, sekarang disembunyikan
+          wrapper.hidden = expanded;
+        }
+      });
+    });
+
+    document.querySelectorAll('.disclosure__link').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var targetLocale = link.getAttribute('data-value');
+        var form = link.closest('form');
+        var input = form ? form.querySelector('input[name="locale_code"]') : null;
+        if (input) input.value = targetLocale;
+
+        var currentPath = window.location.pathname;
+        var search = window.location.search;
+        var hash = window.location.hash;
+
+        var cleanPath = currentPath.replace(/^\/(id|en)(\/|$)/, '/');
+        if (!cleanPath.startsWith('/')) cleanPath = '/' + cleanPath;
+
+        var newPath = cleanPath;
+        if (targetLocale === 'id') {
+          newPath = cleanPath === '/' ? '/id' : '/id' + cleanPath;
+        } else if (targetLocale === 'en') {
+          newPath = cleanPath;
+        }
+
+        var targetUrl = newPath + search + hash;
+
+        if (targetUrl === (currentPath + search + hash)) {
+          return;
+        }
+
+        if (form) {
+          var returnToInputs = form.querySelectorAll('input[name="return_to"]');
+          if (returnToInputs.length > 0) {
+            returnToInputs.forEach(function(rt) { rt.value = targetUrl; });
+          } else {
+            var returnTo = document.createElement('input');
+            returnTo.type = 'hidden';
+            returnTo.name = 'return_to';
+            returnTo.value = targetUrl;
+            form.appendChild(returnTo);
+          }
+          var navigated = false;
+          var doNavigate = function() {
+            if (!navigated) {
+              navigated = true;
+              window.location.href = targetUrl;
+            }
+          };
+          var safetyTimer = setTimeout(doNavigate, 600);
+          try {
+            var formData = new FormData(form);
+            formData.set('locale_code', targetLocale);
+            formData.set('return_to', targetUrl);
+            fetch(form.action || '/localization', {
+              method: 'POST',
+              body: formData,
+              credentials: 'same-origin'
+            })
+            .then(function() {
+              clearTimeout(safetyTimer);
+              doNavigate();
+            })
+            .catch(function() {
+              clearTimeout(safetyTimer);
+              doNavigate();
+            });
+          } catch(err) {
+            clearTimeout(safetyTimer);
+            doNavigate();
+          }
+        } else {
+          window.location.href = targetUrl;
         }
       });
     });
   });
 </script>
 
+{%- assign lang_iso = localization.language.iso_code | default: request.locale.iso_code | downcase -%}
+{%- assign current_code = 'EN' -%}
+{%- if lang_iso contains 'id' or request.locale.root_url contains '/id' or routes.root_url contains '/id' or request.path contains '/id' -%}
+  {%- assign current_code = 'ID' -%}
+{%- endif -%}
 
 <div class="disclosure">
   <button
@@ -35,8 +113,6 @@
     aria-controls="{{ localPosition }}List"
     aria-describedby="{{ localPosition }}Label"
   >
-    {%- assign current_code = localization.language.iso_code | split: '-' | first | upcase -%}
-
     <div style="display: flex; gap: 10px; align-items: center;">
       {{- 'header-language.svg' | inline_asset_content -}}
       <div style="flex-shrink: 0; display: flex; align-items: center; gap: 5px;">
@@ -54,30 +130,71 @@
       role="list"
       class="disclosure__list list-unstyled"
     >
-      {%- for language in localization.available_languages -%}
-        {%- assign option_code = language.iso_code | split: '-' | first | upcase -%}
+      {%- if localization.available_languages.size > 1 -%}
+        {%- for language in localization.available_languages -%}
+          {%- assign option_code = language.iso_code | split: '-' | first | upcase -%}
+          {%- assign is_active = false -%}
+          {%- if option_code == current_code -%}
+            {%- assign is_active = true -%}
+          {%- endif -%}
+          <li class="disclosure__item" tabindex="-1">
+            <a
+              class="link link--text disclosure__link caption-large focus-inset"
+              href="{% if language.iso_code == 'id' %}/id{{ request.path | replace: '/id', '' }}{% else %}{{ request.path | replace: '/id', '' | default: '/' }}{% endif %}"
+              hreflang="{{ language.iso_code }}"
+              lang="{{ language.iso_code }}"
+              {% if is_active %}
+                aria-current="true"
+              {% endif %}
+              data-value="{{ language.iso_code }}"
+            >
+              <span
+                {% unless is_active %}
+                  class="visibility-hidden"
+                {% endunless %}
+              >
+                {{- 'icon-checkmark.svg' | inline_asset_content -}}
+              </span>
+              <span>{{ option_code }}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- else -%}
         <li class="disclosure__item" tabindex="-1">
           <a
             class="link link--text disclosure__link caption-large focus-inset"
-            href="#"
-            hreflang="{{ language.iso_code }}"
-            lang="{{ language.iso_code }}"
-            {% if language.iso_code == localization.language.iso_code %}
+            href="{{ request.path | replace: '/id', '' | default: '/' }}"
+            hreflang="en"
+            lang="en"
+            {% if current_code == 'EN' %}
               aria-current="true"
             {% endif %}
-            data-value="{{ language.iso_code }}"
+            data-value="en"
           >
-            <span
-              {% if language.iso_code != localization.language.iso_code %}
-                class="visibility-hidden"
-              {% endif %}
-            >
+            <span {% unless current_code == 'EN' %}class="visibility-hidden"{% endunless %}>
               {{- 'icon-checkmark.svg' | inline_asset_content -}}
             </span>
-            <span>{{ option_code }}</span>
+            <span>EN</span>
           </a>
         </li>
-      {%- endfor -%}
+        <li class="disclosure__item" tabindex="-1">
+          <a
+            class="link link--text disclosure__link caption-large focus-inset"
+            href="/id{{ request.path | replace: '/id', '' }}"
+            hreflang="id"
+            lang="id"
+            {% if current_code == 'ID' %}
+              aria-current="true"
+            {% endif %}
+            data-value="id"
+          >
+            <span {% unless current_code == 'ID' %}class="visibility-hidden"{% endunless %}>
+              {{- 'icon-checkmark.svg' | inline_asset_content -}}
+            </span>
+            <span>ID</span>
+          </a>
+        </li>
+      {%- endif -%}
     </ul>
   </div>
 </div>
@@ -85,5 +202,10 @@
 <input
   type="hidden"
   name="locale_code"
-  value="{{ localization.language.iso_code }}"
+  value="{% if current_code == 'ID' %}id{% else %}en{% endif %}"
+>
+<input
+  type="hidden"
+  name="return_to"
+  value="{{ request.path }}"
 >

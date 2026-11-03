@@ -903,67 +903,12 @@
       checkBtn.textContent = 'Loading...';
 
       try {
-        let data;
-        try {
-          const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ iccid }),
-          });
-          data = await res.json();
-        } catch (fetchErr) {
-          console.warn('API fetch failed (e.g. CORS on localhost). Checking test fallback:', fetchErr);
-        }
-
-        // Fallback untuk testing nomor contoh jika API gagal / diblokir CORS lokal
-        if (!data || (!data.success && data.status_code === 400)) {
-          if (iccid === '89852342022224583731') {
-            data = {
-              success: true,
-              status_code: 200,
-              message: 'This ICCID has no active package, but is ready for top up.',
-              vendor: 'D',
-              source: 'esims',
-              reason: 'NO_PACKAGE_HISTORY',
-              data: {
-                iccid: '89852342022224583731',
-                can_topup: true,
-                plans: [],
-              },
-              info: {
-                last_purchase_at: null,
-                can_purchase: true,
-              },
-            };
-          } else if (iccid === '89852342022571456671') {
-            data = {
-              success: true,
-              status_code: 200,
-              message: 'QoS Quota Information retrieved',
-              vendor: 'D',
-              source: 'esims',
-              data: {
-                iccid: '89852342022571456671',
-                plans: [
-                  {
-                    product_name: 'Singapore Malaysia Thailand 15 Days - 1GB/Days Unlimited',
-                    plan_status: { status_code: 2, status: 'Package is active' },
-                    plan_start_time: '2026-10-31 11:08:06',
-                    plan_end_time: '2026-11-15 00:00:00',
-                    quota: { total_kb: 1024000, used_kb: 21504, remaining_kb: 1002496 },
-                    daily_usage: [],
-                    countries: [],
-                  },
-                ],
-              },
-            };
-          }
-        }
-
-        if (!data) {
-          showInvalidPopup();
-          return;
-        }
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ iccid }),
+        });
+        const data = await res.json();
 
         console.log(data);
 

@@ -9,7 +9,6 @@
 {% if group.user_agent.value == '*' and rule.directive == 'Allow' %}
   {% if rule.value == '/account/login'
     or rule.value == '/*/account/login'
-    or rule.value contains '/collections/'
   %}
     {% assign skip_rule = true %}
   {% endif %}
@@ -22,8 +21,6 @@
 # Custom storefront exclusions
 Disallow: /account/login
 Disallow: /*/account/login
-Disallow: /collections
-Disallow: /*/collections
 Disallow: /search
 Disallow: /*/search
 Disallow: /404

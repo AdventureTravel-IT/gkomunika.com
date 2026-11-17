@@ -15,7 +15,52 @@
 {%- if lang_code contains 'id' -%}{%- assign is_id = true -%}{%- endif -%}
 
 <div id="coverage-container" class="flex flex-col gap-[5px]">
-  {%- comment -%} initial render handled by JS {%- endcomment -%}
+  {%- assign rendered_countries = '|' -%}
+  {%- assign coverage_fields = 'key,key2,key3,key4' | split: ',' -%}
+  {%- for coverage_field in coverage_fields -%}
+    {%- assign countries = product.metafields.search[coverage_field].value -%}
+    {%- for country in countries -%}
+      {%- if is_id -%}
+        {%- assign raw_name = country.country_id.value | default: '' -%}
+      {%- else -%}
+        {%- assign raw_name = country.country.value | default: '' -%}
+      {%- endif -%}
+      {%- assign display_name = raw_name | replace: '_', ' ' | strip -%}
+      {%- if display_name != blank -%}
+        {%- assign norm_key = display_name | downcase -%}
+        {%- assign token = '|' | append: norm_key | append: '|' -%}
+        {%- unless rendered_countries contains token -%}
+          {%- assign rendered_countries = rendered_countries | append: norm_key | append: '|' -%}
+          {%- if country.flag.value != blank -%}
+            {%- assign flag_url = country.flag.value | image_url -%}
+          {%- else -%}
+            {%- assign flag_file = display_name | split: ' ' | join: '_' -%}
+            {%- assign flag_url = '//gkomunika.com/cdn/shop/files/' | append: flag_file | append: '.svg' -%}
+          {%- endif -%}
+          {%- assign aliases_joined = country.alias.value | join: ' ' -%}
+          {%- assign searchable = display_name | append: ' ' | append: aliases_joined | strip | downcase | replace: '_', ' ' -%}
+          <div
+            class="coverage-item pointer-events-none select-none cursor-default"
+            data-country="{{ searchable | escape }}"
+            data-country-raw="{{ norm_key | escape }}"
+          >
+            <div class="flex items-center gap-[10px] pointer-events-none select-none cursor-default">
+              <img
+                class="image-countries rounded-[15px] border border-border pointer-events-none"
+                src="{{ flag_url | escape }}"
+                alt="{{ display_name | escape }}"
+                width="50"
+                height="50"
+                loading="lazy"
+                draggable="false"
+              >
+              <h3 class="text-left leading-tight text-lg text-primary m-0">{{ display_name | escape }}</h3>
+            </div>
+          </div>
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endfor -%}
 </div>
 
 <script>

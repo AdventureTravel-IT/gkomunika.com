@@ -160,6 +160,19 @@
   }
 </style>
 
+{%- capture initial_price_idr -%}
+  {%- if product.selected_variant != blank -%}
+    {%- render 'format-idr', cents: product.selected_variant.price, mode: 'display' -%}
+  {%- elsif product.price_varies -%}
+    {%- render 'format-idr', cents: product.price_min, mode: 'display' %} - {% render 'format-idr', cents: product.price_max, mode: 'display' -%}
+  {%- else -%}
+    {%- render 'format-idr', cents: product.price, mode: 'display' -%}
+  {%- endif -%}
+{%- endcapture -%}
+{%- assign initial_price_idr = initial_price_idr | strip -%}
+
+{%- render 'product-structured-data' -%}
+
 <section>
   <div class="bg-neutral md:wrapper-base flex flex-col md:gap-5 md:flex-row">
     <div class="w-full md:w-1/2 h-auto">
@@ -233,7 +246,7 @@
           <span
             id="variantPriceIDR"
             class="text-secondary font-bold text-xl whitespace-nowrap text-left inline-block"
-          ></span>
+          >{{- initial_price_idr -}}</span>
         </div>
 
         <!-- USD Price -->
@@ -258,7 +271,41 @@
         <div
           id="variantSelectors"
           class="flex gap-3 w-full {% if product.metafields.product.category.value == 'Insurance' %}flex-col md:flex-row{% endif %}"
-        ></div>
+        >
+          {%- for option in product.options_with_values -%}
+            {%- assign opt_idx = forloop.index0 -%}
+            {%- assign selected_opt_val = '' -%}
+            {%- if product.selected_variant != blank -%}
+              {%- assign selected_opt_val = product.selected_variant.options[opt_idx] | default: '' -%}
+            {%- endif -%}
+            <div style="width: 100%;">
+              <label for="option{{ opt_idx }}" class="text-primary font-semibold tracking-normal">
+                {{ option.name | escape }}
+                <span class="text-red-500">*</span>
+              </label>
+              <div class="relative mt-1">
+                <select
+                  name="option{{ opt_idx }}"
+                  id="option{{ opt_idx }}"
+                  class="w-full p-3 pr-10 border border-primary rounded-[15px] outline-none text-primary appearance-none cursor-pointer bg-neutral"
+                  onchange="handleOptionChange({{ opt_idx }}, this.value)"
+                >
+                  <option class="text-primary" value="" disabled {% if selected_opt_val == blank %}selected{% endif %}>Choose Option</option>
+                  {%- for value in option.values -%}
+                    {%- assign val_str = value | append: '' -%}
+                    <option value="{{ val_str | escape }}" {% if selected_opt_val != blank and selected_opt_val == val_str %}selected{% endif %}>{{ val_str | escape }}</option>
+                  {%- endfor -%}
+                </select>
+                <div
+                  id="optionIcon{{ opt_idx }}"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rotate-90 text-primary"
+                >
+                  {% render 'icon-arrow-right', class: 'w-[20px] h-[20px]' %}
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
 
         {% if product.metafields.product.category.value != 'Insurance' %}
           <button
@@ -520,7 +567,7 @@
       {%- endunless -%}
 
       <div class="max-h-[200px] overflow-y-scroll">
-        <p id="productDesc" class="text-primary"></p>
+        <div id="productDesc" class="text-primary">{{- product.description -}}</div>
       </div>
 
       {%- assign cat = product.metafields.product.category.value | default: '' -%}
@@ -831,13 +878,17 @@
           class="text-left text-primary/80 text-[14px] underline underline-offset-2 truncate"
           onclick="scrollToSelectors()"
         >
-          Selected Variant
+          {%- if product.selected_variant != blank -%}
+            {{ product.selected_variant.title | escape }}
+          {%- else -%}
+            Selected Variant
+          {%- endif -%}
         </button>
 
         <!-- Price -->
         <div>
           <div id="mobile-idr-price-wrapper" class="block">
-            <span id="variantPriceIDRMobile" class="text-secondary font-bold text-lg whitespace-nowrap"></span>
+            <span id="variantPriceIDRMobile" class="text-secondary font-bold text-lg whitespace-nowrap">{{- initial_price_idr -}}</span>
           </div>
 
           <div id="mobile-usd-price-wrapper" class="hidden">
@@ -2809,11 +2860,18 @@ async function updateTotalPriceDisplayIfInsurance() {
    * CART
    * ========================================================= */
   function updateCartCount() {
-    fetch('/cart.js')
+    fetch('/cart.js?_=' + Date.now(), { cache: 'no-store' })
       .then(r => r.json())
       .then(cart => {
-        const countEl = $('cart-count');
-        if (countEl) countEl.textContent = cart.item_count;
+        const count = cart.item_count || 0;
+        if (typeof window.updateCartBadge === 'function') {
+          window.updateCartBadge(count);
+        } else {
+          document.querySelectorAll('.header-cart-badge, #cart-count').forEach(el => {
+            el.textContent = count;
+            el.style.display = count > 0 ? 'inline-flex' : 'none';
+          });
+        }
       })
       .catch(err => console.error('Failed to update cart count:', err));
   }
@@ -2901,6 +2959,11 @@ async function updateTotalPriceDisplayIfInsurance() {
 
       await r.json().catch(() => null);
       showToast('Item successfully added to cart!', 'success');
+      const firstBadge = document.querySelector('.header-cart-badge');
+      const prevCount = firstBadge ? (parseInt(firstBadge.textContent, 10) || 0) : 0;
+      if (typeof window.updateCartBadge === 'function') {
+        window.updateCartBadge(prevCount + qty);
+      }
       updateCartCount();
     } catch (err) {
       console.error('Error:', err);

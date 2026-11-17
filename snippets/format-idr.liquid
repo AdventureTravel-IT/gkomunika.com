@@ -1,0 +1,35 @@
+{%- comment -%}
+  Formats Shopify price cents (IDR) cleanly without HTML wrappers.
+  Parameters:
+    - cents: Integer price in cents (e.g. product.price_min, variant.price)
+    - mode: 'display' (default, e.g. "Rp 39.000") or 'numeric' (e.g. "39000")
+{%- endcomment -%}
+{%- liquid
+  assign raw_cents = cents | default: 0 | plus: 0
+  assign out_mode = mode | default: 'display'
+  assign whole = raw_cents | divided_by: 100
+  assign rem = raw_cents | modulo: 100
+-%}
+{%- if out_mode == 'numeric' -%}
+  {%- if rem == 0 -%}
+    {{- whole -}}
+  {%- elsif rem < 10 -%}
+    {{- whole -}}.0{{- rem -}}
+  {%- else -%}
+    {{- whole -}}.{{- rem -}}
+  {%- endif -%}
+{%- else -%}
+  {%- assign whole_str = whole | append: '' -%}
+  {%- assign rev_chars = whole_str | split: '' | reverse -%}
+  {%- capture rev_grouped -%}
+    {%- for ch in rev_chars -%}
+      {%- if forloop.index0 > 0 -%}
+        {%- assign mod3 = forloop.index0 | modulo: 3 -%}
+        {%- if mod3 == 0 -%}.{%- endif -%}
+      {%- endif -%}
+      {{- ch -}}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- assign grouped = rev_grouped | split: '' | reverse | join: '' -%}
+  {{- 'Rp ' | append: grouped -}}
+{%- endif -%}

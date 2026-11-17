@@ -2,17 +2,19 @@ let cartFetched = false;
 
 async function updateCartCount() {
   try {
-    const res = await fetch("/cart.js");
+    const res = await fetch("/cart.js?_=" + Date.now(), { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to load cart data");
 
     const { item_count } = await res.json();
-    const countEl = document.getElementById("cart-count");
-
-    if (item_count > 0) {
-      countEl.textContent = item_count;
-      countEl.style.display = "flex";
+    const count = item_count || 0;
+    if (typeof window.updateCartBadge === "function") {
+      window.updateCartBadge(count);
     } else {
-      countEl.style.display = "none";
+      const badges = document.querySelectorAll(".header-cart-badge, #cart-count");
+      badges.forEach((el) => {
+        el.textContent = count;
+        el.style.display = count > 0 ? "inline-flex" : "none";
+      });
     }
 
     cartFetched = true; // tandai bahwa cart sudah di-fetch

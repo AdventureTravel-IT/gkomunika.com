@@ -1406,12 +1406,17 @@ quantityInput?.addEventListener('input', () => {
   });
 
   function updateCartCount() {
-    fetch('/cart.js')
+    fetch('/cart.js?_=' + Date.now(), { cache: 'no-store' })
       .then(response => response.json())
       .then(cart => {
-        const countEl = document.getElementById('cart-count');
-        if (countEl) {
-          countEl.textContent = cart.item_count;
+        const count = cart.item_count || 0;
+        if (typeof window.updateCartBadge === 'function') {
+          window.updateCartBadge(count);
+        } else {
+          document.querySelectorAll('.header-cart-badge, #cart-count').forEach(el => {
+            el.textContent = count;
+            el.style.display = count > 0 ? 'inline-flex' : 'none';
+          });
         }
       })
       .catch(error => {

@@ -705,6 +705,25 @@
       // tidak perlu di-execute (cuma data); akan dibaca via JSON.parse
       // saat smart checkout di-klik, jadi selalu fresh.
       root.replaceWith(newRoot);
+
+      // Sync header cart badge
+      try {
+        fetch('/cart.js?_=' + Date.now(), { cache: 'no-store' })
+          .then((r) => r.json())
+          .then((c) => {
+            if (c && typeof c.item_count !== 'undefined') {
+              if (typeof window.updateCartBadge === 'function') {
+                window.updateCartBadge(c.item_count);
+              } else {
+                document.querySelectorAll('.header-cart-badge').forEach((badge) => {
+                  badge.textContent = c.item_count;
+                  badge.style.display = c.item_count > 0 ? 'inline-flex' : 'none';
+                });
+              }
+            }
+          })
+          .catch(() => {});
+      } catch (_) {}
     }
     // Export buat skrip lain (purge blocked items, dll)
     window.refreshCartSection = refreshCartSection;
@@ -732,6 +751,20 @@
           setControlsDisabled(line, false);
           return;
         }
+
+        try {
+          const cartData = await res.clone().json();
+          if (cartData && typeof cartData.item_count !== 'undefined') {
+            if (typeof window.updateCartBadge === 'function') {
+              window.updateCartBadge(cartData.item_count);
+            } else {
+              document.querySelectorAll('.header-cart-badge').forEach((badge) => {
+                badge.textContent = cartData.item_count;
+                badge.style.display = cartData.item_count > 0 ? 'inline-flex' : 'none';
+              });
+            }
+          }
+        } catch (_) {}
 
         await refreshCartSection();
       } catch (e) {

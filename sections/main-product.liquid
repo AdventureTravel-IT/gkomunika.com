@@ -2860,11 +2860,18 @@ async function updateTotalPriceDisplayIfInsurance() {
    * CART
    * ========================================================= */
   function updateCartCount() {
-    fetch('/cart.js')
+    fetch('/cart.js?_=' + Date.now(), { cache: 'no-store' })
       .then(r => r.json())
       .then(cart => {
-        const countEl = $('cart-count');
-        if (countEl) countEl.textContent = cart.item_count;
+        const count = cart.item_count || 0;
+        if (typeof window.updateCartBadge === 'function') {
+          window.updateCartBadge(count);
+        } else {
+          document.querySelectorAll('.header-cart-badge, #cart-count').forEach(el => {
+            el.textContent = count;
+            el.style.display = count > 0 ? 'inline-flex' : 'none';
+          });
+        }
       })
       .catch(err => console.error('Failed to update cart count:', err));
   }
@@ -2952,6 +2959,11 @@ async function updateTotalPriceDisplayIfInsurance() {
 
       await r.json().catch(() => null);
       showToast('Item successfully added to cart!', 'success');
+      const firstBadge = document.querySelector('.header-cart-badge');
+      const prevCount = firstBadge ? (parseInt(firstBadge.textContent, 10) || 0) : 0;
+      if (typeof window.updateCartBadge === 'function') {
+        window.updateCartBadge(prevCount + qty);
+      }
       updateCartCount();
     } catch (err) {
       console.error('Error:', err);

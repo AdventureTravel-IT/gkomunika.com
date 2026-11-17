@@ -694,9 +694,12 @@
           <span class="header-cart-wrap">
             {% render 'icon-cart'
               , class: 'w-[28px] h-[28px] text-primary' %}
-            {% if cart.items.size > 0 %}
-              <span class="header-cart-badge">{{ cart.items.size }}</span>
-            {% endif %}
+            <span
+              class="header-cart-badge"
+              data-header-cart-badge
+              style="{% if cart.item_count == 0 %}display: none;{% else %}display: inline-flex;{% endif %}">
+              {{- cart.item_count -}}
+            </span>
           </span>
         </a>
 
@@ -940,9 +943,12 @@
                 <span class="nav-cart-wrap">
                   {% render 'icon-cart'
                     , class: 'text-primary w-[26px] h-[26px]' %}
-                  {% if cart.items.size > 0 %}
-                    <span class="header-cart-badge">{{ cart.items.size }}</span>
-                  {% endif %}
+                  <span
+                    class="header-cart-badge"
+                    data-header-cart-badge
+                    style="{% if cart.item_count == 0 %}display: none;{% else %}display: inline-flex;{% endif %}">
+                    {{- cart.item_count -}}
+                  </span>
                 </span>
                 <span class="nav-item-label">Cart</span>
               </a>
@@ -1535,6 +1541,14 @@
     initCurrency('desktop');
     initCurrency('mobile');
   });
+
+  window.updateCartBadge = function(count) {
+    const c = parseInt(count, 10) || 0;
+    document.querySelectorAll('.header-cart-badge').forEach(function(badge) {
+      badge.textContent = c;
+      badge.style.display = c > 0 ? 'inline-flex' : 'none';
+    });
+  };
 </script>
 
 {% schema %}

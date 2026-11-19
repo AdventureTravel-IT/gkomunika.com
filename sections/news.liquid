@@ -472,7 +472,7 @@
   });
 
   const fetchPage = async (page) => {
-    const searchUrl = `${buildStoreUrl('/search')}?view=news-api-json&type=page&q=%2A&page=${page}`;
+    const searchUrl = `${buildStoreUrl('/search')}?view=news-api-json&type=page,article&q=%2A&page=${page}`;
     const res = await fetch(searchUrl, { credentials: 'same-origin' });
 
     if (!res.ok) throw new Error('HTTP ' + res.status);

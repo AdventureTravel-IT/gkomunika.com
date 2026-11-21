@@ -345,9 +345,17 @@
           </a>
         </div>
         <div class="gkth-hero-body">
-          <h1 class="gkth-h1">{{ section.settings.hero_title | default: '<span class="gkth-h1-big"><span class="gkth-hl">eSIM</span> <span>Thailand<span class="gkth-sr">,</span></span></span>
-          <span class="gkth-h1-sub">Internet Praktis untuk Traveling Tanpa Ganti SIM Card</span>' }}</h1>
-          <p class="gkth-hero-lead">{{ section.settings.hero_sub | default: 'Liburan ke Thailand lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif saat tiba di Thailand, dan nomor WhatsApp Indonesia tetap aktif.' }}</p>
+          {%- if section.settings.hero_title != blank -%}
+            <h1 class="gkth-h1">{{ section.settings.hero_title }}</h1>
+          {%- else -%}
+            <h1 class="gkth-h1"><span class="gkth-h1-big"><span class="gkth-hl">eSIM</span> <span>Thailand<span class="gkth-sr">,</span></span></span>
+          <span class="gkth-h1-sub">Internet Praktis untuk Traveling Tanpa Ganti SIM Card</span></h1>
+          {%- endif -%}
+          {%- if section.settings.hero_sub != blank -%}
+            <p class="gkth-hero-lead">{{ section.settings.hero_sub }}</p>
+          {%- else -%}
+            <p class="gkth-hero-lead">Liburan ke Thailand lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif saat tiba di Thailand, dan nomor WhatsApp Indonesia tetap aktif.</p>
+          {%- endif -%}
           <div class="gkth-hero-foot">
             <div class="gkth-hero-price">
               <span class="gkth-hero-price-lbl">Mulai dari</span>
@@ -817,14 +825,12 @@
     {
       "type": "text",
       "id": "hero_title",
-      "label": "Hero Title (Judul Utama)",
-      "default": "eSIM Thailand, Internet Praktis untuk Traveling Tanpa Ganti SIM Card"
+      "label": "Hero Title (Judul Utama)"
     },
     {
       "type": "textarea",
       "id": "hero_sub",
-      "label": "Hero Subtitle (Deskripsi)",
-      "default": "Liburan ke Thailand lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif saat tiba di Thailand, dan nomor WhatsApp Indonesia tetap aktif."
+      "label": "Hero Subtitle (Deskripsi)"
     },
     {
       "type": "text",

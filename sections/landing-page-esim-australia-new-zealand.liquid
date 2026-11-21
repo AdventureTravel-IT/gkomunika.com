@@ -350,9 +350,17 @@ html,body{margin:0;padding:0;background:#fff}
           </a>
         </div>
         <div class="gkau-hero-body">
-          <h1 class="gkau-h1">{{ section.settings.hero_title | default: '<span class="gkau-h1-big"><span class="gkau-hl">eSIM</span> <span>Australia &amp; New Zealand<span class="gkau-sr">,</span></span></span>
-          <span class="gkau-h1-sub">Internet Praktis untuk Traveling</span>' }}</h1>
-          <p class="gkau-hero-lead">{{ section.settings.hero_sub | default: 'Liburan ke Australia & New Zealand lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif begitu mendarat, dan nomor WhatsApp Indonesia tetap aktif.' }}</p>
+          {%- if section.settings.hero_title != blank -%}
+            <h1 class="gkau-h1">{{ section.settings.hero_title }}</h1>
+          {%- else -%}
+            <h1 class="gkau-h1"><span class="gkau-h1-big"><span class="gkau-hl">eSIM</span> <span>Australia &amp; New Zealand<span class="gkau-sr">,</span></span></span>
+          <span class="gkau-h1-sub">Internet Praktis untuk Traveling</span></h1>
+          {%- endif -%}
+          {%- if section.settings.hero_sub != blank -%}
+            <p class="gkau-hero-lead">{{ section.settings.hero_sub }}</p>
+          {%- else -%}
+            <p class="gkau-hero-lead">Liburan ke Australia & New Zealand lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif begitu mendarat, dan nomor WhatsApp Indonesia tetap aktif.</p>
+          {%- endif -%}
           <div class="gkau-hero-foot">
             <div class="gkau-hero-price">
               <span class="gkau-hero-price-lbl">Mulai dari</span>
@@ -830,14 +838,12 @@ html,body{margin:0;padding:0;background:#fff}
     {
       "type": "text",
       "id": "hero_title",
-      "label": "Hero Title (Judul Utama)",
-      "default": "eSIM Australia & New Zealand, Internet Praktis untuk Traveling"
+      "label": "Hero Title (Judul Utama)"
     },
     {
       "type": "textarea",
       "id": "hero_sub",
-      "label": "Hero Subtitle (Deskripsi)",
-      "default": "Liburan ke Australia & New Zealand lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif begitu mendarat, dan nomor WhatsApp Indonesia tetap aktif."
+      "label": "Hero Subtitle (Deskripsi)"
     },
     {
       "type": "text",

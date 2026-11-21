@@ -346,9 +346,17 @@ html,body{margin:0;padding:0;background:#fff}
           </a>
         </div>
         <div class="gkmy-hero-body">
-          <h1 class="gkmy-h1">{{ section.settings.hero_title | default: '<span class="gkmy-h1-big"><span class="gkmy-hl">eSIM</span> <span>Malaysia<span class="gkmy-sr">,</span></span></span>
-          <span class="gkmy-h1-sub">Internet Praktis untuk Traveling Tanpa Ganti SIM Card</span>' }}</h1>
-          <p class="gkmy-hero-lead">{{ section.settings.hero_sub | default: 'Liburan ke Malaysia lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif saat tiba di KLIA atau bandara lainnya di Malaysia, dan nomor WhatsApp Indonesia tetap aktif.' }}</p>
+          {%- if section.settings.hero_title != blank -%}
+            <h1 class="gkmy-h1">{{ section.settings.hero_title }}</h1>
+          {%- else -%}
+            <h1 class="gkmy-h1"><span class="gkmy-h1-big"><span class="gkmy-hl">eSIM</span> <span>Malaysia<span class="gkmy-sr">,</span></span></span>
+          <span class="gkmy-h1-sub">Internet Praktis untuk Traveling Tanpa Ganti SIM Card</span></h1>
+          {%- endif -%}
+          {%- if section.settings.hero_sub != blank -%}
+            <p class="gkmy-hero-lead">{{ section.settings.hero_sub }}</p>
+          {%- else -%}
+            <p class="gkmy-hero-lead">Liburan ke Malaysia lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif saat tiba di KLIA atau bandara lainnya di Malaysia, dan nomor WhatsApp Indonesia tetap aktif.</p>
+          {%- endif -%}
           <div class="gkmy-hero-foot">
             <div class="gkmy-hero-price">
               <span class="gkmy-hero-price-lbl">Mulai dari</span>
@@ -825,14 +833,12 @@ html,body{margin:0;padding:0;background:#fff}
     {
       "type": "text",
       "id": "hero_title",
-      "label": "Hero Title (Judul Utama)",
-      "default": "eSIM Malaysia, Internet Praktis untuk Traveling Tanpa Ganti SIM Card"
+      "label": "Hero Title (Judul Utama)"
     },
     {
       "type": "textarea",
       "id": "hero_sub",
-      "label": "Hero Subtitle (Deskripsi)",
-      "default": "Liburan ke Malaysia lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif saat tiba di KLIA atau bandara lainnya di Malaysia, dan nomor WhatsApp Indonesia tetap aktif."
+      "label": "Hero Subtitle (Deskripsi)"
     },
     {
       "type": "text",

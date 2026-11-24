@@ -1,56 +1,21 @@
 {% comment %}
   Shopify Section for Global Komunika eSIM Australia & New Zealand Landing Page.
-  Converted dynamically from esim-australia-new-zealand.html with full Theme Customizer support.
+  Exact 1:1 match with esim-australia-new-zealand.html with dynamic Customizer settings.
 {% endcomment %}
 
-{%- assign hero_img_url = section.settings.hero_image_url -%}
+{%- assign hero_img_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/LP_AUZ_NZ.png?v=1794977727' -%}
 {%- if section.settings.hero_image != blank -%}
-  {%- assign hero_img_url = section.settings.hero_image | image_url: width: 1400 -%}
-{%- elsif hero_img_url == blank -%}
-  {%- assign hero_img_url = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/LP_AUZ_NZ.png?v=1794977727' -%}
+  {%- assign hero_img_url = section.settings.hero_image | image_url: width: 1440 -%}
+{%- elsif section.settings.hero_image_url != blank -%}
+  {%- assign hero_img_url = section.settings.hero_image_url -%}
 {%- endif -%}
-
-{%- assign wa_number = section.settings.whatsapp_number | default: '628156080055' -%}
-{%- assign wa_text = section.settings.whatsapp_text | default: 'Halo Global Komunika, saya ingin tanya seputar eSIM Australia & New Zealand' | url_encode -%}
 
 <style>
 @font-face{font-family:"Gotham";font-weight:400;font-style:normal;font-display:swap;src:url("https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Gotham-Book.otf?v=1794546841") format("opentype");}
 @font-face{font-family:"Gotham";font-weight:700;font-style:normal;font-display:swap;src:url("https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Gotham-Bold.otf?v=1794546841") format("opentype");}
-html,body{margin:0;padding:0;background:#fff}
+.gkau-page {margin:0;padding:0;background:#fff}
 
-
-#gk-section-{{ section.id }}.gkau-page,
-#gk-section-{{ section.id }} {
-  --gkau-blue: {{ section.settings.brand_blue | default: '#005496' }};
-  --gkau-cyan: {{ section.settings.brand_sky | default: '#00ADEE' }};
-  --gkau-ink: #222222;
-  --gkau-text: #2B2F33;
-  --gkau-muted: #5A6570;
-  --gkau-mist: #F4F7FA;
-  --gkau-tint: #CCEFFC;
-  --gkau-tint2: #E3F6FD;
-  --gkau-line: #DDE4EA;
-  --gkau-green: #2E884A;
-  --gkau-star: #FBB526;
-  box-sizing: border-box;
-  color-scheme: light;
-  position: relative;
-  background: #fff;
-  color: var(--gkau-text);
-  font-family: "Gotham", "Gotham Rounded", "Montserrat", Arial, Helvetica, sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 1.6;
-  -webkit-text-size-adjust: 100%;
-  overflow-x: hidden;
-  width: 100%;
-}
-#MainContent:has(#gk-section-{{ section.id }}) {
-  max-width: 100% !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
+.gkau-page{--gkau-blue:#005496;--gkau-cyan:#00ADEE;--gkau-ink:#222222;--gkau-text:#2B2F33;--gkau-muted:#5A6570;--gkau-mist:#F4F7FA;--gkau-tint:#CCEFFC;--gkau-tint2:#E3F6FD;--gkau-line:#DDE4EA;--gkau-green:#2E884A;--gkau-star:#FBB526;box-sizing:border-box;color-scheme:light;position:relative;background:#fff;color:var(--gkau-text);font-family:"Gotham","Gotham Rounded","Montserrat",Arial,Helvetica,sans-serif;font-weight:400;font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%;overflow-x:hidden}
 .gkau-page *,.gkau-page *::before,.gkau-page *::after{box-sizing:border-box}
 :where(.gkau-page) :is(h1,h2,h3,p,ul,ol,li,blockquote,small,figure){margin:0;padding:0}
 :where(.gkau-page) :is(ul,ol){list-style:none}
@@ -324,144 +289,93 @@ html,body{margin:0;padding:0;background:#fff}
   .gkau-alt-t{font-size:18px}
   .gkau-alt .gkau-btn{width:100%}
 }
+
+#MainContent:has(#gk-section-{{ section.id }}) {
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
 </style>
 
-<div id="gk-section-{{ section.id }}" class="gkau-page">
+<div id="gk-section-{{ section.id }}" class="gk-landing-wrapper">
+<div class="gkau-page" id="gkau-page">
 <svg class="gkau-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden"><defs><symbol id="gkau-f-au" viewBox="0 0 40 40" preserveAspectRatio="xMidYMid slice"><rect width="40" height="40" fill="#012169"/><clipPath id="gkau-clip-au"><rect width="20" height="20"/></clipPath><g clip-path="url(#gkau-clip-au)"><rect width="20" height="20" fill="#012169"/><path d="M0 0L20 20M20 0L0 20" stroke="#fff" stroke-width="3.6"/><path d="M0 0L20 20M20 0L0 20" stroke="#C8102E" stroke-width="1.3"/><path d="M10 0V20M0 10H20" stroke="#fff" stroke-width="6"/><path d="M10 0V20M0 10H20" stroke="#C8102E" stroke-width="3.4"/></g><polygon points="10.00,24.80 11.00,27.93 14.07,26.76 12.24,29.49 15.07,31.16 11.80,31.43 12.26,34.69 10.00,32.30 7.74,34.69 8.20,31.43 4.93,31.16 7.76,29.49 5.93,26.76 9.00,27.93" fill="#fff"/><polygon points="30.00,3.70 30.65,5.65 32.58,4.94 31.46,6.67 33.22,7.73 31.17,7.94 31.43,9.97 30.00,8.50 28.57,9.97 28.83,7.94 26.78,7.73 28.54,6.67 27.42,4.94 29.35,5.65" fill="#fff"/><polygon points="23.50,14.70 24.15,16.65 26.08,15.94 24.96,17.67 26.72,18.73 24.67,18.94 24.93,20.97 23.50,19.50 22.07,20.97 22.33,18.94 20.28,18.73 22.04,17.67 20.92,15.94 22.85,16.65" fill="#fff"/><polygon points="35.50,15.70 36.15,17.65 38.08,16.94 36.96,18.67 38.72,19.73 36.67,19.94 36.93,21.97 35.50,20.50 34.07,21.97 34.33,19.94 32.28,19.73 34.04,18.67 32.92,16.94 34.85,17.65" fill="#fff"/><polygon points="30.00,28.70 30.65,30.65 32.58,29.94 31.46,31.67 33.22,32.73 31.17,32.94 31.43,34.97 30.00,33.50 28.57,34.97 28.83,32.94 26.78,32.73 28.54,31.67 27.42,29.94 29.35,30.65" fill="#fff"/><polygon points="32.20,22.70 32.67,23.75 33.82,23.87 32.96,24.65 33.20,25.78 32.20,25.20 31.20,25.78 31.44,24.65 30.58,23.87 31.73,23.75" fill="#fff"/></symbol><symbol id="gkau-f-nz" viewBox="0 0 40 40" preserveAspectRatio="xMidYMid slice"><rect width="40" height="40" fill="#012169"/><clipPath id="gkau-clip-nz"><rect width="20" height="20"/></clipPath><g clip-path="url(#gkau-clip-nz)"><rect width="20" height="20" fill="#012169"/><path d="M0 0L20 20M20 0L0 20" stroke="#fff" stroke-width="3.6"/><path d="M0 0L20 20M20 0L0 20" stroke="#C8102E" stroke-width="1.3"/><path d="M10 0V20M0 10H20" stroke="#fff" stroke-width="6"/><path d="M10 0V20M0 10H20" stroke="#C8102E" stroke-width="3.4"/></g><polygon points="30.00,4.80 30.82,6.87 33.04,7.01 31.33,8.43 31.88,10.59 30.00,9.40 28.12,10.59 28.67,8.43 26.96,7.01 29.18,6.87" fill="#CC142B" stroke="#fff" stroke-width="0.7" stroke-linejoin="round"/><polygon points="24.00,15.80 24.82,17.87 27.04,18.01 25.33,19.43 25.88,21.59 24.00,20.40 22.12,21.59 22.67,19.43 20.96,18.01 23.18,17.87" fill="#CC142B" stroke="#fff" stroke-width="0.7" stroke-linejoin="round"/><polygon points="36.00,16.80 36.82,18.87 39.04,19.01 37.33,20.43 37.88,22.59 36.00,21.40 34.12,22.59 34.67,20.43 32.96,19.01 35.18,18.87" fill="#CC142B" stroke="#fff" stroke-width="0.7" stroke-linejoin="round"/><polygon points="30.00,28.10 31.00,30.62 33.71,30.79 31.62,32.53 32.29,35.16 30.00,33.70 27.71,35.16 28.38,32.53 26.29,30.79 29.00,30.62" fill="#CC142B" stroke="#fff" stroke-width="0.7" stroke-linejoin="round"/></symbol><symbol id="gkau-i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5.5 12.5l4.2 4.2L18.5 8"/></symbol><symbol id="gkau-i-dash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M7 12h10"/></symbol><symbol id="gkau-i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="3.8" ry="9"/><path d="M3 12h18"/></g></symbol><symbol id="gkau-i-al" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M14.5 5l-7 7 7 7"/></symbol><symbol id="gkau-i-ar" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9.5 5l7 7-7 7"/></symbol><symbol id="gkau-i-star" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.2l-5.9 3.4 1.3-6.6L2.5 9.4l6.6-.8z"/></symbol><symbol id="gkau-i-android" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></g></symbol><symbol id="gkau-i-ios" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect x="6" y="2.5" width="12" height="19" rx="3.5"/><path d="M10 5.6h4"/></g></symbol><symbol id="gkau-i-hash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4L7.5 20M16.5 4L15 20M4.5 9h16M3.5 15h16"/></symbol><symbol id="gkau-i-cc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></g></symbol><symbol id="gkau-i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20 12a8 8 0 01-14 5.3M4 12a8 8 0 0114-5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></g></symbol><symbol id="gkau-i-plane" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 13.5L3.5 11l1.4-1.4 7.6.6 4.3-4.6a1.9 1.9 0 012.7 2.7l-4.6 4.3.6 7.6-1.4 1.4-2.5-7z"/></symbol><symbol id="gkau-i-phone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></g></symbol><symbol id="gkau-i-tag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><path d="M3 12.5V4h8.5L21 13.5 13.5 21z"/><circle cx="8" cy="8.5" r="1.4" fill="currentColor"/></g></symbol><symbol id="gkau-i-wifi" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><path d="M4 12a8 8 0 0116 0M7.5 12a4.5 4.5 0 019 0"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></g></symbol><symbol id="gkau-i-cal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></g></symbol></defs></svg>
 
-  <!-- ===== HERO ===== -->
-  <section class="gkau-hero-wrap" id="gkau-hero">
-    <div class="gkau-hero">
-      <img
-        class="gkau-hero-img"
-        src="{{ hero_img_url }}"
-        alt="eSIM Australia & New Zealand Global Komunika"
-        width="1440"
-        height="440"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-      >
-      <div class="gkau-hero-in">
-        <div class="gkau-hero-top">
-          <a class="gkau-compat" href="{{ section.settings.hero_compat_url | default: '#gkau-cek-hp' }}">
-            <svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-info"/></svg>
-            <span>{{ section.settings.hero_compat_text | default: 'Cek HP Support eSIM' }}</span>
-          </a>
-        </div>
-        <div class="gkau-hero-body">
-          <h1 class="gkau-h1">{{ section.settings.hero_title | default: '<span class="gkau-h1-big"><span class="gkau-hl">eSIM</span> <span>Australia &amp; New Zealand<span class="gkau-sr">,</span></span></span>
-          <span class="gkau-h1-sub">Internet Praktis untuk Traveling</span>' }}</h1>
-          <p class="gkau-hero-lead">{{ section.settings.hero_sub | default: 'Liburan ke Australia & New Zealand lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif begitu mendarat, dan nomor WhatsApp Indonesia tetap aktif.' }}</p>
-          <div class="gkau-hero-foot">
-            <div class="gkau-hero-price">
-              <span class="gkau-hero-price-lbl">Mulai dari</span>
-              <b>{{ section.settings.hero_price | default: 'Rp19.000' }}</b>
-            </div>
-            <a class="gkau-btn" href="{{ section.settings.hero_btn_url | default: '#gkau-paket' }}">{{ section.settings.hero_btn_text | default: 'Lihat paket' }}</a>
-          </div>
+<!-- ============ HERO ============ -->
+<section class="gkau-hero-wrap" id="gkau-hero">
+  <div class="gkau-hero">
+    <img class="gkau-hero-img" src="{{ hero_img_url }}" alt="Sydney Opera House di tepi pelabuhan saat senja, Australia" width="1672" height="941" fetchpriority="high">
+    <div class="gkau-hero-in">
+      <div class="gkau-hero-top">
+        <a class="gkau-compat" href="#gkau-cek-hp"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-phone"/></svg><span class="gkau-cmp-d">Cek HP yang support eSIM</span><span class="gkau-cmp-m">Cek HP support</span></a>
+      </div>
+      <div class="gkau-hero-row">
+        <h1 class="gkau-h1">
+          <span class="gkau-h1-big"><span class="gkau-hl">eSIM</span> <span>Australia &amp; New Zealand<span class="gkau-sr">,</span></span></span>
+          <span class="gkau-h1-sub">Internet Praktis untuk Traveling</span>
+        </h1>
+        <div class="gkau-chips">
+          <span class="gkau-chip"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-wifi"/></svg>4G/5G</span>
+          <span class="gkau-chip"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-tag"/></svg><span>Mulai <span class="gkau-price-val" data-gkau-handle="esim-australia-new-zealand" data-gkau-fallback="19000">Rp19.000</span></span></span>
+          <span class="gkau-chip"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-cal"/></svg>Masa aktif 1-30 hari</span>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+  <div class="gkau-intro">
+    <p class="gkau-intro-p">eSIM Australia &amp; eSIM New Zealand dari Global Komunika adalah SIM digital untuk akses internet 4G/5G selama traveling ke Australia &amp; New Zealand, tanpa perlu mengganti SIM utama. Tersedia pilihan paket data dan masa aktif sesuai kebutuhan perjalanan. QR code dikirim ke email setelah pembayaran, lalu kamu tinggal scan dan aktifkan.</p>
+    <p class="gkau-intro-p" style="margin-top:12px">Mau liburan ke Sydney, Melbourne, Brisbane, Auckland, atau Queenstown? Nggak perlu repot membeli SIM card lokal. Siapkan eSIM Australia &amp; New Zealand dari Global Komunika sebelum berangkat dan terhubung selama perjalanan!</p>
+    <div class="gkau-cta-row">
+      <a class="gkau-btn" href="#gkau-paket">Pilih paket eSIM Australia &amp; New Zealand</a>
+      <span class="gkau-note"><span class="gkau-ni"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-check"/></svg></span>QR code dikirim ke email setelah pembayaran</span>
+    </div>
+  </div>
+</section>
 
-  <!-- ===== PILIH PAKET ===== -->
-  <section class="gkau-sec gkau-sec--mist" id="gkau-paket">
-    <div class="gkau-wrap">
-      <div class="gkau-head">
-        <div>
-          <h2 class="gkau-h2">{{ section.settings.packages_title | default: 'Pilih Paket Internet Australia &amp; New Zealand Sesuai Kebutuhan' }}</h2>
-          {%- if section.settings.packages_lead != blank -%}
-            <p class="gkau-lead">{{ section.settings.packages_lead }}</p>
-          {%- elsif 'Cari eSIM Australia dan eSIM New Zealand untuk perjalanan internasional? Global Komunika menyediakan pilihan paket internet praktis yang bisa digunakan untuk mendukung kebutuhan konektivitas selama traveling.' != '' -%}
-            <p class="gkau-lead">Cari eSIM Australia dan eSIM New Zealand untuk perjalanan internasional? Global Komunika menyediakan pilihan paket internet praktis yang bisa digunakan untuk mendukung kebutuhan konektivitas selama traveling.</p>
-          {%- endif -%}
-        </div>
-        <div class="gkau-ctrls" data-gkau-for="gkau-track-c" aria-label="Navigasi paket">
-          <button class="gkau-arrow" type="button" data-gkau-dir="-1" aria-label="Geser ke kiri" disabled>
-            <svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-al"/></svg>
-          </button>
-          <button class="gkau-arrow" type="button" data-gkau-dir="1" aria-label="Geser ke kanan">
-            <svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-ar"/></svg>
-          </button>
-        </div>
+<!-- ============ PAKET ============ -->
+<section class="gkau-sec gkau-sec--mist" id="gkau-paket">
+  <div class="gkau-wrap">
+    <div class="gkau-head-row">
+      <div>
+        <h2 class="gkau-h2">Pilih Paket Internet Australia &amp; New Zealand Sesuai Kebutuhan</h2>
+        <p class="gkau-lead">Cari eSIM Australia dan eSIM New Zealand untuk perjalanan internasional? Global Komunika menyediakan pilihan paket internet praktis yang bisa digunakan untuk mendukung kebutuhan konektivitas selama traveling.</p>
+        <p class="gkau-lead">Cek harga eSIM Australia dan eSIM New Zealand dan pilih paket data sesuai durasi perjalanan serta kebutuhan internet kamu.</p>
       </div>
-
-      <div class="gkau-track gkau-track-c" id="gkau-track-c" tabindex="0" role="region" aria-label="Pilihan paket internet Australia & New Zealand">
-        {%- assign product_count = 0 -%}
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'product_card' -%}
-            {%- assign product_count = product_count | plus: 1 -%}
-            {%- assign card_product = block.settings.product -%}
-            {%- assign card_title = block.settings.title -%}
-            {%- if card_title == blank and card_product != blank -%}
-              {%- assign card_title = card_product.title -%}
-            {%- endif -%}
-            {%- assign card_handle = block.settings.handle -%}
-            {%- if card_handle == blank and card_product != blank -%}
-              {%- assign card_handle = card_product.handle -%}
-            {%- endif -%}
-            {%- assign card_url = block.settings.button_url -%}
-            {%- if card_url == blank and card_product != blank -%}
-              {%- assign card_url = card_product.url -%}
-            {%- elsif card_url == blank and card_handle != blank -%}
-              {%- assign card_url = '/products/' | append: card_handle -%}
-            {%- elsif card_url == blank -%}
-              {%- assign card_url = '#' -%}
-            {%- endif -%}
-            {%- assign card_fallback = block.settings.price_fallback -%}
-            {%- if card_fallback == blank and card_product != blank -%}
-              {%- assign card_fallback = card_product.price_min | divided_by: 100 -%}
-            {%- endif -%}
-            {%- assign card_price = block.settings.price -%}
-            {%- if card_price == blank and card_product != blank -%}
-              {%- assign card_price = card_product.price_min | money -%}
-            {%- endif -%}
-            <article class="gkau-card {{ block.settings.card_extra_class }}" {{ block.shopify_attributes }}>
-              <div class="gkau-c-head">
-                <span class="gkau-ft">
-                  <svg class="gkau-fl" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
-                    <use href="#gkau-f-{{ block.settings.flag | default: 'au' }}"/>
-                  </svg>
-                </span>
-                <h3 class="gkau-c-title">
-                  <span class="gkau-tag">{{ block.settings.tag | default: 'eSIM' }}</span>
-                  <span class="gkau-c-name">{{ card_title }}</span>
-                </h3>
-              </div>
-              <div class="gkau-cover">
-                <svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-globe"/></svg>
-                <b>{{ block.settings.coverage | default: '1 negara' }}</b>
-              </div>
-              <div class="gkau-c-foot">
-                <div class="gkau-price">
-                  <small>{{ block.settings.price_prefix | default: 'Mulai dari' }}</small>
-                  <b class="gkau-price-val" data-gkau-handle="{{ card_handle }}" data-gkau-fallback="{{ card_fallback }}">{{ card_price }}</b>
-                </div>
-                <a class="gkau-btn" href="{{ card_url }}">{{ block.settings.button_label | default: 'Lihat paket' }}</a>
-              </div>
-            </article>
-          {%- endif -%}
-        {%- endfor -%}
-
-        {%- if product_count == 0 -%}
-          <!-- Default Fallback Cards -->
-          <article class="gkau-card">
+      <div class="gkau-arrows" data-gkau-for="gkau-track-paket">
+        <button type="button" class="gkau-arrow" data-gkau-dir="-1" aria-label="Paket sebelumnya"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-al"/></svg></button>
+        <button type="button" class="gkau-arrow" data-gkau-dir="1" aria-label="Paket berikutnya"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-ar"/></svg></button>
+      </div>
+    </div>
+    <div class="gkau-track gkau-track-pk" id="gkau-track-paket" tabindex="0" role="region" aria-label="Pilihan paket eSIM, geser ke samping">
+<article class="gkau-card">
 <div class="gkau-c-head"><span class="gkau-fg"><span class="gkau-ft"><svg class="gkau-fl" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#gkau-f-au"/></svg></span><span class="gkau-ft"><svg class="gkau-fl" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#gkau-f-nz"/></svg></span></span><h3 class="gkau-c-title"><span class="gkau-tag">eSIM</span> <span class="gkau-c-name">Australia New Zealand</span></h3></div>
 <div class="gkau-cover"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-globe"/></svg><b>2 negara</b></div>
 <div class="gkau-c-foot"><div class="gkau-price"><small>Mulai dari</small><b class="gkau-price-val" data-gkau-handle="esim-australia-new-zealand" data-gkau-fallback="19000">Rp19.000</b></div><a class="gkau-btn" href="https://gkomunika.com/products/esim-australia-new-zealand">Lihat paket</a></div>
-</article><article class="gkau-card gkau-card-g">
+</article>
+    </div>
+
+    <div class="gkau-gsim">
+      <div class="gkau-gmsg">
+        <h3 class="gkau-gh">Satu gSim!™ Banyak Destinasi</h3>
+        <ul class="gkau-gpts">
+          <li><span><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-cc"/></svg></span>1x aktivasi untuk berbagai trip</li>
+          <li><span><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-refresh"/></svg></span>Top up</li>
+          <li><span><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-plane"/></svg></span>Tetap aktif di negara transit</li>
+        </ul>
+      </div>
+<article class="gkau-card gkau-card-g">
 <div class="gkau-c-head"><span class="gkau-fg"><span class="gkau-ft"><svg class="gkau-fl" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#gkau-f-au"/></svg></span><span class="gkau-ft"><svg class="gkau-fl" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><use href="#gkau-f-nz"/></svg></span></span><h3 class="gkau-c-title"><span class="gkau-tag">gSim!</span> <span class="gkau-c-name">Australia New Zealand</span></h3></div>
 <div class="gkau-cover"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-globe"/></svg><b>2 negara</b></div>
 <div class="gkau-c-foot"><div class="gkau-price"><small>Mulai dari</small><b class="gkau-price-val" data-gkau-handle="gsim-australia-new-zealand" data-gkau-fallback="69000">Rp69.000</b></div><a class="gkau-btn" href="https://gkomunika.com/products/gsim-australia-new-zealand">Lihat gSim!</a></div>
 </article>
-        {%- endif -%}
-      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===== BANDINGKAN ===== -->
-  
+<!-- ============ ESIM VS SIM CARD ============ -->
+<section class="gkau-sec" id="gkau-bandingkan">
   <div class="gkau-wrap">
     <h2 class="gkau-h2">eSIM atau SIM Card, Mana yang Lebih Baik?</h2>
     <p class="gkau-lead">Dibandingkan SIM Card, eSIM lebih praktis karena tidak perlu mengganti kartu SIM utama.</p>
@@ -482,10 +396,10 @@ html,body{margin:0;padding:0;background:#fff}
       </div>
     </div>
   </div>
+</section>
 
-
-  <!-- ===== CEK HP ===== -->
-  
+<!-- ============ CEK HP ============ -->
+<section class="gkau-sec gkau-sec--mist" id="gkau-cek-hp">
   <div class="gkau-wrap">
     <h2 class="gkau-h2">Cara Cek HP Support eSIM Sebelum Membeli eSIM Australia &amp; New Zealand</h2>
     <p class="gkau-lead">3 cara mudah untuk mengetahui apakah HP kamu mendukung penggunaan eSIM.</p>
@@ -502,10 +416,10 @@ html,body{margin:0;padding:0;background:#fff}
       <a class="gkau-btn" href="https://gkomunika.com/products/sim-card-australia-new-zealand">Cek SIM Card Australia &amp; New Zealand</a>
     </div>
   </div>
+</section>
 
-
-  <!-- ===== AKTIVASI ===== -->
-  
+<!-- ============ AKTIVASI ============ -->
+<section class="gkau-sec" id="gkau-aktivasi">
   <div class="gkau-wrap">
     <h2 class="gkau-h2">Cara Aktivasi eSIM Australia &amp; New Zealand</h2>
     <p class="gkau-lead">Ikuti 3 langkah berikut agar eSIM siap digunakan selama perjalanan ke Australia &amp; New Zealand.</p>
@@ -515,10 +429,10 @@ html,body{margin:0;padding:0;background:#fff}
 <li class="gkau-act-c gkau-act-done"><div class="gkau-act-top"><span class="gkau-num">3</span><h3 class="gkau-act-t">Selesai! eSIM Siap Digunakan</h3></div><p class="gkau-act-p">Setelah tiba di Australia atau New Zealand dan smartphone terhubung ke jaringan yang didukung, eSIM siap digunakan untuk mengakses internet, membuka Google Maps, WhatsApp, dan berbagai aplikasi lainnya.</p></li>
     </ol>
   </div>
+</section>
 
-
-  <!-- ===== MENGAPA GLOBAL KOMUNIKA ===== -->
-  
+<!-- ============ MENGAPA ============ -->
+<section class="gkau-sec gkau-sec--blue" id="gkau-mengapa">
   <div class="gkau-wrap">
     <h2 class="gkau-h2">Mengapa Membeli eSIM Australia New Zealand di Global Komunika?</h2>
     <div class="gkau-why">
@@ -527,96 +441,120 @@ html,body{margin:0;padding:0;background:#fff}
 <article class="gkau-why-c"><span class="gkau-badge">100%</span><h3 class="gkau-why-t">Garansi Aktivasi 100%</h3><p class="gkau-why-p">Aktivasi mudah, koneksi andal, dan harga bersaing untuk perjalanan tanpa khawatir.</p></article>
     </div>
   </div>
+</section>
 
-
-  <!-- ===== TESTIMONI ===== -->
-  {%- if section.settings.show_testimonials -%}
-  <section class="gkau-sec" id="gkau-testimoni">
-    <div class="gkau-wrap">
-      <h2 class="gkau-h2">{{ section.settings.testimonials_title | default: 'Testimoni Pelanggan eSIM Australia New Zealand Global Komunika' }}</h2>
-      <div class="gkau-rv-box">
-        <div class="gkau-track gkau-track-rv" id="gkau-track-rev" data-gkau-auto="2000" tabindex="0" role="region" aria-label="Testimoni pelanggan, geser ke samping">
-          {%- assign testi_count = 0 -%}
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'testimonial' -%}
-              {%- assign testi_count = testi_count | plus: 1 -%}
-              <article class="gkau-rev" {{ block.shopify_attributes }}>
-                <span class="gkau-stars" role="img" aria-label="Bintang {{ block.settings.rating | default: 5 }} dari 5">
-                  {%- assign star_num = block.settings.rating | default: 5 -%}
-                  {%- for i in (1..star_num) -%}
-                    <svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg>
-                  {%- endfor -%}
-                </span>
-                <blockquote class="gkau-q">&ldquo;{{ block.settings.quote }}&rdquo;</blockquote>
-                <div class="gkau-rev-who">
-                  <b>{{ block.settings.name }}</b>
-                  <span>{{ block.settings.trip }}</span>
-                </div>
-              </article>
-            {%- endif -%}
-          {%- endfor -%}
-
-          {%- if testi_count == 0 -%}
-            <!-- Default Fallback Testimonials -->
-            <article class="gkau-rev"><span class="gkau-stars" role="img" aria-label="Bintang 5 dari 5"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg></span><blockquote class="gkau-q">“[TESTIMONI]”</blockquote><div class="gkau-rev-who"><b>[NAMA]</b><span>[PAKET]</span></div></article><article class="gkau-rev"><span class="gkau-stars" role="img" aria-label="Bintang 5 dari 5"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg></span><blockquote class="gkau-q">“[TESTIMONI]”</blockquote><div class="gkau-rev-who"><b>[NAMA]</b><span>[PAKET]</span></div></article><article class="gkau-rev"><span class="gkau-stars" role="img" aria-label="Bintang 5 dari 5"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg></span><blockquote class="gkau-q">“[TESTIMONI]”</blockquote><div class="gkau-rev-who"><b>[NAMA]</b><span>[PAKET]</span></div></article>
-          {%- endif -%}
-        </div>
-        <div class="gkau-ctrls gkau-ctrls-rv" data-gkau-for="gkau-track-rev" aria-label="Navigasi testimoni">
-          <button class="gkau-arrow" type="button" data-gkau-dir="-1" aria-label="Testimoni sebelumnya" disabled>
-            <svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-al"/></svg>
-          </button>
-          <button class="gkau-arrow" type="button" data-gkau-dir="1" aria-label="Testimoni berikutnya">
-            <svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-ar"/></svg>
-          </button>
-        </div>
+<!-- ============ TESTIMONI ============
+  TERSEMBUNYI sampai testimoni asli tersedia.
+  Cara mengaktifkan: ganti isi [TESTIMONI], nama, dan paket pada kartu di bawah,
+  lalu hapus atribut hidden pada tag <section> ini.
+  ============================================ -->
+<section class="gkau-sec" id="gkau-testimoni" hidden>
+  <div class="gkau-wrap">
+    <h2 class="gkau-h2">Testimoni Pelanggan eSIM Australia New Zealand Global Komunika</h2>
+    <div class="gkau-rv-box">
+      <div class="gkau-track gkau-track-rv" id="gkau-track-rev" data-gkau-auto="2000" tabindex="0" role="region" aria-label="Testimoni pelanggan, geser ke samping">
+<article class="gkau-rev"><span class="gkau-stars" role="img" aria-label="Bintang 5 dari 5"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg></span><blockquote class="gkau-q">“[TESTIMONI]”</blockquote><div class="gkau-rev-who"><b>[NAMA]</b><span>[PAKET]</span></div></article>
+<article class="gkau-rev"><span class="gkau-stars" role="img" aria-label="Bintang 5 dari 5"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg></span><blockquote class="gkau-q">“[TESTIMONI]”</blockquote><div class="gkau-rev-who"><b>[NAMA]</b><span>[PAKET]</span></div></article>
+<article class="gkau-rev"><span class="gkau-stars" role="img" aria-label="Bintang 5 dari 5"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-star"/></svg></span><blockquote class="gkau-q">“[TESTIMONI]”</blockquote><div class="gkau-rev-who"><b>[NAMA]</b><span>[PAKET]</span></div></article>
       </div>
     </div>
-  </section>
-  {%- endif -%}
-
-  <!-- ===== FAQ ===== -->
-  <section class="gkau-sec gkau-sec--mist" id="gkau-faq">
-    <div class="gkau-wrap">
-      <h2 class="gkau-h2">{{ section.settings.faq_title | default: 'FAQ eSIM Australia New Zealand' }}</h2>
-      <div class="gkau-faq" data-gkau-faq>
-        {%- assign faq_count = 0 -%}
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'faq' -%}
-            {%- assign faq_count = faq_count | plus: 1 -%}
-            <details class="gkau-faq-item" {{ block.shopify_attributes }}>
-              <summary class="gkau-faq-q">
-                <span>{{ block.settings.question }}</span>
-                <svg class="gkau-faq-arr" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-ar"/></svg>
-              </summary>
-              <div class="gkau-faq-a">
-                <p>{{ block.settings.answer }}</p>
-              </div>
-            </details>
-          {%- endif -%}
-        {%- endfor -%}
-
-        {%- if faq_count == 0 -%}
-          <!-- Default Fallback FAQs -->
-          
-        {%- endif -%}
-      </div>
+    <div class="gkau-rv-ctrl gkau-arrows" data-gkau-for="gkau-track-rev">
+      <button type="button" class="gkau-arrow" data-gkau-dir="-1" aria-label="Testimoni sebelumnya"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-al"/></svg></button>
+      <button type="button" class="gkau-arrow" data-gkau-dir="1" aria-label="Testimoni berikutnya"><svg class="gkau-i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#gkau-i-ar"/></svg></button>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===== FINAL CTA ===== -->
-  <section class="gkau-final" id="gkau-final">
-    <div class="gkau-wrap gkau-final-in">
-      <h2 class="gkau-final-h2">{{ section.settings.final_title | default: 'Mau liburan ke Australia & New Zealand tanpa khawatir kehabisan koneksi internet?' }}</h2>
-      <p class="gkau-final-p">{{ section.settings.final_lead | default: 'Siapkan eSIM Australia &amp; New Zealand dari Global Komunika sebelum berangkat!' }}</p>
-      <div class="gkau-final-act">
-        <a class="gkau-btn gkau-btn--light" href="{{ section.settings.final_btn_url | default: '#gkau-paket' }}">{{ section.settings.final_btn_text | default: 'Pilih Paket' }}</a>
-        <a class="gkau-btn" href="https://wa.me/{{ wa_number }}?text={{ wa_text }}" target="_blank" rel="noopener">{{ section.settings.whatsapp_btn_text | default: 'Tanya CS via WhatsApp' }}</a>
-      </div>
+<!-- ============ FAQ ============ -->
+<section class="gkau-sec gkau-sec--mist" id="gkau-faq">
+  <div class="gkau-wrap">
+    <h2 class="gkau-h2">FAQ eSIM Australia New Zealand</h2>
+    <div class="gkau-faq" data-gkau-faq>
+<details class="gkau-faq-i" open><summary class="gkau-faq-s"><h3 class="gkau-faq-q">Apa itu eSIM Australia &amp; eSIM New Zealand?</h3></summary><div class="gkau-faq-a"><p class="gkau-faq-p">eSIM Australia &amp; eSIM New Zealand adalah kartu SIM digital yang memungkinkan kamu mengakses internet selama berada di Australia &amp; New Zealand tanpa perlu menggunakan kartu SIM fisik. eSIM dipasang langsung pada smartphone yang sudah mendukung teknologi eSIM.</p></div></details>
+<details class="gkau-faq-i"><summary class="gkau-faq-s"><h3 class="gkau-faq-q">Apakah eSIM Australia &amp; eSIM New Zealand bisa digunakan untuk hotspot?</h3></summary><div class="gkau-faq-a"><p class="gkau-faq-p">Ya. Produk eSIM Australia &amp; New Zealand Global Komunika mendukung personal hotspot atau tethering. Kamu bisa membagikan koneksi internet ke perangkat lain yang kompatibel sesuai ketentuan paket.</p></div></details>
+<details class="gkau-faq-i"><summary class="gkau-faq-s"><h3 class="gkau-faq-q">Apakah eSIM Australia &amp; eSIM New Zealand tersedia dalam paket unlimited?</h3></summary><div class="gkau-faq-a"><p class="gkau-faq-p">Ya, tersedia pilihan paket dengan skema Daily Data Unlimited. Setelah mencapai batas penggunaan wajar, kecepatan dapat diturunkan menjadi 128 kbps dan direset pada hari berikutnya.</p><p class="gkau-faq-p">Selain itu, tersedia juga pilihan Big Data dengan kuota yang dapat digunakan selama masa berlaku tanpa batas harian. Jika kuota habis, layanan internet akan terputus.</p></div></details>
+<details class="gkau-faq-i"><summary class="gkau-faq-s"><h3 class="gkau-faq-q">Apakah semua HP bisa menggunakan eSIM Australia &amp; eSIM New Zealand?</h3></summary><div class="gkau-faq-a"><p class="gkau-faq-p">Tidak semua smartphone mendukung eSIM. Pastikan perangkat kamu memiliki dukungan eSIM, tidak terkunci operator (carrier lock), dan kompatibel dengan produk yang dipilih sebelum membeli.</p></div></details>
+<details class="gkau-faq-i"><summary class="gkau-faq-s"><h3 class="gkau-faq-q">Bagaimana jika HP saya tidak mendukung eSIM?</h3></summary><div class="gkau-faq-a"><p class="gkau-faq-p">Jangan khawatir! Global Komunika juga menyediakan SIM Card Australia &amp; New Zealand mulai dari <span class="gkau-price-val" data-gkau-handle="sim-card-australia-new-zealand" data-gkau-fallback="59000">Rp59.000</span> sebagai alternatif. <a class="gkau-link" href="https://gkomunika.com/products/sim-card-australia-new-zealand">Cek SIM Card di sini</a>.</p></div></details>
+<details class="gkau-faq-i"><summary class="gkau-faq-s"><h3 class="gkau-faq-q">Bagaimana cara membeli eSIM Australia &amp; eSIM New Zealand di Global Komunika?</h3></summary><div class="gkau-faq-a"><p class="gkau-faq-p">Kamu bisa membeli eSIM Australia &amp; eSIM New Zealand langsung melalui website Global Komunika dengan langkah berikut:</p><ol class="gkau-faq-ol"><li>Pilih produk eSIM sesuai negara tujuan perjalanan.</li><li>Tentukan masa aktif dan pilihan kuota.</li><li>Masukkan email aktif untuk menerima informasi pesanan.</li><li>Selesaikan pembayaran melalui metode yang tersedia.</li><li>Ikuti petunjuk instalasi eSIM yang dikirimkan setelah pembelian.</li></ol></div></details>
+<details class="gkau-faq-i"><summary class="gkau-faq-s"><h3 class="gkau-faq-q">Kapan barcode eSIM bisa diterima?</h3></summary><div class="gkau-faq-a"><p class="gkau-faq-p">Barcode akan dikirimkan melalui alamat email yang terdaftar setelah pembayaran pesanan selesai.</p></div></details>
     </div>
-  </section>
+  </div>
+</section>
 
+<!-- ============ CTA AKHIR ============ -->
+<section class="gkau-final" id="gkau-final">
+  <div class="gkau-wrap">
+    <h2 class="gkau-h2">Mau liburan ke Australia &amp; New Zealand tanpa khawatir kehabisan koneksi internet?</h2>
+    <p class="gkau-final-p">Siapkan eSIM Australia &amp; New Zealand dari Global Komunika sebelum berangkat!</p>
+    <a class="gkau-btn gkau-btn--light" href="#gkau-paket">Pilih paket eSIM Australia &amp; New Zealand</a>
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Apa itu eSIM Australia & eSIM New Zealand?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "eSIM Australia & eSIM New Zealand adalah kartu SIM digital yang memungkinkan kamu mengakses internet selama berada di Australia & New Zealand tanpa perlu menggunakan kartu SIM fisik. eSIM dipasang langsung pada smartphone yang sudah mendukung teknologi eSIM."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Apakah eSIM Australia & eSIM New Zealand bisa digunakan untuk hotspot?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ya. Produk eSIM Australia & New Zealand Global Komunika mendukung personal hotspot atau tethering. Kamu bisa membagikan koneksi internet ke perangkat lain yang kompatibel sesuai ketentuan paket."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Apakah eSIM Australia & eSIM New Zealand tersedia dalam paket unlimited?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ya, tersedia pilihan paket dengan skema Daily Data Unlimited. Setelah mencapai batas penggunaan wajar, kecepatan dapat diturunkan menjadi 128 kbps dan direset pada hari berikutnya. Selain itu, tersedia juga pilihan Big Data dengan kuota yang dapat digunakan selama masa berlaku tanpa batas harian. Jika kuota habis, layanan internet akan terputus."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Apakah semua HP bisa menggunakan eSIM Australia & eSIM New Zealand?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tidak semua smartphone mendukung eSIM. Pastikan perangkat kamu memiliki dukungan eSIM, tidak terkunci operator (carrier lock), dan kompatibel dengan produk yang dipilih sebelum membeli."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Bagaimana jika HP saya tidak mendukung eSIM?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Jangan khawatir! Global Komunika juga menyediakan SIM Card Australia & New Zealand sebagai alternatif. Cek produknya di halaman SIM Card Australia New Zealand."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Bagaimana cara membeli eSIM Australia & eSIM New Zealand di Global Komunika?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kamu bisa membeli eSIM Australia & eSIM New Zealand langsung melalui website Global Komunika dengan langkah berikut: 1. Pilih produk eSIM sesuai negara tujuan perjalanan. 2. Tentukan masa aktif dan pilihan kuota. 3. Masukkan email aktif untuk menerima informasi pesanan. 4. Selesaikan pembayaran melalui metode yang tersedia. 5. Ikuti petunjuk instalasi eSIM yang dikirimkan setelah pembelian."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kapan barcode eSIM bisa diterima?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Barcode akan dikirimkan melalui alamat email yang terdaftar setelah pembayaran pesanan selesai."
+      }
+    }
+  ]
+}
+</script>
 </div>
-
 <script>
 (function () {
   'use strict';
@@ -800,296 +738,29 @@ html,body{margin:0;padding:0;background:#fff}
   else init();
 })();
 </script>
+</div>
 
 {% schema %}
 {
   "name": "Landing Page Aus NZ",
   "tag": "section",
-  "class": "gk-landing-section",
+  "class": "section-gkau-landing",
   "settings": [
-    {
-      "type": "header",
-      "content": "Warna & Tema"
-    },
-    {
-      "type": "color",
-      "id": "brand_blue",
-      "label": "Warna Utama (Brand Blue)",
-      "default": "#005496"
-    },
-    {
-      "type": "color",
-      "id": "brand_sky",
-      "label": "Warna Aksen (Brand Cyan)",
-      "default": "#00ADEE"
-    },
-    {
-      "type": "header",
-      "content": "Hero Section"
-    },
-    {
-      "type": "text",
-      "id": "hero_title",
-      "label": "Hero Title (Judul Utama)",
-      "default": "eSIM Australia & New Zealand, Internet Praktis untuk Traveling"
-    },
-    {
-      "type": "textarea",
-      "id": "hero_sub",
-      "label": "Hero Subtitle (Deskripsi)",
-      "default": "Liburan ke Australia & New Zealand lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif begitu mendarat, dan nomor WhatsApp Indonesia tetap aktif."
-    },
-    {
-      "type": "text",
-      "id": "hero_price",
-      "label": "Hero Price (Harga Mulai Dari)",
-      "default": "Rp19.000"
-    },
-    {
-      "type": "text",
-      "id": "hero_btn_text",
-      "label": "Teks Tombol Hero",
-      "default": "Lihat paket"
-    },
-    {
-      "type": "url",
-      "id": "hero_btn_url",
-      "label": "Link Tombol Hero (Default: #gkau-paket)"
-    },
     {
       "type": "image_picker",
       "id": "hero_image",
-      "label": "Gambar Background Hero (Opsional)"
+      "label": "Hero Image Banner"
     },
     {
       "type": "text",
       "id": "hero_image_url",
-      "label": "URL Gambar Background Hero (Fallback)",
+      "label": "Hero Image URL (CDN)",
       "default": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/LP_AUZ_NZ.png?v=1794977727"
-    },
-    {
-      "type": "text",
-      "id": "hero_compat_text",
-      "label": "Teks Tombol Kompatibilitas",
-      "default": "Cek HP Support eSIM"
-    },
-    {
-      "type": "url",
-      "id": "hero_compat_url",
-      "label": "Link Tombol Kompatibilitas",
-      "default": "#gkau-cek-hp"
-    },
-    {
-      "type": "header",
-      "content": "Paket Section"
-    },
-    {
-      "type": "text",
-      "id": "packages_title",
-      "label": "Judul Paket",
-      "default": "Pilih Paket Internet Australia &amp; New Zealand Sesuai Kebutuhan"
-    },
-    {
-      "type": "textarea",
-      "id": "packages_lead",
-      "label": "Subjudul Paket (Opsional)"
-    },
-    {
-      "type": "header",
-      "content": "Testimoni"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_testimonials",
-      "label": "Tampilkan Bagian Testimoni",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "testimonials_title",
-      "label": "Judul Testimoni",
-      "default": "Testimoni Pelanggan eSIM Australia New Zealand Global Komunika"
-    },
-    {
-      "type": "header",
-      "content": "FAQ"
-    },
-    {
-      "type": "text",
-      "id": "faq_title",
-      "label": "Judul FAQ",
-      "default": "FAQ eSIM Australia New Zealand"
-    },
-    {
-      "type": "header",
-      "content": "Final CTA & WhatsApp"
-    },
-    {
-      "type": "text",
-      "id": "final_title",
-      "label": "Judul Final CTA",
-      "default": "Mau liburan ke Australia & New Zealand tanpa khawatir kehabisan koneksi internet?"
-    },
-    {
-      "type": "textarea",
-      "id": "final_lead",
-      "label": "Deskripsi Final CTA",
-      "default": "Siapkan eSIM Australia &amp; New Zealand dari Global Komunika sebelum berangkat!"
-    },
-    {
-      "type": "text",
-      "id": "final_btn_text",
-      "label": "Teks Tombol Final",
-      "default": "Pilih Paket"
-    },
-    {
-      "type": "url",
-      "id": "final_btn_url",
-      "label": "Link Tombol Final"
-    },
-    {
-      "type": "text",
-      "id": "whatsapp_number",
-      "label": "Nomor WhatsApp CS (tanpa tanda +)",
-      "default": "628156080055"
-    },
-    {
-      "type": "text",
-      "id": "whatsapp_text",
-      "label": "Pesan Awal WhatsApp CS",
-      "default": "Halo Global Komunika, saya ingin tanya seputar eSIM Australia & New Zealand"
-    },
-    {
-      "type": "text",
-      "id": "whatsapp_btn_text",
-      "label": "Teks Tombol WhatsApp CS",
-      "default": "Tanya CS via WhatsApp"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "product_card",
-      "name": "Kartu Paket / Produk",
-      "settings": [
-        {
-          "type": "product",
-          "id": "product",
-          "label": "Pilih Produk Shopify (Opsional)"
-        },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Nama Paket (Override)"
-        },
-        {
-          "type": "text",
-          "id": "tag",
-          "label": "Tag / Badge (e.g. eSIM, gSim!)",
-          "default": "eSIM"
-        },
-        {
-          "type": "text",
-          "id": "flag",
-          "label": "ID Bendera (e.g. au, sg, my, th, jp, kr, vn, au, nz)",
-          "default": "au"
-        },
-        {
-          "type": "text",
-          "id": "coverage",
-          "label": "Cakupan Negara (e.g. 1 negara, 3 negara)",
-          "default": "1 negara"
-        },
-        {
-          "type": "text",
-          "id": "price_prefix",
-          "label": "Prefix Harga",
-          "default": "Mulai dari"
-        },
-        {
-          "type": "text",
-          "id": "price",
-          "label": "Tampilan Harga Manual (e.g. Rp39.000)"
-        },
-        {
-          "type": "number",
-          "id": "price_fallback",
-          "label": "Harga Angka Fallback (e.g. 39000)",
-          "default": 39000
-        },
-        {
-          "type": "text",
-          "id": "handle",
-          "label": "Handle Produk untuk Live Price (e.g. esim-australia_nz)"
-        },
-        {
-          "type": "text",
-          "id": "button_label",
-          "label": "Teks Tombol",
-          "default": "Lihat paket"
-        },
-        {
-          "type": "url",
-          "id": "button_url",
-          "label": "Link Tombol"
-        },
-        {
-          "type": "text",
-          "id": "card_extra_class",
-          "label": "Extra CSS Class (e.g. gkau-card-g)"
-        }
-      ]
-    },
-    {
-      "type": "testimonial",
-      "name": "Testimoni Pelanggan",
-      "settings": [
-        {
-          "type": "range",
-          "id": "rating",
-          "min": 1,
-          "max": 5,
-          "step": 1,
-          "label": "Rating Bintang",
-          "default": 5
-        },
-        {
-          "type": "textarea",
-          "id": "quote",
-          "label": "Isi Testimoni"
-        },
-        {
-          "type": "text",
-          "id": "name",
-          "label": "Nama Pelanggan"
-        },
-        {
-          "type": "text",
-          "id": "trip",
-          "label": "Keterangan Trip / Paket"
-        }
-      ]
-    },
-    {
-      "type": "faq",
-      "name": "Pertanyaan FAQ",
-      "settings": [
-        {
-          "type": "text",
-          "id": "question",
-          "label": "Pertanyaan"
-        },
-        {
-          "type": "textarea",
-          "id": "answer",
-          "label": "Jawaban"
-        }
-      ]
     }
   ],
   "presets": [
     {
-      "name": "Landing Page Aus NZ",
-      "category": "Landing Pages"
+      "name": "Landing Page Aus NZ"
     }
   ]
 }

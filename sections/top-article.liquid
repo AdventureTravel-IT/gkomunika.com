@@ -26,17 +26,23 @@
     <div class="gkh-blog">
       {% if section.blocks.size > 0 %}
         {% for block in section.blocks %}
-          {% assign page_item = block.settings.page %}
+          {% assign post_item = block.settings.article | default: block.settings.page %}
 
-          {% if page_item != blank %}
+          {% if post_item != blank %}
             {% assign first_img = '' %}
-            {% assign parts = page_item.content | split: 'src="' %}
-            {% if parts.size > 1 %}
-              {% assign first_img = parts[1] | split: '"' | first %}
+            {% if post_item.image %}
+              {% assign first_img = post_item.image | image_url: width: 600 %}
             {% endif %}
 
             {% if first_img == blank %}
-              {% case page_item.handle %}
+              {% assign parts = post_item.content | split: 'src="' %}
+              {% if parts.size > 1 %}
+                {% assign first_img = parts[1] | split: '"' | first %}
+              {% endif %}
+            {% endif %}
+
+            {% if first_img == blank %}
+              {% case post_item.handle %}
                 {% when 'how-to-get-free-domestic-flight-tickets-in-thailand-for-tourists' %}
                   {% assign first_img = 'https://cdn.shopify.com/s/files/1/0735/4204/1817/files/thai_4a559a09-e2e9-4c5b-a212-5d641002ff08.jpg?v=1756893975' %}
                 {% when 'blocked-imei-phones-can-use-esim-without-customs-registration-here-s-how' %}
@@ -48,17 +54,17 @@
               {% endcase %}
             {% endif %}
 
-            <a class="gkh-post" href="{{ page_item.url }}" {{ block.shopify_attributes }}>
+            <a class="gkh-post" href="{{ post_item.url }}" {{ block.shopify_attributes }}>
               <div class="gkh-post__img">
                 {% if first_img != blank %}
-                  <img src="{{ first_img }}" alt="{{ page_item.title | escape }}" loading="lazy">
+                  <img src="{{ first_img }}" alt="{{ post_item.title | escape }}" loading="lazy">
                 {% else %}
                   <div style="width:100%;height:100%;background:#cbd5e1;"></div>
                 {% endif %}
               </div>
               <div class="gkh-post__body">
-                <h3 class="gkh-post__t">{{ page_item.title }}</h3>
-                <p class="gkh-post__p">{{ page_item.content | strip_html | truncate: 160 }}</p>
+                <h3 class="gkh-post__t">{{ post_item.title }}</h3>
+                <p class="gkh-post__p">{{ post_item.content | strip_html | truncate: 160 }}</p>
                 <span class="gkh-post__more">
                   {% if is_en %}Read article{% else %}{{ 'homepage.blog_read_more' | t: default: 'Baca artikel' }}{% endif %}
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -146,9 +152,14 @@
       "name": "Post Card",
       "settings": [
         {
+          "type": "article",
+          "id": "article",
+          "label": "Select Article (Blog)"
+        },
+        {
           "type": "page",
           "id": "page",
-          "label": "Select Page"
+          "label": "Select Page (Legacy)"
         }
       ]
     }

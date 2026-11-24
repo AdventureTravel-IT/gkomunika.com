@@ -1,0 +1,205 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "landing_page_esim_thailand_main": {
+      "type": "landing-page-esim-thailand",
+      "blocks": {
+        "product_1": {
+          "type": "product_card",
+          "settings": {
+            "title": "Thailand",
+            "tag": "eSIM",
+            "flag": "th",
+            "coverage": "1 negara",
+            "price_prefix": "Mulai dari",
+            "price": "Rp39.000",
+            "price_fallback": 39000,
+            "handle": "esim-thailand",
+            "button_label": "Lihat paket",
+            "button_url": "https://gkomunika.com/products/esim-thailand",
+            "card_extra_class": ""
+          }
+        },
+        "product_2": {
+          "type": "product_card",
+          "settings": {
+            "title": "Thailand Singapore Malaysia",
+            "tag": "eSIM",
+            "flag": "th",
+            "coverage": "3 negara",
+            "price_prefix": "Mulai dari",
+            "price": "Rp49.000",
+            "price_fallback": 49000,
+            "handle": "esim-singapore-malaysia-thailand-indonesia",
+            "button_label": "Lihat paket",
+            "button_url": "https://gkomunika.com/products/esim-singapore-malaysia-thailand-indonesia",
+            "card_extra_class": ""
+          }
+        },
+        "product_3": {
+          "type": "product_card",
+          "settings": {
+            "title": "Thailand Singapore Malaysia Vietnam",
+            "tag": "eSIM",
+            "flag": "th",
+            "coverage": "4 negara",
+            "price_prefix": "Mulai dari",
+            "price": "Rp49.000",
+            "price_fallback": 49000,
+            "handle": "esim-singapore-malaysia-thailand-vietnam-indonesia",
+            "button_label": "Lihat paket",
+            "button_url": "https://gkomunika.com/products/esim-singapore-malaysia-thailand-vietnam-indonesia",
+            "card_extra_class": ""
+          }
+        },
+        "product_4": {
+          "type": "product_card",
+          "settings": {
+            "title": "gSim! Asia",
+            "tag": "eSIM",
+            "flag": "th",
+            "coverage": "10 negara",
+            "price_prefix": "Mulai dari",
+            "price": "Rp59.000",
+            "price_fallback": 59000,
+            "handle": "gsim-asia",
+            "button_label": "Lihat gSim! Asia",
+            "button_url": "https://gkomunika.com/products/gsim-asia",
+            "card_extra_class": "gkth-card-g"
+          }
+        },
+        "testimonial_1": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Langsung dipakai begitu tiba di Don Mueang. Lancar dan stabil selama 7 hari di 3 kota berbeda",
+            "name": "G***n",
+            "trip": "Paket 8 Hari, 15GB"
+          }
+        },
+        "testimonial_2": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Puas bgt! Admin fast response, cara aktifkannya mudah bahkan bagi yang gaptek. Sampai Thai lgsg aktif tanpa harus ganti fisik simcard. Recommended! Next ke KN pake lagi e-SIM dari sini insyaAllah",
+            "name": "D***a",
+            "trip": "Paket 8 Hari, 15GB"
+          }
+        },
+        "testimonial_3": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Respon cepat dan sangat membantu saat sy butuh dadakan. Signal bagus dan gampang meng aktifkan nya. Akan beli dari sini selalu ke negara mana pun. Makasih bantuan nya",
+            "name": "Yuli",
+            "trip": "Paket 8 Hari, 15GB"
+          }
+        },
+        "testimonial_4": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Selalu langganan disini. Kode QR dikirim secepat kilat. Jaringan 5G di Singapore dan Thailand. Recommended seller.",
+            "name": "g*****a",
+            "trip": "Paket 5 Hari, 3GB"
+          }
+        },
+        "testimonial_5": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Repeat order eSim Global komunika. Pemakaian mudah dan koneksi bagus. 5 hari dithailand dan 1 hari disingapore jaringan lancar",
+            "name": "rouzaliyana",
+            "trip": "Paket 10 Hari, 20GB"
+          }
+        },
+        "testimonial_6": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Tokcer lagi! Sudah yg kedua kalinya beli dari sini. Tidak ada masalah aktivasi sama sekali. Tidak perlu pusing dengan kartu sim fisik jg yg biasanya mungil dan perlu buka HP. Very recommended.",
+            "name": "Karinina",
+            "trip": "Paket 10 Hari, 50GB"
+          }
+        },
+        "testimonial_7": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "E-Sim berfungsi. Petunjuk pemasangannya sangat mudah. Penjualnya sangat cepat merespons dan mengirim. Sangat merekomendasikan etalase ini.",
+            "name": "Gregg",
+            "trip": "Paket 4 Hari, 2GB/Hari"
+          }
+        },
+        "testimonial_8": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Udah langganan esim aku sama toko ini. Gak pernah kecewakan aku dah ini toko. servisnya juga bagus. Harga bersahabat. Overall toko rekomen.",
+            "name": "f*****5",
+            "trip": "Paket 3 Hari, 3GB"
+          }
+        },
+        "testimonial_9": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Sudah sering kali belanja di global komunika ke berbagai negara, semua nya bagus signal nya rekomen",
+            "name": "v*****i",
+            "trip": "Paket 5 Hari, 1GB/Hari"
+          }
+        }
+      },
+      "block_order": [
+        "product_1",
+        "product_2",
+        "product_3",
+        "product_4",
+        "testimonial_1",
+        "testimonial_2",
+        "testimonial_3",
+        "testimonial_4",
+        "testimonial_5",
+        "testimonial_6",
+        "testimonial_7",
+        "testimonial_8",
+        "testimonial_9"
+      ],
+      "settings": {
+        "brand_blue": "#005496",
+        "brand_sky": "#00ADEE",
+        "hero_title": "eSIM Thailand, Internet Praktis untuk Traveling Tanpa Ganti SIM Card",
+        "hero_sub": "Liburan ke Thailand lebih tenang dengan eSIM dari Global Komunika. QR Code dikirim ke email, langsung aktif saat tiba di Thailand, dan nomor WhatsApp Indonesia tetap aktif.",
+        "hero_price": "Rp39.000",
+        "hero_btn_text": "Lihat paket",
+        "hero_btn_url": "#gkth-paket",
+        "hero_image_url": "https://cdn.shopify.com/s/files/1/0735/4204/1817/files/thai_4a559a09-e2e9-4c5b-a212-5d641002ff08.jpg?v=1756893975",
+        "hero_compat_text": "Cek HP Support eSIM",
+        "hero_compat_url": "#gkth-cek-hp",
+        "packages_title": "Pilih Paket Internet Thailand Sesuai Kebutuhan",
+        "packages_lead": "Cek harga eSIM Thailand dan pilih paket data sesuai durasi perjalanan serta kebutuhan internet kamu",
+        "show_testimonials": true,
+        "testimonials_title": "Testimoni Pelanggan eSIM Thailand Global Komunika",
+        "faq_title": "FAQ eSIM Thailand",
+        "final_title": "Mau liburan ke Thailand tanpa khawatir kehabisan koneksi internet?",
+        "final_lead": "Siapkan eSIM Thailand dari Global Komunika sebelum berangkat!",
+        "final_btn_text": "Pilih Paket",
+        "final_btn_url": "#gkth-paket",
+        "whatsapp_number": "628156080055",
+        "whatsapp_text": "Halo Global Komunika, saya ingin tanya seputar eSIM Thailand",
+        "whatsapp_btn_text": "Tanya CS via WhatsApp"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "landing_page_esim_thailand_main"
+  ]
+}

@@ -4,26 +4,53 @@
   "items": [
     {%- assign first = true -%}
     {%- for item in search.results -%}
-      {%- unless item.object_type == 'page' -%}{%- continue -%}{%- endunless -%}
-      {%- assign cat = item.metafields.pages.category.value | default: '' | downcase -%}
+      {%- unless item.object_type == 'page' or item.object_type == 'article' -%}{%- continue -%}{%- endunless -%}
 
-      {%- comment -%} Ambil image pertama dari content {%- endcomment -%}
-      {%- assign first_img_url = '' -%}
-      {%- assign img_parts = item.content | split: '<img' -%}
-      {%- if img_parts.size > 1 -%}
-        {%- assign img_tag = img_parts[1] | split: '>' | first -%}
-
-        {%- comment -%} coba ambil src="..." {%- endcomment -%}
-        {%- if img_tag contains 'src="' -%}
-          {%- assign first_img_url = img_tag | split: 'src="' | last | split: '"' | first -%}
-        {%- elsif img_tag contains "src='" -%}
-          {%- assign first_img_url = img_tag | split: "src='" | last | split: "'" | first -%}
-        {%- elsif img_tag contains 'data-src="' -%}
-          {%- assign first_img_url = img_tag | split: 'data-src="' | last | split: '"' | first -%}
-        {%- elsif img_tag contains "data-src='" -%}
-          {%- assign first_img_url = img_tag | split: "data-src='" | last | split: "'" | first -%}
+      {%- assign cat = '' -%}
+      {%- if item.object_type == 'page' -%}
+        {%- assign cat = item.metafields.pages.category.value | default: item.metafields.custom.category.value | default: '' | downcase -%}
+      {%- elsif item.object_type == 'article' -%}
+        {%- assign cat = item.metafields.custom.category.value | default: item.metafields.pages.category.value | default: '' | downcase -%}
+        {%- if cat == blank -%}
+          {%- for tag in item.tags -%}
+            {%- assign tag_lower = tag | downcase | strip -%}
+            {%- if tag_lower == 'news' or tag_lower == 'berita' or tag_lower == 'travel-guide' or tag_lower == 'travel guide' or tag_lower == 'panduan perjalanan' or tag_lower == 'panduan-perjalanan' or tag_lower == 'tech-guide' or tag_lower == 'tech guide' or tag_lower == 'panduan teknologi' or tag_lower == 'panduan-teknologi' or tag_lower == 'travel-tips' or tag_lower == 'travel tips' or tag_lower == 'tips perjalanan' or tag_lower == 'tips-perjalanan' or tag_lower == 'events' or tag_lower == 'event' or tag_lower == 'peristiwa' -%}
+              {%- assign cat = tag_lower -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+        {%- if cat == blank and item.tags.size > 0 -%}
+          {%- assign cat = item.tags.first | downcase -%}
+        {%- endif -%}
+        {%- if cat == blank -%}
+          {%- assign cat = item.blog.title | default: 'news' | downcase -%}
         {%- endif -%}
       {%- endif -%}
+
+      {%- comment -%} Ambil image {%- endcomment -%}
+      {%- assign item_img_url = '' -%}
+      {%- if item.object_type == 'article' and item.image -%}
+        {%- assign item_img_url = item.image | image_url: width: 800 -%}
+      {%- endif -%}
+
+      {%- if item_img_url == blank -%}
+        {%- assign img_parts = item.content | split: '<img' -%}
+        {%- if img_parts.size > 1 -%}
+          {%- assign img_tag = img_parts[1] | split: '>' | first -%}
+          {%- if img_tag contains 'src="' -%}
+            {%- assign item_img_url = img_tag | split: 'src="' | last | split: '"' | first -%}
+          {%- elsif img_tag contains "src='" -%}
+            {%- assign item_img_url = img_tag | split: "src='" | last | split: "'" | first -%}
+          {%- elsif img_tag contains 'data-src="' -%}
+            {%- assign item_img_url = img_tag | split: 'data-src="' | last | split: '"' | first -%}
+          {%- elsif img_tag contains "data-src='" -%}
+            {%- assign item_img_url = img_tag | split: "data-src='" | last | split: "'" | first -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- assign item_excerpt = item.excerpt_or_content | default: item.content | strip_html | truncate: 160 -%}
 
       {%- unless first -%},{%- endunless -%}
       {%- assign first = false -%}
@@ -32,8 +59,8 @@
         "url": {{ item.url | json }},
         "category": {{ cat | json }},
         "published_at": {{ item.published_at | date: "%Y-%m-%d" | json }},
-        "excerpt": {{ item.content | strip_html | truncate: 160 | json }},
-        "image": {{ first_img_url | json }}
+        "excerpt": {{ item_excerpt | json }},
+        "image": {{ item_img_url | json }}
       }
     {%- endfor -%}
   ],

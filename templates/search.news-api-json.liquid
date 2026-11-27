@@ -11,6 +11,15 @@
         {%- assign cat = item.metafields.pages.category.value | default: item.metafields.custom.category.value | default: '' | downcase -%}
       {%- elsif item.object_type == 'article' -%}
         {%- assign cat = item.metafields.custom.category.value | default: item.metafields.pages.category.value | default: '' | downcase -%}
+        {%- if cat == blank and item.url contains '/blogs/' -%}
+          {%- assign blog_parts = item.url | split: '/blogs/' -%}
+          {%- if blog_parts.size > 1 -%}
+            {%- assign blog_handle = blog_parts[1] | split: '/' | first | split: '?' | first | downcase | strip -%}
+            {%- if blog_handle != blank -%}
+              {%- assign cat = blog_handle -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endif -%}
         {%- if cat == blank -%}
           {%- for tag in item.tags -%}
             {%- assign tag_lower = tag | downcase | strip -%}
@@ -20,11 +29,8 @@
             {%- endif -%}
           {%- endfor -%}
         {%- endif -%}
-        {%- if cat == blank and item.tags.size > 0 -%}
-          {%- assign cat = item.tags.first | downcase -%}
-        {%- endif -%}
         {%- if cat == blank -%}
-          {%- assign cat = item.blog.title | default: 'news' | downcase -%}
+          {%- assign cat = 'news' -%}
         {%- endif -%}
       {%- endif -%}
 

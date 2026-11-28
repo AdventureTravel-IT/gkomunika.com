@@ -13,18 +13,17 @@
       "type": "main-page",
       "disabled": true,
       "settings": {
-        "padding_top": 28,
-        "padding_bottom": 28
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     },
-    "landing_page_zurich_europe_Nwchzt": {
-      "type": "landing-page-zurich-europe",
-      "name": "Landing Page Zurich Europe",
+    "landing_page_gk_asuransi_perjalanan_main": {
+      "type": "landing-page-gk-asuransi-perjalanan",
       "settings": {}
     }
   },
   "order": [
     "main",
-    "landing_page_zurich_europe_Nwchzt"
+    "landing_page_gk_asuransi_perjalanan_main"
   ]
 }

@@ -1,0 +1,436 @@
+{% comment %}
+  Section: Landing Page GK x UOB Promo
+  File: sections/landing-page-gk-uob.liquid
+  1:1 exact replica of gk-uob-landing-page.html
+{% endcomment %}
+
+<style>
+@font-face{font-family:"GKUOB Gotham";font-weight:400;font-style:normal;font-display:swap;src:url("https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Gotham-Book.otf?v=1794546841") format("opentype")}
+@font-face{font-family:"GKUOB Gotham";font-weight:700;font-style:normal;font-display:swap;src:url("https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Gotham-Bold.otf?v=1794546841") format("opentype")}
+
+#MainContent:has(#gk-section-{{ section.id }}) {
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.gkuob-page{
+  --gkuob-blue:#005496;--gkuob-cyan:#00ADEE;--gkuob-ink:#222222;
+  --gkuob-c20:#CCEFFC;--gkuob-c10:#E5F6FD;--gkuob-c40:#99DEF8;
+  --gkuob-line:#DCE4EC;--gkuob-white:#FFFFFF;--gkuob-yellow:#FBB526;
+  font-family:"GKUOB Gotham","Helvetica Neue",Arial,sans-serif;
+  font-size:16px;line-height:1.6;color:var(--gkuob-ink);background:var(--gkuob-white);
+  -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+.gkuob-page *,.gkuob-page *::before,.gkuob-page *::after{box-sizing:border-box}
+.gkuob-page :where(h1,h2,h3,p,ul,ol){margin:0;padding:0}
+.gkuob-page :where(ul,ol){list-style:none}
+.gkuob-page img{max-width:100%}
+.gkuob-page img[src=""]{display:none}
+.gkuob-wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 20px;position:relative}
+.gkuob-section{padding:40px 0 48px}
+
+.gkuob-copy:focus-visible,.gkuob-link:focus-visible{outline:3px solid var(--gkuob-yellow);outline-offset:3px}
+
+/* ========== HERO (mobile dulu) ========== */
+.gkuob-hero{position:relative;display:flex;flex-direction:column;background:#fff;overflow:hidden}
+.gkuob-hero-wrap{order:1;position:relative;z-index:2;padding-top:44px}
+.gkuob-hero-copy{color:var(--gkuob-blue)}
+.gkuob-hero h1{font-size:32px;line-height:1.12;font-weight:700;color:var(--gkuob-blue);margin-bottom:14px}
+.gkuob-hero-title{font-size:18px;line-height:1.35;font-weight:700;color:var(--gkuob-blue);margin-bottom:8px}
+.gkuob-hero-text{font-size:16px;line-height:1.55;color:var(--gkuob-blue);margin-bottom:14px;max-width:46ch}
+.gkuob-pill{display:inline-block;padding:7px 16px;border-radius:999px;background:var(--gkuob-c20);color:var(--gkuob-blue);font-weight:700;font-size:14px;line-height:1.35}
+.gkuob-br{display:none}
+.gkuob-hero-pic{order:2;display:block;position:relative;margin-top:-64px;z-index:1}
+.gkuob-hero-pic img{display:block;width:100%;height:auto;max-height:820px;object-fit:cover;object-position:center bottom}
+.gkuob-hero-pic::before{content:"";position:absolute;left:0;right:0;top:0;height:90px;background:linear-gradient(#fff,rgba(255,255,255,0));z-index:2;pointer-events:none}
+
+/* ========== KARTU DISKON (mobile: landscape) ========== */
+.gkuob-cards{display:grid;gap:20px}
+.gkuob-card{position:relative;overflow:hidden;border-radius:24px;min-height:370px;background:linear-gradient(135deg,#FFFFFF 0%,var(--gkuob-c20) 100%);border:1px solid var(--gkuob-line);color:var(--gkuob-blue)}
+.gkuob-card-pic{position:absolute;left:0;right:0;bottom:0;display:block}
+.gkuob-card-pic img{display:block;width:100%;height:auto;aspect-ratio:2721/1533;object-fit:cover;object-position:right center;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 30%);mask-image:linear-gradient(to bottom,transparent 0,#000 30%)}
+.gkuob-card-body{position:relative;z-index:2;display:flex;flex-direction:column;min-height:370px;padding:20px 20px 18px}
+.gkuob-disc-label{font-size:18px;line-height:1.2;font-weight:400}
+.gkuob-disc-num{font-size:66px;line-height:1;font-weight:700;letter-spacing:-.02em;margin:2px 0 8px}
+.gkuob-card h3{font-size:21px;line-height:1.25;font-weight:700;margin-bottom:4px}
+.gkuob-card-desc{font-size:15px;line-height:1.45;max-width:62%}
+.gkuob-dest{font-size:12px;line-height:1.5;max-width:64%;margin-top:6px}
+.gkuob-bottom{margin-top:auto;padding-top:16px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px}
+.gkuob-page .gkuob-notes{order:1;list-style:disc;padding-left:18px;font-size:13px;line-height:1.5;color:var(--gkuob-blue);max-width:64%;text-shadow:0 0 6px #fff,0 0 3px #fff}
+.gkuob-voucher{order:2;width:100%;margin-left:0;display:flex;height:56px;position:relative}
+.gkuob-code{flex:1;min-width:0;height:56px;display:flex;flex-direction:column;justify-content:center;padding:0 8px 0 12px;background:var(--gkuob-white);border:2px dashed var(--gkuob-blue);border-right:0;border-radius:12px 0 0 12px;font-weight:700;font-size:15px;letter-spacing:.02em;color:var(--gkuob-blue);line-height:1.25}
+.gkuob-code small{font-size:10px;font-weight:400;letter-spacing:0;line-height:1.3}
+.gkuob-copy{position:relative;flex:none;height:56px;min-width:72px;margin-left:-8px;border:0;border-radius:12px;background:var(--gkuob-blue);color:var(--gkuob-white);font:inherit;font-size:16px;cursor:pointer;padding:0 14px}
+.gkuob-copy:hover{background:#00427A}
+/* seluruh kartu bisa diklik: link transparan di bawah konten; hanya voucher (kode, Salin, Beli) yang menangkap klik sendiri */
+.gkuob-card-link{position:absolute;inset:0;z-index:1;border-radius:inherit}
+.gkuob-card-body{pointer-events:none}
+.gkuob-voucher{pointer-events:auto}
+@media (hover:hover){
+  .gkuob-card{transition:transform .2s,box-shadow .2s}
+  .gkuob-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,84,150,.18)}
+}
+.gkuob-copy[data-done="1"]{background:#2E884A}
+.gkuob-buy{flex:none;height:56px;min-width:78px;margin-left:8px;padding:0 14px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--gkuob-blue);color:var(--gkuob-white);font-weight:700;font-size:16px;text-decoration:none;transition:background .2s}
+.gkuob-buy:hover{background:#00427A}
+.gkuob-buy:focus-visible{outline:3px solid var(--gkuob-yellow);outline-offset:3px}
+.gkuob-buy svg{width:16px;height:16px}
+
+/* ========== HOW TO REDEEM ========== */
+.gkuob-redeem{background:var(--gkuob-c10);padding:48px 0 56px}
+.gkuob-redeem h2{font-size:28px;line-height:1.2;font-weight:700;color:var(--gkuob-blue);text-align:center;margin-bottom:12px}
+.gkuob-redeem-sub{text-align:center;color:var(--gkuob-blue);max-width:34ch;margin:0 auto}
+.gkuob-link{color:var(--gkuob-blue);font-weight:700;text-decoration:underline;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.gkuob-link svg{width:18px;height:18px}
+/* mobile: ponsel di kiri, badge + teks di kanan */
+.gkuob-steps{display:grid;gap:8px;margin:32px -8px 0}
+.gkuob-step{position:relative;display:grid;grid-template-columns:53% 1fr;align-items:start}
+.gkuob-fig{display:block}
+.gkuob-phone{position:relative;width:100%;aspect-ratio:1/1.49}
+.gkuob-phone img{position:absolute;left:0;bottom:0;display:block;height:100%;width:auto;max-width:none}
+.gkuob-gift{width:120px;height:120px;flex:none;min-width:120px;max-width:none}
+.gkuob-step-text{position:relative;z-index:2;display:flex;align-items:flex-start;gap:8px;padding-top:22px;padding-right:4px}
+.gkuob-badge{flex:none;width:36px;height:36px;border-radius:50%;background:var(--gkuob-blue);color:var(--gkuob-white);font-weight:700;font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center}
+.gkuob-step-text p{color:var(--gkuob-blue);font-size:15px;line-height:1.45;padding-top:7px}
+.gkuob-step--end{align-items:center}
+.gkuob-step--end .gkuob-fig{display:flex;justify-content:flex-start;padding-left:calc(75.5% - 60px)}
+.gkuob-step--end .gkuob-step-text{padding:0 4px 0 44px}
+.gkuob-step--end .gkuob-step-text p{padding-top:0}
+.gkuob-chev{display:none}
+
+/* ========== S&K (selalu terbuka) ========== */
+.gkuob-tnc-box{border:1px solid var(--gkuob-line);border-radius:20px;padding:22px 20px}
+.gkuob-tnc-box h2{font-size:15px;line-height:1.4;font-weight:700;color:var(--gkuob-blue);margin-bottom:14px}
+.gkuob-page .gkuob-tnc-box ol{list-style:decimal;padding-left:22px;font-size:15px;line-height:1.6;color:var(--gkuob-ink)}
+.gkuob-tnc-box li{margin-bottom:8px;padding-left:2px}
+.gkuob-page .gkuob-tnc-box ul{list-style:disc;padding-left:20px;margin-top:6px}
+.gkuob-tnc-box ul li{margin-bottom:2px}
+.gkuob-tnc-note{margin-top:14px;font-size:15px;line-height:1.6;color:var(--gkuob-ink)}
+.gkuob-tnc-box li:last-child{margin-bottom:0}
+.gkuob-tnc-box a{color:var(--gkuob-blue);font-weight:700;text-decoration:underline}
+.gkuob-tnc-box a:hover{color:#00427A}
+
+/* ========== HERO DESKTOP (>=700px) ========== */
+@media (min-width:700px){
+  .gkuob-br{display:inline}
+  .gkuob-hero{display:block;height:clamp(520px,56.25vw,1080px);min-height:520px;background:#fff;aspect-ratio:16/9}
+  .gkuob-hero-pic{position:absolute;inset:0;margin:0}
+  .gkuob-hero-pic::before{display:none}
+  .gkuob-hero-pic img{width:100%;height:100%;max-height:none;object-fit:cover;object-position:right top}
+  .gkuob-hero-wrap{width:100%;max-width:none;margin:0;padding:clamp(60px,11.1vw,214px) clamp(24px,4.2vw,80px) 0;height:100%;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;pointer-events:none}
+  .gkuob-hero-copy{width:100%;max-width:min(58vw,860px);padding:0;margin:0;pointer-events:auto}
+  .gkuob-hero h1{font-size:clamp(36px,3.6vw,57.6px);line-height:1.12;margin-bottom:clamp(14px,1.4vw,20px);max-width:none}
+  .gkuob-hero-title{font-size:clamp(18px,1.7vw,27px);line-height:1.35;margin-bottom:clamp(12px,1.2vw,16px);max-width:none;white-space:nowrap}
+  .gkuob-hero-text{font-size:clamp(15px,1.55vw,25px);line-height:1.55;margin-bottom:clamp(18px,1.8vw,28px);max-width:none}
+  .gkuob-pill{font-size:clamp(13px,1vw,16px);padding:8px 20px;border-radius:999px;white-space:nowrap}
+}
+
+/* ========== DESKTOP (>=768px) ========== */
+@media (min-width:768px){
+  .gkuob-section{padding:64px 0 72px}
+
+  /* kartu: portrait, teks tengah di atas, voucher di bawah */
+  .gkuob-cards{grid-template-columns:repeat(3,1fr);gap:20px}
+  .gkuob-card{min-height:640px;background:linear-gradient(180deg,var(--gkuob-c40) 0%,var(--gkuob-c10) 55%,#FFFFFF 100%)}
+  .gkuob-card-pic{inset:0}
+  .gkuob-card-pic img{height:100%;aspect-ratio:auto;-webkit-mask-image:none;mask-image:none;object-position:center bottom}
+  .gkuob-card-pic::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 72%,rgba(255,255,255,.85) 100%);pointer-events:none}
+  .gkuob-card-body{min-height:640px;padding:26px 20px 20px;text-align:center;align-items:center}
+  .gkuob-disc-label{font-size:20px}
+  .gkuob-disc-num{font-size:84px}
+  .gkuob-card h3{font-size:22px}
+  .gkuob-card-desc{max-width:none;font-size:16px}
+  .gkuob-dest{max-width:none;font-size:13px}
+  .gkuob-bottom{position:absolute;left:20px;right:20px;bottom:20px;height:116px;margin:0;padding:0;display:flex;flex-direction:column;flex-wrap:nowrap;align-items:flex-start;justify-content:flex-start;gap:10px;text-align:left}
+  .gkuob-voucher{order:1;margin-left:0}
+  .gkuob-page .gkuob-notes{order:2;max-width:none;text-shadow:none}
+
+  /* redeem: 4 kolom (ponsel + teks), tanpa kartu */
+  .gkuob-redeem h2{font-size:36px}
+  .gkuob-redeem-sub{max-width:none}
+  .gkuob-steps{grid-template-columns:repeat(4,1fr);gap:24px;margin:48px 0 0;align-items:stretch}
+  .gkuob-step{display:flex;flex-direction:column;align-items:stretch}
+  .gkuob-fig{flex:1;display:flex;align-items:flex-end}
+  .gkuob-phone{aspect-ratio:1/1.44}
+  .gkuob-phone img{left:50%;transform:translateX(-50%)}
+  .gkuob-step--end .gkuob-fig{align-items:center;justify-content:center;padding-left:0}
+  .gkuob-gift{width:170px;height:170px}
+  .gkuob-step-text{padding:16px 0 0;gap:14px;height:176px}
+  .gkuob-badge{width:44px;height:44px;font-size:20px}
+  .gkuob-step-text p{font-size:17px;line-height:1.5;padding-top:9px}
+  .gkuob-step--end .gkuob-step-text{justify-content:center;text-align:center;padding:16px 0 0}
+  .gkuob-step--end .gkuob-step-text p{padding-top:9px}
+  .gkuob-tnc-box{padding:28px 32px}
+}
+@media (min-width:768px) and (max-width:1023px){
+  .gkuob-bottom{height:176px}
+  .gkuob-voucher{flex-wrap:wrap;height:auto}
+  .gkuob-buy{flex-basis:100%;margin:8px 0 0;height:48px}
+  .gkuob-steps{grid-template-columns:repeat(2,1fr);gap:40px 24px}
+  .gkuob-step-text{height:120px;min-height:0}
+  .gkuob-phone{width:85%;margin:0 auto}
+}
+@media (min-width:1024px){
+  .gkuob-hero h1{font-size:57.6px;margin-bottom:18px}
+  .gkuob-hero-title{font-size:27px;margin-bottom:16px}
+  .gkuob-hero-text{font-size:25px;margin-bottom:28px}
+  .gkuob-pill{font-size:16px}
+  @supports (grid-template-rows:subgrid){
+    .gkuob-steps{grid-template-rows:auto auto;row-gap:0}
+    .gkuob-step{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:span 2;row-gap:0}
+    .gkuob-step-text{height:auto}
+  }
+}
+@media (max-width:380px){
+  .gkuob-disc-num{font-size:58px}
+}
+@media (max-width:360px){
+  .gkuob-code{font-size:13px;padding:0 4px 0 10px}
+  .gkuob-copy{min-width:60px;padding:0 10px;font-size:15px}
+  .gkuob-buy{min-width:64px;padding:0 10px;font-size:15px;margin-left:6px}
+  .gkuob-step-text p{font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){.gkuob-page *{transition:none!important}}
+</style>
+
+<div id="gk-section-{{ section.id }}" class="gk-landing-wrapper">
+  <div class="gkuob-page" id="gkuob-page">
+
+    <!-- HERO
+         Foto: desktop = srcset (16:9, 4215x2370), mobile = src (9:16, 1404x2493).
+         Format PNG/WebP transparan (fade putih bagian dari file). Link dikosongkan. -->
+    <section class="gkuob-hero" aria-labelledby="gkuob-h1">
+      <div class="gkuob-wrap gkuob-hero-wrap">
+        <div class="gkuob-hero-copy">
+          <h1 id="gkuob-h1">GO FURTHER,<br>SPEND SMARTER</h1>
+          <p class="gkuob-hero-title">Promo Eksklusif Pemegang Kartu Kredit UOB</p>
+          <p class="gkuob-hero-text">Rencanakan perjalanan dengan lebih nyaman!<br class="gkuob-br"> Penawaran spesial khusus untuk pemegang Kartu<br class="gkuob-br"> Kredit UOB untuk pembelian Travel eSIM, gSim! dan<br class="gkuob-br"> Asuransi Perjalanan dari Global Komunika.</p>
+          <p class="gkuob-pill">Promo Period: 1 December 2026 – 30 November 2027</p>
+        </div>
+      </div>
+      <picture class="gkuob-hero-pic">
+        <source media="(min-width:700px)" srcset="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_Hero_sec_desktop.png?v=1795767619" data-gkuob-img="hero-desktop">
+        <img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_Hero_sec_mobile.png?v=1795767616" data-gkuob-img="hero-mobile" alt="Traveler Indonesia duduk di atas koper dengan pemandangan kota pantai" width="1404" height="2493">
+      </picture>
+    </section>
+
+    <!-- DISKON
+         Foto kartu: desktop = srcset (portrait 9:16, 1191x2115), mobile = src (landscape 16:9, 2721x1533). -->
+    <section class="gkuob-section" id="gkuob-promo" aria-label="Promo diskon">
+      <div class="gkuob-wrap">
+        <div class="gkuob-cards">
+
+          <article class="gkuob-card">
+            <picture class="gkuob-card-pic">
+              <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_disc_sec_asuransi_desktop.png?v=1795767595" data-gkuob-img="kartu1-desktop">
+              <img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_disc_sec_asuransi_mobile.png?v=1795767605" data-gkuob-img="kartu1-mobile" alt="Traveler perempuan bertopi dengan pemandangan kota pantai" width="2721" height="1533" loading="lazy">
+            </picture>
+            <!-- Link kartu: href HARUS sama dengan tombol Beli di bawah (ganti keduanya bersamaan) -->
+            <a class="gkuob-card-link" href="https://5rvnln5n7ak963hx-73542041817.shopifypreview.com/pages/10-iconic-bts-locations-in-south-korea-every-army-should-add-to-their-wishlist?view=landing-page-gk-asuransi-perjalanan" data-gkuob-cta="card-asuransi" aria-hidden="true" tabindex="-1"></a>
+            <div class="gkuob-card-body">
+              <p class="gkuob-disc-label">Diskon</p>
+              <p class="gkuob-disc-num">20%</p>
+              <h3>Asuransi Perjalanan</h3>
+              <p class="gkuob-card-desc">Travel lebih tenang dengan perlindungan.</p>
+              <div class="gkuob-bottom">
+                <ul class="gkuob-notes">
+                  <li>Tanpa minimum pembelian</li>
+                  <li>Maksimal diskon Rp200.000 per transaksi</li>
+                </ul>
+                <div class="gkuob-voucher">
+                  <div class="gkuob-code"><small>Kode Voucher</small><span data-gkuob-code="UOB20INS">UOB20INS</span></div>
+                  <button type="button" class="gkuob-copy" aria-label="Salin kode voucher UOB20INS">Salin</button>
+                  <a class="gkuob-buy" href="https://5rvnln5n7ak963hx-73542041817.shopifypreview.com/pages/10-iconic-bts-locations-in-south-korea-every-army-should-add-to-their-wishlist?view=landing-page-gk-asuransi-perjalanan" data-gkuob-cta="buy-asuransi" aria-label="Beli Asuransi Perjalanan">Beli <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="gkuob-card">
+            <picture class="gkuob-card-pic">
+              <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_disc_sec_gsim_desktop.png?v=1795767609" data-gkuob-img="kartu2-desktop">
+              <img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_disc_sec_gsimmobile.png?v=1795767616" data-gkuob-img="kartu2-mobile" alt="Traveler perempuan memegang HP dengan pagoda dan Gunung Fuji" width="2721" height="1533" loading="lazy">
+            </picture>
+            <!-- Link kartu: href HARUS sama dengan tombol Beli di bawah (ganti keduanya bersamaan) -->
+            <a class="gkuob-card-link" href="https://gkomunika.com/products/gsim-asia?utm_source=uob&amp;utm_medium=promo-page&amp;utm_campaign=uob-cc-2026&amp;utm_content=gsim" data-gkuob-cta="card-gsim" aria-hidden="true" tabindex="-1"></a>
+            <div class="gkuob-card-body">
+              <p class="gkuob-disc-label">Diskon</p>
+              <p class="gkuob-disc-num">15%</p>
+              <h3>gSim! Asia</h3>
+              <p class="gkuob-card-desc">Jelajahi destinasi di Asia</p>
+              <p class="gkuob-dest">Singapore - Malaysia - Vietnam - China - Hong Kong - Japan - Taiwan - South Korea - Thailand - Macau</p>
+              <div class="gkuob-bottom">
+                <ul class="gkuob-notes">
+                  <li>Tanpa minimum pembelian</li>
+                </ul>
+                <div class="gkuob-voucher">
+                  <div class="gkuob-code"><small>Kode Voucher</small><span data-gkuob-code="UOB15GSIM">UOB15GSIM</span></div>
+                  <button type="button" class="gkuob-copy" aria-label="Salin kode voucher UOB15GSIM">Salin</button>
+                  <!-- href final: halaman gSim! Asia -->
+                  <a class="gkuob-buy" href="https://gkomunika.com/products/gsim-asia?utm_source=uob&amp;utm_medium=promo-page&amp;utm_campaign=uob-cc-2026&amp;utm_content=gsim" data-gkuob-cta="buy-gsim" aria-label="Beli gSim! Asia">Beli <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="gkuob-card">
+            <picture class="gkuob-card-pic">
+              <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_disc_sec_esim_desktop.png?v=1795767601" data-gkuob-img="kartu3-desktop">
+              <img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_disc_sec_esim_mobile.png?v=1795767608" data-gkuob-img="kartu3-mobile" alt="Traveler laki-laki memegang HP dengan Menara Eiffel" width="2721" height="1533" loading="lazy">
+            </picture>
+            <!-- Link kartu: href HARUS sama dengan tombol Beli di bawah (ganti keduanya bersamaan) -->
+            <a class="gkuob-card-link" href="https://gkomunika.com/search?utm_source=uob&amp;utm_medium=promo-page&amp;utm_campaign=uob-cc-2026&amp;utm_content=esim" data-gkuob-cta="card-esim" aria-hidden="true" tabindex="-1"></a>
+            <div class="gkuob-card-body">
+              <p class="gkuob-disc-label">Diskon</p>
+              <p class="gkuob-disc-num">10%</p>
+              <h3>Travel eSIM</h3>
+              <p class="gkuob-card-desc">Tetap terkoneksi di berbagai destinasi perjalanan.</p>
+              <div class="gkuob-bottom">
+                <ul class="gkuob-notes">
+                  <li>Tanpa minimum pembelian</li>
+                </ul>
+                <div class="gkuob-voucher">
+                  <div class="gkuob-code"><small>Kode Voucher</small><span data-gkuob-code="UOB10ESIM">UOB10ESIM</span></div>
+                  <button type="button" class="gkuob-copy" aria-label="Salin kode voucher UOB10ESIM">Salin</button>
+                  <!-- href final: halaman pencarian semua eSIM -->
+                  <a class="gkuob-buy" href="https://gkomunika.com/search?utm_source=uob&amp;utm_medium=promo-page&amp;utm_campaign=uob-cc-2026&amp;utm_content=esim" data-gkuob-cta="buy-esim" aria-label="Beli Travel eSIM">Beli <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW TO REDEEM
+         Gambar langkah 1-3 (UOB_Hp_1/2/3): satu file dipakai untuk desktop dan mobile.
+         Syarat file: tinggi sama, skala ponsel sama, jarak tepi kiri ponsel ke tepi kiri file sama,
+         ruang +-40-60px di kanan untuk bayangan kartu. Langkah 4 memakai ikon SVG. -->
+    <section class="gkuob-redeem" id="gkuob-redeem" aria-labelledby="gkuob-redeem-h">
+      <div class="gkuob-wrap">
+        <h2 id="gkuob-redeem-h">How to Redeem Your Exclusive Promo?</h2>
+        <p class="gkuob-redeem-sub">Kunjungi website resmi Global Komunika di
+          <a class="gkuob-link" href="https://gkomunika.com/" data-gkuob-cta="link">gkomunika.com
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+          </a>
+        </p>
+
+        <ol class="gkuob-steps">
+          <li class="gkuob-step">
+            <div class="gkuob-fig"><div class="gkuob-phone"><img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_Hp_1.png?v=1795767560" data-gkuob-img="redeem1" alt="Halaman produk gSim! Asia di gkomunika.com dengan harga Rp139.000" loading="lazy"></div></div>
+            <div class="gkuob-step-text"><span class="gkuob-badge" aria-hidden="true">1</span><p>Pilih produk gSim! Asia, eSIM atau Asuransi Perjalanan yang Anda butuhkan.</p></div>
+            <svg class="gkuob-chev" viewBox="0 0 28 24" fill="none" stroke="#00ADEE" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7l10 10L24 7"/></svg>
+          </li>
+          <li class="gkuob-step">
+            <div class="gkuob-fig"><div class="gkuob-phone"><img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_Hp_2.png?v=1795767557" data-gkuob-img="redeem2" alt="Halaman checkout dengan kolom kode diskon dan tombol Apply" loading="lazy"></div></div>
+            <div class="gkuob-step-text"><span class="gkuob-badge" aria-hidden="true">2</span><p>Pada halaman checkout, masukkan kode voucher promo untuk produk yang Anda pilih.</p></div>
+            <svg class="gkuob-chev" viewBox="0 0 28 24" fill="none" stroke="#00ADEE" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7l10 10L24 7"/></svg>
+          </li>
+          <li class="gkuob-step">
+            <div class="gkuob-fig"><div class="gkuob-phone"><img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/UOB_Hp_3.png?v=1795767556" data-gkuob-img="redeem3" alt="Halaman pembayaran dengan kartu kredit" loading="lazy"></div></div>
+            <div class="gkuob-step-text"><span class="gkuob-badge" aria-hidden="true">3</span><p>Lanjutkan pembayaran menggunakan Kartu Kredit UOB.</p></div>
+            <svg class="gkuob-chev" viewBox="0 0 28 24" fill="none" stroke="#00ADEE" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7l10 10L24 7"/></svg>
+          </li>
+          <li class="gkuob-step gkuob-step--end">
+            <div class="gkuob-fig"><svg class="gkuob-gift" viewBox="0 0 48 48" fill="none" stroke="#005496" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="18" width="36" height="8" rx="2"/><path d="M8 26v15h32V26"/><path d="M24 18v23"/><path d="M24 18c-6 0-10-3-8-7s8-1 8 7zM24 18c6 0 10-3 8-7s-8-1-8 7z"/></svg></div>
+            <div class="gkuob-step-text"><p>Nikmati promo spesial sesuai produk pilihan Anda!</p></div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- SYARAT & KETENTUAN (selalu terbuka) -->
+    <section class="gkuob-section" id="gkuob-tnc" aria-labelledby="gkuob-tnc-h">
+      <div class="gkuob-wrap">
+        <div class="gkuob-tnc-box">
+          <h2 id="gkuob-tnc-h">SYARAT &amp; KETENTUAN PROMO</h2>
+          <ol>
+            <li>Periode promo: 1 Desember 2026 – 30 November 2027</li>
+            <li>Promo berlaku setiap hari.</li>
+            <li>Diskon 20% untuk pembelian travel Asuransi dengan maksimum diskon Rp. 200.000, - per transaksi.</li>
+            <li>Diskon 15% untuk gSIM Asia.</li>
+            <li>Diskon 10% untuk produk eSIM lainnya</li>
+            <li>Pembelian dan pembayaran hanya dapat dilakukan melalui website <a href="https://gkomunika.com/">gkomunika.com</a></li>
+            <li>Promo ini tidak dapat digabungkan dengan promo lainnya.</li>
+            <li>Promo berlaku untuk metode pembayaran penuh</li>
+            <li>Promo berlaku bagi pemegang Kartu Kredit UOB Indonesia dan Regional, yang meliputi:
+              <ul>
+                <li>UOB Infinite</li>
+                <li>UOB PRVI Miles</li>
+                <li>UOB Preferred Platinum</li>
+                <li>UOB Lady’s Card</li>
+                <li>UOB YOLO</li>
+                <li>UOB One Card</li>
+                <li>Garuda Indonesia UOB Co-Brand Credit Card</li>
+                <li>UOB Telkomsel Co-Brand Credit Card</li>
+                <li>TMRW Credit Card</li>
+              </ul>
+            </li>
+            <li>Promo tidak berlaku untuk Corporate Card.</li>
+            <li>PT Bank UOB Indonesia dan Global Komunika berhak untuk menambah, menghapus, menangguhkan atau menghapus syarat dan ketentuan Promo dari waktu ke waktu, seluruhnya atau sebagian dengan memberikan pemberitahuan terlebih dahulu kepada Nasabah.</li>
+            <li>Batas waktu pengaduan Nasabah untuk Promo ini akan diterima PT Bank UOB Indonesia selambatnya 30 hari kalender setelah Periode Promo berakhir.</li>
+            <li>Dengan mengikuti Promo ini, Nasabah sudah mengerti dan menyetujui semua syarat dan ketentuan yang berlaku untuk Promo ini. Untuk informasi lebih lanjut dan pengaduan nasabah, silakan menghubungi UOB Contact Center 14008 atau 021-2355-900</li>
+          </ol>
+          <p class="gkuob-tnc-note">Promo ini merupakan promo yang diselenggarakan oleh Global Komunika. PT Bank UOB Indonesia bukan merupakan penyelenggara promo dan hanya menyediakan media informasi kepada nasabah terkait promo dimaksud. Segala manfaat, persyaratan, mekanisme pelaksanaan, perubahan, penundaan, penghentian, maupun penanganan keluhan sehubungan dengan promo tersebut akan tunduk pada syarat dan ketentuan promo yang ditetapkan oleh pihak penyelenggara yang berwenang.</p>
+          <p class="gkuob-tnc-note">PT Bank UOB Indonesia berizin dan diawasi oleh Otoritas Jasa Keuangan dan Bank Indonesia.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById("gkuob-page");
+  if (!root) root = document.querySelector(".gkuob-page");
+  if (!root) return;
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  Array.prototype.forEach.call(root.querySelectorAll(".gkuob-copy"), function (btn) {
+    btn.addEventListener("click", function () {
+      var codeEl = btn.parentNode.querySelector("[data-gkuob-code]");
+      var text = codeEl ? codeEl.getAttribute("data-gkuob-code") : "";
+      if (!text) return;
+      var done = function () {
+        btn.textContent = "Tersalin";
+        btn.setAttribute("data-done", "1");
+        setTimeout(function () { btn.textContent = "Salin"; btn.removeAttribute("data-done"); }, 2000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+      } else { fallbackCopy(text); done(); }
+    });
+  });
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Landing Page GK UOB",
+  "tag": "section",
+  "class": "section-gkuob-landing",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Landing Page GK UOB"
+    }
+  ]
+}
+{% endschema %}

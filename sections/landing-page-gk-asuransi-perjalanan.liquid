@@ -1,0 +1,463 @@
+{% comment %}
+  Section: Landing Page GK Asuransi Perjalanan (Zurich)
+  File: sections/landing-page-gk-asuransi-perjalanan.liquid
+  1:1 exact replica of landing-page-gk-asuransi-perjalanan.html
+{% endcomment %}
+
+<style>
+/* ============================================================
+   Landing Page GK - Asuransi Perjalanan (Zurich)
+   Semua class berprefix .gk-ins- agar tidak bentrok dengan LP/section lain.
+   Font: Gotham Book + Bold, link dari Shopify.
+   ============================================================ */
+@font-face{font-family:"GKInsGotham";src:url("https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Gotham-Book.otf?v=1794546841");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"GKInsGotham";src:url("https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Gotham-Bold.otf?v=1794546841");font-weight:700;font-style:normal;font-display:swap}
+
+#MainContent:has(#gk-section-{{ section.id }}) {
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.gk-ins{
+  --gk-ins-blue:#005496;
+  --gk-ins-cyan:#00ADEE;
+  --gk-ins-lightblue:#99DEFA;   /* #00ADEE opacity 40% di atas putih */
+  --gk-ins-ink:#1f1f1f;
+  --gk-ins-muted:#4a5560;
+  --gk-ins-soft:#f5f7fa;
+  --gk-ins-line:#dbe3ea;
+  --gk-ins-yellow:#FBB526;
+  --gk-ins-font:"GKInsGotham","Montserrat","Helvetica Neue",Arial,sans-serif;
+  --gk-ins-h:28px;              /* ukuran headline SEMUA section (satu nilai) */
+  font-family:var(--gk-ins-font);
+  font-size:16px;line-height:1.65;color:var(--gk-ins-ink);
+  background:#fff;overflow-x:hidden;-webkit-text-size-adjust:100%;
+}
+.gk-ins *,.gk-ins *::before,.gk-ins *::after{box-sizing:border-box}
+.gk-ins :where(img,picture){display:block;max-width:100%}
+.gk-ins :where(h1,h2,h3,p,ul,li,figure,blockquote){margin:0;padding:0}
+.gk-ins :where(ul){list-style:none}
+.gk-ins :where(a){text-decoration:none}
+.gk-ins a:focus-visible,.gk-ins button:focus-visible{outline:3px solid var(--gk-ins-yellow);outline-offset:3px}
+.gk-ins-br{display:none}
+.gk-ins-sr{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.gk-ins-wrap{width:100%;max-width:1360px;margin:0 auto;padding:0 24px}
+.gk-ins-section{padding:64px 0}
+
+/* ---------- Headline & lead (ukuran sama di semua section) ---------- */
+.gk-ins .gk-ins-h{font-weight:700;font-size:var(--gk-ins-h);line-height:1.2;letter-spacing:-.01em;color:var(--gk-ins-blue)}
+.gk-ins .gk-ins-h--center{text-align:center}
+.gk-ins .gk-ins-h--white{color:#fff}
+.gk-ins-lead{margin:16px auto 0;max-width:62ch;font-size:16px;line-height:1.75;color:var(--gk-ins-blue)}
+.gk-ins-lead--center{text-align:center}
+
+/* ---------- Tombol CTA: Gotham Bold, kapital, tracking ---------- */
+.gk-ins .gk-ins-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:52px;padding:14px 20px;border:0;border-radius:999px;cursor:pointer;
+  font-family:var(--gk-ins-font);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;line-height:1.2;text-align:center;
+  background:var(--gk-ins-blue);color:#fff;transition:background-color .2s,transform .2s;
+}
+.gk-ins .gk-ins-btn:hover{background:#003f73}
+.gk-ins .gk-ins-btn:active{transform:scale(.98)}
+.gk-ins .gk-ins-btn--light{background:#fff;color:var(--gk-ins-blue)}
+.gk-ins .gk-ins-btn--light:hover{background:#e6f6fd;color:var(--gk-ins-blue)}
+
+/* ---------- Placeholder bila link gambar masih kosong ---------- */
+.gk-ins-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:13px;color:var(--gk-ins-muted)}
+
+/* ---------- 1. Hero ---------- */
+.gk-ins-hero{position:relative;display:flex;flex-direction:column;background:#fff;overflow:hidden}
+.gk-ins-hero-in{order:1;position:relative;z-index:2;width:100%;max-width:1080px;margin:0 auto;padding:44px 20px 0}
+.gk-ins-hero-copy{color:var(--gk-ins-blue)}
+.gk-ins-hero .gk-ins-h{font-size:32px;line-height:1.12;font-weight:700;color:var(--gk-ins-blue);margin-bottom:14px;text-transform:uppercase}
+.gk-ins-hero-sub{font-size:18px;line-height:1.35;font-weight:700;color:var(--gk-ins-blue);margin-bottom:8px;margin-top:0}
+.gk-ins-hero-body{font-size:16px;line-height:1.55;color:var(--gk-ins-blue);margin-bottom:14px;margin-top:0;max-width:46ch}
+.gk-ins-hero-cta{margin-top:0}
+.gk-ins-hero-photo{order:2;position:relative;margin-top:24px;aspect-ratio:1080/1255;background:#fff}
+.gk-ins-hero-photo img{width:100%;height:100%;object-fit:cover;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%);mask-image:linear-gradient(180deg,transparent 0,#000 16%)}
+
+/* ---------- 2. Pilih asuransi ---------- */
+.gk-ins-products{background:#fff;padding-bottom:72px}
+.gk-ins-carousel{position:relative;margin-top:40px}
+.gk-ins-track{
+  display:flex;gap:16px;margin:0 -24px;padding:8px 24px 28px;
+  overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 24px;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.gk-ins-track::-webkit-scrollbar{display:none}
+.gk-ins-card{
+  position:relative;flex:0 0 82%;max-width:340px;scroll-snap-align:start;display:flex;flex-direction:column;
+  background:#fff;border-radius:20px;overflow:hidden;cursor:pointer;
+  box-shadow:0 2px 4px rgba(0,84,150,.06),0 12px 28px rgba(0,84,150,.12);
+  transition:transform .2s,box-shadow .2s;
+}
+.gk-ins-card:hover{transform:translateY(-4px);box-shadow:0 4px 8px rgba(0,84,150,.08),0 18px 36px rgba(0,84,150,.2)}
+.gk-ins-card:hover .gk-ins-btn{background:#003f73}
+/* Seluruh kartu bisa diklik: area link tombol diperluas menutupi kartu */
+.gk-ins-card .gk-ins-btn::after{content:"";position:absolute;inset:0;z-index:1}
+.gk-ins-card:focus-within{outline:3px solid var(--gk-ins-yellow);outline-offset:3px}
+.gk-ins-card-img{position:relative;aspect-ratio:800/599;background:linear-gradient(135deg,#d6f1fc,#e8eef5)}
+.gk-ins-card-img img{width:100%;height:100%;object-fit:cover}
+.gk-ins-card-act{padding:16px 20px 20px}
+.gk-ins .gk-ins-card-act .gk-ins-btn{width:100%;min-height:48px;font-size:13px}
+.gk-ins-navbtn{
+  display:none;position:absolute;top:calc(50% - 40px);z-index:2;width:52px;height:52px;border-radius:50%;
+  border:0;background:#fff;color:var(--gk-ins-blue);cursor:pointer;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(0,84,150,.28);transition:background-color .2s,color .2s;
+}
+.gk-ins-navbtn:hover:not(:disabled){background:var(--gk-ins-blue);color:#fff}
+.gk-ins-navbtn:disabled{opacity:0;pointer-events:none}
+.gk-ins-navbtn svg{width:22px;height:22px}
+.gk-ins-navbtn--prev{left:-8px}
+.gk-ins-navbtn--next{right:-8px}
+
+/* ---------- 3. Manfaat ---------- */
+.gk-ins-benefit{background:#fff}
+.gk-ins-bgrid{margin-top:40px;display:grid;grid-template-columns:1fr;gap:16px}
+.gk-ins-bcard{display:flex;align-items:center;gap:24px;min-height:96px;padding:20px 24px;border-radius:16px;background:var(--gk-ins-lightblue);color:var(--gk-ins-blue)}
+.gk-ins-bcard--dark{background:var(--gk-ins-blue);color:#fff}
+.gk-ins-bico{flex:0 0 48px;width:48px;height:48px}
+.gk-ins-bico svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.gk-ins-bname{font-weight:400;font-size:20px;line-height:1.3}
+.gk-ins-note{margin-top:24px;font-size:16px;line-height:1.7;font-style:italic;color:var(--gk-ins-blue)}
+.gk-ins-benefit-cta{margin-top:32px;text-align:center}
+
+/* ---------- 4. Testimoni (marquee) ---------- */
+.gk-ins-proof{background:var(--gk-ins-soft);padding:64px 0;overflow:hidden}
+.gk-ins-marquee{
+  position:relative;margin-top:40px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 48px,#000 calc(100% - 48px),transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 48px,#000 calc(100% - 48px),transparent 100%);
+}
+.gk-ins-mtrack{display:flex;gap:16px;width:max-content;padding:16px 0 32px;animation:gk-ins-scroll var(--gk-ins-dur,50s) linear infinite}
+.gk-ins-marquee:hover .gk-ins-mtrack,.gk-ins-marquee.is-paused .gk-ins-mtrack{animation-play-state:paused}
+@keyframes gk-ins-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.gk-ins-review{
+  position:relative;flex:0 0 300px;display:flex;flex-direction:column;gap:16px;
+  padding:28px 24px 24px;background:#fff;border-radius:24px;
+  box-shadow:0 2px 4px rgba(0,84,150,.05),0 12px 28px rgba(0,84,150,.10);
+}
+.gk-ins-review::before{
+  content:"\201C";position:absolute;top:12px;right:20px;font-family:Georgia,"Times New Roman",serif;font-weight:700;
+  font-size:88px;line-height:1;color:var(--gk-ins-cyan);opacity:.22;pointer-events:none;
+}
+.gk-ins-stars{display:flex;gap:2px}
+.gk-ins-stars svg{width:18px;height:18px;fill:var(--gk-ins-yellow)}
+.gk-ins-review blockquote{flex:1;font-size:15px;line-height:1.7;color:var(--gk-ins-ink)}
+.gk-ins-who{display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid var(--gk-ins-line)}
+.gk-ins-avatar{
+  flex:0 0 44px;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(45deg,#005496,#00ADEE);color:#fff;font-weight:700;font-size:16px;
+}
+.gk-ins-who-txt{display:flex;flex-direction:column;gap:4px;min-width:0}
+.gk-ins-name{font-weight:700;font-size:15px;line-height:1.2;color:var(--gk-ins-ink)}
+.gk-ins-variant{align-self:flex-start;padding:2px 10px;border-radius:999px;background:#e6f6fd;color:var(--gk-ins-blue);font-size:12px;line-height:1.5}
+
+/* ---------- 5. CTA penutup ---------- */
+.gk-ins-final{padding:64px 0;background:linear-gradient(45deg,#005496 0%,#005496 62%,#00ADEE 135%);color:#fff;text-align:center}
+.gk-ins-final p{margin:16px auto 0;max-width:48ch;color:#e8f4fb}
+.gk-ins .gk-ins-final .gk-ins-btn{margin-top:32px}
+
+/* ---------- Sticky CTA mobile ---------- */
+.gk-ins-sticky{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+  background:rgba(255,255,255,.96);border-top:1px solid var(--gk-ins-line);transform:translateY(110%);transition:transform .3s;
+}
+.gk-ins-sticky.is-on{transform:translateY(0)}
+.gk-ins .gk-ins-sticky .gk-ins-btn{width:100%}
+
+/* ---------- Tablet & desktop ---------- */
+@media (min-width:768px){
+  .gk-ins{--gk-ins-h:40px}
+  .gk-ins-br{display:inline}
+  .gk-ins .gk-ins-btn{padding:14px 32px;font-size:14px;letter-spacing:.12em}
+  .gk-ins-section{padding:96px 0}
+  .gk-ins-lead{font-size:18px}
+  .gk-ins-hero{display:block;height:clamp(560px,56.25vw,1080px);min-height:560px;background:#fff;aspect-ratio:16/9}
+  .gk-ins-hero-photo{position:absolute;inset:0;margin:0;width:100%;height:100%;aspect-ratio:auto;background:transparent;z-index:1;pointer-events:none}
+  .gk-ins-hero-photo picture{display:block;width:100%;height:100%}
+  .gk-ins-hero-photo img{width:100%;height:100%;object-fit:cover;object-position:right top;-webkit-mask-image:none;mask-image:none}
+  .gk-ins-hero-in{width:100%;max-width:none;margin:0;height:100%;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:clamp(60px,11vw,214px) clamp(24px,4.9vw,96px) 0;pointer-events:none}
+  .gk-ins-hero-copy{position:relative;z-index:3;width:100%;max-width:min(58vw,820px);padding:0;margin:0;text-align:left;pointer-events:auto}
+  .gk-ins-hero .gk-ins-h{font-size:clamp(36px,3.6vw,57.6px);line-height:1.12;margin-bottom:16px;max-width:none}
+  .gk-ins-hero-sub{font-size:clamp(18px,1.7vw,27px);line-height:1.3;margin-bottom:14px;max-width:none}
+  .gk-ins-hero-body{font-size:clamp(16px,1.55vw,25px);line-height:1.55;margin-bottom:24px;max-width:none}
+  .gk-ins-hero-cta{margin-top:0}
+  .gk-ins-products{padding-bottom:48px}
+  .gk-ins-track{gap:20px;margin:0;padding:8px 0 28px;scroll-padding:0}
+  .gk-ins-card{flex:0 0 calc((100% - 40px)/3);max-width:none}
+  .gk-ins-navbtn{display:inline-flex}
+  .gk-ins-bgrid{grid-template-columns:1fr 1fr;gap:20px}
+  .gk-ins-bcard{min-height:120px;padding:24px 40px;gap:32px}
+  .gk-ins-bcard--wide{grid-column:1/-1}
+  .gk-ins-bico{flex-basis:64px;width:64px;height:64px}
+  .gk-ins-bname{font-size:26px}
+  .gk-ins-final{padding:96px 0}
+  .gk-ins-sticky{display:none}
+  .gk-ins-proof{padding:96px 0}
+  .gk-ins-review{flex-basis:340px}
+}
+@media (min-width:1024px){
+  .gk-ins-hero .gk-ins-h{font-size:57.6px;margin-bottom:18px}
+  .gk-ins-hero-sub{font-size:27px;margin-bottom:16px}
+  .gk-ins-hero-body{font-size:25px;margin-bottom:28px}
+}
+@media (min-width:1200px){
+  .gk-ins-card{flex-basis:calc((100% - 60px)/4)}
+}
+@media (prefers-reduced-motion:reduce){
+  .gk-ins *{transition:none!important;scroll-behavior:auto!important}
+  .gk-ins-mtrack{animation:none}
+  .gk-ins-marquee{overflow-x:auto;-webkit-mask-image:none;mask-image:none}
+  .gk-ins-review[data-clone]{display:none}
+}
+</style>
+
+<div id="gk-section-{{ section.id }}" class="gk-landing-wrapper">
+  <div class="gk-ins" id="gk-ins-root">
+
+    <!-- 1. HERO -->
+    <section class="gk-ins-hero" id="gk-ins-hero">
+      <div class="gk-ins-hero-photo">
+        <picture>
+          <source media="(min-width:768px)" srcset="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Hero_sec_Asuransi_desktop.png?v=1795773234">
+          <img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Hero_sec_asuransi_mobile.png?v=1795773241" alt="Keluarga tersenyum menikmati pemandangan pantai saat berlibur" width="1080" height="1255" fetchpriority="high" data-gk-ins-img>
+        </picture>
+        <span class="gk-ins-ph">[FOTO HERO]</span>
+      </div>
+      <div class="gk-ins-hero-in">
+        <div class="gk-ins-hero-copy">
+          <h1 class="gk-ins-h">Explore the World,<br class="gk-ins-br"> Leave Worries Behind</h1>
+          <p class="gk-ins-hero-sub">Asuransi Perjalanan Untuk Setiap Destinasi, Domestik<br class="gk-ins-br"> hingga Internasional</p>
+          <p class="gk-ins-hero-body">Setiap perjalanan berharga. Lengkapi rencana perjalanan<br class="gk-ins-br"> Anda dengan asuransi yang memberikan perlindungan<br class="gk-ins-br"> sesuai kebutuhan. Ciptakan momen di setiap perjalanan<br class="gk-ins-br"> tanpa rasa kuatir.</p>
+          <div class="gk-ins-hero-cta">
+            <a class="gk-ins-btn" href="#gk-ins-products" data-gk-ins-scroll>Lindungi perjalanan Anda</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PILIH ASURANSI -->
+    <section class="gk-ins-section gk-ins-products" id="gk-ins-products">
+      <div class="gk-ins-wrap">
+        <h2 class="gk-ins-h gk-ins-h--center">Pilih Asuransi Perjalanan Sesuai Destinasi Anda</h2>
+        <p class="gk-ins-lead gk-ins-lead--center">Temukan berbagai pilihan asuransi perjalanan untuk menjelajahi Asia, Eropa, dan berbagai negara. Nikmati juga pilihan perlindungan perjalanan internasional sepanjang tahun dengan satu polis asuransi perjalanan tahunan, pilihan praktis bagi Anda yang aktif bepergian.</p>
+
+        <div class="gk-ins-carousel">
+          <button class="gk-ins-navbtn gk-ins-navbtn--prev" type="button" id="gk-ins-prev" aria-label="Produk sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button class="gk-ins-navbtn gk-ins-navbtn--next" type="button" id="gk-ins-next" aria-label="Produk berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+
+          <ul class="gk-ins-track" id="gk-ins-track" tabindex="0" aria-label="Daftar produk asuransi perjalanan">
+            <li class="gk-ins-card">
+              <div class="gk-ins-card-img"><img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Asuransi_Asia.jpg?v=1795773229" alt="Zurich Asia Travel Insurance: durasi perjalanan sampai 180 hari, benefit sampai Rp1,25M" width="800" height="599" loading="lazy" data-gk-ins-img><span class="gk-ins-ph">[FOTO ASIA]</span></div>
+              <div class="gk-ins-card-act"><a class="gk-ins-btn" href="https://gkomunika.com/products/zurich-asia-travel-insurance" target="_blank" rel="noopener" aria-label="Lihat paket Zurich Asia Travel Insurance">Lihat paket</a></div>
+            </li>
+            <li class="gk-ins-card">
+              <div class="gk-ins-card-img"><img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Zurich_Europe_Travel_Insurance_1.jpg?v=1795773229" alt="Zurich Europe (Schengen) Travel Insurance: durasi perjalanan sampai 31 hari, benefit sampai Rp1,25M" width="800" height="599" loading="lazy" data-gk-ins-img><span class="gk-ins-ph">[FOTO EUROPE]</span></div>
+              <div class="gk-ins-card-act"><a class="gk-ins-btn" href="https://gkomunika.com/products/zurich-europe-travel-insurance" target="_blank" rel="noopener" aria-label="Lihat paket Zurich Europe Travel Insurance">Lihat paket</a></div>
+            </li>
+            <li class="gk-ins-card">
+              <div class="gk-ins-card-img"><img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Zurich_International_Travel_Insurance.jpg?v=1795773229" alt="Zurich International Travel Insurance: durasi perjalanan sampai 31 hari, benefit sampai Rp1,25M" width="800" height="599" loading="lazy" data-gk-ins-img><span class="gk-ins-ph">[FOTO INTERNATIONAL]</span></div>
+              <div class="gk-ins-card-act"><a class="gk-ins-btn" href="https://gkomunika.com/products/zurich-international-travel-insurance" target="_blank" rel="noopener" aria-label="Lihat paket Zurich International Travel Insurance">Lihat paket</a></div>
+            </li>
+            <li class="gk-ins-card">
+              <div class="gk-ins-card-img"><img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/zurich_insurance_domestic_867c105a-3d96-4aa4-bc04-68b1f16be26b.jpg?v=1795773229" alt="Zurich Domestic Indonesia Travel Insurance" width="800" height="599" loading="lazy" data-gk-ins-img><span class="gk-ins-ph">[FOTO DOMESTIC]</span></div>
+              <div class="gk-ins-card-act"><a class="gk-ins-btn" href="https://gkomunika.com/products/zurich-domestic-indonesia-travel-insurance" target="_blank" rel="noopener" aria-label="Lihat paket Zurich Domestic Indonesia Travel Insurance">Lihat paket</a></div>
+            </li>
+            <li class="gk-ins-card">
+              <div class="gk-ins-card-img"><img src="https://cdn.shopify.com/s/files/1/0735/4204/1817/files/Zurich_International_Travel_Insurance.jpg?v=1795773229" alt="Zurich International Annual Travel Insurance" width="800" height="599" loading="lazy" data-gk-ins-img><span class="gk-ins-ph">[FOTO ANNUAL]</span></div>
+              <div class="gk-ins-card-act"><a class="gk-ins-btn" href="https://gkomunika.com/products/zurich-international-annual-travel-insurance" target="_blank" rel="noopener" aria-label="Lihat paket Zurich International Annual Travel Insurance">Lihat paket</a></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MANFAAT -->
+    <section class="gk-ins-section gk-ins-benefit" id="gk-ins-benefit">
+      <div class="gk-ins-wrap">
+        <h2 class="gk-ins-h gk-ins-h--center">Great Journey Begins with Great Preparation</h2>
+        <p class="gk-ins-lead gk-ins-lead--center">Perjalanan lebih tenang melalui berbagai manfaat asuransi perjalanan yang membantu melindungi diri, barang bawaan, dan anggaran perjalanan Anda.</p>
+
+        <ul class="gk-ins-bgrid">
+          <li class="gk-ins-bcard gk-ins-bcard--dark gk-ins-bcard--wide">
+            <span class="gk-ins-bico" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 41C10 31 5 24 5 17.5A9.5 9.5 0 0 1 24 13.5 9.5 9.5 0 0 1 43 17.5C43 24 38 31 24 41z"/><path d="M11 24h8l3-6 4 12 3-6h8"/></svg></span>
+            <span class="gk-ins-bname">Medical Protection</span>
+          </li>
+          <li class="gk-ins-bcard">
+            <span class="gk-ins-bico" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="13" y="16" width="22" height="24" rx="4"/><path d="M19 16V8h10v8M19 23v11M24 23v11M29 23v11M17 40v3M31 40v3"/></svg></span>
+            <span class="gk-ins-bname">Baggage Protection</span>
+          </li>
+          <li class="gk-ins-bcard">
+            <span class="gk-ins-bico" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><path d="M24 13v11l7 5"/></svg></span>
+            <span class="gk-ins-bname">Travel Delay</span>
+          </li>
+          <li class="gk-ins-bcard">
+            <span class="gk-ins-bico" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="8" y="11" width="32" height="29" rx="4"/><path d="M8 20h32M16 7v8M32 7v8M19 26l10 10M29 26l-10 10"/></svg></span>
+            <span class="gk-ins-bname">Trip Cancellation</span>
+          </li>
+          <li class="gk-ins-bcard">
+            <span class="gk-ins-bico" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 5l15 5.5V23c0 9-6.5 15-15 19C15.5 38 9 32 9 23V10.5L24 5z"/><path d="M17 24l5 5 9-10"/></svg></span>
+            <span class="gk-ins-bname">Personal Accident</span>
+          </li>
+          <li class="gk-ins-bcard gk-ins-bcard--dark gk-ins-bcard--wide">
+            <span class="gk-ins-bico" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M14 34v-8a10 10 0 0 1 20 0v8"/><rect x="10" y="34" width="28" height="6" rx="1.5"/><path d="M19 33v-7a5 5 0 0 1 5-5M24 6v5M9 13l4 3M39 13l-4 3"/></svg></span>
+            <span class="gk-ins-bname">Emergency Assistance</span>
+          </li>
+        </ul>
+
+        <p class="gk-ins-note">Manfaat perlindungan mengikuti paket dan ketentuan polis asuransi yang dipilih.</p>
+        <div class="gk-ins-benefit-cta">
+          <a class="gk-ins-btn" href="#gk-ins-products" data-gk-ins-scroll>Lindungi perjalanan Anda</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. TESTIMONI (ulasan asli marketplace, jalan otomatis) -->
+    <section class="gk-ins-proof" id="gk-ins-proof">
+      <h2 class="gk-ins-h gk-ins-h--center">Dipercaya Travelers</h2>
+      <div class="gk-ins-marquee" id="gk-ins-marquee" aria-label="Ulasan pembeli">
+        <div class="gk-ins-mtrack" id="gk-ins-mtrack">
+          <figure class="gk-ins-review"><div class="gk-ins-stars" role="img" aria-label="Bintang 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg></div><blockquote>Komunikasi lancar dan jelas, pengerjaan cepat dan tepat sesuai yang kita mau.</blockquote><figcaption class="gk-ins-who"><span class="gk-ins-avatar" aria-hidden="true">J</span><span class="gk-ins-who-txt"><span class="gk-ins-name">Julya</span><span class="gk-ins-variant">Duo Plus BSC, 16-20 hari</span></span></figcaption></figure>
+          <figure class="gk-ins-review"><div class="gk-ins-stars" role="img" aria-label="Bintang 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg></div><blockquote>Responsif, membantu kebutuhan kita sebagai calon pembeli.</blockquote><figcaption class="gk-ins-who"><span class="gk-ins-avatar" aria-hidden="true">M</span><span class="gk-ins-who-txt"><span class="gk-ins-name">Muammar</span><span class="gk-ins-variant">IDV BSC, Additional/Week</span></span></figcaption></figure>
+          <figure class="gk-ins-review"><div class="gk-ins-stars" role="img" aria-label="Bintang 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg></div><blockquote>Nice... visa Schengen ke Nordic approved.</blockquote><figcaption class="gk-ins-who"><span class="gk-ins-avatar" aria-hidden="true">A</span><span class="gk-ins-who-txt"><span class="gk-ins-name">Anis</span><span class="gk-ins-variant">Duo Plus EXC, 11-15 hari</span></span></figcaption></figure>
+          <figure class="gk-ins-review"><div class="gk-ins-stars" role="img" aria-label="Bintang 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg></div><blockquote>Kalau baca tanggungannya lengkap. Sudah cover semua. Harga very affordable. Respon super cepat. Highly recommended. Thank you seller. Semoga tidak digunakan sih.. aamiin.</blockquote><figcaption class="gk-ins-who"><span class="gk-ins-avatar" aria-hidden="true">J</span><span class="gk-ins-who-txt"><span class="gk-ins-name">Jassy</span><span class="gk-ins-variant">Duo Plus BSC, 9-10 hari</span></span></figcaption></figure>
+          <figure class="gk-ins-review"><div class="gk-ins-stars" role="img" aria-label="Bintang 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg></div><blockquote>Pelayanan cepat dan ramah. Next time akan beli travel insurance lagi di sini.</blockquote><figcaption class="gk-ins-who"><span class="gk-ins-avatar" aria-hidden="true">W</span><span class="gk-ins-who-txt"><span class="gk-ins-name">Wiseso</span><span class="gk-ins-variant">IDV EXC, 7-8 hari</span></span></figcaption></figure>
+          <figure class="gk-ins-review"><div class="gk-ins-stars" role="img" aria-label="Bintang 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg></div><blockquote>Fast respon. Polis dikirim ke email setelah konfirm data.</blockquote><figcaption class="gk-ins-who"><span class="gk-ins-avatar" aria-hidden="true">M</span><span class="gk-ins-who-txt"><span class="gk-ins-name">Maulana</span><span class="gk-ins-variant">IDV EXC, 7-8 hari</span></span></figcaption></figure>
+          <figure class="gk-ins-review"><div class="gk-ins-stars" role="img" aria-label="Bintang 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg></div><blockquote>Pelayanan cepat dan ramah. Kalau butuh asuransi perjalanan akan beli lagi di sini. Terima kasih.</blockquote><figcaption class="gk-ins-who"><span class="gk-ins-avatar" aria-hidden="true">S</span><span class="gk-ins-who-txt"><span class="gk-ins-name">Sandjojo</span><span class="gk-ins-variant">Duo Plus BSC, 7-8 hari</span></span></figcaption></figure>
+          <figure class="gk-ins-review"><div class="gk-ins-stars" role="img" aria-label="Bintang 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg></div><blockquote>Proses cepat dan agent kooperatif.</blockquote><figcaption class="gk-ins-who"><span class="gk-ins-avatar" aria-hidden="true">F</span><span class="gk-ins-who-txt"><span class="gk-ins-name">Fitriyah</span><span class="gk-ins-variant">Duo Plus BSC, 16-20 hari</span></span></figcaption></figure>
+          <figure class="gk-ins-review"><div class="gk-ins-stars" role="img" aria-label="Bintang 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg></div><blockquote>Komunikatif. Fast response. Recommended seller.</blockquote><figcaption class="gk-ins-who"><span class="gk-ins-avatar" aria-hidden="true">A</span><span class="gk-ins-who-txt"><span class="gk-ins-name">Agrie</span><span class="gk-ins-variant">Duo Plus BSC, 7-8 hari</span></span></figcaption></figure>
+          <figure class="gk-ins-review"><div class="gk-ins-stars" role="img" aria-label="Bintang 5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.9 7.5.7-5.7 5 1.7 7.4L12 18l-6.5 4 1.7-7.4-5.7-5 7.5-.7z"/></svg></div><blockquote>Admin super duper ramah dan membantu sekali atas semua pertanyaan. Alhamdulillah visa lolos, thank you!!</blockquote><figcaption class="gk-ins-who"><span class="gk-ins-avatar" aria-hidden="true">S</span><span class="gk-ins-who-txt"><span class="gk-ins-name">Sania</span><span class="gk-ins-variant">IDV BSC, Additional/Week</span></span></figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. CTA PENUTUP -->
+    <section class="gk-ins-final" id="gk-ins-final">
+      <div class="gk-ins-wrap">
+        <h2 class="gk-ins-h gk-ins-h--white">Your Next Journey Deserves Protection</h2>
+        <p>Setiap perjalanan punya cerita berharga. Pastikan Anda siap menikmati setiap momen dengan perlindungan perjalanan yang sesuai kebutuhan.</p>
+        <a class="gk-ins-btn gk-ins-btn--light" href="#gk-ins-products" data-gk-ins-scroll>Lindungi perjalanan Anda</a>
+      </div>
+    </section>
+
+    <!-- Sticky CTA mobile -->
+    <div class="gk-ins-sticky" id="gk-ins-sticky">
+      <a class="gk-ins-btn" href="#gk-ins-products" data-gk-ins-scroll>Lindungi perjalanan Anda</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var root=document.getElementById('gk-ins-root');
+  if(!root) root=document.querySelector('.gk-ins');
+  if(!root) return;
+
+  /* Foto: kalau src masih kosong, sembunyikan <img> dan tampilkan placeholder */
+  root.querySelectorAll('source[srcset^="LINK_"]').forEach(function(s){ s.removeAttribute('srcset'); });
+  root.querySelectorAll('img[data-gk-ins-img]').forEach(function(img){
+    var ph=img.parentNode.querySelector('.gk-ins-ph');
+    if(!ph) ph=img.parentNode.parentNode.querySelector('.gk-ins-ph');
+    var src=img.getAttribute('src')||'';
+    if(/^LINK_/.test(src)){ img.removeAttribute('src'); src=''; }
+    var has=!!src;
+    if(!has){ img.style.display='none'; }
+    else if(ph){ ph.style.display='none'; }
+  });
+
+  /* Smooth scroll ke carousel produk */
+  root.querySelectorAll('[data-gk-ins-scroll]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var t=document.querySelector(a.getAttribute('href'));
+      if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'}); }
+    });
+  });
+
+  /* Carousel produk (swipe di HP, panah di desktop) */
+  var track=document.getElementById('gk-ins-track');
+  var prev=document.getElementById('gk-ins-prev');
+  var next=document.getElementById('gk-ins-next');
+  if(track && prev && next){
+    function step(){
+      var c=track.querySelector('.gk-ins-card');
+      var gap=parseFloat(getComputedStyle(track).columnGap)||16;
+      return c? c.offsetWidth+gap : 300;
+    }
+    function updateNav(){
+      prev.disabled = track.scrollLeft<=4;
+      next.disabled = track.scrollLeft+track.clientWidth >= track.scrollWidth-4;
+    }
+    prev.addEventListener('click',function(){ track.scrollBy({left:-step(),behavior:'smooth'}); });
+    next.addEventListener('click',function(){ track.scrollBy({left:step(),behavior:'smooth'}); });
+    track.addEventListener('scroll',updateNav,{passive:true});
+    window.addEventListener('resize',updateNav);
+    updateNav();
+  }
+
+  /* Testimoni: gandakan kartu supaya loop mulus, kecepatan konstan, jeda saat disentuh */
+  var mq=document.getElementById('gk-ins-marquee');
+  var mt=document.getElementById('gk-ins-mtrack');
+  if(mq && mt){
+    var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    Array.prototype.slice.call(mt.children).forEach(function(card){
+      var c=card.cloneNode(true);
+      c.setAttribute('aria-hidden','true');
+      c.setAttribute('data-clone','1');
+      mt.appendChild(c);
+    });
+    function setSpeed(){
+      var pxPerSec=60;
+      var half=mt.scrollWidth/2;
+      mt.style.setProperty('--gk-ins-dur',(half/pxPerSec).toFixed(1)+'s');
+    }
+    setSpeed();
+    window.addEventListener('resize',setSpeed);
+    if(!reduce){
+      mq.addEventListener('touchstart',function(){ mq.classList.add('is-paused'); },{passive:true});
+      mq.addEventListener('touchend',function(){ setTimeout(function(){ mq.classList.remove('is-paused'); },1500); },{passive:true});
+    }
+  }
+
+  /* Sticky CTA: muncul setelah hero lewat, sembunyi saat carousel / CTA penutup terlihat */
+  var sticky=document.getElementById('gk-ins-sticky');
+  if(sticky){
+    var state={hero:true,products:false,final:false};
+    function renderSticky(){ sticky.classList.toggle('is-on', !state.hero && !state.products && !state.final); }
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.target.id==='gk-ins-hero') state.hero=en.isIntersecting;
+          if(en.target.id==='gk-ins-products') state.products=en.isIntersecting;
+          if(en.target.id==='gk-ins-final') state.final=en.isIntersecting;
+        });
+        renderSticky();
+      },{threshold:0.15});
+      ['gk-ins-hero','gk-ins-products','gk-ins-final'].forEach(function(id){
+        var el=document.getElementById(id);
+        if(el) io.observe(el);
+      });
+    }
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Landing Page Asuransi",
+  "tag": "section",
+  "class": "section-gkin-landing",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Landing Page Asuransi Perjalanan"
+    }
+  ]
+}
+{% endschema %}
